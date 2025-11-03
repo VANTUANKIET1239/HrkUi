@@ -1,0 +1,265 @@
+
+@use '../../../../../../../../libs/styles/variables' as *;
+
+
+
+
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  background: white
+}
+
+.decor {
+  position: absolute;
+  filter: blur(60px);
+  opacity: .4;
+}
+
+.decor-1 {
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: conic-gradient(from 120deg, #8ec5ff, #ffd27f, #8ec5ff);
+  top: -60px;
+  left: -80px;
+}
+
+.decor-2 {
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: conic-gradient(from -30deg, #c3f8ff, #a7f3d0, #c3f8ff);
+  bottom: -80px;
+  right: -60px;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 20px;
+  background: $brand;
+  border: 1px solid #2b335c;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .04);
+  backdrop-filter: blur(10px);
+  color: #e7eaff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .4));
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.muted {
+  color: #aab3d0;
+  font-size: 13px;
+}
+
+.center {
+  text-align: center;
+}
+
+form {
+  margin-top: 8px;
+}
+
+.field {
+  margin: 14px 0;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  color: #cfd6ff;
+  margin-bottom: 6px;
+}
+
+input {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  padding: 0 14px;
+  border: 1px solid #2c365f;
+  outline: none;
+  background: #0d1230;
+  color: #e7eaff;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+input:focus {
+  border-color: #6ea8fe;
+  box-shadow: 0 0 0 4px #6ea8fe22;
+}
+
+.invalid {
+  border-color: #ff6b6b !important;
+}
+
+small {
+  display: block;
+  color: #ff9d9d;
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.pwd-wrap {
+  position: relative;
+}
+
+.pwd-wrap .ghost {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #aab3d0;
+  cursor: pointer;
+}
+
+.pwd-wrap .ghost:hover {
+  color: #e7eaff;
+  border-color: #2b335c;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+  gap: 12px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #cfd6ff;
+  cursor: pointer;
+}
+
+.link {
+  color: #8ec5ff;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.primary {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: $accent;
+  color: #0b1020;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 10px 24px rgba(78, 130, 241, .35);
+}
+
+.primary:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #0b1020;
+  border-top-color: transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #93a0c8;
+  font-size: 12px;
+  margin: 14px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #2b335c, transparent);
+}
+
+.sso {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.outline {
+  height: 42px;
+  border-radius: 12px;
+  background: transparent;
+  color: #cfd6ff;
+  border: 1px solid #2b335c;
+  cursor: pointer;
+}
+
+.outline:hover {
+  border-color: #3b4580;
+  color: #e7eaff;
+}
+
+.footer {
+  margin-top: 18px;
+  color: #7f8bb5;
+  font-size: 12px;
+  text-align: center;
+}

@@ -24,7 +24,8 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "browser": "src/main.ts",
+            "browser": "src/app/shell/src/main.ts",
+            "index": "src/app/shell/src/index.html",
             "polyfills": [
               "zone.js"
             ],
@@ -34,12 +35,24 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/libs/styles/_variables.scss",
+              "src/app/shell/src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
           },
+
           "configurations": {
             "production": {
               "budgets": [
@@ -92,10 +105,15 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "index.html",
+                "input": "src/app/shell",
+                "output": "."
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/app/shell/src/styles.scss"
             ]
           }
         }

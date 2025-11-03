@@ -1,0 +1,61 @@
+/* Use :host to style the component's host element (app-custom-checkbox) */
+:host {
+  display: inline-flex; // Make it flow nicely with text
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none; // Prevent text selection on click
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  // Style for the disabled state
+&.disabled { // <-- *** THIS IS THE FIX ***
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    .checkbox-box {
+      background-color: #eee;
+    }
+  }
+
+  // Add focus outline for accessibility
+  &:focus-visible {
+    outline: 2px solid dodgerblue;
+    outline-offset: 2px;
+  }
+}
+
+.custom-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px; // Space between checkbox and label
+}
+
+.checkbox-box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #666;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+
+  // Styles for when the checkbox is checked
+  &.checked {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+}
+
+.checkmark {
+  color: #fff; // White checkmark
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.checkbox-label {
+  font-family: sans-serif;
+  color: #333;
+}

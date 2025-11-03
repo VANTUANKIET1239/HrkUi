@@ -1,0 +1,47 @@
+<label class="ci-field" [class.ci-disabled]="disabled">
+
+
+  @if(label){
+  <span class="ci-label">
+    {{ label }} <span *ngIf="required" class="ci-required">*</span>
+  </span>
+  }
+
+
+  <div class="ci-input-wrap" [class.ci-invalid]="invalid || showErrors()">
+    <input class="ci-input"
+      [attr.type]="type"
+      [attr.name]="name || null"
+      [attr.placeholder]="placeholder || null"
+      [attr.autocomplete]="autocomplete || null"
+      [attr.minlength]="minlength ?? null"
+      [attr.maxlength]="maxlength ?? null"
+      [disabled]="disabled"
+      [value]="value() ?? ''"
+      (input)="handleInput($event)"
+      (blur)="onTouched()"
+      [attr.aria-invalid]="invalid || showErrors()" />
+  </div>
+
+  @if(hint && !showErrors()){
+  <div class="ci-hint">{{ hint }}</div>
+  }
+
+
+  @if (showErrors()) {
+  <div class="ci-error">
+    @if (errors?.['required']) {
+    <span>This field is required.</span>
+    }
+    @if (errors?.['minlength']) {
+    <span>Minimum length is {{ minlength }}.</span>
+    }
+    @if (errors?.['maxlength']) {
+    <span>Maximum length is {{ maxlength }}.</span>
+    }
+    @if (errors?.['custom']) {
+    <span>{{ errors?.['custom'] }}</span>
+    }
+  </div>
+  }
+</label>

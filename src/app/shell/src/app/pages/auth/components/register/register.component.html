@@ -1,0 +1,87 @@
+<!-- <div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="login()">
+    <div>
+      <label for="username">Username</label>
+      <input id="username" [(ngModel)]="username" name="username" required />
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <input id="password" type="password" [(ngModel)]="password" name="password" required />
+    </div>
+    <button type="submit">Login</button>
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+</div> -->
+
+  <div class="bg">
+    <div class="decor decor-1"></div>
+    <div class="decor decor-2"></div>
+  </div>
+
+  <main class="page">
+    <section class="card" role="form" aria-labelledby="loginTitle">
+      <div class="brand">
+        <h1 id="loginTitle">HRM Portal</h1>
+        <p class="muted">Sign in to manage people, payroll & attendance</p>
+      </div>
+
+      <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="username"
+                 formControlName="email" [class.invalid]="hasErr('email')"
+                 placeholder="you@company.com"/>
+          <!-- <small *ngIf="hasErr('email')">
+            {{ emailError }}
+          </small> -->
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pwd-wrap">
+            <input id="password" [type]="showPwd() ? 'text' : 'password'"
+                   autocomplete="current-password"
+                   formControlName="password" [class.invalid]="hasErr('password')"
+                   placeholder="Your password"/>
+            <button type="button" class="ghost" aria-label="Toggle password visibility"
+                    (click)="toggleShowPwd()">{{ showPwd() ? 'Hide' : 'Show' }}</button>
+          </div>
+          <small *ngIf="hasErr('password')">Password is required (min 6 chars).</small>
+        </div>
+
+        <div class="row">
+          <label class="checkbox">
+            <input type="checkbox" formControlName="remember"/>
+            <span>Remember me</span>
+          </label>
+
+          <a class="link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+        </div>
+
+        <button class="primary" type="submit" [disabled]="dataForm.invalid || loading()">
+          <span class="spinner" *ngIf="loading()"></span>
+          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        </button>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <div class="sso">
+          <button type="button" class="outline" (click)="sso('google')" aria-label="Continue with Google">
+            Continue with Google
+          </button>
+          <button type="button" class="outline" (click)="sso('microsoft')" aria-label="Continue with Microsoft">
+            Continue with Microsoft
+          </button>
+        </div>
+
+        <p class="muted center">
+          Don’t have an account?
+          <a class="link" [routerLink]="['/auth/register']">Create one</a>
+        </p>
+      </form>
+    </section>
+    <footer class="footer">© {{year}} HRM Suite — All rights reserved.</footer>
+  </main>

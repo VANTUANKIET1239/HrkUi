@@ -1,0 +1,55 @@
+ .ci-field {
+   display: block;
+   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+ }
+
+ .ci-label {
+   display: block;
+   margin-bottom: .375rem;
+   font-weight: 600;
+ }
+
+ .ci-required {
+   color: #d92d20;
+   margin-left: .25rem;
+ }
+
+ .ci-input-wrap {
+   position: relative;
+ }
+
+ .ci-input {
+   width: 100%;
+   padding: .625rem .75rem;
+   border: 1px solid #d0d5dd;
+   border-radius: .5rem;
+   outline: none;
+   transition: border-color .15s, box-shadow .15s;
+   background: #fff;
+ }
+
+ .ci-input:focus {
+   border-color: #2970ff;
+   box-shadow: 0 0 0 3px rgba(41, 112, 255, .15);
+ }
+
+ .ci-disabled .ci-input {
+   background: #f2f4f7;
+   cursor: not-allowed;
+ }
+
+ .ci-invalid .ci-input {
+   border-color: #d92d20;
+ }
+
+ .ci-error {
+   color: #d92d20;
+   font-size: .875rem;
+   margin-top: .375rem;
+ }
+
+ .ci-hint {
+   color: #667085;
+   font-size: .875rem;
+   margin-top: .375rem;
+ }

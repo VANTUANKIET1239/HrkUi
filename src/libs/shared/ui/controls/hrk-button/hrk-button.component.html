@@ -1,0 +1,8 @@
+<button class="hrk-button" [style]="style" [ngClass]="ngClasses">
+        @if(loading){
+           <span class="spinner"></span>
+        }
+        <ng-content></ng-content>
+        {{ loading ? buttonName + '...' : buttonName }}
+
+</button>

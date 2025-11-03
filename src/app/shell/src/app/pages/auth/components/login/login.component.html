@@ -1,0 +1,62 @@
+<div class="login-bg"></div>
+<div class="page">
+  <div class="poster">
+    <hrk-image imageName="login-poster.png" [isBordered]="true"></hrk-image>
+  </div>
+  <div class="card">
+    <div class="brand">
+      <h1 id="loginTitle">HRM Portal</h1>
+      <p class="muted">Sign in to manage people, payroll & attendance</p>
+    </div>
+
+    <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <hrk-input type="email" autocomplete="username" formControlName="email" [invalid]="hasErr('email')"
+          placeholder="you@company.com"></hrk-input>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="pwd-wrap">
+          <hrk-input formControlName="password" [type]="showPwd() ? 'text' : 'password'"
+            [autocomplete]="'current-password'"></hrk-input>
+          <button type="button" class="ghost" aria-label="Toggle password visibility" (click)="toggleShowPwd()">
+              <hrk-icon [biIconName]="showPwd() ? 'bi-eye' : 'bi-eye-slash'" size="medium" color="black"></hrk-icon>
+          </button>
+        </div>
+        <small *ngIf="hasErr('password')">Password is required (min 6 chars).</small>
+      </div>
+
+      <div class="row-auth">
+        <label class="checkbox">
+          <hrk-checkbox formControlName="remember" [backgroundColor]="'rgb(255, 123, 0)'"> </hrk-checkbox>
+          <span>Remember me</span>
+        </label>
+
+        <a class="link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+      </div>
+
+      <hrk-button [style]="{color: 'black'}" ngClasses="hrk-orange" [loading]="loading()" buttonName="Sign in"></hrk-button>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="sso">
+        <hrk-button type="button" ngClasses="outline" (click)="sso('google')" buttonName="Continue with Google" aria-label="Continue with Google">
+            <hrk-icon [useSvg]="true" svgIconName="google" size="medium"></hrk-icon>
+        </hrk-button>
+        <hrk-button type="button" ngClasses="outline" (click)="sso('microsoft')" buttonName="Continue with Microsoft" aria-label="Continue with Microsoft">
+          <hrk-icon [useSvg]="true" svgIconName="microsoft" size="medium"></hrk-icon>
+        </hrk-button>
+      </div>
+
+      <!-- <p class="muted center">
+        Don’t have an account?
+        <a class="link" [routerLink]="['/auth/register']">Create one</a>
+      </p> -->
+    </form>
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+@if(!useSvg){
+  <i class="bi {{biIconName}}" [style]="{color: color, fontSize: getFontSize(size)}"></i>
+}
+@if(useSvg){
+  <i class="icon">
+    <img [style]="{width: getFontSize(size), height: getFontSize(size)}" [src]="getSvgPath(svgIconName)" alt="check" />
+  </i>
+}

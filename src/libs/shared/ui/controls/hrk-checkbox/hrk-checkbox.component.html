@@ -1,0 +1,11 @@
+<div class="custom-checkbox-wrapper">
+  <div class="checkbox-box" [class.checked]="value" [style.backgroundColor]="backgroundColor">
+    @if(value){
+      <span class="checkmark">&#10003;</span>
+    }
+  </div>
+
+  <div class="checkbox-label">
+    <ng-content></ng-content>
+  </div>
+</div>
