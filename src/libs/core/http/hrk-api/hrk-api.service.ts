@@ -39,7 +39,7 @@ export class HrkApiService {
     'Content-Type': 'application/json',
   });
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   CallApi<T>(
     method: WithoutBodyHttpMethod,
@@ -60,7 +60,7 @@ export class HrkApiService {
   ): Observable<T> {
     const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
     const currentOptions: CallOptions =
-      ((this.isWithBodyMethod(method)
+      ((!this.isWithBodyMethod(method)
         ? optionsOrBody
         : options) as CallOptions) ?? {};
     const body = this.isWithBodyMethod(method) ? optionsOrBody : null;
@@ -107,12 +107,32 @@ export class HrkApiService {
     return method === 'POST' || method === 'PUT' || method === 'PATCH';
   }
 
-  private mergeHeaders(base: HttpHeaders, extra?: HttpHeaders): HttpHeaders {
+  // private mergeHeaders(base: HttpHeaders, extra?: HttpHeaders): HttpHeaders {
+  //   if (!extra) return base;
+  //   let h = base;
+  //   for (const [k, v] of Object.entries(extra)) {
+  //     if (v !== undefined && v !== null) {
+  //       h = h.set(k, String(v));
+  //     }
+  //   }
+  //   return h;
+  // }
+
+  private mergeHeaders(base: HttpHeaders, extra?: HttpHeaders | { [header: string]: string | string[] }): HttpHeaders {
     if (!extra) return base;
     let h = base;
-    for (const [k, v] of Object.entries(extra)) {
-      if (v !== undefined && v !== null) {
-        h = h.set(k, String(v));
+    if (extra instanceof HttpHeaders) {
+      for (const key of extra.keys()) {
+        const values = extra.getAll(key);
+        if (values) {
+          h = h.set(key, values);
+        }
+      }
+    } else {
+      for (const [k, v] of Object.entries(extra)) {
+        if (v !== undefined && v !== null) {
+          h = h.set(k, Array.isArray(v) ? v : String(v));
+        }
       }
     }
     return h;
@@ -133,3 +153,4 @@ export class HrkApiService {
     return hp;
   }
 }
+

@@ -1,0 +1,114 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.rage-burst-fx {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ground-cracks {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 110px;
+  height: 110px;
+  border: 3px double rgba(239, 68, 68, 0.55);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 80%);
+  animation: ground-cracks-anim 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.rage-aura-wave {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 30%, rgba(220, 38, 38, 0.8) 70%, transparent 100%);
+  animation: rage-aura-wave-anim 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+.dust-cloud .dust {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: rgba(139, 92, 26, 0.45);
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0;
+}
+
+.dust-cloud .d1 {
+  left: 25%;
+  bottom: 32px;
+  animation: dust-rise-anim 0.6s ease-out forwards;
+}
+
+.dust-cloud .d2 {
+  right: 20%;
+  bottom: 30px;
+  animation: dust-rise-anim 0.6s 0.1s ease-out forwards;
+}
+
+.dust-cloud .d3 {
+  left: 45%;
+  bottom: 25px;
+  animation: dust-rise-anim 0.6s 0.05s ease-out forwards;
+}
+
+@keyframes ground-cracks-anim {
+  0% {
+    transform: translateX(-50%) rotateX(75deg) scale(0.1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) rotateX(75deg) scale(1.3);
+    opacity: 0.9;
+  }
+}
+
+@keyframes rage-aura-wave-anim {
+  0% {
+    transform: translateX(-50%) rotateX(75deg) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(-50%) rotateX(75deg) scale(1.8);
+    opacity: 0;
+    filter: brightness(1.5);
+  }
+}
+
+@keyframes dust-rise-anim {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateY(-25px) scale(2);
+    opacity: 0;
+  }
+}

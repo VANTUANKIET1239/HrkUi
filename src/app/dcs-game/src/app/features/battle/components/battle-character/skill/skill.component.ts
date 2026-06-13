@@ -1,0 +1,40 @@
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Hero } from '../../../../../core/models/hero.model';
+import { SkillBasicComponent } from './skill-basic/skill-basic.component';
+import { SkillRageComponent } from './skill-rage/skill-rage.component';
+import { SkillThunderComponent } from './skill-thunder/skill-thunder.component';
+import { SkillUltimateComponent } from './skill-ultimate/skill-ultimate.component';
+import { SkillHeavenlyComponent } from './skill-heavenly/skill-heavenly.component';
+import { SkillVaxAMillionSanitizationComponent } from './skill-vax-a-million-sanitization/skill-vax-a-million-sanitization.component';
+import { SkillRicardoMilosComponent } from './skill-ricardo-milos/skill-ricardo-milos.component';
+import { SkillRandomKnowledgeDropComponent } from './skill-random-knowledge-drop/skill-random-knowledge-drop.component';
+
+@Component({
+  selector: 'app-skill',
+  standalone: true,
+  imports: [
+    CommonModule,
+    SkillBasicComponent,
+    SkillRageComponent,
+    SkillThunderComponent,
+    SkillUltimateComponent,
+    SkillHeavenlyComponent,
+    SkillVaxAMillionSanitizationComponent,
+    SkillRicardoMilosComponent,
+    SkillRandomKnowledgeDropComponent
+  ],
+  templateUrl: './skill.component.html',
+  styleUrl: './skill.component.scss'
+})
+export class SkillComponent {
+  @Input() isCharging = false;
+  @Input() skillCategory: 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly' | null = null;
+  @Input() skillColor = '#ffffff';
+  @Input() activeSkillId: string | null = null;
+  @Input({ required: true }) character!: Hero;
+
+  get isTeamRight(): boolean {
+    return this.character.team === 'right';
+  }
+}

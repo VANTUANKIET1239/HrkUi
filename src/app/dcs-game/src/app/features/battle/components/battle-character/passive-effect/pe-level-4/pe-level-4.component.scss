@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.divine-halo {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px double #eab308;
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.8), inset 0 0 10px rgba(234, 179, 8, 0.5);
+  animation: halo-pulse 3s infinite alternate ease-in-out;
+  z-index: 1;
+}
+
+@keyframes halo-pulse {
+  0% {
+    transform: translateX(-50%) scale(0.9) rotate(0deg);
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
+  }
+  100% {
+    transform: translateX(-50%) scale(1.1) rotate(180deg);
+    box-shadow: 0 0 24px rgba(234, 179, 8, 0.9);
+  }
+}
+
+.aura-flames {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95px;
+  height: 90px;
+  background: radial-gradient(ellipse at bottom, rgba(239, 68, 68, 0.45) 0%, rgba(234, 179, 8, 0.25) 45%, transparent 70%);
+  filter: blur(6px);
+  z-index: 1;
+  animation: flame-grow 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes flame-grow {
+  0% {
+    transform: translateX(-50%) scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.15) translateY(-5px);
+    opacity: 0.9;
+  }
+}
+
+.gold-sparkles .star {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #fef08a;
+  box-shadow: 0 0 8px #fde047;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.gold-sparkles .s1 {
+  left: 20%;
+  bottom: 35px;
+  animation: star-drift 2.8s infinite ease-in-out;
+}
+
+.gold-sparkles .s2 {
+  right: 20%;
+  bottom: 45px;
+  animation: star-drift 3.2s infinite ease-in-out 0.8s;
+}
+
+.gold-sparkles .s3 {
+  left: 40%;
+  top: 25px;
+  animation: star-drift 3s infinite ease-in-out 0.4s;
+}
+
+.gold-sparkles .s4 {
+  right: 40%;
+  top: 15px;
+  animation: star-drift 2.5s infinite ease-in-out 1.2s;
+}
+
+@keyframes star-drift {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-35px) scale(1.1);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,94 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.thunder-execution-fx {
+  position: absolute;
+  top: -200px;
+  bottom: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.lightning-strike-bolt {
+  position: absolute;
+  width: 4px;
+  background: linear-gradient(180deg, transparent, #e0f2fe, #38bdf8);
+  box-shadow: 0 0 15px #38bdf8, 0 0 30px #0284c7;
+  opacity: 0;
+  transform-origin: top center;
+}
+
+.lightning-strike-bolt.b1 {
+  left: 45%;
+  height: 280px;
+  animation: lightning-strike-anim 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.lightning-strike-bolt.b2 {
+  right: 40%;
+  height: 260px;
+  animation: lightning-strike-anim 0.5s 0.15s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.electric-arc-body .arc {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid #7dd3fc;
+  box-shadow: 0 0 8px #0284c7;
+  opacity: 0;
+}
+
+.electric-arc-body .a1 {
+  left: 30%;
+  bottom: 50px;
+  width: 35px;
+  height: 25px;
+  animation: arc-spark-anim 0.4s infinite alternate;
+}
+
+.electric-arc-body .a2 {
+  right: 25%;
+  bottom: 70px;
+  width: 45px;
+  height: 30px;
+  animation: arc-spark-anim 0.45s 0.1s infinite alternate;
+}
+
+@keyframes lightning-strike-anim {
+  0% {
+    transform: scaleY(0.01);
+    opacity: 0;
+  }
+  25%, 35% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  36%, 38% {
+    opacity: 0.1;
+  }
+  39%, 45% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1.05);
+  }
+}
+
+@keyframes arc-spark-anim {
+  0%, 100% {
+    opacity: 0;
+    transform: skewX(-10deg) scale(0.8);
+  }
+  30%, 70% {
+    opacity: 0.95;
+    transform: skewX(10deg) scale(1.1);
+  }
+}

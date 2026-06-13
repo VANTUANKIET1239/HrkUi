@@ -3,6 +3,7 @@ export const ApiEndpoints = {
   Auth: {
     Login: 'auth/login',
     Register: 'auth/register',
-    Logout: 'auth/logout'
+    Logout: 'auth/logout',
+    Refresh: 'auth/refresh-token'
   }
 }

@@ -1,0 +1,40 @@
+<ng-container *ngIf="isCharging">
+  <!-- Active selection ring (base color matching skill) -->
+  <div class="active-ring" [style.--skill-color]="skillColor"></div>
+
+  <!-- Skill 1: Basic Attack Visuals -->
+  <app-skill-basic *ngIf="skillCategory === 'basic' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-basic>
+
+  <!-- Skill 2: Rage Burst Visuals -->
+  <app-skill-rage *ngIf="skillCategory === 'rage' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-rage>
+
+  <!-- Skill 3: Thunder Execution Visuals -->
+  <app-skill-thunder *ngIf="skillCategory === 'thunder' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-thunder>
+
+  <!-- Ultimate: Berserker Overload Visuals -->
+  <app-skill-ultimate 
+    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP'"
+    [characterAvatar]="character.avatar"
+    [isTeamRight]="isTeamRight">
+  </app-skill-ultimate>
+
+  <!-- Skill 5: Heavenly Shirtless Judgment Visuals -->
+  <app-skill-heavenly *ngIf="skillCategory === 'heavenly' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-heavenly>
+
+  <!-- Skill: Vax-A-Million Sanitization Beam Effect (Nam Deadline's Linear AoE) -->
+  <app-skill-vax-a-million-sanitization 
+    *ngIf="activeSkillId === 'VAX_A_MILLION_SANITZATION'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-vax-a-million-sanitization>
+
+  <!-- Skill: Ricardo Milos! (Humorous Crimson Red Dance) -->
+  <app-skill-ricardo-milos
+    *ngIf="activeSkillId === 'RICARDO_MILOS'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-ricardo-milos>
+
+  <!-- Skill: Random Knowledge Drop (Giant Textbook Drop) -->
+  <app-skill-random-knowledge-drop
+    *ngIf="activeSkillId === 'RANDOM_KNOWLEDGE_DROP'">
+  </app-skill-random-knowledge-drop>
+</ng-container>

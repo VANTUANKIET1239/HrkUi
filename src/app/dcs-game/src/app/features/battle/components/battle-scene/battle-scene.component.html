@@ -1,0 +1,144 @@
+<div class="battle-container" style="">
+
+  <!-- Header UI -->
+  <div class="header-ui">
+    <div class="header-left">
+      <div class="leader-avatar-frame">
+        <img [src]="getLeaderAvatar()" class="leader-avatar" alt="Leader" />
+      </div>
+      <div class="team-info">
+        <div class="team-name">Đội ngũ Coder</div>
+        <div class="power-score">Chiến lực: {{ getPowerScore() | number }}</div>
+      </div>
+    </div>
+
+    <!-- Center: Wood/Scroll Current Turn Frame -->
+    <div class="header-center">
+      <div class="turn-wood-frame">
+        <span class="wood-text">Lượt {{ battleEngine.currentTurn() }}</span>
+      </div>
+    </div>
+
+    <!-- Right: Start / Pause, Reset Controls -->
+    <div class="header-right">
+      <button *ngIf="battleEngine.status() === 'idle' || battleEngine.status() === 'paused'" class="game-btn play-btn"
+        (click)="battleEngine.startBattle()">
+        ▶ Bắt Đầu
+      </button>
+
+      <button *ngIf="battleEngine.status() === 'playing'" class="game-btn pause-btn"
+        (click)="battleEngine.pauseBattle()">
+        ⏸ Tạm Dừng
+      </button>
+
+      <button class="game-btn reset-btn" (click)="battleEngine.resetBattle()">
+        🔄 Thiết Lập
+      </button>
+    </div>
+  </div>
+
+  <!-- Skill Casting Banner (Dynamic Overlay) -->
+  <div *ngIf="battleEngine.currentSkillName()" class="skill-cast-banner"
+    [style.--skill-color]="battleEngine.currentSkillColor()">
+    <div class="skill-glow" [style.background]="battleEngine.currentSkillColor()"></div>
+    <div class="skill-text">
+      ⭐ {{ getActorName() }} THI TRIỂN [ {{ battleEngine.currentSkillName() }} ] ⭐
+    </div>
+  </div>
+
+  <!-- Battlefield Grid (3D perspective sa-ban) -->
+  <div class="battlefield" [class.screen-shake]="isScreenShaking()">
+    <!-- Sky Darkening Overlay -->
+    <div class="battlefield-darkness" [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT'"></div>
+
+    <!-- Battlefield-wide energy shockwave -->
+    <div class="aoe-field-shockwave"
+      [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT' && battleEngine.activeTargetIds().length > 0">
+    </div>
+
+    <div class="battlefield-grid">
+      <!-- Left Team (Heroes) -->
+      <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}">
+        <app-battle-character [character]="hero" [isCharging]="battleEngine.activeActorId() === hero.id"
+          [isHit]="battleEngine.isTargetHit(hero.id)" [skillColor]="battleEngine.currentSkillColor()"
+          [damageEvent]="battleEngine.damageEvents()[hero.id] || null" [activeSkillId]="battleEngine.currentSkillId()">
+        </app-battle-character>
+      </div>
+
+      <!-- Center VS line/Divider -->
+      <div class="battlefield-divider">
+        <div class="vs-label">VS</div>
+      </div>
+
+      <!-- Right Team (Enemies) -->
+      <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}">
+        <app-battle-character [character]="enemy" [isCharging]="battleEngine.activeActorId() === enemy.id"
+          [isHit]="battleEngine.isTargetHit(enemy.id)" [skillColor]="battleEngine.currentSkillColor()"
+          [damageEvent]="battleEngine.damageEvents()[enemy.id] || null" [activeSkillId]="battleEngine.currentSkillId()">
+        </app-battle-character>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section: Actions, Environment, Queue -->
+  <div class="bottom-ui-wrapper">
+    <div class="bottom-control-bar">
+      <!-- Left side: Speed, Auto, Defense -->
+      <div class="control-left">
+        <div class="speed-selector">
+          <button *ngFor="let s of [1, 2, 4]" class="speed-tab" [ngClass]="{ active: battleEngine.speed() === s }"
+            (click)="battleEngine.setSpeed(s)">
+            x{{ s }}
+          </button>
+        </div>
+        <button class="circle-btn auto-btn" [ngClass]="{ active: battleEngine.status() === 'playing' }">Auto</button>
+        <button class="circle-btn defense-btn" (click)="battleEngine.pauseBattle()">Phòng Ngự</button>
+      </div>
+
+      <!-- Center: Environmental condition (e.g. "Đồng bằng: công +10% phòng +10%") -->
+      <!-- <div class="control-center">
+        <div class="env-condition-badge">
+          🌍 Địa hình: <span class="env-highlight">Đồng Bằng</span> (công +10%, phòng +10%)
+        </div>
+      </div> -->
+
+      <!-- Right side: Skill slot of the active character -->
+      <div class="control-right">
+        <div class="skill-deck">
+          <div *ngFor="let skill of getActiveActorSkills(); let idx = index" class="skill-slot"
+            [style.--skill-border-color]="skill.color">
+            <span class="skill-name">{{ skill.name }}</span>
+            <span class="skill-cost">{{ skill.cost }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Timeline / Turn Queue -->
+    <div class="action-timeline">
+      <div class="timeline-header-text">LƯỢT TIẾP THEO</div>
+      <div class="timeline-line"></div>
+      <div class="timeline-queue">
+        <div *ngFor="let queueHero of battleEngine.turnQueue(); let first = first" class="queue-item-frame"
+          [ngClass]="{ 'active-highlight': first }">
+          <img [src]="queueHero.avatar" class="queue-avatar" [alt]="queueHero.name" />
+          <div class="queue-border-color" [ngClass]="queueHero.team"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Log Panel Narrative overlay -->
+  <!-- <div class="narrative-panel-container">
+    <app-battle-log-panel 
+      [logs]="battleEngine.narrativeLogs()">
+    </app-battle-log-panel>
+  </div> -->
+
+  <!-- Victory/Defeat Results Modal -->
+  <app-battle-result-modal *ngIf="battleEngine.status() === 'finished'" [isVictory]="isPlayerVictory()"
+    [totalTurns]="battleEngine.currentTurn()" [aliveCount]="getAliveCount('left')"
+    [totalRemainingHp]="getTotalHp('left')" (onReplay)="battleEngine.resetBattle(); battleEngine.startBattle()">
+  </app-battle-result-modal>
+
+</div>

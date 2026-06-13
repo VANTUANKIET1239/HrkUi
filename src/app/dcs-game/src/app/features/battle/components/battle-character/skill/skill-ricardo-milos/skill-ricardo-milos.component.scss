@@ -1,0 +1,263 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.ricardo-milos-fx {
+  position: absolute;
+  top: -150px;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* =========================================
+   GIF OVERLAY (Tăng kích thước to hơn & đồng bộ hạ cánh)
+========================================= */
+.ricardo-gif-container {
+  position: absolute;
+  bottom: 45px; /* Đẩy lên cao chút để cân xứng */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px; /* Tăng chiều rộng từ 160px lên 220px */
+  height: 300px; /* Tăng chiều cao từ 220px lên 300px */
+  opacity: 0;
+  z-index: 10;
+  overflow: hidden;
+  animation: gif-fade-in-out 2.4s infinite ease-in-out;
+  border-radius: 10px;
+  /* Glowing filter to fit the Crimson theme */
+  filter: drop-shadow(0 0 20px rgba(255, 0, 51, 0.95)) contrast(1.15) saturate(1.25);
+}
+
+.ricardo-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent;
+}
+
+@keyframes gif-fade-in-out {
+  0%, 26% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.75);
+  }
+  27%, 71% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05); /* Tăng scale nhẹ khi hiển thị */
+  }
+  72%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.75);
+  }
+}
+
+/* =========================================
+   CRIMSON SPOTLIGHTS
+========================================= */
+.crimson-spotlights {
+  position: absolute;
+  top: -100px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 350px;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+  animation: lights-fade-in-out 2.4s infinite ease-in-out;
+}
+
+.spotlight {
+  position: absolute;
+  top: 0;
+  width: 90px;
+  height: 380px;
+  background: linear-gradient(180deg, rgba(255, 0, 51, 0.65) 0%, rgba(255, 0, 51, 0.15) 80%, transparent 100%);
+  filter: blur(12px);
+  transform-origin: top center;
+}
+
+.spot-left {
+  left: 10px;
+  transform: rotate(15deg);
+  animation: swing-left 1.2s infinite alternate ease-in-out;
+}
+
+.spot-right {
+  right: 10px;
+  transform: rotate(-15deg);
+  animation: swing-right 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes lights-fade-in-out {
+  0%, 26% { opacity: 0; }
+  27%, 71% { opacity: 1; }
+  72%, 100% { opacity: 0; }
+}
+
+@keyframes swing-left {
+  0% { transform: rotate(12deg); }
+  100% { transform: rotate(27deg); }
+}
+
+@keyframes swing-right {
+  0% { transform: rotate(-12deg); }
+  100% { transform: rotate(-27deg); }
+}
+
+/* =========================================
+   ENERGY AURA WAVES
+========================================= */
+.energy-waves {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 200px;
+  height: 200px;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
+  animation: lights-fade-in-out 2.4s infinite ease-in-out;
+}
+
+.wave {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  border: 4px solid #ff0033;
+  box-shadow: 0 0 25px #ff0033, inset 0 0 20px #ff0033;
+}
+
+.wave1 { animation: aura-pulse-anim 0.8s infinite linear; }
+.wave2 { animation: aura-pulse-anim 0.8s infinite 0.25s linear; }
+.wave3 { animation: aura-pulse-anim 0.8s infinite 0.5s linear; }
+
+@keyframes aura-pulse-anim {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+/* =========================================
+   LOVE SPARKLES & PETALS
+========================================= */
+.love-sparkles {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  pointer-events: none;
+  opacity: 0;
+  animation: lights-fade-in-out 2.4s infinite ease-in-out;
+}
+
+.petal, .sparkle {
+  position: absolute;
+  font-size: 18px;
+  opacity: 0;
+  text-shadow: 0 0 8px rgba(255, 0, 51, 0.8);
+}
+
+.p1 { left: 10%; animation: particle-float 1.2s infinite 0.1s ease-in-out; }
+.p2 { right: 15%; animation: particle-float 1.4s infinite 0.3s ease-in-out; }
+.p3 { left: 40%; animation: particle-float 1.1s infinite 0.6s ease-in-out; }
+.p4 { right: 30%; animation: particle-float 1.3s infinite 0.2s ease-in-out; }
+
+.sp1 { left: 25%; font-size: 22px; color: #ff0033; animation: particle-float 1s infinite 0.4s ease-in-out; }
+.sp2 { right: 20%; font-size: 20px; color: #ff0055; animation: particle-float 1.2s infinite 0.7s ease-in-out; }
+
+@keyframes particle-float {
+  0% { transform: translateY(20px) rotate(0deg) scale(0.5); opacity: 0; }
+  30% { opacity: 1; }
+  80% { opacity: 0.8; }
+  100% { transform: translateY(-140px) rotate(360deg) scale(1.25); opacity: 0; }
+}
+
+/* =========================================
+   CRIMSON SHOCKWAVE (Final Turn Impact)
+========================================= */
+.crimson-shockwave {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 10%, #ff0033 40%, transparent 70%);
+  box-shadow: 0 0 45px #ff0033, inset 0 0 35px #ff0033;
+  opacity: 0;
+  z-index: 5;
+  mix-blend-mode: screen;
+  animation: shockwave-trigger 2.4s infinite ease-out;
+}
+
+@keyframes shockwave-trigger {
+  0%, 70% {
+    opacity: 0;
+    transform: translateX(-50%) rotateX(75deg) scale(0.1);
+  }
+  71% {
+    opacity: 1;
+    transform: translateX(-50%) rotateX(75deg) scale(0.2);
+    filter: brightness(2.2);
+  }
+  74% {
+    opacity: 0.8;
+  }
+  79%, 100% {
+    opacity: 0;
+    transform: translateX(-50%) rotateX(75deg) scale(1.65);
+    filter: brightness(1);
+  }
+}
+
+/* =========================================
+   BURNING GROUND MARK
+========================================= */
+.burning-ground-mark {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 3px double rgba(255, 0, 51, 0.85);
+  box-shadow: 0 0 30px rgba(255, 0, 51, 0.85), inset 0 0 20px rgba(255, 0, 51, 0.65);
+  background: radial-gradient(circle, rgba(255, 0, 51, 0.3) 0%, transparent 80%);
+  opacity: 0;
+  z-index: 0;
+  animation: burn-mark-trigger 2.4s infinite ease-out;
+}
+
+@keyframes burn-mark-trigger {
+  0%, 70% {
+    opacity: 0;
+    transform: translateX(-50%) rotateX(75deg) scale(0.5);
+  }
+  71% {
+    opacity: 1;
+    transform: translateX(-50%) rotateX(75deg) scale(1.1);
+  }
+  71%, 91% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) rotateX(75deg) scale(1.2);
+  }
+}

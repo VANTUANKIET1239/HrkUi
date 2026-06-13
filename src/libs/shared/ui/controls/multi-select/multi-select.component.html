@@ -1,0 +1,30 @@
+<div class="multi-select">
+  <div class="trigger" (click)="toggleDropdown()">
+    <span>
+      @if(selectedValues.length) {
+        <strong>{{ selectedValues.length }}</strong> selected
+      } @else {
+        <span style="color: #94a3b8">{{ placeholder }}</span>
+      }
+    </span>
+    <span class="arrow" [style.transform]="opened ? 'rotate(180deg)' : 'rotate(0)'">▼</span>
+  </div>
+
+  @if(opened){
+    <div class="dropdown">
+      @if(searchable) {
+        <input type="text" placeholder="Search..." [(ngModel)]="searchText" class="search" />
+      }
+
+      <div class="list-container" style="max-height: 200px; overflow-y: auto;">
+        @for(item of filteredItems; track item.value){
+          <div class="item" (click)="toggleItem(item.value)">
+            <!-- <input type="checkbox" [checked]="isSelected(item.value)" /> -->
+            <hrk-checkbox [(ngModel)]="item.selected"></hrk-checkbox>
+            <span>{{ item.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

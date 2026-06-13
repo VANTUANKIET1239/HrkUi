@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ambient-sparks .spark {
+  position: absolute;
+  width: 15px;
+  height: 2px;
+  background: #67e8f9;
+  opacity: 0;
+}
+
+.ambient-sparks .s1 {
+  left: 25%;
+  top: 30px;
+  transform: rotate(45deg);
+  animation: spark-crackle 4s infinite 2s steps(2);
+}
+
+.ambient-sparks .s2 {
+  right: 20%;
+  top: 50px;
+  transform: rotate(-30deg);
+  animation: spark-crackle 5.2s infinite 0.7s steps(2);
+}
+
+@keyframes spark-crackle {
+  0%, 95% {
+    opacity: 0;
+  }
+  96%, 98% {
+    opacity: 1;
+    width: 20px;
+  }
+  99%, 100% {
+    opacity: 0;
+  }
+}
+
+.orbiting-orbs .orb {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f97316;
+  box-shadow: 0 0 10px #f97316, 0 0 20px #ea580c;
+  bottom: 40px;
+  left: 50%;
+}
+
+.orbiting-orbs .o1 {
+  animation: orb-orbit-1 3.5s infinite linear;
+}
+
+.orbiting-orbs .o2 {
+  animation: orb-orbit-2 4s infinite linear 1.5s;
+}
+
+@keyframes orb-orbit-1 {
+  0% {
+    transform: rotate(0deg) translateX(45px) rotate(0deg) scale(0.8);
+    z-index: 0;
+    opacity: 0.4;
+  }
+  50% {
+    transform: rotate(180deg) translateX(45px) rotate(-180deg) scale(1.2);
+    z-index: 3;
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) translateX(45px) rotate(-360deg) scale(0.8);
+    z-index: 0;
+    opacity: 0.4;
+  }
+}
+
+@keyframes orb-orbit-2 {
+  0% {
+    transform: rotate(0deg) translateY(25px) rotate(0deg) scale(1.2);
+    z-index: 3;
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg) translateY(25px) rotate(-180deg) scale(0.8);
+    z-index: 0;
+    opacity: 0.4;
+  }
+  100% {
+    transform: rotate(360deg) translateY(25px) rotate(-360deg) scale(1.2);
+    z-index: 3;
+    opacity: 1;
+  }
+}

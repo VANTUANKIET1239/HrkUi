@@ -1,0 +1,43 @@
+<div class="modal-backdrop">
+  <div 
+    class="modal-container"
+    [ngClass]="{ 'is-victory': isVictory, 'is-defeat': !isVictory }">
+    
+    <!-- Header Text -->
+    <div class="result-title">
+      {{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}
+    </div>
+    
+    <!-- Subheader with decorative line -->
+    <div class="divider-line"></div>
+
+    <!-- Combat Stats Summary -->
+    <div class="stats-panel">
+      <div class="stat-row">
+        <span class="stat-label">Số Lượt Chống Chọi:</span>
+        <span class="stat-value">{{ totalTurns }} Lượt</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Đội Hình Sống Sót:</span>
+        <span class="stat-value">{{ aliveCount }} / {{ totalCount }} Anh Hùng</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Tổng Sinh Lực Còn Lại:</span>
+        <span class="stat-value">{{ totalRemainingHp }} HP</span>
+      </div>
+    </div>
+
+    <!-- Decorative message -->
+    <div class="outcome-message">
+      {{ isVictory 
+        ? 'Tuyệt vời! Đội hình DCS Coder đã quét sạch bug và chinh phục deadline ngoạn mục!' 
+        : 'Rất tiếc! Sếp căng thẳng và lượng Bug vô tận đã áp đảo đội hình, hãy tối ưu hóa code và thử lại!' 
+      }}
+    </div>
+
+    <!-- Call to Action -->
+    <button class="action-btn" (click)="onReplay.emit()">
+      {{ isVictory ? 'ĐẤU LẠI (REPLAY)' : 'THỬ LẠI' }}
+    </button>
+  </div>
+</div>

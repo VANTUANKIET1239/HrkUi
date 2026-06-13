@@ -1,0 +1,213 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.bill {
+  position: absolute;
+  width: 32px;
+  height: 15px;
+  border-radius: 1.5px;
+  background: linear-gradient(135deg, #a5f3fc 0%, #0891b2 50%, #0e7490 100%);
+  border: 0.5px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform-style: preserve-3d;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    width: 4px;
+    height: 4px;
+    background: rgba(220, 38, 38, 0.7);
+    border-radius: 50%;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 10px;
+    width: 6px;
+    height: 6px;
+    background: rgba(254, 240, 138, 0.5);
+    border-radius: 50%;
+  }
+
+  .val {
+    font-size: 5px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.95);
+    position: absolute;
+    bottom: 0px;
+    left: 2px;
+    line-height: 1.1;
+    font-family: monospace;
+    letter-spacing: -0.2px;
+  }
+}
+
+.b1 {
+  left: 15%;
+  bottom: 35px;
+  animation: flutter-bill-1 4s infinite linear;
+}
+
+.b2 {
+  right: 15%;
+  bottom: 45px;
+  animation: flutter-bill-2 4.5s infinite linear 0.7s;
+}
+
+.b3 {
+  left: 40%;
+  top: 35px;
+  animation: flutter-bill-3 5s infinite linear 1.4s;
+}
+
+.b4 {
+  right: 35%;
+  top: 20px;
+  animation: flutter-bill-4 4.8s infinite linear 2.1s;
+}
+
+.b5 {
+  left: 10%;
+  top: 50px;
+  animation: flutter-bill-5 5.2s infinite linear 0.3s;
+}
+
+.b6 {
+  right: 10%;
+  bottom: 70px;
+  animation: flutter-bill-6 4.2s infinite linear 1.1s;
+}
+
+@keyframes flutter-bill-1 {
+  0% {
+    transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-80px) rotateX(360deg) rotateY(180deg) rotateZ(45deg) translateZ(20px);
+    opacity: 0;
+  }
+}
+
+@keyframes flutter-bill-2 {
+  0% {
+    transform: translateY(0) rotateX(45deg) rotateY(0deg) rotateZ(0deg) translateZ(0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-90px) rotateX(-180deg) rotateY(360deg) rotateZ(-60deg) translateZ(-10px);
+    opacity: 0;
+  }
+}
+
+@keyframes flutter-bill-3 {
+  0% {
+    transform: translateY(0) rotateX(0deg) rotateY(-45deg) rotateZ(-30deg) translateZ(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-70px) rotateX(180deg) rotateY(180deg) rotateZ(180deg) translateZ(15px);
+    opacity: 0;
+  }
+}
+
+@keyframes flutter-bill-4 {
+  0% {
+    transform: translateY(0) rotateX(90deg) rotateY(90deg) rotateZ(0deg) translateZ(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-85px) rotateX(270deg) rotateY(-90deg) rotateZ(90deg) translateZ(5px);
+    opacity: 0;
+  }
+}
+
+@keyframes flutter-bill-5 {
+  0% {
+    transform: translateY(0) rotateX(-30deg) rotateY(30deg) rotateZ(-10deg) translateZ(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-95px) rotateX(180deg) rotateY(180deg) rotateZ(120deg) translateZ(-5px);
+    opacity: 0;
+  }
+}
+
+@keyframes flutter-bill-6 {
+  0% {
+    transform: translateY(0) rotateX(10deg) rotateY(10deg) rotateZ(50deg) translateZ(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-75px) rotateX(-360deg) rotateY(360deg) rotateZ(-120deg) translateZ(10px);
+    opacity: 0;
+  }
+}

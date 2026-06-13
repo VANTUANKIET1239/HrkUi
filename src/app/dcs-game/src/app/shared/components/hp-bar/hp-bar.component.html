@@ -1,0 +1,17 @@
+<div class="hp-bar-container">
+  <!-- Secondary catch-up bar for damaged effect -->
+  <div 
+    class="hp-bar-catchup" 
+    [style.width.%]="catchUpPercentage">
+  </div>
+  <!-- Primary active health bar -->
+  <div 
+    class="hp-bar-active" 
+    [style.width.%]="percentage"
+    [ngClass]="getHpColorClass()">
+  </div>
+  <!-- HP text overlay -->
+  <div class="hp-text">
+    {{ hp }} / {{ maxHp }}
+  </div>
+</div>

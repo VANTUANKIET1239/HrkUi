@@ -9,6 +9,7 @@ import { HrkIconComponent } from "../../../../../../libs/shared/ui/controls/hrk-
 import { HrkCheckboxComponent } from "../../../../../../libs/shared/ui/controls/hrk-checkbox/hrk-checkbox.component";
 import { HrkButtonComponent } from "../../../../../../libs/shared/ui/controls/hrk-button/hrk-button.component";
 import { HrkImageComponent } from "../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.component";
+import { MultiSelectComponent } from "../../../../../../libs/shared/ui/controls/multi-select/multi-select.component";
 
 
 
@@ -26,7 +27,8 @@ import { HrkImageComponent } from "../../../../../../libs/shared/ui/controls/hrk
     HrkIconComponent,
     HrkCheckboxComponent,
     HrkButtonComponent,
-    HrkImageComponent
+    HrkImageComponent,
+    MultiSelectComponent
 ]
 })
 export class AuthModule { }

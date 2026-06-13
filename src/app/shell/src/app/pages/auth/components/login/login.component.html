@@ -4,12 +4,18 @@
     <hrk-image imageName="login-poster.png" [isBordered]="true"></hrk-image>
   </div>
   <div class="card">
+    <hrk-multi-select
+    [(ngModel)]="selectedRoles"
+    [items]="roles"
+    placeholder="Select roles">
+  </hrk-multi-select>
     <div class="brand">
       <h1 id="loginTitle">HRM Portal</h1>
       <p class="muted">Sign in to manage people, payroll & attendance</p>
     </div>
 
     <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
+
       <div class="field">
         <label for="email">Email</label>
         <hrk-input type="email" autocomplete="username" formControlName="email" [invalid]="hasErr('email')"

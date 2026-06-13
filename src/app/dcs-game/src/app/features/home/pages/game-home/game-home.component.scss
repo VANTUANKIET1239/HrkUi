@@ -1,0 +1,695 @@
+// Game Lobby Stylesheet
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Spectral:wght@500;700&display=swap');
+
+$gold-primary: #ffd700;
+$gold-dark: #b8860b;
+$gold-light: #fffacd;
+$border-color: rgba(255, 215, 0, 0.45);
+$bg-glass: rgba(20, 15, 10, 0.65);
+$glow-orange: 0 0 15px rgba(255, 140, 0, 0.8);
+$glow-gold: 0 0 15px rgba(255, 215, 0, 0.8);
+$text-shadow-glow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.5);
+
+.lobby-container {
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 562px;
+  overflow: hidden;
+
+  background-size: cover;
+  color: #fff;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: radial-gradient(circle, rgba(16, 24, 48, 0.3) 0%, rgba(5, 8, 16, 0.9) 100%), url(/assets/images/dcs-game/lobby_bg.png) no-repeat center center;
+  background-size: cover;
+}
+
+// Global Notification Pulsing Red Badge
+.notification-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #ff3838;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff3838;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(255, 56, 56, 0.7);
+  }
+
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(255, 56, 56, 0);
+  }
+
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(255, 56, 56, 0);
+  }
+}
+
+// -------------------------------------------------------------
+// A. Top-Left Player Profile
+// -------------------------------------------------------------
+.top-bar {
+  padding: 15px 25px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+  z-index: 10;
+}
+
+.player-profile {
+  background: $bg-glass;
+  border: 1px solid $border-color;
+  border-radius: 40px 15px 15px 40px;
+  padding: 8px 18px 8px 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.1);
+  backdrop-filter: blur(8px);
+  min-width: 250px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: $gold-primary;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2), inset 0 0 15px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.avatar-container {
+  width: 70px;
+  height: 70px;
+}
+
+.avatar-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3.5px solid #ffd700;
+  box-shadow: $glow-gold, inset 0 0 10px rgba(0, 0, 0, 0.8);
+  background: radial-gradient(circle, #4a3c2c 0%, #1e150b 100%);
+  position: relative;
+  overflow: visible;
+
+  .avatar-img-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .level-badge {
+    position: absolute;
+    bottom: -5px;
+    left: -5px;
+    background: #ff4500;
+    border: 1.5px solid #ffd700;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.vip-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+  border: 1.5px solid #fff;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.player-details {
+  .player-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f2f6;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    max-width: 140px;
+  }
+
+  .player-power {
+    margin-top: 2px;
+    font-family: 'Spectral', serif;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 1px 8px;
+    border: 1px solid rgba(255, 215, 0, 0.25);
+
+    .label {
+      color: #ffd700;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    .value {
+      color: #ff8c00;
+      font-size: 14px;
+      font-weight: 800;
+      text-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    }
+  }
+
+  .btn-nap {
+    background: linear-gradient(180deg, #ff4500 0%, #8b0000 100%);
+    border: 1px solid #ff4500;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 1px 12px;
+    border-radius: 4px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(180deg, #ff6347 0%, #b22222 100%);
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
+      transform: scale(1.05);
+    }
+  }
+
+  .btn-achievement {
+    background: rgba(30, 20, 10, 0.7);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #ddd;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(50, 35, 20, 0.9);
+      border-color: #ffd700;
+      color: #fff;
+    }
+
+    .ach-text {
+      font-size: 9px;
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// B. Top-Right Currency & Resources
+// -------------------------------------------------------------
+.currency-group {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  backdrop-filter: blur(6px);
+}
+
+.currency-item {
+  background: rgba(30, 20, 15, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  border-radius: 15px;
+  padding: 2px 8px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
+
+  .icon-bg {
+    width: 22px;
+    height: 22px;
+    background: radial-gradient(circle, #5a3c1c 0%, #2e1e0a 100%);
+    border-radius: 50%;
+    margin-right: 6px;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+  }
+
+  .currency-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: #f5f6fa;
+    margin-right: 8px;
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .btn-add {
+    background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%);
+    border: 1px solid #2ecc71;
+    color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
+      transform: scale(1.15);
+      box-shadow: 0 0 6px rgba(46, 204, 113, 0.8);
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// C. Events & Benefits (Under Currency Group)
+// -------------------------------------------------------------
+.event-bar-container {
+  padding-right: 25px;
+  margin-top: 10px;
+  z-index: 10;
+}
+
+.event-bar {
+  background: rgba(10, 8, 5, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 12px;
+  padding: 8px 12px;
+  backdrop-filter: blur(5px);
+}
+
+.event-btn {
+  margin: 0 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px) scale(1.05);
+
+    .event-icon-circle {
+      border-color: $gold-primary;
+      box-shadow: $glow-gold;
+    }
+
+    .event-name {
+      color: $gold-primary;
+      text-shadow: 0 1px 4px rgba(255, 215, 0, 0.4);
+    }
+  }
+
+  .event-icon-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    background: radial-gradient(circle, #523f2f 0%, #1c150e 100%);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+    font-size: 16px;
+    transition: all 0.2s ease;
+
+    &.more-btn {
+      border-color: #27ae60;
+      background: radial-gradient(circle, #1e8449 0%, #114d2a 100%);
+    }
+  }
+
+  .event-name {
+    margin-top: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #ddd;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    text-align: center;
+  }
+}
+
+// -------------------------------------------------------------
+// D. Center Showcase Team
+// -------------------------------------------------------------
+.showcase-team {
+  flex-grow: 1;
+  width: 90%;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  z-index: 5;
+}
+
+.hero-showcase {
+  margin: 0 20px;
+  width: 140px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    .hero-character-body {
+      border-color: $gold-primary;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
+      transform: scale(1.05);
+    }
+
+    .hero-header-tag {
+      background: rgba(255, 215, 0, 0.9);
+      border-color: #ffd700;
+
+      .hero-name {
+        color: #000;
+        text-shadow: none;
+      }
+
+      .hero-level {
+        background: #000;
+        color: #ffd700;
+      }
+    }
+
+    .hero-shadow {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+  }
+}
+
+.hero-header-tag {
+  background: rgba(30, 20, 15, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 4px;
+  padding: 2px 8px;
+  width: 100%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+
+  .hero-level {
+    font-size: 9px;
+    font-weight: 800;
+    background: #ffd700;
+    color: #333;
+    padding: 0px 4px;
+    border-radius: 2px;
+  }
+
+  .hero-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    flex-grow: 1;
+    text-align: center;
+  }
+}
+
+.hero-character-body {
+  width: 110px;
+  height: 200px;
+  border-radius: 15px;
+  border: 2px solid rgba(255, 215, 0, 0.25);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(255, 215, 0, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(2px);
+
+  .hero-silhouette {
+    width: 100%;
+    height: 100%;
+    font-size: 50px;
+    color: rgba(255, 255, 255, 0.75);
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  }
+
+  .hero-role-tag {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffd700;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    padding: 4px 0;
+    border-top: 1px solid rgba(255, 215, 0, 0.15);
+  }
+}
+
+.hero-shadow {
+  width: 90px;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+  margin-top: 8px;
+  filter: blur(2px);
+  transition: all 0.3s ease;
+}
+
+// Float keyframes to simulate gentle character hover idle state
+@keyframes floatUpAndDown {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.hero-float-0 {
+  animation: floatUpAndDown 4s ease-in-out infinite;
+}
+
+.hero-float-1 {
+  animation: floatUpAndDown 5s ease-in-out infinite 0.5s;
+}
+
+.hero-float-2 {
+  animation: floatUpAndDown 4.5s ease-in-out infinite 1s;
+}
+
+// -------------------------------------------------------------
+// Side Badges (Chat, 18+)
+// -------------------------------------------------------------
+.side-badges {
+  left: 20px;
+  bottom: 120px;
+  z-index: 10;
+
+  .age-badge {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #7f0909 0%, #b31010 100%);
+    border: 2px solid #ff4d4d;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .btn-chat {
+    width: 44px;
+    height: 44px;
+    background: radial-gradient(circle, #523f2f 0%, #1e150b 100%);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $gold-primary;
+      box-shadow: $glow-gold;
+      transform: scale(1.1);
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// E. Bottom Navigation Menu
+// -------------------------------------------------------------
+.bottom-navigation-container {
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0) 100%);
+  border-top: 1px solid rgba(255, 215, 0, 0.15);
+  z-index: 10;
+}
+
+.bottom-navigation {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.nav-group-left {
+  max-width: 58%;
+}
+
+.nav-item {
+  margin: 4px 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.08);
+
+    .nav-icon-box {
+      border-color: $gold-primary;
+      background: radial-gradient(circle, #4d3a24 0%, #20170a 100%);
+      color: $gold-primary;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    .nav-name {
+      color: $gold-primary;
+    }
+  }
+
+  .nav-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255, 215, 0, 0.35);
+    background: radial-gradient(circle, #302419 0%, #120b05 100%);
+    color: #dfbf8f;
+    font-size: 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+    transition: all 0.2s ease;
+  }
+
+  .nav-name {
+    margin-top: 4px;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #ccc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    text-align: center;
+  }
+}
+
+// -------------------------------------------------------------
+// Bottom Right Focus Combat Group
+// -------------------------------------------------------------
+.arena-btn {
+  background: linear-gradient(to bottom, #d35400, #a04000);
+  border: 1.5px solid #e67e22;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 8px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(to bottom, #e67e22, #d35400);
+    box-shadow: 0 0 8px rgba(230, 126, 34, 0.7);
+    transform: scale(1.05);
+  }
+}
+
+.focus-btn-container {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+}
+
+.btn-chinh-tuyen {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e67e22 0%, #c0392b 40%, #78281f 100%);
+  border: 3.5px solid #ffd700;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.4);
+  color: #fff;
+  transition: all 0.3s ease;
+  z-index: 2;
+  position: relative;
+
+  .chinh-tuyen-label {
+    font-family: 'Spectral', serif;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px #ffd700;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  &:hover {
+    transform: scale(1.08);
+    border-color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.6);
+  }
+}
+
+// Ripple effect animation for the main quest button
+.focus-btn-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 15px #ffd700;
+  opacity: 0;
+  animation: focus-ripple 2s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+
+  &.pulse-delay {
+    animation-delay: 1s;
+  }
+}
+
+@keyframes focus-ripple {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+// Pointing hand helper animation
+.pointer-hand {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  transform: rotate(-35deg);
+  z-index: 5;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.6));
+  animation: point-down 1.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes point-down {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-35deg);
+  }
+
+  50% {
+    transform: translate(-6px, -6px) rotate(-35deg);
+  }
+}

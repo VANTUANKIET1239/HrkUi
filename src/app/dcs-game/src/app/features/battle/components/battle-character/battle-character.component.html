@@ -1,0 +1,147 @@
+<div class="character-sprite-wrapper" [ngClass]="{
+    'team-left': character.team === 'left',
+    'team-right': character.team === 'right',
+    'is-charging': isCharging,
+    'is-hit': isHit,
+    'is-dead': character.hp <= 0
+  }" [attr.activeSkillId]="activeSkillId">
+
+  <!-- PASSIVE EFFECTS (Ambient) -->
+  <app-passive-effect 
+    *ngIf="character.hp > 0"
+    [level]="character.level || 1" 
+    [hasMoneyEffect]="hasMoneyEffect()"
+    [hasRedLightning]="hasRedLightningEffect()">
+  </app-passive-effect>
+
+  <!-- ACTIVE SKILL EFFECTS (Casting / Attacking state) -->
+  <app-skill 
+    [isCharging]="isCharging"
+    [skillCategory]="getSkillCategory()"
+    [skillColor]="skillColor"
+    [activeSkillId]="activeSkillId"
+    [character]="character">
+  </app-skill>
+
+  <!-- HIT / IMPACT EFFECTS (When receiving damage) -->
+  <ng-container *ngIf="isHit">
+    <div class="impact-flash"></div>
+    <div class="impact-sparks">
+      <span class="spk sp1"></span>
+      <span class="spk sp2"></span>
+      <span class="spk sp3"></span>
+      <span class="spk sp4"></span>
+    </div>
+    <div class="slash-burst"></div>
+
+    <!-- Critical Explosion visual -->
+    <div class="crit-explosion" *ngIf="damageEvent?.isCrit">
+      <div class="crit-shockwave"></div>
+      <div class="crit-flash"></div>
+    </div>
+
+    <!-- Heavenly Judgment Hit Visuals -->
+    <div class="heavenly-judgment-hit-fx" *ngIf="activeSkillId === 'HEAVENLY_JUDGMENT'">
+      <div class="heavenly-rune-circle"></div>
+      <div class="heavenly-thunder-pillars">
+        <div class="pillar p1"></div>
+        <div class="pillar p2"></div>
+        <div class="pillar p3"></div>
+      </div>
+      <div class="heavenly-cracks"></div>
+      <div class="heavenly-debris">
+        <span class="debris-stone ds1"></span>
+        <span class="debris-stone ds2"></span>
+        <span class="debris-stone ds3"></span>
+      </div>
+      <div class="chain-lightning-overlay"></div>
+      <div class="burning-electric-particles">
+        <span class="sparkle spk1"></span>
+        <span class="sparkle spk2"></span>
+        <span class="sparkle spk3"></span>
+        <span class="sparkle spk4"></span>
+      </div>
+    </div>
+
+    <!-- Random Knowledge Drop Hit Visuals -->
+    <div class="knowledge-drop-hit-fx" *ngIf="activeSkillId === 'RANDOM_KNOWLEDGE_DROP'">
+      <!-- Targeting Reticle -->
+      <div class="targeting-reticle">
+        <div class="reticle-ring r-outer"></div>
+        <div class="reticle-ring r-inner"></div>
+        <div class="reticle-crosshair"></div>
+        <div class="reticle-lock">LOCK-ON</div>
+      </div>
+
+      <!-- Cyber Magic Circle Portal -->
+      <div class="matrix-portal"></div>
+
+      <!-- Giant Textbook falling -->
+      <div class="falling-book-wrapper">
+        <img src="/assets/images/dcs-game/sach.png" class="falling-book" alt="Book of Knowledge" />
+      </div>
+
+      <!-- Impact Shards & Pages Shattering -->
+      <div class="shatter-fx">
+        <!-- Flying pages -->
+        <span class="fly-page fg1"></span>
+        <span class="fly-page fg2"></span>
+        <span class="fly-page fg3"></span>
+        <span class="fly-page fg4"></span>
+        <span class="fly-page fg5"></span>
+        <span class="fly-page fg6"></span>
+        
+        <!-- Glowing paper scraps -->
+        <span class="scrap sc1"></span>
+        <span class="scrap sc2"></span>
+        <span class="scrap sc3"></span>
+        <span class="scrap sc4"></span>
+        <span class="scrap sc5"></span>
+        <span class="scrap sc6"></span>
+        
+        <!-- Blue cyber matrix fragments -->
+        <span class="matrix-shard ms1"></span>
+        <span class="matrix-shard ms2"></span>
+        <span class="matrix-shard ms3"></span>
+        <span class="matrix-shard ms4"></span>
+        <span class="matrix-shard ms5"></span>
+        <span class="matrix-shard ms6"></span>
+      </div>
+
+      <!-- Blue shockwave ring -->
+      <div class="blue-impact-wave"></div>
+    </div>
+  </ng-container>
+
+  <!-- Ellipse shadow under feet -->
+  <div class="shadow-ellipse"></div>
+
+  <!-- Sprite area -->
+  <div class="sprite-area">
+    <img [src]="character.avatar" [alt]="character.name" class="character-sprite" />
+
+    <!-- Status effects/Buff badges overlaying above the head -->
+    <div class="status-badge-overlay" *ngIf="character.statusEffects?.length">
+      <span *ngFor="let effect of character.statusEffects" class="status-badge" [ngClass]="{
+          'effect-dead': effect === 'Dead', 
+          'effect-buff': effect !== 'Dead'
+        }">
+        {{ effect }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Info Overlay (Name & Health / Mana) -->
+  <div class="info-block">
+    <div class="name-tag">{{ character.name }}</div>
+    <div class="bars-container">
+      <app-hp-bar [hp]="character.hp" [maxHp]="character.maxHp"></app-hp-bar>
+      <app-mana-bar [mana]="character.mana" [maxMana]="character.maxMana"></app-mana-bar>
+    </div>
+  </div>
+
+  <!-- Floating Damage Text Layer -->
+  <div *ngIf="damageEvent" class="damage-text-layer" [ngClass]="{ 'is-crit': damageEvent.isCrit }">
+    {{ damageEvent.text }}
+  </div>
+</div>

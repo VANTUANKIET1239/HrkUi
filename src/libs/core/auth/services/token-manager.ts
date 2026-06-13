@@ -5,25 +5,32 @@ import { HrkApiService } from '../../http/hrk-api/hrk-api.service';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
+import { ApiEndpoints } from '../../../../app/shell/src/app/core/api-enpoints/api-endpoints';
+import { ApiMethod } from '../../../shared/common/constants/ApiMethod.constants';
+import { BaseResponse, CacheEntry, RefreshTokenResponse } from '../../../shared/models/auth.models';
 
 
-type CacheEntry = { token: string; exp: number };
+// type CacheEntry = { token: string; exp: number };
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenManagerService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private hrkApiService: HrkApiService) {}
 
-
+  public readonly authApi = ApiEndpoints.Auth;
   private cache = new Map<string, CacheEntry>();            // audience -> token
   private inflight = new Map<string, Promise<string>>();    // audience -> ongoing refresh
   private SKEW_SEC = 60;
 
   private parseExp(jwt: string) {
-    const payload = JSON.parse(atob(jwt.split(".")[1]));
-    return payload.exp as number; // seconds since epoch
+      try{
+        const payload = JSON.parse(atob(jwt.split(".")[1]));
+        return payload.exp as number;
+      } catch {
+        return 0;
+      }
   }
   private isExpiringSoon(jwt?: string) {
     if (!jwt) return true;
@@ -31,22 +38,29 @@ export class TokenManagerService {
     return this.parseExp(jwt) - now <= this.SKEW_SEC;
   }
 
- private  async requestNewAT(audience: string): Promise<string> {
-      const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      // Optional: add CSRF protection if you use double-submit cookies
-      // 'X-CSRF-Token': this.readCookie('csrf') ?? ''
-    });
+ private async requestNewAT(audience: string): Promise<string> {
+    //   const headers = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    //   // Optional: add CSRF protection if you use double-submit cookies
+    //   // 'X-CSRF-Token': this.readCookie('csrf') ?? ''
+    // });
+
 
     const res = await firstValueFrom(
-      this.http.post<{ accessToken: string; expiresIn?: number }>(
-        '/auth/refresh',
-        { audience },
-        { withCredentials: true, headers }
-      )
+      // this.http.post<{ accessToken: string; expiresIn?: number }>(
+      //   'gateway/auth/refresh',
+      //   { audience },
+      //   { withCredentials: true, headers }
+      // )
+
+        this.hrkApiService.CallApi<BaseResponse<RefreshTokenResponse>>(ApiMethod.POST,this.authApi.Refresh,
+              { audience: audience},
+              {
+                withCredentials: true
+              })
     );
 
-    const accessToken = res.accessToken;
+    const accessToken = res.data.accessToken;
     this.cache.set(audience, { token: accessToken, exp: this.parseExp(accessToken) });
     return accessToken;
   }
@@ -73,5 +87,10 @@ export class TokenManagerService {
     this.cache.delete(audience);
     return this.refreshOnce(audience);
   }
+
+
+    forceDeleteAllCache(){
+      this.cache.clear();
+    }
 
 }

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, HostBinding, HostListener, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'hrk-checkbox',
   standalone: true,
-  imports: [CommonModule], // Add CommonModule here
+  imports: [CommonModule, FormsModule], // Add CommonModule here
   templateUrl: './hrk-checkbox.component.html',
   styleUrls: ['./hrk-checkbox.component.scss'],
   providers: [
@@ -20,7 +20,7 @@ export class HrkCheckboxComponent implements OnInit, ControlValueAccessor {
 
 
   @Input() backgroundColor: string = '';
-
+  @Input() checked: boolean = false;
 
  // Internal state of the checkbox
   value: boolean = false;

@@ -18,6 +18,15 @@ public dataForm!: FormGroup;
 
 public readonly authApi = ApiEndpoints.Auth;
 
+
+selectedRoles: number[] = [];
+
+roles = [
+  { label: 'Admin', value: 1 },
+  { label: 'User', value: 2 },
+  { label: 'Manager', value: 3 }
+];
+
 constructor(private fb: FormBuilder, private HrkApiService: HrkApiService, private navigationService: NavigationService) {
     this.initLoginForm();
 }

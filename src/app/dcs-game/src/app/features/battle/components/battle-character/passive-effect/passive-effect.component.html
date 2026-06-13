@@ -1,0 +1,19 @@
+<div class="passive-wrapper level-{{ level || 1 }}">
+  <!-- Level 1 Base Passive (Runes and base floating dust particles) -->
+  <app-pe-level-1 *ngIf="(level || 1) >= 1"></app-pe-level-1>
+  
+  <!-- Level 2 Extra Passive (Spark arcs and orbiting spheres) -->
+  <app-pe-level-2 *ngIf="(level || 1) >= 2"></app-pe-level-2>
+
+  <!-- Level 3 Premium Passive (Spinning runic shield ring and vertical energy beams) -->
+  <app-pe-level-3 *ngIf="(level || 1) >= 3"></app-pe-level-3>
+
+  <!-- Level 4 Masterpiece Passive (Divine golden halo/crown, rising flame-like mist, gold sparkles) -->
+  <app-pe-level-4 *ngIf="(level || 1) >= 4"></app-pe-level-4>
+
+  <!-- Flying Money (VND 500k Bills) Effect -->
+  <app-pe-flying-money *ngIf="hasMoneyEffect"></app-pe-flying-money>
+
+  <!-- Red Lightning Effect -->
+  <app-pe-red-lightning *ngIf="hasRedLightning"></app-pe-red-lightning>
+</div>
