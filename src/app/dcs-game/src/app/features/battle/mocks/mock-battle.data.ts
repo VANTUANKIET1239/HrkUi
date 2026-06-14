@@ -17,9 +17,10 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 120,
     position: 1,
     team: 'left',
-    statusEffects: ['Sixpack Glow'],
+    statusEffects: ['Sixpack Glow', 'Red Lightning'],
     skills: ['HEAVENLY_JUDGMENT'],
-    level: 4
+    level: 4,
+    defaultFacing: 'right'
   },
   {
     id: 2,
@@ -36,7 +37,8 @@ export const INITIAL_HEROES: Hero[] = [
     team: 'left',
     statusEffects: ['Overtime'],
     skills: ['NORMAL_ATTACK', 'HEAVY_SLASH', 'VAX_A_MILLION_SANITZATION'],
-    level: 3
+    level: 3,
+    defaultFacing: 'left'
   },
   {
     id: 3,
@@ -53,7 +55,8 @@ export const INITIAL_HEROES: Hero[] = [
     team: 'left',
     statusEffects: ['Shield', 'Red Lightning'],
     skills: ['NORMAL_ATTACK', 'SLASH', 'SWORD_DANCE', 'RICARDO_MILOS'],
-    level: 2
+    level: 2,
+    defaultFacing: 'left'
   },
   {
     id: 4,
@@ -70,12 +73,13 @@ export const INITIAL_HEROES: Hero[] = [
     team: 'left',
     statusEffects: ['Clean Code'],
     skills: ['NORMAL_ATTACK', 'RANDOM_KNOWLEDGE_DROP', 'REFACTOR_CODE', 'DEPLOY_PROD'],
-    level: 2
+    level: 2,
+    defaultFacing: 'right'
   },
   {
     id: 5,
     name: 'Tester Đẹp',
-    avatar: 'https://api.dicebear.com/7.x/adventurer/svg?seed=tester-dep',
+    avatar: '/assets/images/dcs-game/nghiaphuc-bongtoi.png',
     hp: 950,
     maxHp: 950,
     mana: 40,
@@ -85,33 +89,35 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 110,
     position: 5,
     team: 'left',
-    statusEffects: ['Bug Radar'],
-    skills: ['NORMAL_ATTACK', 'AUTOMATION_TEST'],
-    level: 1
+    statusEffects: ['Bug Radar', 'Veil of the Obsidian Nebulae'],
+    skills: ['NORMAL_ATTACK', 'AUTOMATION_TEST', 'DARK_KNOWLEDGE_SHIELD_CONVERSION'],
+    level: 1,
+    defaultFacing: 'left'
   },
 
   // Right Team (Enemies)
   {
     id: 6,
-    name: 'Sếp Căng Thẳng',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=sep-cang-thang',
-    hp: 700,
-    maxHp: 700,
-    mana: 10,
+    name: 'Tướng Long Quân Đội',
+    avatar: '/assets/images/dcs-game/tuonglong-quandoi.png',
+    hp: 900,
+    maxHp: 900,
+    mana: 50,
     maxMana: 100,
-    attack: 180,
-    defense: 90,
+    attack: 160,
+    defense: 85,
     speed: 125,
     position: 1,
     team: 'right',
-    statusEffects: ['Angry Aura'],
-    skills: ['NORMAL_ATTACK', 'FIREBALL'],
-    level: 4
+    statusEffects: ['Scorched Earth Command'],
+    skills: ['NORMAL_ATTACK', 'TACTICAL_AIR_STRIKE'],
+    level: 4,
+    defaultFacing: 'left'
   },
   {
     id: 7,
     name: 'PM Hối Hả',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=pm-hoi-ha',
+    avatar: '/assets/images/dcs-game/quangvinh-barber.png',
     hp: 800,
     maxHp: 800,
     mana: 30,
@@ -121,14 +127,15 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 112,
     position: 2,
     team: 'right',
-    statusEffects: ['ASAP'],
-    skills: ['NORMAL_ATTACK', 'LIGHTNING_STRIKE'],
-    level: 3
+    statusEffects: ['ASAP', 'Spectral Grooming Swarm'],
+    skills: ['NORMAL_ATTACK', 'DOI_NGOI_DAU_DOC'],
+    level: 3,
+    defaultFacing: 'right'
   },
   {
     id: 8,
     name: 'QA Kỹ Tính',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=qa-ky-tinh',
+    avatar: '/assets/images/dcs-game/vantrong-cobac.png',
     hp: 850,
     maxHp: 850,
     mana: 40,
@@ -138,9 +145,10 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 95,
     position: 3,
     team: 'right',
-    statusEffects: ['Edge Case'],
-    skills: ['NORMAL_ATTACK', 'CRITICAL_BUG'],
-    level: 2
+    statusEffects: ['Edge Case', 'Vortex of Vicious Debt'],
+    skills: ['NORMAL_ATTACK', 'FATAL_ALL_IN_DIRECTIVE'],
+    level: 2,
+    defaultFacing: 'left'
   },
   {
     id: 9,
@@ -157,7 +165,8 @@ export const INITIAL_HEROES: Hero[] = [
     team: 'right',
     statusEffects: ['Feedback Loop'],
     skills: ['NORMAL_ATTACK', 'CHANGE_REQUIREMENT', 'COMPLAIN'],
-    level: 2
+    level: 2,
+    defaultFacing: 'right'
   },
   {
     id: 10,
@@ -174,7 +183,8 @@ export const INITIAL_HEROES: Hero[] = [
     team: 'right',
     statusEffects: ['Immortal Bug'],
     skills: ['NORMAL_ATTACK', 'NULL_POINTER', 'STACK_OVERFLOW'],
-    level: 1
+    level: 1,
+    defaultFacing: 'right'
   }
 ];
 
@@ -183,34 +193,37 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     turn: 1,
 
 
-    actorId: 3,
-    targetId: 7,
-    skillId: 'RICARDO_MILOS',
-    damage: 500,
-    isCrit: true
+
+    actorId: 6,
+    targetId: 2,
+    skillId: 'TACTICAL_AIR_STRIKE',
+    damage: 260,
+    isCrit: false
+
 
   },
   {
     turn: 2,
-    actorId: 4,
-    targetId: 8,
-    skillId: 'RANDOM_KNOWLEDGE_DROP',
-    damage: 450,
+    actorId: 8,
+    targetId: 3,
+    skillId: 'FATAL_ALL_IN_DIRECTIVE',
+    damage: 500,
     isCrit: false
   },
   {
     turn: 3,
-    actorId: 1,
-    targetId: 6,
-    skillId: 'HEAVENLY_JUDGMENT',
-    damage: 300,
+    actorId: 5,
+    targetId: 7,
+    skillId: 'DARK_KNOWLEDGE_SHIELD_CONVERSION',
+    damage: 250,
     isCrit: false
+
   },
   {
     turn: 4,
     actorId: 7,
     targetId: 2,
-    skillId: 'LIGHTNING_STRIKE',
+    skillId: 'DOI_NGOI_DAU_DOC',
     damage: 220,
     isCrit: false
   },
@@ -224,17 +237,17 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
   },
   {
     turn: 6,
-    actorId: 8,
-    targetId: 3,
-    skillId: 'CRITICAL_BUG',
-    damage: 250,
-    isCrit: false
+    actorId: 3,
+    targetId: 7,
+    skillId: 'RICARDO_MILOS',
+    damage: 500,
+    isCrit: true
   },
   {
     turn: 7,
-    actorId: 2,
-    targetId: 7,
-    skillId: 'VAX_A_MILLION_SANITZATION',
+    actorId: 1,
+    targetId: 6,
+    skillId: 'HEAVENLY_JUDGMENT',
     damage: 300,
     isCrit: false
   },
@@ -248,11 +261,11 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
   },
   {
     turn: 9,
-    actorId: 6,
-    targetId: 1,
-    skillId: 'FIREBALL',
-    damage: 260,
-    isCrit: true
+    actorId: 4,
+    targetId: 8,
+    skillId: 'RANDOM_KNOWLEDGE_DROP',
+    damage: 450,
+    isCrit: false
   },
   {
     turn: 10,
@@ -296,10 +309,10 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
   },
   {
     turn: 15,
-    actorId: 10,
+    actorId: 8,
     targetId: 1,
-    skillId: 'STACK_OVERFLOW',
-    damage: 150,
+    skillId: 'FATAL_ALL_IN_DIRECTIVE',
+    damage: 100,
     isCrit: false
   },
   {
@@ -535,6 +548,60 @@ export const SKILL_LIST: Record<string, Skill> = {
     type: 'ultimate',
     description: 'Coder Bảnh triệu hồi cuốn sách giáo khoa khổng lồ từ trên trời giáng xuống đầu một kẻ địch ngẫu nhiên.',
     damageMultiplier: 2.6,
-    targetType: 'random'
+    targetType: 'random',
+    phase2Duration: 1500
+  },
+  DARK_KNOWLEDGE_SHIELD_CONVERSION: {
+    id: 'DARK_KNOWLEDGE_SHIELD_CONVERSION',
+    name: 'Giáp Hư Không',
+    cost: 65,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#a855f7',
+    type: 'magical',
+    description: 'Nghĩa Phúc triệu hồi sách ma thuật hắc ám khổng lồ đè bẹp toàn bộ kẻ địch, hấp thụ 100% sát thương gây ra để tạo thành Giáp Bóng Tối bảo vệ bản thân.',
+    damageMultiplier: 1.4,
+    targetType: 'all'
+  },
+  TACTICAL_AIR_STRIKE: {
+    id: 'TACTICAL_AIR_STRIKE',
+    name: 'Oanh Tạc Hàng Sau',
+    cost: 50,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#fbbf24',
+    type: 'ultimate',
+    description: 'Tướng Long kích hoạt radar cổ tay kêu gọi 3 tên lửa hành trình oanh tạc toàn bộ hàng sau kẻ địch, gây sát thương trung bình và Đánh Dấu mục tiêu.',
+    damageMultiplier: 2.0,
+    targetType: 'back_row',
+    phase2Duration: 1500
+  },
+  DOI_NGOI_DAU_DOC: {
+    id: 'DOI_NGOI_DAU_DOC',
+    name: 'Đổi Ngôi Đầu Độc',
+    cost: 35,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#d97706',
+    type: 'magical',
+    description: 'Vinh Barber hoán đổi vị trí của 2 kẻ địch (1 hàng trước, 1 hàng sau) và giảm 15% tốc độ của chúng.',
+    damageMultiplier: 1.0,
+    targetType: 'front_and_back',
+    phase2Duration: 1400
+  },
+  FATAL_ALL_IN_DIRECTIVE: {
+    id: 'FATAL_ALL_IN_DIRECTIVE',
+    name: 'Lệnh All-In Hủy Diệt',
+    cost: 50,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#ff0033',
+    type: 'ultimate',
+    description: 'Văn Trọng cược 50% HP hiện tại tấn công 4 địch ngẫu nhiên. Hạ gục địch kích hoạt Jackpot hồi 100% HP và tăng 50% Công. Thất bại bị Phá Sản giảm 50% Thủ và câm lặng trong 2 lượt.',
+    damageMultiplier: 2.8,
+    targetType: 'random_4',
+    phase1Duration: 1500,
+    phase2Duration: 2200,
+    phase3Duration: 1200
   }
 };

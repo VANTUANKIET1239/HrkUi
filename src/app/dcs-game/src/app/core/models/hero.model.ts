@@ -14,4 +14,5 @@ export interface Hero {
   statusEffects?: string[];
   skills?: string[];
   level?: number; // 1 to 4 passive tier level
+  defaultFacing?: 'left' | 'right';
 }

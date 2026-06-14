@@ -9,6 +9,10 @@ import { SkillHeavenlyComponent } from './skill-heavenly/skill-heavenly.componen
 import { SkillVaxAMillionSanitizationComponent } from './skill-vax-a-million-sanitization/skill-vax-a-million-sanitization.component';
 import { SkillRicardoMilosComponent } from './skill-ricardo-milos/skill-ricardo-milos.component';
 import { SkillRandomKnowledgeDropComponent } from './skill-random-knowledge-drop/skill-random-knowledge-drop.component';
+import { SkillDarkKnowledgeComponent } from './skill-dark-knowledge/skill-dark-knowledge.component';
+import { SkillTacticalAirStrikeComponent } from './skill-tactical-air-strike/skill-tactical-air-strike.component';
+import { SkillPositionSnippingComponent } from './skill-position-snipping/skill-position-snipping.component';
+import { SkillAllInComponent } from './skill-all-in/skill-all-in.component';
 
 @Component({
   selector: 'app-skill',
@@ -22,7 +26,11 @@ import { SkillRandomKnowledgeDropComponent } from './skill-random-knowledge-drop
     SkillHeavenlyComponent,
     SkillVaxAMillionSanitizationComponent,
     SkillRicardoMilosComponent,
-    SkillRandomKnowledgeDropComponent
+    SkillRandomKnowledgeDropComponent,
+    SkillDarkKnowledgeComponent,
+    SkillTacticalAirStrikeComponent,
+    SkillPositionSnippingComponent,
+    SkillAllInComponent
   ],
   templateUrl: './skill.component.html',
   styleUrl: './skill.component.scss'

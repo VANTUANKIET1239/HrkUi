@@ -13,7 +13,7 @@
 
   <!-- Ultimate: Berserker Overload Visuals -->
   <app-skill-ultimate 
-    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP'"
+    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP' && activeSkillId !== 'DARK_KNOWLEDGE_SHIELD_CONVERSION' && activeSkillId !== 'TACTICAL_AIR_STRIKE' && activeSkillId !== 'DOI_NGOI_DAU_DOC' && activeSkillId !== 'FATAL_ALL_IN_DIRECTIVE'"
     [characterAvatar]="character.avatar"
     [isTeamRight]="isTeamRight">
   </app-skill-ultimate>
@@ -37,4 +37,27 @@
   <app-skill-random-knowledge-drop
     *ngIf="activeSkillId === 'RANDOM_KNOWLEDGE_DROP'">
   </app-skill-random-knowledge-drop>
+
+  <!-- Skill: Dark Knowledge: Shield Conversion (Giáp Hư Không) -->
+  <app-skill-dark-knowledge
+    *ngIf="activeSkillId === 'DARK_KNOWLEDGE_SHIELD_CONVERSION'">
+  </app-skill-dark-knowledge>
+
+  <!-- Skill: Tactical Air Strike (Oanh Tạc Hàng Sau) -->
+  <app-skill-tactical-air-strike
+    *ngIf="activeSkillId === 'TACTICAL_AIR_STRIKE'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-tactical-air-strike>
+
+  <!-- Skill: Đổi Ngôi Đầu Độc (Position Snipping) -->
+  <app-skill-position-snipping
+    *ngIf="activeSkillId === 'DOI_NGOI_DAU_DOC'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-position-snipping>
+
+  <!-- Skill: Lệnh All-In Hủy Diệt (Fatal All-In Directive) -->
+  <app-skill-all-in
+    *ngIf="activeSkillId === 'FATAL_ALL_IN_DIRECTIVE'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-all-in>
 </ng-container>

@@ -116,12 +116,12 @@ export class BattleEngineService {
     }
   }
 
-  private getBattleSpeeds(speedMultiplier: number): { phase1Duration: number, phase2Duration: number, phase3Duration: number } {
-    // Step Timing: Total action takes 1200ms at 1x speed.
-    const phase1Duration = 800 / speedMultiplier; // Charge & Skill flash
-    const phase2Duration = 800 / speedMultiplier; // Hit, Damage Apply, HP decrease
-    const phase3Duration = 800 / speedMultiplier; // Return to position
-    return { phase1Duration, phase2Duration, phase3Duration };
+  private getBattleSpeeds(speedMultiplier: number, skillId: string | null): { phase1Duration: number, phase2Duration: number, phase3Duration: number } {
+    const skill = skillId ? SKILL_LIST[skillId] : null;
+    const p1 = (skill?.phase1Duration || 800) / speedMultiplier;
+    const p2 = (skill?.phase2Duration || 800) / speedMultiplier;
+    const p3 = (skill?.phase3Duration || 800) / speedMultiplier;
+    return { phase1Duration: p1, phase2Duration: p2, phase3Duration: p3 };
   }
 
   private playNextLog(): void {
@@ -144,8 +144,36 @@ export class BattleEngineService {
       return;
     }
 
+    // Decrement or clear Jackpot / Bankruptcy status effects at start of actor's turn
+    this.heroes.update(allHeroes => {
+      return allHeroes.map(h => {
+        if (h.id === actor.id) {
+          let statusEffects = h.statusEffects || [];
+          
+          if (statusEffects.includes('Jackpot')) {
+            statusEffects = statusEffects.filter(e => e !== 'Jackpot' && e !== 'ATK Buff +50%');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `✨ Hiệu ứng Jackpot của **${h.name}** đã hết tác dụng.`]);
+            }, 0);
+          }
+          
+          if (statusEffects.includes('Bankruptcy_2')) {
+            statusEffects = statusEffects.filter(e => e !== 'Bankruptcy_2').concat('Bankruptcy_1');
+          } else if (statusEffects.includes('Bankruptcy_1')) {
+            statusEffects = statusEffects.filter(e => e !== 'Bankruptcy_1' && e !== 'Silent' && e !== 'DEF -50%');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `🔓 **${h.name}** đã thoát khỏi trạng thái Phá Sản!`]);
+            }, 0);
+          }
+          
+          return { ...h, statusEffects };
+        }
+        return h;
+      });
+    });
+
     const speedMultiplier = this.speed();
-    const { phase1Duration, phase2Duration, phase3Duration } = this.getBattleSpeeds(speedMultiplier);
+    const { phase1Duration, phase2Duration, phase3Duration } = this.getBattleSpeeds(speedMultiplier, log.skillId);
 
     // Get Skill Information
     const skillDetail = SKILL_LIST[log.skillId] || {
@@ -175,6 +203,25 @@ export class BattleEngineService {
 
     // 1. PHASE 1: Actor dashes forward, skill visual triggers
     this.activeActorId.set(actor.id);
+    if (log.skillId === 'FATAL_ALL_IN_DIRECTIVE') {
+      this.heroes.update(allHeroes => {
+        return allHeroes.map(h => {
+          if (h.id === actor.id) {
+            const sacrificedHp = Math.floor(h.hp * 0.5);
+            const nextHp = Math.max(1, h.hp - sacrificedHp);
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [
+                ...logs,
+                `💸 **${h.name}** kích hoạt **Lệnh All-In Hủy Diệt**! Tự hiến tế 50% HP hiện tại (-${sacrificedHp} HP)!`
+              ]);
+            }, 0);
+            return { ...h, hp: nextHp };
+          }
+          return h;
+        });
+      });
+    }
+
     if (isMultipleTargets) {
       this.activeTargetIds.set(enemyTargets);
       this.activeTargetId.set(null);
@@ -193,9 +240,15 @@ export class BattleEngineService {
     else if (targetType === 'linear') targetDesc = 'ĐƯỜNG THẲNG đối diện';
     else targetDesc = `**${target.name}**`;
 
-    const skillLog = isMultipleTargets
-      ? `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** tấn công ${targetDesc}, gây ${log.damage} sát thương${critText} cho mỗi mục tiêu!`
-      : `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** tấn công ${targetDesc}, gây ${log.damage} sát thương${critText}!`;
+    let skillLog = '';
+    if (log.skillId === 'DARK_KNOWLEDGE_SHIELD_CONVERSION') {
+      const totalShield = enemyTargets.length * log.damage;
+      skillLog = `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** đè bẹp ${targetDesc}, gây ${log.damage} sát thương cho mỗi mục tiêu và tích lũy ${totalShield} Giáp Hư Không!`;
+    } else {
+      skillLog = isMultipleTargets
+        ? `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** tấn công ${targetDesc}, gây ${log.damage} sát thương${critText} cho mỗi mục tiêu!`
+        : `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** tấn công ${targetDesc}, gây ${log.damage} sát thương${critText}!`;
+    }
     this.narrativeLogs.update(logs => [...logs, skillLog]);
 
     // Update Actor's Mana (consume or gain mana on action)
@@ -215,24 +268,123 @@ export class BattleEngineService {
     });
 
     this.currentTimeout = setTimeout(() => {
+      // Check which targets have the shield before updating
+      const targetsWithShield = enemyTargets.filter(id => {
+        const h = this.heroes().find(hero => hero.id === id);
+        return h?.statusEffects?.includes('Giáp Hư Không') || false;
+      });
+
       // 2. PHASE 2: Target(s) take damage, HP bar decreases, floating text appears
+      let hasKilled = false;
       this.heroes.update(allHeroes => {
-        return allHeroes.map(h => {
+        enemyTargets.forEach(id => {
+          const h = allHeroes.find(hero => hero.id === id);
+          if (h && h.hp > 0 && h.hp - log.damage <= 0) {
+            hasKilled = true;
+          }
+        });
+
+        let updatedHeroes = allHeroes.map(h => {
           if (enemyTargets.includes(h.id)) {
-            const nextHp = Math.max(0, h.hp - log.damage);
-            return { ...h, hp: nextHp };
+            if (targetsWithShield.includes(h.id)) {
+              const nextEffects = h.statusEffects?.filter(e => e !== 'Giáp Hư Không') || [];
+              return { ...h, statusEffects: nextEffects };
+            } else {
+              const nextHp = Math.max(0, h.hp - log.damage);
+              return { ...h, hp: nextHp };
+            }
           }
           return h;
         });
+
+        if (log.skillId === 'DARK_KNOWLEDGE_SHIELD_CONVERSION') {
+          updatedHeroes = updatedHeroes.map(h => {
+            if (h.id === actor.id) {
+              const currentEffects = h.statusEffects || [];
+              if (!currentEffects.includes('Giáp Hư Không')) {
+                return { ...h, statusEffects: [...currentEffects, 'Giáp Hư Không'] };
+              }
+            }
+            return h;
+          });
+        }
+
+        if (log.skillId === 'TACTICAL_AIR_STRIKE') {
+          updatedHeroes = updatedHeroes.map(h => {
+            if (enemyTargets.includes(h.id) && h.hp > 0) {
+              const currentEffects = h.statusEffects || [];
+              if (!currentEffects.includes('Đánh Dấu')) {
+                // Run outside map or keep side effect inside, but since this is mock logic, updating narrativeLogs signal is fine.
+                setTimeout(() => {
+                  this.narrativeLogs.update(logs => [...logs, `🎯 **${h.name}** đã bị nhắm bắn & **Đánh Dấu**!`]);
+                }, 0);
+                return { ...h, statusEffects: [...currentEffects, 'Đánh Dấu'] };
+              }
+            }
+            return h;
+          });
+        }
+
+        if (log.skillId === 'DOI_NGOI_DAU_DOC') {
+          if (enemyTargets.length >= 2) {
+            const t1 = updatedHeroes.find(h => h.id === enemyTargets[0]);
+            const t2 = updatedHeroes.find(h => h.id === enemyTargets[1]);
+            if (t1 && t2) {
+              const pos1 = t1.position;
+              const pos2 = t2.position;
+              updatedHeroes = updatedHeroes.map(h => {
+                if (h.id === t1.id) return { ...h, position: pos2 };
+                if (h.id === t2.id) return { ...h, position: pos1 };
+                return h;
+              });
+              
+              setTimeout(() => {
+                this.narrativeLogs.update(logs => [
+                  ...logs,
+                  `🔄 **${t1.name}** và **${t2.name}** đã bị **Đổi Ngôi** hoán đổi vị trí!`
+                ]);
+              }, 0);
+            }
+          }
+
+          updatedHeroes = updatedHeroes.map(h => {
+            if (enemyTargets.includes(h.id) && h.hp > 0) {
+              const currentEffects = h.statusEffects || [];
+              if (!currentEffects.includes('Choáng Váng')) {
+                setTimeout(() => {
+                  this.narrativeLogs.update(logs => [
+                    ...logs,
+                    `💫 **${h.name}** bị choáng váng: Giảm 15% Tốc độ!`
+                  ]);
+                }, 0);
+                return { ...h, statusEffects: [...currentEffects, 'Choáng Váng'] };
+              }
+            }
+            return h;
+          });
+        }
+        return updatedHeroes;
+      });
+
+      // If any target absorbed damage, log it in the narrative!
+      targetsWithShield.forEach(id => {
+        const targetHero = this.heroes().find(h => h.id === id);
+        if (targetHero) {
+          this.narrativeLogs.update(logs => [
+            ...logs,
+            `🛡️ **Giáp Hư Không** của **${targetHero.name}** đã hấp thụ toàn bộ ${log.damage} sát thương!`
+          ]);
+        }
       });
 
       // Trigger Floating Damage Text for all targets
       this.damageEvents.update(events => {
         const nextEvents = { ...events };
         enemyTargets.forEach(id => {
+          const hasShield = targetsWithShield.includes(id);
           nextEvents[id] = {
-            text: `-${log.damage}${log.isCrit ? '!' : ''}`,
-            isCrit: log.isCrit,
+            text: hasShield ? 'HẤP THỤ' : `-${log.damage}${log.isCrit ? '!' : ''}`,
+            isCrit: hasShield ? false : log.isCrit,
             key: this.damageEventCounter++
           };
         });
@@ -268,6 +420,37 @@ export class BattleEngineService {
               return h;
             });
           });
+
+          // Handle Fatal All-In Directive gamble outcome
+          if (log.skillId === 'FATAL_ALL_IN_DIRECTIVE') {
+            this.heroes.update(allHeroes => {
+              return allHeroes.map(h => {
+                if (h.id === actor.id) {
+                  const currentEffects = h.statusEffects || [];
+                  if (hasKilled) {
+                    const nextEffects = [...currentEffects.filter(e => e !== 'Bankruptcy_2' && e !== 'Bankruptcy_1' && e !== 'Silent' && e !== 'DEF -50%'), 'Jackpot', 'ATK Buff +50%'];
+                    setTimeout(() => {
+                      this.narrativeLogs.update(logs => [
+                        ...logs,
+                        `🎰 **JACKPOT!** **${h.name}** thắng cược! Hồi 100% HP và nhận buff +50% Tấn công!`
+                      ]);
+                    }, 0);
+                    return { ...h, hp: h.maxHp, statusEffects: nextEffects };
+                  } else {
+                    const nextEffects = [...currentEffects.filter(e => e !== 'Jackpot' && e !== 'ATK Buff +50%'), 'Bankruptcy_2', 'Silent', 'DEF -50%'];
+                    setTimeout(() => {
+                      this.narrativeLogs.update(logs => [
+                        ...logs,
+                        `📉 **PHÁ SẢN!** **${h.name}** thua cược! Bị cấm thuật (Silence) và giảm 50% Phòng thủ trong 2 lượt!`
+                      ]);
+                    }, 0);
+                    return { ...h, statusEffects: nextEffects };
+                  }
+                }
+                return h;
+              });
+            });
+          }
 
           // Check Win/Loss conditions
           const leftAlive = this.heroes().some(h => h.team === 'left' && h.hp > 0);
@@ -316,7 +499,7 @@ export class BattleEngineService {
 
     if (targetType === 'single') {
       enemyTargets = [target.id];
-    } else if (targetType === 'all') {
+    } else if (targetType === 'all' || targetType === 'aoe_all') {
       enemyTargets = this.heroes()
         .filter(h => h.team === enemyTeam && h.hp > 0)
         .map(h => h.id);
@@ -371,6 +554,22 @@ export class BattleEngineService {
         const randomIndex = Math.floor(Math.random() * aliveEnemies.length);
         enemyTargets = [aliveEnemies[randomIndex].id];
       } else {
+        enemyTargets = [target.id];
+      }
+    } else if (targetType === 'random_4') {
+      const aliveEnemies = this.heroes().filter(h => h.team === enemyTeam && h.hp > 0);
+      const shuffled = [...aliveEnemies].sort(() => 0.5 - Math.random());
+      enemyTargets = shuffled.slice(0, 4).map(h => h.id);
+      if (enemyTargets.length === 0) {
+        enemyTargets = [target.id];
+      }
+    } else if (targetType === 'front_and_back') {
+      const front = this.heroes().find(h => h.team === enemyTeam && h.hp > 0 && [1, 3, 5].includes(h.position));
+      const back = this.heroes().find(h => h.team === enemyTeam && h.hp > 0 && [2, 4].includes(h.position));
+      enemyTargets = [];
+      if (front) enemyTargets.push(front.id);
+      if (back) enemyTargets.push(back.id);
+      if (enemyTargets.length === 0) {
         enemyTargets = [target.id];
       }
     }

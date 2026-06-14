@@ -85,7 +85,8 @@ export class BattleSceneComponent {
     const skillId = this.battleEngine.currentSkillId();
     const isUlt = skillId !== null && [
       'ULTIMATE_SIXPACK', 'SWORD_DANCE', 'DEPLOY_PROD', 'CLOSE_JIRA', 
-      'HEAVENLY_JUDGMENT', 'RICARDO_MILOS', 'RANDOM_KNOWLEDGE_DROP'
+      'HEAVENLY_JUDGMENT', 'RICARDO_MILOS', 'RANDOM_KNOWLEDGE_DROP',
+      'DARK_KNOWLEDGE_SHIELD_CONVERSION', 'TACTICAL_AIR_STRIKE'
     ].includes(skillId);
 
     const events = this.battleEngine.damageEvents();

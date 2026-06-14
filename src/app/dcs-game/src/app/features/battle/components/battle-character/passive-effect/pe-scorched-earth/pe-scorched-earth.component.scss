@@ -1,0 +1,481 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.scorched-earth-aura {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px; /* Widened from 180px */
+  height: 200px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   1. Command Radar Grid (Tactical holographic rings expanding at feet)
+   ========================================================================== */
+.command-grid {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 160px; /* Widened from 120px */
+  height: 160px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.grid-line {
+  position: absolute;
+  background: rgba(251, 191, 36, 0.25);
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
+  
+  &.horizontal {
+    top: 50%;
+    left: -10px;
+    width: 180px; /* Widened from 140px */
+    height: 1px;
+    transform: translateY(-50%);
+  }
+  &.vertical {
+    left: 50%;
+    top: -10px;
+    width: 1px;
+    height: 180px; /* Widened from 140px */
+    transform: translateX(-50%);
+  }
+}
+
+.grid-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(251, 191, 36, 0.4);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.2), inset 0 0 10px rgba(251, 191, 36, 0.1);
+  
+  &.r1 {
+    width: 100px; /* Widened from 80px */
+    height: 100px;
+    animation: grid-ring-spin 8s linear infinite;
+  }
+  &.r2 {
+    width: 150px; /* Widened from 120px */
+    height: 150px;
+    animation: grid-ring-spin 12s linear infinite reverse;
+  }
+}
+
+@keyframes grid-ring-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==========================================================================
+   2. Roaring Tactical Ground Flames (Fanned out to flanking sides - Wide Layout)
+   ========================================================================== */
+.tactical-ground-flames {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 250px; /* Widened from 180px */
+  height: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.flame {
+  position: absolute;
+  bottom: 0;
+  transform-origin: bottom center;
+  /* Glowing yellow/orange bottom -> dark black/grey top before dissolving */
+  background: linear-gradient(to top, 
+    #ffffff 0%, 
+    #fbbf24 20%, 
+    #f97316 55%, 
+    #292524 85%, 
+    rgba(30, 30, 30, 0.9) 95%, 
+    transparent 100%
+  );
+  border-radius: 50% 50% 20% 20% / 70% 70% 30% 30%;
+  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.6));
+  opacity: 0.95;
+}
+
+/* Left side flames - fanned out wide */
+.flame.fl1 {
+  left: 5px;
+  width: 20px;
+  height: 80px;
+  animation: flame-sway-1 1.2s ease-in-out infinite alternate;
+}
+.flame.fl2 {
+  left: 30px;
+  width: 24px;
+  height: 95px;
+  animation: flame-sway-2 1.4s ease-in-out infinite alternate 0.15s;
+}
+
+/* Inner left flame - kept very short to leave a wide open center valley */
+.flame.fl3 {
+  left: 60px;
+  width: 16px;
+  height: 40px;
+  opacity: 0.7;
+  animation: flame-sway-3 1.5s ease-in-out infinite alternate 0.05s;
+}
+
+/* Inner right flame - shifted right to leave the general's lower body fully exposed */
+.flame.fl4 {
+  left: 174px;
+  width: 16px;
+  height: 40px;
+  opacity: 0.7;
+  animation: flame-sway-1 1.3s ease-in-out infinite alternate 0.25s;
+}
+
+/* Right side flames - fanned out wide */
+.flame.fl5 {
+  left: 196px;
+  width: 24px;
+  height: 95px;
+  animation: flame-sway-2 1.4s ease-in-out infinite alternate 0.1s;
+}
+.flame.fl6 {
+  left: 225px;
+  width: 20px;
+  height: 80px;
+  animation: flame-sway-3 1.2s ease-in-out infinite alternate 0.2s;
+}
+
+@keyframes flame-sway-1 {
+  0% { transform: scaleX(0.9) rotate(-3deg); }
+  100% { transform: scaleX(1.05) scaleY(1.1) rotate(3deg) skewX(2deg); }
+}
+
+@keyframes flame-sway-2 {
+  0% { transform: scaleX(1.05) rotate(4deg); }
+  100% { transform: scaleX(0.9) scaleY(1.15) rotate(-4deg) skewX(-2deg); }
+}
+
+@keyframes flame-sway-3 {
+  0% { transform: scaleX(0.95) scaleY(0.9) rotate(-2deg); }
+  100% { transform: scaleX(1.1) scaleY(1.2) rotate(2deg) skewX(3deg); }
+}
+
+/* ==========================================================================
+   3. Curling Plumes of Matte-Black Smoke (Edges)
+   ========================================================================== */
+.smoke-plumes {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  height: 140px;
+  pointer-events: none;
+}
+
+.smoke-cloud {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(28, 25, 23, 0.95) 0%, rgba(12, 10, 9, 0.98) 60%, transparent 80%);
+  filter: blur(5px);
+  opacity: 0;
+}
+
+.smoke-cloud.sm1 {
+  left: -10px;
+  width: 45px;
+  height: 45px;
+  animation: smoke-plume-rise 2.5s ease-in-out infinite;
+}
+.smoke-cloud.sm2 {
+  right: -10px;
+  width: 50px;
+  height: 50px;
+  animation: smoke-plume-rise 2.8s ease-in-out infinite 0.7s;
+}
+.smoke-cloud.sm3 {
+  left: 15px;
+  width: 35px;
+  height: 35px;
+  animation: smoke-plume-rise 2.3s ease-in-out infinite 1.3s;
+}
+.smoke-cloud.sm4 {
+  right: 15px;
+  width: 38px;
+  height: 38px;
+  animation: smoke-plume-rise 2.6s ease-in-out infinite 1.9s;
+}
+
+@keyframes smoke-plume-rise {
+  0% {
+    transform: translateY(10px) translateX(0) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+    transform: translateY(-20px) translateX(var(--drift-x, -5px)) scale(1);
+  }
+  100% {
+    transform: translateY(-120px) translateX(var(--drift-x, -15px)) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.sm1, .sm3 { --drift-x: -25px; }
+.sm2, .sm4 { --drift-x: 25px; }
+
+/* ==========================================================================
+   4. Drifting Sparks and Embers (Military Gold / Intense Amber)
+   ========================================================================== */
+.embers-sparks {
+  position: absolute;
+  bottom: 45px;
+  left: 0;
+  right: 0;
+  height: 150px;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  opacity: 0;
+}
+
+.spark {
+  width: 3px;
+  height: 9px;
+  background: #fbbf24;
+  box-shadow: 0 0 6px #fbbf24;
+  border-radius: 1px;
+}
+
+.spark.s1 { left: 15%; animation: particle-drift-up 2s linear infinite 0.2s; }
+.spark.s2 { left: 40%; animation: particle-drift-up 2.3s linear infinite 0.9s; }
+.spark.s3 { left: 70%; animation: particle-drift-up 1.8s linear infinite 0.4s; }
+.spark.s4 { left: 85%; animation: particle-drift-up 2.2s linear infinite 1.4s; }
+
+.ember {
+  width: 4px;
+  height: 4px;
+  background: #f97316;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #f97316, 0 0 15px #ff5500;
+}
+
+.ember.em1 { left: 25%; animation: particle-drift-up 2.1s linear infinite 0.5s; }
+.ember.em2 { left: 50%; animation: particle-drift-up 1.9s linear infinite 1.2s; }
+.ember.em3 { left: 80%; animation: particle-drift-up 2.4s linear infinite 0.1s; }
+.ember.em4 { left: 35%; animation: particle-drift-up 2.0s linear infinite 1.6s; }
+
+@keyframes particle-drift-up {
+  0% {
+    transform: translateY(10px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-140px) translateX(var(--drift-w, 15px)) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+.s1, .em1, .s3 { --drift-w: -30px; }
+.s2, .em2, .s4, .em3, .em4 { --drift-w: 30px; }
+
+/* ==========================================================================
+   5. Orbiting Mini Tactical Missiles (4 Missiles in 3D Orbit)
+   ========================================================================== */
+.orbiting-missiles {
+  position: absolute;
+  top: -15px; /* Orbiting slightly higher around character body */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 240px; /* Widened orbit path from 170px */
+  height: 150px;
+  pointer-events: none;
+}
+
+.mini-missile {
+  position: absolute;
+  width: 10px;
+  height: 22px;
+  z-index: 100;
+}
+
+/* Detailed military energy rocket rendering */
+.missile-glow {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, rgba(249, 115, 22, 0.1) 60%, transparent 80%);
+  filter: blur(2px);
+  border-radius: 50%;
+}
+
+.missile-body {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 4px;
+  height: 14px;
+  background: #4b5563; /* Military grey casing */
+  border-radius: 1px;
+  border: 1px solid #1f2937;
+}
+
+.missile-head {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 6px;
+  height: 6px;
+  background: #ef4444; /* Tactical red warhead tip */
+  border-radius: 50% 50% 0 0;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.missile-fins {
+  position: absolute;
+  bottom: 4px;
+  left: 1px;
+  width: 8px;
+  height: 3px;
+  background: #1f2937;
+  border-radius: 1px;
+}
+
+.missile-trail {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 14px;
+  background: linear-gradient(to bottom, #fbbf24, #f97316, transparent);
+  opacity: 0.8;
+  filter: blur(0.5px);
+}
+
+/* 4 Orbiting missiles configuration with phase delays for symmetrical coverage */
+.mini-missile.mm1 {
+  animation: missile-orbit-clockwise 4s infinite linear;
+}
+
+.mini-missile.mm2 {
+  animation: missile-orbit-counter-clockwise 4.5s infinite linear;
+}
+
+.mini-missile.mm3 {
+  animation: missile-orbit-clockwise 4s infinite linear -2s; /* 180 deg out of phase from mm1 */
+}
+
+.mini-missile.mm4 {
+  animation: missile-orbit-counter-clockwise 4.5s infinite linear -2.25s; /* 180 deg out of phase from mm2 */
+}
+
+/* 3D Orbit: Clockwise. Fades/blurs out as it goes "behind" the character profile */
+@keyframes missile-orbit-clockwise {
+  0% {
+    left: -20px;
+    top: 60px;
+    transform: scale(1.15) rotate(45deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+  25% {
+    left: 110px;
+    top: 115px;
+    transform: scale(1.25) rotate(90deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+  50% {
+    left: 240px;
+    top: 60px;
+    transform: scale(0.9) rotate(135deg);
+    opacity: 0.85;
+    filter: none;
+    z-index: 100;
+  }
+  75% {
+    left: 110px;
+    top: 5px;
+    transform: scale(0.65) rotate(270deg);
+    opacity: 0.18;
+    filter: blur(1.5px);
+    z-index: -1;
+  }
+  100% {
+    left: -20px;
+    top: 60px;
+    transform: scale(1.15) rotate(405deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+}
+
+/* 3D Orbit: Counter-clockwise. Fades/blurs out as it goes "behind" the character profile */
+@keyframes missile-orbit-counter-clockwise {
+  0% {
+    left: 240px;
+    top: 45px;
+    transform: scale(1.15) rotate(-45deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+  25% {
+    left: 110px;
+    top: 105px;
+    transform: scale(1.25) rotate(-90deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+  50% {
+    left: -20px;
+    top: 45px;
+    transform: scale(0.9) rotate(-135deg);
+    opacity: 0.85;
+    filter: none;
+    z-index: 100;
+  }
+  75% {
+    left: 110px;
+    top: -10px;
+    transform: scale(0.65) rotate(-270deg);
+    opacity: 0.18;
+    filter: blur(1.5px);
+    z-index: -1;
+  }
+  100% {
+    left: 240px;
+    top: 45px;
+    transform: scale(1.15) rotate(-405deg);
+    opacity: 1;
+    filter: none;
+    z-index: 100;
+  }
+}

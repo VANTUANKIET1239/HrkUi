@@ -49,11 +49,38 @@
   <!-- Battlefield Grid (3D perspective sa-ban) -->
   <div class="battlefield" [class.screen-shake]="isScreenShaking()">
     <!-- Sky Darkening Overlay -->
-    <div class="battlefield-darkness" [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT'"></div>
+    <div class="battlefield-darkness" 
+      [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT' || battleEngine.currentSkillId() === 'DARK_KNOWLEDGE_SHIELD_CONVERSION'">
+    </div>
 
     <!-- Battlefield-wide energy shockwave -->
     <div class="aoe-field-shockwave"
       [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT' && battleEngine.activeTargetIds().length > 0">
+    </div>
+
+    <!-- Dark Knowledge Scene VFX -->
+    <div class="dark-knowledge-scene-fx" *ngIf="battleEngine.currentSkillId() === 'DARK_KNOWLEDGE_SHIELD_CONVERSION'">
+      <!-- Sky Rift -->
+      <div class="sky-rift-slit" [class.active]="battleEngine.activeActorId() !== null"></div>
+      
+      <!-- Massive Falling Dark Book (Crashing in the center of enemy formation) -->
+      <div class="falling-dark-book-container" [class.active]="battleEngine.activeActorId() !== null">
+        <img src="/assets/images/dcs-game/sach-bongtoi.png" class="falling-dark-book" alt="Dark Knowledge" />
+      </div>
+
+      <!-- Center explosion ground cracks and particles -->
+      <div class="center-explosion" [class.active]="battleEngine.activeTargetIds().length > 0">
+        <div class="exp-shockwave"></div>
+        <div class="exp-mist"></div>
+        <div class="exp-pages">
+          <span class="ep-page ep1"></span>
+          <span class="ep-page ep2"></span>
+          <span class="ep-page ep3"></span>
+          <span class="ep-page ep4"></span>
+          <span class="ep-page ep5"></span>
+          <span class="ep-page ep6"></span>
+        </div>
+      </div>
     </div>
 
     <div class="battlefield-grid">

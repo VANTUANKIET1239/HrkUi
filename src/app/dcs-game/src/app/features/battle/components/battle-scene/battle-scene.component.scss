@@ -711,3 +711,271 @@
     filter: blur(2px);
   }
 }
+
+/* ==========================================================================
+   DARK KNOWLEDGE: SHIELD CONVERSION SCENE VFX (Giáp Hư Không)
+   ========================================================================== */
+.dark-knowledge-scene-fx {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 1. Sky Rift */
+.sky-rift-slit {
+  position: absolute;
+  left: 70%; /* Centered horizontally above the enemy team */
+  top: 15%;  /* Near the top of the battlefield view */
+  transform: translateX(-50%) rotate(-5deg);
+  width: 0px;
+  height: 2px;
+  background: #a855f7;
+  box-shadow: 0 0 15px #a855f7, 0 0 30px #d8b4fe;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 21;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.sky-rift-slit.active {
+  animation: open-sky-rift 2.4s ease-out forwards;
+}
+
+@keyframes open-sky-rift {
+  0% {
+    width: 0;
+    height: 2px;
+    opacity: 0;
+  }
+  15% {
+    width: 380px;
+    height: 8px;
+    opacity: 1;
+    box-shadow: 0 0 20px #a855f7, 0 0 40px #d8b4fe, inset 0 0 10px #ffffff;
+  }
+  80% {
+    width: 380px;
+    height: 8px;
+    opacity: 1;
+  }
+  100% {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+  }
+}
+
+/* 2. Falling Dark Book Container */
+.falling-dark-book-container {
+  position: absolute;
+  left: 70%;
+  top: 15%;
+  transform: translate(-50%, -50%) rotate(0deg);
+  width: 260px; /* Massive textbook */
+  height: 260px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 22;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.falling-dark-book-container.active {
+  animation: book-drop-and-shatter 2.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+}
+
+.falling-dark-book {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.85)) drop-shadow(0 0 45px rgba(0, 0, 0, 0.9));
+}
+
+@keyframes book-drop-and-shatter {
+  0% {
+    top: 5%;
+    transform: translate(-50%, -50%) scale(0.1) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  /* Falls rapidly and crashes at 1200ms (50% of 2.4s) */
+  50% {
+    top: 65%; /* Hit the center of enemy formation */
+    transform: translate(-50%, -50%) scale(1.6) rotate(720deg);
+    opacity: 1;
+  }
+  /* Instantly shatters on impact */
+  51% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2) rotate(730deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+  }
+}
+
+/* 3. Center Explosion Ground Cracks & Shockwave */
+.center-explosion {
+  position: absolute;
+  left: 70%;
+  top: 65%;
+  transform: translate(-50%, -50%) rotateX(75deg);
+  width: 350px;
+  height: 350px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 19;
+}
+
+.center-explosion.active {
+  animation: trigger-center-explosion 2.4s ease-out forwards;
+}
+
+@keyframes trigger-center-explosion {
+  0%, 49% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Deep purple shockwave ring expansion */
+.center-explosion .exp-shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border: 4px solid rgba(168, 85, 247, 0.95);
+  border-radius: 50%;
+  box-shadow: 0 0 40px #a855f7, inset 0 0 30px #d8b4fe;
+  opacity: 0;
+}
+
+.center-explosion.active .exp-shockwave {
+  animation: shockwave-expand 1s cubic-bezier(0.1, 0.8, 0.3, 1) 1.2s forwards;
+}
+
+@keyframes shockwave-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+    border-width: 4px;
+  }
+  100% {
+    width: 600px;
+    height: 600px;
+    opacity: 0;
+    border-width: 20px;
+    filter: blur(4px);
+  }
+}
+
+/* Dark magic purple/black mist clouds rising */
+.center-explosion .exp-mist {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(12, 4, 20, 0.85) 60%, transparent 100%);
+  filter: blur(10px);
+  opacity: 0;
+}
+
+.center-explosion.active .exp-mist {
+  animation: mist-surge 1.2s ease-out 1.2s forwards;
+}
+
+@keyframes mist-surge {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+    filter: blur(30px);
+  }
+}
+
+/* Flying pages scattering upon impact */
+.center-explosion .exp-pages {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.exp-pages .ep-page {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 25px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(243, 232, 255, 0.95), rgba(168, 85, 247, 0.35));
+  border: 1px solid rgba(168, 85, 247, 0.65);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.center-explosion.active .ep1 { animation: page-scatter-1 1.2s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+.center-explosion.active .ep2 { animation: page-scatter-2 1.3s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+.center-explosion.active .ep3 { animation: page-scatter-3 1.1s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+.center-explosion.active .ep4 { animation: page-scatter-4 1.4s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+.center-explosion.active .ep5 { animation: page-scatter-5 1.25s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+.center-explosion.active .ep6 { animation: page-scatter-6 1.35s cubic-bezier(0.25, 0.8, 0.25, 1) 1.2s forwards; }
+
+@keyframes page-scatter-1 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(-220px, -180px) rotate(390deg) scale(1.1); opacity: 0; }
+}
+@keyframes page-scatter-2 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(240px, -130px) rotate(-420deg) scale(1.1); opacity: 0; }
+}
+@keyframes page-scatter-3 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(-140px, 220px) rotate(280deg) scale(1.2); opacity: 0; }
+}
+@keyframes page-scatter-4 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(180px, 200px) rotate(-310deg) scale(1.1); opacity: 0; }
+}
+@keyframes page-scatter-5 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(-280px, 20px) rotate(480deg) scale(1.3); opacity: 0; }
+}
+@keyframes page-scatter-6 {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(290px, -20px) rotate(-510deg) scale(1.3); opacity: 0; }
+}

@@ -47,4 +47,54 @@ export class BattleCharacterComponent {
       ['Red Lightning', 'Sấm Sét Đỏ'].includes(e)
     ) || false;
   }
+
+  hasObsidianNebulaEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Veil of the Obsidian Nebulae', 'Obsidian Nebula', 'Veil of Obsidian Nebulae'].includes(e)
+    ) || false;
+  }
+
+  hasDarkShieldEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Dark Shield', 'Giáp Hư Không'].includes(e)
+    ) || false;
+  }
+
+  hasMarkedEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Marked', 'Đánh dấu', 'Đánh Dấu'].includes(e)
+    ) || false;
+  }
+
+  hasScorchedEarthEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Scorched Earth Command', 'Scorched Earth', 'Chỉ Huy Thiết Giáp'].includes(e)
+    ) || false;
+  }
+
+  hasSpectralGroomingEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Spectral Grooming Swarm', 'Spectral Grooming', 'Vortex Tóc Tai'].includes(e)
+    ) || false;
+  }
+
+  hasViciousDebtEffect(): boolean {
+    return this.character.statusEffects?.some(e => 
+      ['Vortex of Vicious Debt', 'Vicious Debt', 'Vòng Xoáy Nợ Nần', 'Chúa Nợ'].includes(e)
+    ) || false;
+  }
+
+  getRowLabel(): string {
+    const pos = this.character.position;
+    return [1, 3, 5].includes(pos) ? 'FRONT' : 'BACK';
+  }
+
+  shouldFlipSprite(): boolean {
+    const defaultFacing = this.character.defaultFacing || 'right';
+    if (this.character.team === 'left') {
+      return defaultFacing === 'left';
+    } else {
+      return defaultFacing === 'right';
+    }
+  }
 }

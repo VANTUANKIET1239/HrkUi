@@ -1,0 +1,573 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.tactical-air-strike-fx {
+  position: absolute;
+  top: -240px;
+  bottom: 0;
+  left: -200px;
+  right: -200px;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   1. STARTUP PHASE: Wrist Radar Glowing Green
+   ========================================================================== */
+.wrist-radar-glow {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+}
+
+.radar-wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #22c55e;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.03);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
+  opacity: 0;
+}
+
+.radar-wave.w1 {
+  animation: radar-wave-expand 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+.radar-wave.w2 {
+  animation: radar-wave-expand 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) 0.2s forwards;
+}
+
+.radar-wave.w3 {
+  animation: radar-wave-expand 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) 0.4s forwards;
+}
+
+.radar-scan {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.9) 0%, rgba(34, 197, 94, 0.3) 60%, transparent 100%);
+  box-shadow: 0 0 25px #22c55e, inset 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: radar-glow-pulse 0.9s ease-out forwards;
+}
+
+.radar-target-reticle {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 80px;
+  height: 80px;
+  border: 1px dashed rgba(34, 197, 94, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  animation: radar-reticle-spin 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    background: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+  }
+  
+  /* Horizontal line */
+  &::before {
+    top: 50%;
+    left: -5px;
+    width: 90px;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+  
+  /* Vertical line */
+  &::after {
+    left: 50%;
+    top: -5px;
+    width: 1px;
+    height: 90px;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes radar-wave-expand {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+@keyframes radar-glow-pulse {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+@keyframes radar-reticle-spin {
+  0% {
+    transform: scale(2) rotate(0deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1) rotate(90deg);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+  100% {
+    transform: scale(0.7) rotate(270deg);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   2. CASTER FEET: Sparks, Smoke, and Shockwave (Orange / Yellow)
+   ========================================================================== */
+.caster-feet-sparks {
+  position: absolute;
+  bottom: 27px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 50px;
+}
+
+.launch-shockwave {
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  transform: translateX(-50%) rotateX(75deg);
+  border-radius: 50%;
+  border: 3px solid #ff7f00;
+  opacity: 0;
+  pointer-events: none;
+  
+  &.s1 {
+    width: 20px;
+    height: 20px;
+    box-shadow: 0 0 15px #ff3300, inset 0 0 10px #ff3300;
+    animation: launch-wave-expand 0.65s cubic-bezier(0.1, 0.8, 0.3, 1) 0.1s forwards;
+  }
+  
+  &.s2 {
+    width: 20px;
+    height: 20px;
+    border-color: #ffaa00;
+    box-shadow: 0 0 20px #ff7f00, inset 0 0 15px #ffaa00;
+    animation: launch-wave-expand 0.65s cubic-bezier(0.1, 0.8, 0.3, 1) 0.25s forwards;
+  }
+}
+
+.launch-flash {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 25px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 20%, #ffaa00 60%, transparent 100%);
+  filter: blur(2px);
+  opacity: 0;
+  animation: launch-flash-pop 0.5s ease-out 0.15s forwards;
+}
+
+.spark {
+  position: absolute;
+  bottom: 5px;
+  width: 5px;
+  height: 15px;
+  background: linear-gradient(to top, #ff2200, #ffaa00, #ffffff);
+  border-radius: 2px;
+  opacity: 0;
+  box-shadow: 0 0 8px #ff7f00;
+}
+
+.spark.s1 { left: 15%; animation: foot-spark-shoot 0.65s ease-out 0.1s forwards; }
+.spark.s2 { left: 30%; animation: foot-spark-shoot 0.55s ease-out 0.2s forwards; }
+.spark.s3 { left: 45%; animation: foot-spark-shoot 0.6s ease-out 0.15s forwards; }
+.spark.s4 { left: 60%; animation: foot-spark-shoot 0.5s ease-out 0.25s forwards; }
+.spark.s5 { left: 75%; animation: foot-spark-shoot 0.65s ease-out 0.12s forwards; }
+.spark.s6 { left: 90%; animation: foot-spark-shoot 0.58s ease-out 0.22s forwards; }
+
+.smoke {
+  position: absolute;
+  bottom: 5px;
+  width: 35px;
+  height: 35px;
+  background: radial-gradient(circle, rgba(90, 80, 80, 0.6) 0%, rgba(50, 40, 40, 0.7) 60%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(4px);
+  opacity: 0;
+}
+
+.smoke.sm1 { left: 20%; animation: foot-smoke-rise 0.75s ease-out 0.1s forwards; }
+.smoke.sm2 { left: 45%; animation: foot-smoke-rise 0.85s ease-out 0.2s forwards; }
+.smoke.sm3 { left: 70%; animation: foot-smoke-rise 0.8s ease-out 0.15s forwards; }
+
+@keyframes launch-wave-expand {
+  0% {
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+    border-width: 3px;
+  }
+  100% {
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+@keyframes launch-flash-pop {
+  0% { transform: translateX(-50%) scale(0.2); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateX(-50%) scale(1.6); opacity: 0; }
+}
+
+@keyframes foot-spark-shoot {
+  0% {
+    transform: translateY(0) scaleY(0.4) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px) scaleY(0.1) rotate(60deg);
+    opacity: 0;
+  }
+}
+
+@keyframes foot-smoke-rise {
+  0% {
+    transform: scale(0.4) translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.8) translateY(-35px);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   3. EXECUTION PHASE: 3 Missiles Flying in Arc
+   ========================================================================== */
+.missile-launchpad {
+  position: absolute;
+  bottom: 35px;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  transform: translateX(-50%);
+}
+
+.missile {
+  position: absolute;
+  width: 14px;
+  height: 38px;
+  opacity: 0;
+  z-index: 100;
+}
+
+.missile-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #1e293b 0%, #475569 40%, #64748b 70%, #334155 100%);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), 0 0 10px rgba(239, 68, 68, 0.25);
+  position: relative;
+}
+
+.missile-tip {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #dc2626, #ef4444, #b91c1c);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  box-shadow: 0 -2px 8px #ef4444;
+}
+
+.missile-fins {
+  position: absolute;
+  bottom: 0;
+  left: -4px;
+  right: -4px;
+  height: 10px;
+  
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 4px;
+    height: 12px;
+    background: #dc2626;
+  }
+  &::before {
+    left: 0;
+    border-radius: 4px 0 0 2px;
+    transform: skewY(-15deg);
+  }
+  &::after {
+    right: 0;
+    border-radius: 0 4px 2px 0;
+    transform: skewY(15deg);
+  }
+}
+
+.missile-thruster-glow {
+  position: absolute;
+  bottom: -4px;
+  left: 2px;
+  width: 10px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #ffaa00, 0 0 20px #ff3300;
+}
+
+.flame-trail {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 28px;
+  background: linear-gradient(to bottom, #ffffff 0%, #ffea00 30%, #ff5500 70%, transparent 100%);
+  filter: blur(0.5px);
+  animation: flame-pulse 0.08s infinite alternate;
+}
+
+@keyframes flame-pulse {
+  0% { transform: translateX(-50%) scaleY(0.85) scaleX(0.9); }
+  100% { transform: translateX(-50%) scaleY(1.2) scaleX(1.15); }
+}
+
+/* Local Trailing Particle Exhaust Effects */
+.exhaust-smoke {
+  position: absolute;
+  bottom: -15px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  
+  &.es1 { left: -6px; --rand-x: -25px; animation: smoke-trail-vfx-1 0.16s infinite linear; }
+  &.es2 { left: 10px; --rand-x: 25px; animation: smoke-trail-vfx-2 0.2s infinite linear 0.05s; }
+  &.es3 { left: 2px; --rand-x: 2px; animation: smoke-trail-vfx-3 0.24s infinite linear 0.1s; }
+}
+
+.exhaust-spark {
+  position: absolute;
+  bottom: -10px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 0;
+  background: #ffaa00;
+  box-shadow: 0 0 8px #ff5500;
+  pointer-events: none;
+  
+  &.esp1 { left: -3px; --rand-x: -35px; animation: spark-trail-vfx-1 0.1s infinite linear; }
+  &.esp2 { left: 13px; --rand-x: 35px; animation: spark-trail-vfx-2 0.14s infinite linear 0.05s; }
+}
+
+@keyframes smoke-trail-vfx-1 {
+  0% { transform: translate(0, 0) scale(0.4); background: rgba(239, 68, 68, 0.9); opacity: 0.85; filter: blur(0.5px); }
+  30% { background: rgba(249, 115, 22, 0.6); }
+  100% { transform: translate(var(--rand-x), 75px) scale(2.2); background: rgba(100, 116, 139, 0.22); opacity: 0; filter: blur(4px); }
+}
+
+@keyframes smoke-trail-vfx-2 {
+  0% { transform: translate(0, 0) scale(0.4); background: rgba(239, 68, 68, 0.9); opacity: 0.85; filter: blur(0.5px); }
+  30% { background: rgba(249, 115, 22, 0.6); }
+  100% { transform: translate(var(--rand-x), 80px) scale(2.4); background: rgba(100, 116, 139, 0.22); opacity: 0; filter: blur(4px); }
+}
+
+@keyframes smoke-trail-vfx-3 {
+  0% { transform: translate(0, 0) scale(0.3); background: rgba(255, 255, 255, 0.95); opacity: 0.9; filter: blur(0.5px); }
+  30% { background: rgba(251, 191, 36, 0.7); }
+  100% { transform: translate(var(--rand-x), 90px) scale(2.6); background: rgba(71, 85, 105, 0.22); opacity: 0; filter: blur(5px); }
+}
+
+@keyframes spark-trail-vfx-1 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 1; }
+  100% { transform: translate(var(--rand-x), 60px) scale(0.1); opacity: 0; }
+}
+
+@keyframes spark-trail-vfx-2 {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 1; }
+  100% { transform: translate(var(--rand-x), 70px) scale(0.1); opacity: 0; }
+}
+
+/* Trajectories Left to Right (Casting from left team) */
+.team-left {
+  .m1 {
+    left: 20px;
+    animation: missile-flight-l2r-1 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s forwards;
+  }
+  .m2 {
+    left: 55px;
+    animation: missile-flight-l2r-2 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.28s forwards;
+  }
+  .m3 {
+    left: 90px;
+    animation: missile-flight-l2r-3 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s forwards;
+  }
+}
+
+/* Trajectories Right to Left (Casting from right team) */
+.team-right {
+  .m1 {
+    right: 20px;
+    animation: missile-flight-r2l-1 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s forwards;
+  }
+  .m2 {
+    right: 55px;
+    animation: missile-flight-r2l-2 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.28s forwards;
+  }
+  .m3 {
+    right: 90px;
+    animation: missile-flight-r2l-3 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s forwards;
+  }
+}
+
+/* Keyframes - Left to Right */
+@keyframes missile-flight-l2r-1 {
+  0% {
+    transform: translate(0, 0) rotate(35deg);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(220px, -280px) rotate(60deg);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(480px, -110px) rotate(115deg);
+    opacity: 0;
+  }
+}
+
+@keyframes missile-flight-l2r-2 {
+  0% {
+    transform: translate(0, 0) rotate(35deg);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(250px, -320px) rotate(65deg);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(520px, 50px) rotate(120deg);
+    opacity: 0;
+  }
+}
+
+@keyframes missile-flight-l2r-3 {
+  0% {
+    transform: translate(0, 0) rotate(30deg);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(260px, -260px) rotate(60deg);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(560px, -30px) rotate(110deg);
+    opacity: 0;
+  }
+}
+
+/* Keyframes - Right to Left */
+@keyframes missile-flight-r2l-1 {
+  0% {
+    transform: translate(0, 0) rotate(-35deg) scaleX(-1);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(-220px, -280px) rotate(-60deg) scaleX(-1);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(-480px, -110px) rotate(-115deg) scaleX(-1);
+    opacity: 0;
+  }
+}
+
+@keyframes missile-flight-r2l-2 {
+  0% {
+    transform: translate(0, 0) rotate(-35deg) scaleX(-1);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(-250px, -320px) rotate(-65deg) scaleX(-1);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(-520px, 50px) rotate(-120deg) scaleX(-1);
+    opacity: 0;
+  }
+}
+
+@keyframes missile-flight-r2l-3 {
+  0% {
+    transform: translate(0, 0) rotate(-30deg) scaleX(-1);
+    opacity: 0;
+  }
+  15% { opacity: 1; }
+  50% {
+    transform: translate(-260px, -260px) rotate(-60deg) scaleX(-1);
+  }
+  85% { opacity: 1; }
+  100% {
+    transform: translate(-560px, -30px) rotate(-110deg) scaleX(-1);
+    opacity: 0;
+  }
+}

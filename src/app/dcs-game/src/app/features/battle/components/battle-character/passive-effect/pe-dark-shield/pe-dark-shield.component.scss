@@ -1,0 +1,206 @@
+:host {
+  display: block;
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.shield-container {
+  position: absolute;
+  bottom: 0px;
+  /* Aligned with character sitting on throne */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 170px;
+  height: 170px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Geodesic Dome Sphere wrapper */
+.shield-bubble-wrapper {
+  position: absolute;
+  width: 136px;
+  height: 136px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.geodesic-shield-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8)) drop-shadow(0 0 20px rgba(0, 0, 0, 0.95));
+  animation: rotate-geodesic-shield 25s linear infinite;
+}
+
+.shield-backdrop {
+  fill: url(#shield-core-grad);
+  mix-blend-mode: screen;
+  backdrop-filter: blur(0.5px);
+}
+
+/* Geodesic Facets (Triangles) - Deep Obsidian / Black Crystalline Look */
+.facet {
+  fill: rgba(10, 6, 18, 0.92);
+  /* Opaque matte black */
+  stroke: rgba(168, 85, 247, 0.85);
+  /* Deep neon purple outlines */
+  stroke-width: 0.7px;
+  stroke-linejoin: round;
+  filter: url(#neon-glow-filter);
+  mix-blend-mode: screen;
+  transition: all 0.3s ease;
+  animation: facet-shimmer-loop 4s ease-in-out infinite alternate;
+
+  &:hover {
+    fill: rgba(139, 92, 246, 0.35);
+    stroke: rgba(255, 255, 255, 1);
+  }
+}
+
+/* Staggered animation delays for shifting shimmering grid panel lights */
+@for $i from 1 through 48 {
+  .facet.f#{$i} {
+    animation-delay: #{$i * 0.12}s;
+  }
+}
+
+@keyframes facet-shimmer-loop {
+  0% {
+    fill: rgba(10, 6, 18, 0.88);
+    stroke: rgba(139, 92, 246, 0.65);
+    stroke-width: 0.6px;
+  }
+
+  50% {
+    fill: rgba(18, 8, 30, 0.96);
+    /* Pulsing slightly lighter violet-black */
+    stroke: rgba(168, 85, 247, 0.98);
+    stroke-width: 0.8px;
+  }
+
+  100% {
+    fill: rgba(10, 6, 18, 0.88);
+    stroke: rgba(139, 92, 246, 0.65);
+    stroke-width: 0.6px;
+  }
+}
+
+@keyframes rotate-geodesic-shield {
+  0% {
+    transform: rotate(0deg) scale(0.97);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.03);
+    /* Breathing pulse */
+  }
+
+  100% {
+    transform: rotate(360deg) scale(0.97);
+  }
+}
+
+/* Decorative orbits - toned down and styled in hắc ám purple/violet */
+.shield-orbit {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.2);
+  mix-blend-mode: screen;
+  z-index: 1;
+}
+
+.ring-outer {
+  width: 154px;
+  height: 44px;
+  transform: rotateX(75deg) rotateY(15deg);
+  animation: ring-spin-cw 8s infinite linear;
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+.ring-inner {
+  width: 144px;
+  height: 38px;
+  transform: rotateX(75deg) rotateY(-20deg);
+  border-color: rgba(139, 92, 246, 0.25);
+  animation: ring-spin-ccw 6s infinite linear;
+}
+
+@keyframes ring-spin-cw {
+  0% {
+    transform: rotateX(75deg) rotateY(15deg) rotate(0deg);
+  }
+
+  100% {
+    transform: rotateX(75deg) rotateY(15deg) rotate(360deg);
+  }
+}
+
+@keyframes ring-spin-ccw {
+  0% {
+    transform: rotateX(75deg) rotateY(-20deg) rotate(360deg);
+  }
+
+  100% {
+    transform: rotateX(75deg) rotateY(-20deg) rotate(0deg);
+  }
+}
+
+/* Shield ambient particles */
+.shield-particles .sp-node {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #a855f7, 0 0 12px #000000;
+  opacity: 0;
+  z-index: 3;
+}
+
+.sp1 {
+  left: 15%;
+  top: 35%;
+  animation: sp-orbit-anim 3s infinite linear;
+}
+
+.sp2 {
+  right: 20%;
+  bottom: 30%;
+  animation: sp-orbit-anim 2.5s infinite linear 0.8s;
+}
+
+.sp3 {
+  left: 40%;
+  top: 80%;
+  animation: sp-orbit-anim 3.5s infinite linear 1.5s;
+}
+
+@keyframes sp-orbit-anim {
+  0% {
+    transform: rotate(0deg) translateX(72px) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.9;
+  }
+
+  90% {
+    opacity: 0.9;
+  }
+
+  100% {
+    transform: rotate(360deg) translateX(72px) rotate(-360deg);
+    opacity: 0;
+  }
+}

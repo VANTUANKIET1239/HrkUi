@@ -1,0 +1,77 @@
+<div class="tactical-air-strike-fx" [ngClass]="{ 'team-right': isTeamRight, 'team-left': !isTeamRight }">
+  <!-- 1. Startup phase: wrist radar glowing green signal waves -->
+  <div class="wrist-radar-glow">
+    <div class="radar-wave w1"></div>
+    <div class="radar-wave w2"></div>
+    <div class="radar-wave w3"></div>
+    <div class="radar-scan"></div>
+    <div class="radar-target-reticle"></div>
+  </div>
+
+  <!-- 2. Foot sparks and smoke emitting from caster's base -->
+  <div class="caster-feet-sparks">
+    <!-- Multiple shockwave rings expanding under feet -->
+    <div class="launch-shockwave s1"></div>
+    <div class="launch-shockwave s2"></div>
+    <div class="launch-flash"></div>
+    
+    <span class="spark s1"></span>
+    <span class="spark s2"></span>
+    <span class="spark s3"></span>
+    <span class="spark s4"></span>
+    <span class="spark s5"></span>
+    <span class="spark s6"></span>
+    
+    <span class="smoke sm1"></span>
+    <span class="smoke sm2"></span>
+    <span class="smoke sm3"></span>
+  </div>
+
+  <!-- 3. Launch/Execution phase: 3 rockets rising and flying in arc -->
+  <div class="missile-launchpad">
+    <!-- Missile 1 -->
+    <div class="missile m1">
+      <div class="missile-body">
+        <div class="missile-tip"></div>
+        <div class="missile-fins"></div>
+        <div class="missile-thruster-glow"></div>
+      </div>
+      <div class="flame-trail"></div>
+      <div class="exhaust-smoke es1"></div>
+      <div class="exhaust-smoke es2"></div>
+      <div class="exhaust-smoke es3"></div>
+      <div class="exhaust-spark esp1"></div>
+      <div class="exhaust-spark esp2"></div>
+    </div>
+    
+    <!-- Missile 2 -->
+    <div class="missile m2">
+      <div class="missile-body">
+        <div class="missile-tip"></div>
+        <div class="missile-fins"></div>
+        <div class="missile-thruster-glow"></div>
+      </div>
+      <div class="flame-trail"></div>
+      <div class="exhaust-smoke es1"></div>
+      <div class="exhaust-smoke es2"></div>
+      <div class="exhaust-smoke es3"></div>
+      <div class="exhaust-spark esp1"></div>
+      <div class="exhaust-spark esp2"></div>
+    </div>
+    
+    <!-- Missile 3 -->
+    <div class="missile m3">
+      <div class="missile-body">
+        <div class="missile-tip"></div>
+        <div class="missile-fins"></div>
+        <div class="missile-thruster-glow"></div>
+      </div>
+      <div class="flame-trail"></div>
+      <div class="exhaust-smoke es1"></div>
+      <div class="exhaust-smoke es2"></div>
+      <div class="exhaust-smoke es3"></div>
+      <div class="exhaust-spark esp1"></div>
+      <div class="exhaust-spark esp2"></div>
+    </div>
+  </div>
+</div>

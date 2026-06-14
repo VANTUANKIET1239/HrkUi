@@ -1,0 +1,95 @@
+<div class="shield-container">
+  <!-- Glowing geodesic forcefield bubble dome -->
+  <div class="shield-bubble-wrapper">
+    <svg viewBox="0 0 100 100" class="geodesic-shield-svg">
+      <defs>
+        <!-- Intense neon glow filter -->
+        <filter id="neon-glow-filter" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.2" result="blur1" />
+          <feGaussianBlur stdDeviation="3" result="blur2" />
+          <feMerge>
+            <feMergeNode in="blur2" />
+            <feMergeNode in="blur1" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <!-- 3D spherical radial gradient core -->
+        <radialGradient id="shield-core-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(5, 2, 10, 0.3)" />
+          <stop offset="60%" stop-color="rgba(8, 4, 16, 0.75)" />
+          <stop offset="90%" stop-color="rgba(139, 92, 246, 0.45)" />
+          <stop offset="100%" stop-color="rgba(168, 85, 247, 0.85)" />
+        </radialGradient>
+      </defs>
+
+      <!-- Spherical backdrop glass overlay -->
+      <circle cx="50" cy="50" r="47" class="shield-backdrop" />
+
+      <!-- Geodesic Facet Grid (Triangular mesh) -->
+      <!-- Center ring triangles -->
+      <polygon points="50,50 50,32 65.6,41" class="facet f1" />
+      <polygon points="50,50 65.6,41 65.6,59" class="facet f2" />
+      <polygon points="50,50 65.6,59 50,68" class="facet f3" />
+      <polygon points="50,50 50,68 34.4,59" class="facet f4" />
+      <polygon points="50,50 34.4,59 34.4,41" class="facet f5" />
+      <polygon points="50,50 34.4,41 50,32" class="facet f6" />
+
+      <!-- Inner to Mid Ring connection -->
+      <polygon points="50,32 50,16 67,20.6" class="facet f7" />
+      <polygon points="50,32 67,20.6 65.6,41" class="facet f8" />
+      <polygon points="65.6,41 67,20.6 79.4,33" class="facet f9" />
+      <polygon points="65.6,41 79.4,33 84,50" class="facet f10" />
+      <polygon points="65.6,41 84,50 65.6,59" class="facet f11" />
+      <polygon points="65.6,59 84,50 79.4,67" class="facet f12" />
+      <polygon points="65.6,59 79.4,67 67,79.4" class="facet f13" />
+      <polygon points="65.6,59 67,79.4 50,68" class="facet f14" />
+      <polygon points="50,68 67,79.4 50,84" class="facet f15" />
+      <polygon points="50,68 50,84 33,79.4" class="facet f16" />
+      <polygon points="50,68 33,79.4 34.4,59" class="facet f17" />
+      <polygon points="34.4,59 33,79.4 20.6,67" class="facet f18" />
+      <polygon points="34.4,59 20.6,67 16,50" class="facet f19" />
+      <polygon points="34.4,59 16,50 34.4,41" class="facet f20" />
+      <polygon points="34.4,41 16,50 20.6,33" class="facet f21" />
+      <polygon points="34.4,41 20.6,33 33,20.6" class="facet f22" />
+      <polygon points="34.4,41 33,20.6 50,32" class="facet f23" />
+      <polygon points="50,32 33,20.6 50,16" class="facet f24" />
+
+      <!-- Mid to Outer Ring connection -->
+      <polygon points="50,16 50,2 74,8.5" class="facet f25" />
+      <polygon points="50,16 74,8.5 67,20.6" class="facet f26" />
+      <polygon points="67,20.6 74,8.5 91.5,26" class="facet f27" />
+      <polygon points="67,20.6 91.5,26 79.4,33" class="facet f28" />
+      <polygon points="79.4,33 91.5,26 98,50" class="facet f29" />
+      <polygon points="79.4,33 98,50 84,50" class="facet f30" />
+      <polygon points="84,50 98,50 91.5,74" class="facet f31" />
+      <polygon points="84,50 91.5,74 79.4,67" class="facet f32" />
+      <polygon points="79.4,67 91.5,74 74,91.5" class="facet f33" />
+      <polygon points="79.4,67 74,91.5 67,79.4" class="facet f34" />
+      <polygon points="67,79.4 74,91.5 50,98" class="facet f35" />
+      <polygon points="50,84 50,98 67,79.4" class="facet f36" />
+      <polygon points="50,84 50,98 26,91.5" class="facet f37" />
+      <polygon points="50,84 26,91.5 33,79.4" class="facet f38" />
+      <polygon points="33,79.4 26,91.5 8.5,74" class="facet f39" />
+      <polygon points="33,79.4 8.5,74 20.6,67" class="facet f40" />
+      <polygon points="20.6,67 8.5,74 2,50" class="facet f41" />
+      <polygon points="20.6,67 2,50 16,50" class="facet f42" />
+      <polygon points="16,50 2,50 8.5,26" class="facet f43" />
+      <polygon points="16,50 8.5,26 20.6,33" class="facet f44" />
+      <polygon points="20.6,33 8.5,26 26,8.5" class="facet f45" />
+      <polygon points="20.6,33 26,8.5 33,20.6" class="facet f46" />
+      <polygon points="33,20.6 26,8.5 50,2" class="facet f47" />
+      <polygon points="33,20.6 50,2 50,16" class="facet f48" />
+    </svg>
+  </div>
+
+  <!-- Decorative Orbit Rings (Subtle high-tech accent) -->
+  <div class="shield-orbit ring-outer"></div>
+  <div class="shield-orbit ring-inner"></div>
+
+  <!-- Floating energy particles -->
+  <div class="shield-particles">
+    <span class="sp-node sp1"></span>
+    <span class="sp-node sp2"></span>
+    <span class="sp-node sp3"></span>
+  </div>
+</div>

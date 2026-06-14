@@ -4,15 +4,8 @@
     'is-charging': isCharging,
     'is-hit': isHit,
     'is-dead': character.hp <= 0
-  }" [attr.activeSkillId]="activeSkillId">
+  }" [attr.active-skill-id]="activeSkillId">
 
-  <!-- PASSIVE EFFECTS (Ambient) -->
-  <app-passive-effect 
-    *ngIf="character.hp > 0"
-    [level]="character.level || 1" 
-    [hasMoneyEffect]="hasMoneyEffect()"
-    [hasRedLightning]="hasRedLightningEffect()">
-  </app-passive-effect>
 
   <!-- ACTIVE SKILL EFFECTS (Casting / Attacking state) -->
   <app-skill 
@@ -111,14 +104,184 @@
       <!-- Blue shockwave ring -->
       <div class="blue-impact-wave"></div>
     </div>
+
+    <!-- Tactical Air Strike Impact Explosion Visuals (Nuclear Mushroom Cloud) -->
+    <div class="mushroom-explosion-fx" *ngIf="activeSkillId === 'TACTICAL_AIR_STRIKE'">
+      <!-- Screen/Scene Flash -->
+      <div class="nuclear-flash"></div>
+      
+      <!-- Ground dust/smoke wave rolling outward -->
+      <div class="ground-dust-wave">
+        <span class="dust d1"></span>
+        <span class="dust d2"></span>
+        <span class="dust d3"></span>
+        <span class="dust d4"></span>
+      </div>
+      
+      <!-- Ground cracks -->
+      <div class="strike-cracks"></div>
+      
+      <!-- The rising column/stem of the mushroom cloud -->
+      <div class="mushroom-stem">
+        <div class="stem-column"></div>
+        <div class="stem-fire"></div>
+      </div>
+      
+      <!-- The massive glowing dome/cap at the top -->
+      <div class="mushroom-cap">
+        <div class="cap-fireball outer"></div>
+        <div class="cap-fireball inner"></div>
+        <div class="cap-fireball core"></div>
+        <div class="cap-smoke"></div>
+      </div>
+      
+      <!-- Expanding condensation ring (torus/halo) -->
+      <div class="condensation-ring"></div>
+      
+      <!-- Flying glowing embers and shrapnel -->
+      <div class="nuclear-embers">
+        <span class="ember em1"></span>
+        <span class="ember em2"></span>
+        <span class="ember em3"></span>
+        <span class="ember em4"></span>
+        <span class="ember em5"></span>
+        <span class="ember em6"></span>
+      </div>
+    </div>
+
+    <!-- Position Snipping Hit Visuals (Đổi Ngôi Đầu Độc) -->
+    <div class="position-snipping-hit-fx" *ngIf="activeSkillId === 'DOI_NGOI_DAU_DOC'">
+      <!-- Hair clip targeting reticle -->
+      <div class="hair-clip-reticle">
+        <div class="clip-prong pr1"></div>
+        <div class="clip-prong pr2"></div>
+      </div>
+      
+      <!-- Slicing matrix lines -->
+      <div class="snipping-slice-line"></div>
+      
+      <!-- Comical Snip! Snip! scissor animation overlays -->
+      <div class="snip-shears-container">
+        <div class="snip-glow"></div>
+        <div class="snip-blade blade-a"></div>
+        <div class="snip-blade blade-b"></div>
+        <div class="snip-label">Snip! Snip!</div>
+      </div>
+
+      <!-- Barber energy cyclone (Green & Purple) during swap -->
+      <div class="barber-energy-cyclone">
+        <div class="cyclone-aura green-aura"></div>
+        <div class="cyclone-aura purple-aura"></div>
+        <!-- Lightning particles -->
+        <span class="lightning lt1">⚡</span>
+        <span class="lightning lt2">⚡</span>
+        <span class="lightning lt3">⚡</span>
+        <!-- Swirling tools -->
+        <span class="cyclone-tool ct1">✂️</span>
+        <span class="cyclone-tool ct2">🪮</span>
+        <span class="cyclone-tool ct3">💈</span>
+      </div>
+
+      <!-- Warp space sphere -->
+      <div class="space-warp-ripple"></div>
+    </div>
+
+    <!-- Lệnh All-In Hủy Diệt Hit Visuals (Fatal All-In Directive) -->
+    <div class="all-in-hit-fx" *ngIf="activeSkillId === 'FATAL_ALL_IN_DIRECTIVE'">
+      <!-- 1. Holographic Casino Matrix grid under target feet -->
+      <div class="casino-matrix-field">
+        <div class="matrix-grid"></div>
+        <div class="matrix-circle"></div>
+      </div>
+
+      <!-- 2. Massive energy pillars of crimson & blue lightning -->
+      <div class="all-in-lightning-pillars">
+        <div class="lightning-pillar crimson-pillar"></div>
+        <div class="lightning-pillar blue-pillar"></div>
+      </div>
+
+      <!-- 3. Bursting card shards, dice, red stock market candles -->
+      <div class="all-in-burst-debris">
+        <span class="deb card-shard cs1">🃏</span>
+        <span class="deb card-shard cs2">🂾</span>
+        <span class="deb card-shard cs3">🃟</span>
+        
+        <span class="deb dice-shard ds1">🎲</span>
+        <span class="deb dice-shard ds2">⚅</span>
+        
+        <span class="deb stock-candle sc1">📉</span>
+        <span class="deb stock-candle sc2">-20%</span>
+        <span class="deb stock-candle sc3">📉</span>
+      </div>
+    </div>
   </ng-container>
 
   <!-- Ellipse shadow under feet -->
   <div class="shadow-ellipse"></div>
 
+  <!-- Orange grid plate highlight (Vinh Barber swap) -->
+  <div class="position-snipping-grid-plate" *ngIf="activeSkillId === 'DOI_NGOI_DAU_DOC'">
+    <div class="plate-border"></div>
+    <div class="plate-text">{{ getRowLabel() }}</div>
+  </div>
+
   <!-- Sprite area -->
   <div class="sprite-area">
-    <img [src]="character.avatar" [alt]="character.name" class="character-sprite" />
+    <!-- PASSIVE EFFECTS (Ambient) - Moved inside sprite-area to center relative to character feet and not overlap health bars -->
+    <app-passive-effect 
+      *ngIf="character.hp > 0"
+      [character]="character"
+      [level]="character.level || 1" 
+      [hasMoneyEffect]="hasMoneyEffect()"
+      [hasRedLightning]="hasRedLightningEffect()"
+      [hasObsidianNebula]="hasObsidianNebulaEffect()"
+      [hasDarkShield]="hasDarkShieldEffect()"
+      [hasScorchedEarth]="hasScorchedEarthEffect()"
+      [hasSpectralGrooming]="hasSpectralGroomingEffect()"
+      [hasViciousDebt]="hasViciousDebtEffect()">
+    </app-passive-effect>
+
+    <img [src]="character.avatar" [alt]="character.name" class="character-sprite" [class.sprite-flipped]="shouldFlipSprite()" />
+
+    <!-- Marked reticle overlay on top of the sprite -->
+    <div class="marked-crosshair-overlay" *ngIf="hasMarkedEffect() && character.hp > 0">
+      <div class="crosshair-wrapper">
+        <img src="/assets/images/dcs-game/hongtam.png" class="crosshair-img" alt="Marked" />
+        <div class="crosshair-lock">LOCK</div>
+      </div>
+    </div>
+
+    <!-- Dizzy effect above the character when they have Choáng Váng debuff -->
+    <div class="dizzy-debuff-overlay" *ngIf="character.statusEffects?.includes('Choáng Váng') && character.hp > 0">
+      <div class="dizzy-spiral sp1"></div>
+      <div class="dizzy-spiral sp2"></div>
+      <div class="mini-scissor-particle ms1">✂️</div>
+      <div class="mini-scissor-particle ms2">✂️</div>
+    </div>
+
+    <!-- Jackpot/Win the Gamble Gold Rain and Glow -->
+    <div class="jackpot-overlay" *ngIf="character.statusEffects?.includes('Jackpot') && character.hp > 0">
+      <div class="golden-glowing-aura"></div>
+      <div class="jackpot-win-text">JACKPOT!</div>
+      <div class="gold-coin-rain">
+        <span class="jc-coin c1">🪙</span>
+        <span class="jc-coin c2">🎰</span>
+        <span class="jc-coin c3">🪙</span>
+        <span class="jc-coin c4">🎰</span>
+        <span class="jc-coin c5">🪙</span>
+        <span class="jc-coin c6">🪙</span>
+      </div>
+    </div>
+
+    <!-- Bankruptcy/Lose the Gamble chains & lock -->
+    <div class="bankruptcy-overlay" *ngIf="(character.statusEffects?.includes('Bankruptcy_2') || character.statusEffects?.includes('Bankruptcy_1')) && character.hp > 0">
+      <div class="dark-drain-shadow"></div>
+      <div class="padlock-chains">
+        <span class="padlock">🔒</span>
+        <span class="padlock-chain pc-1">⛓️</span>
+        <span class="padlock-chain pc-2">⛓️</span>
+      </div>
+    </div>
 
     <!-- Status effects/Buff badges overlaying above the head -->
     <div class="status-badge-overlay" *ngIf="character.statusEffects?.length">
