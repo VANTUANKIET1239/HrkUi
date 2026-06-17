@@ -1,5 +1,5 @@
 export type SkillCategory = 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly';
-export type TargetRangeType = 'single' | 'front_row' | 'back_row' | 'linear' | 'all' | 'same_lane_back_row' | 'random' | 'aoe_all' | 'front_and_back' | 'random_4';
+export type TargetRangeType = 'single' | 'front_row' | 'back_row' | 'linear' | 'all' | 'same_lane_back_row' | 'random' | 'aoe_all' | 'front_and_back' | 'random_4' | 'friendly_all';
 
 export interface Skill {
   id: string;
@@ -16,5 +16,11 @@ export interface Skill {
   phase1Duration?: number;
   phase2Duration?: number;
   phase3Duration?: number;
+  
+  // Christmas Noel support parameters
+  healMultiplier?: number;
+  damageReductionMultiplier?: number;
+  redirectRatio?: number;
 }
+
 

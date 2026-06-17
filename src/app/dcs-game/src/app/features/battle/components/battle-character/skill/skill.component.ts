@@ -13,6 +13,8 @@ import { SkillDarkKnowledgeComponent } from './skill-dark-knowledge/skill-dark-k
 import { SkillTacticalAirStrikeComponent } from './skill-tactical-air-strike/skill-tactical-air-strike.component';
 import { SkillPositionSnippingComponent } from './skill-position-snipping/skill-position-snipping.component';
 import { SkillAllInComponent } from './skill-all-in/skill-all-in.component';
+import { SkillWinterBlessingsComponent } from './skill-winter-blessings/skill-winter-blessings.component';
+import { SkillDeadliftDiaChanComponent } from './skill-deadlift-dia-chan/skill-deadlift-dia-chan.component';
 
 @Component({
   selector: 'app-skill',
@@ -30,7 +32,9 @@ import { SkillAllInComponent } from './skill-all-in/skill-all-in.component';
     SkillDarkKnowledgeComponent,
     SkillTacticalAirStrikeComponent,
     SkillPositionSnippingComponent,
-    SkillAllInComponent
+    SkillAllInComponent,
+    SkillWinterBlessingsComponent,
+    SkillDeadliftDiaChanComponent
   ],
   templateUrl: './skill.component.html',
   styleUrl: './skill.component.scss'

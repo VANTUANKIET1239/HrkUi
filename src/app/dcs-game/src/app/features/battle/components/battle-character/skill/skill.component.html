@@ -60,4 +60,16 @@
     *ngIf="activeSkillId === 'FATAL_ALL_IN_DIRECTIVE'"
     [isTeamRight]="isTeamRight">
   </app-skill-all-in>
+
+  <!-- Skill: Quà Tặng Đêm Đông (Winter Night Blessings) -->
+  <app-skill-winter-blessings
+    *ngIf="activeSkillId === 'WINTER_NIGHT_BLESSINGS'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-winter-blessings>
+
+  <!-- Skill: Deadlift Địa Chấn (Deadlift Dia Chan) -->
+  <app-skill-deadlift-dia-chan
+    *ngIf="activeSkillId === 'DEADLIFT_DIA_CHAN'"
+    [isTeamRight]="isTeamRight">
+  </app-skill-deadlift-dia-chan>
 </ng-container>

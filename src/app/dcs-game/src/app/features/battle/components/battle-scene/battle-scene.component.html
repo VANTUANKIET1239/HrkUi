@@ -83,6 +83,42 @@
       </div>
     </div>
 
+    <!-- Deadlift Dia Chan – Scene-level Golden Lightning Strike VFX -->
+    <div class="deadlift-scene-lightning" *ngIf="battleEngine.currentSkillId() === 'DEADLIFT_DIA_CHAN' && battleEngine.activeTargetIds().length > 0">
+      <!-- Background battlefield golden flash -->
+      <div class="deadlift-field-flash"></div>
+
+      <!-- Lightning bolt 1 → targets row position 1 (top enemy front) -->
+      <div class="deadlift-lightning-bolt dlb1">
+        <div class="bolt-core"></div>
+        <div class="bolt-glow"></div>
+        <div class="bolt-branch bb-a"></div>
+        <div class="bolt-branch bb-b"></div>
+        <div class="bolt-impact"></div>
+      </div>
+
+      <!-- Lightning bolt 2 → targets row position 3 (middle enemy front) -->
+      <div class="deadlift-lightning-bolt dlb2">
+        <div class="bolt-core"></div>
+        <div class="bolt-glow"></div>
+        <div class="bolt-branch bb-a"></div>
+        <div class="bolt-branch bb-b"></div>
+        <div class="bolt-impact"></div>
+      </div>
+
+      <!-- Lightning bolt 3 → targets row position 5 (bottom enemy front) -->
+      <div class="deadlift-lightning-bolt dlb3">
+        <div class="bolt-core"></div>
+        <div class="bolt-glow"></div>
+        <div class="bolt-branch bb-a"></div>
+        <div class="bolt-branch bb-b"></div>
+        <div class="bolt-impact"></div>
+      </div>
+
+      <!-- Central burst on caster side (origin flash) -->
+      <div class="deadlift-origin-burst"></div>
+    </div>
+
     <div class="battlefield-grid">
       <!-- Left Team (Heroes) -->
       <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}">

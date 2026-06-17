@@ -18,7 +18,7 @@ export const INITIAL_HEROES: Hero[] = [
     position: 1,
     team: 'left',
     statusEffects: ['Sixpack Glow', 'Red Lightning'],
-    skills: ['HEAVENLY_JUDGMENT'],
+    skills: ['HEAVENLY_JUDGMENT', 'ULTIMATE_SIXPACK'],
     level: 4,
     defaultFacing: 'right'
   },
@@ -152,8 +152,8 @@ export const INITIAL_HEROES: Hero[] = [
   },
   {
     id: 9,
-    name: 'Client Khó Tính',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=client-kho-tinh',
+    name: 'Kiet Noel',
+    avatar: '/assets/images/dcs-game/TruongKiet-Noel.png',
     hp: 900,
     maxHp: 900,
     mana: 60,
@@ -163,15 +163,15 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 105,
     position: 4,
     team: 'right',
-    statusEffects: ['Feedback Loop'],
-    skills: ['NORMAL_ATTACK', 'CHANGE_REQUIREMENT', 'COMPLAIN'],
+    statusEffects: ['Feedback Loop', 'Dark Blizzard Sleighstream'],
+    skills: ['NORMAL_ATTACK', 'WINTER_NIGHT_BLESSINGS'],
     level: 2,
     defaultFacing: 'right'
   },
   {
     id: 10,
-    name: 'Bug Vô Tận',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=bug-vo-tan',
+    name: 'Hoàng Nguyên',
+    avatar: '/assets/images/dcs-game/HoangNguyen-Gymer.png',
     hp: 1000,
     maxHp: 1000,
     mana: 100,
@@ -181,34 +181,30 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 90,
     position: 5,
     team: 'right',
-    statusEffects: ['Immortal Bug'],
-    skills: ['NORMAL_ATTACK', 'NULL_POINTER', 'STACK_OVERFLOW'],
+    statusEffects: ['Immortal Bug', 'Rep: 9', 'Heavy Iron Gravitational Aura'],
+    skills: ['NORMAL_ATTACK', 'DEADLIFT_DIA_CHAN'],
     level: 1,
-    defaultFacing: 'right'
+    defaultFacing: 'left'
   }
 ];
 
 export const MOCK_BATTLE_LOGS: BattleLog[] = [
   {
     turn: 1,
-
-
-
     actorId: 6,
     targetId: 2,
     skillId: 'TACTICAL_AIR_STRIKE',
-    damage: 260,
+    damage: 180,
     isCrit: false
-
-
   },
   {
     turn: 2,
-    actorId: 8,
-    targetId: 3,
-    skillId: 'FATAL_ALL_IN_DIRECTIVE',
-    damage: 500,
+    actorId: 10,
+    targetId: 1,
+    skillId: 'DEADLIFT_DIA_CHAN',
+    damage: 120,
     isCrit: false
+
   },
   {
     turn: 3,
@@ -217,15 +213,15 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     skillId: 'DARK_KNOWLEDGE_SHIELD_CONVERSION',
     damage: 250,
     isCrit: false
-
   },
   {
     turn: 4,
-    actorId: 7,
-    targetId: 2,
-    skillId: 'DOI_NGOI_DAU_DOC',
-    damage: 220,
+    actorId: 8,
+    targetId: 3,
+    skillId: 'FATAL_ALL_IN_DIRECTIVE',
+    damage: 300,
     isCrit: false
+
   },
   {
     turn: 5,
@@ -248,30 +244,30 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     actorId: 1,
     targetId: 6,
     skillId: 'HEAVENLY_JUDGMENT',
-    damage: 300,
+    damage: 150,
     isCrit: false
   },
   {
     turn: 8,
-    actorId: 9,
-    targetId: 4,
-    skillId: 'CHANGE_REQUIREMENT',
-    damage: 350,
+    actorId: 4,
+    targetId: 8,
+    skillId: 'RANDOM_KNOWLEDGE_DROP',
+    damage: 300,
     isCrit: false
   },
   {
     turn: 9,
-    actorId: 4,
-    targetId: 8,
-    skillId: 'RANDOM_KNOWLEDGE_DROP',
-    damage: 450,
+    actorId: 7,
+    targetId: 2,
+    skillId: 'DOI_NGOI_DAU_DOC',
+    damage: 220,
     isCrit: false
   },
   {
     turn: 10,
-    actorId: 10,
-    targetId: 5,
-    skillId: 'NULL_POINTER',
+    actorId: 4,
+    targetId: 9,
+    skillId: 'NORMAL_ATTACK',
     damage: 200,
     isCrit: false
   },
@@ -280,23 +276,23 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     actorId: 5,
     targetId: 8,
     skillId: 'AUTOMATION_TEST',
-    damage: 400,
+    damage: 200,
     isCrit: false
   },
   {
     turn: 12,
     actorId: 3,
-    targetId: 9,
+    targetId: 8,
     skillId: 'SLASH',
-    damage: 300,
+    damage: 80,
     isCrit: false
   },
   {
     turn: 13,
     actorId: 9,
-    targetId: 1,
-    skillId: 'COMPLAIN',
-    damage: 150,
+    targetId: 9,
+    skillId: 'WINTER_NIGHT_BLESSINGS',
+    damage: 0,
     isCrit: false
   },
   {
@@ -312,7 +308,7 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     actorId: 8,
     targetId: 1,
     skillId: 'FATAL_ALL_IN_DIRECTIVE',
-    damage: 100,
+    damage: 300,
     isCrit: false
   },
   {
@@ -602,6 +598,39 @@ export const SKILL_LIST: Record<string, Skill> = {
     targetType: 'random_4',
     phase1Duration: 1500,
     phase2Duration: 2200,
+    phase3Duration: 1200
+  },
+  WINTER_NIGHT_BLESSINGS: {
+    id: 'WINTER_NIGHT_BLESSINGS',
+    name: 'Quà Tặng Đêm Đông',
+    cost: 100,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#00ff44',
+    type: 'ultimate',
+    description: 'Noel quăng bao quà hồi phục 30% HP tối đa cho tất cả đồng đội, bảo vệ 2 đồng minh ngẫu nhiên bằng Quà Bảo Kê (giảm 50% sát thương gánh chịu và chuyển hướng sang Noel) và tăng cho Noel khả năng giảm 40% sát thương trong 2 lượt.',
+    damageMultiplier: 0.0,
+    targetType: 'friendly_all',
+    healMultiplier: 0.30,
+    damageReductionMultiplier: 0.40,
+    redirectRatio: 0.50,
+    phase1Duration: 1600,
+    phase2Duration: 2000,
+    phase3Duration: 1200
+  },
+  DEADLIFT_DIA_CHAN: {
+    id: 'DEADLIFT_DIA_CHAN',
+    name: 'Deadlift Địa Chấn',
+    cost: 100,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#fbbf24',
+    type: 'physical',
+    description: 'Hoàng Nguyên thực hiện động tác kéo tạ Deadlift cực đại và nện mạnh thanh đòn xuống đất, khiêu khích toàn bộ hàng trước đối thủ trong 2 lượt, giải phóng lực cơ bắp tạo lớp giáp chắn và phản lại 30% sát thương nhận vào.',
+    damageMultiplier: 2.2,
+    targetType: 'front_row',
+    phase1Duration: 1800,
+    phase2Duration: 1500,
     phase3Duration: 1200
   }
 };

@@ -1,0 +1,757 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Allow nested z-indices to stack dynamically relative to the character sprite (z-index: 5) */
+}
+
+.dark-blizzard-vortex {
+  position: absolute;
+  bottom: 25px; /* Aligned near the feet contact point */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 240px;
+}
+
+/* ==========================================================================
+   1. Ground Frost Magic Circle & Runic Rings (Rendered behind at z-index: 2)
+   ========================================================================== */
+.frost-magic-circle {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 160px;
+  height: 160px;
+  z-index: 2; /* Behind character */
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(9, 13, 22, 0.65) 65%, transparent 100%);
+  filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.45));
+}
+
+.outer-runic-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed rgba(6, 182, 212, 0.6);
+  border-radius: 50%;
+  animation: runic-rotate-clockwise 18s linear infinite;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25), inset 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.outer-runic-ring .rune {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 13px;
+  font-weight: 800;
+  color: #06b6d4;
+  text-shadow: 0 0 4px rgba(6, 182, 212, 0.95), 0 0 8px rgba(124, 58, 237, 0.6);
+  transform-origin: center center;
+}
+
+/* Symmetrical placement in a circle of radius 72px */
+.fr1 { transform: translate(-50%, -50%) rotate(0deg) translateY(-72px); }
+.fr2 { transform: translate(-50%, -50%) rotate(45deg) translateY(-72px); }
+.fr3 { transform: translate(-50%, -50%) rotate(90deg) translateY(-72px); }
+.fr4 { transform: translate(-50%, -50%) rotate(135deg) translateY(-72px); }
+.fr5 { transform: translate(-50%, -50%) rotate(180deg) translateY(-72px); }
+.fr6 { transform: translate(-50%, -50%) rotate(225deg) translateY(-72px); }
+.fr7 { transform: translate(-50%, -50%) rotate(270deg) translateY(-72px); }
+.fr8 { transform: translate(-50%, -50%) rotate(315deg) translateY(-72px); }
+
+.inner-glowing-ring {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(124, 58, 237, 0.7);
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.45), inset 0 0 8px rgba(6, 182, 212, 0.35);
+  animation: pulse-ring-glow 3s ease-in-out alternate infinite;
+}
+
+.snowflake-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 26px;
+  color: #06b6d4;
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.9), 0 0 15px rgba(124, 58, 237, 0.5);
+  transform-origin: center center;
+  animation: runic-rotate-counter 8s linear infinite;
+}
+
+@keyframes runic-rotate-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes runic-rotate-counter {
+  0% { transform: translate(-50%, -50%) rotate(360deg); }
+  100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+@keyframes pulse-ring-glow {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.6;
+    border-color: rgba(124, 58, 237, 0.5);
+  }
+  100% {
+    transform: scale(1.03);
+    opacity: 1;
+    border-color: rgba(6, 182, 212, 0.8);
+  }
+}
+
+/* ==========================================================================
+   2. Core Frost Body Glow (Rendered behind at z-index: 2)
+   ========================================================================== */
+.core-frost-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 110px; /* Chest/waist level */
+  transform: translate(-50%, 50%);
+  width: 40px;
+  height: 40px;
+  z-index: 2; /* Behind character */
+  pointer-events: none;
+}
+
+.glow-pulse-blue {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.28) 0%, rgba(6, 182, 212, 0.04) 55%, transparent 75%);
+  animation: pulse-glow-fast 3.5s ease-in-out infinite alternate;
+}
+
+.glow-pulse-purple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0.03) 55%, transparent 75%);
+  animation: pulse-glow-slow 5s ease-in-out infinite alternate -1.8s;
+}
+
+@keyframes pulse-glow-fast {
+  0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+@keyframes pulse-glow-slow {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.55; }
+  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.95; }
+}
+
+/* ==========================================================================
+   3. Rising Frozen Shards (Rendered behind at z-index: 2)
+   ========================================================================== */
+.ice-shards-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Behind character */
+}
+
+.ice-shard {
+  position: absolute;
+  color: #a5f3fc;
+  text-shadow: 0 0 5px rgba(6, 182, 212, 0.9), 0 0 10px rgba(124, 58, 237, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.is1 { left: 20%; font-size: 13px; animation: float-shard 5s infinite ease-in-out; --drift-x: -25px; }
+.is2 { left: 45%; font-size: 10px; animation: float-shard 6.2s infinite ease-in-out 1.2s; --drift-x: 20px; }
+.is3 { left: 72%; font-size: 12px; animation: float-shard 5.5s infinite ease-in-out 0.6s; --drift-x: -20px; }
+.is4 { left: 28%; font-size: 9px; animation: float-shard 6.8s infinite ease-in-out 2.2s; --drift-x: 25px; }
+.is5 { left: 58%; font-size: 11px; animation: float-shard 5.9s infinite ease-in-out 1.7s; --drift-x: -15px; }
+
+@keyframes float-shard {
+  0% {
+    transform: translate3d(0, 220px, 0) rotate(0deg) scale(0.6);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(var(--drift-x), 30px, 0) rotate(360deg) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   4. Swirling Wind Trails / Curved Streaks (Rendered behind at z-index: 2)
+   ========================================================================== */
+.wind-trail {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2; /* Behind character */
+  opacity: 0.35;
+  
+  &.wt1 {
+    top: 22%;
+    left: 15%;
+    width: 70%;
+    height: 55%;
+    border: 1.5px solid transparent;
+    border-top-color: rgba(6, 182, 212, 0.7);
+    filter: blur(2.5px);
+    transform: rotateX(60deg);
+    animation: spin-wind-trail-1 5s linear infinite;
+  }
+  
+  &.wt2 {
+    top: 32%;
+    left: 10%;
+    width: 80%;
+    height: 45%;
+    border: 1.5px solid transparent;
+    border-bottom-color: rgba(124, 58, 237, 0.6);
+    filter: blur(3px);
+    transform: rotateX(65deg);
+    animation: spin-wind-trail-2 6s linear infinite;
+  }
+}
+
+@keyframes spin-wind-trail-1 {
+  from { transform: rotateX(60deg) rotate(0deg); }
+  to { transform: rotateX(60deg) rotate(360deg); }
+}
+
+@keyframes spin-wind-trail-2 {
+  from { transform: rotateX(65deg) rotate(360deg); }
+  to { transform: rotateX(65deg) rotate(0deg); }
+}
+
+/* ==========================================================================
+   5. Freezing Black Mist Columns rising (rendered behind character)
+   ========================================================================== */
+.mist-column {
+  position: absolute;
+  bottom: 0px;
+  width: 45px;
+  height: 200px;
+  background: linear-gradient(0deg, transparent, rgba(15, 23, 42, 0.85) 35%, rgba(88, 28, 135, 0.4) 75%, transparent);
+  filter: blur(14px);
+  opacity: 0;
+  z-index: 2; /* behind character */
+  pointer-events: none;
+  
+  &.mc1 {
+    left: 15%;
+    animation: mist-rise-1 5.5s infinite ease-in-out;
+  }
+  
+  &.mc2 {
+    right: 15%;
+    animation: mist-rise-2 6.5s infinite ease-in-out 1.8s;
+  }
+
+  &.mc3 {
+    left: 42%;
+    width: 35px;
+    animation: mist-rise-1 7.2s infinite ease-in-out 0.9s;
+    background: linear-gradient(0deg, transparent, rgba(15, 23, 42, 0.75) 40%, rgba(6, 182, 212, 0.25) 75%, transparent);
+  }
+}
+
+@keyframes mist-rise-1 {
+  0% {
+    transform: translateY(20px) scaleX(0.7);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(-50px) translateX(-12px) scaleX(1.3);
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(-120px) translateX(6px) scaleX(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes mist-rise-2 {
+  0% {
+    transform: translateY(20px) scaleX(0.85);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(-60px) translateX(10px) scaleX(1.2);
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-130px) translateX(-6px) scaleX(0.7);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   6. Swirling Vortex of Wind & Misty Dark Smoke (rendered behind character)
+   ========================================================================== */
+.wind-spiral {
+  position: absolute;
+  border-radius: 50%;
+  transform-origin: center center;
+  pointer-events: none;
+  opacity: 0.45;
+  z-index: 2; /* behind character */
+  
+  &.ws1 {
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(15, 23, 42, 0.55) 70%, transparent 100%);
+    animation: spin-clockwise 4.5s infinite linear;
+    filter: blur(8px);
+  }
+  
+  &.ws2 {
+    top: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(2, 6, 23, 0.65) 80%, transparent 100%);
+    animation: spin-counter-clockwise 6.5s infinite linear;
+    filter: blur(10px);
+  }
+  
+  &.ws3 {
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    height: 60%;
+    background: radial-gradient(ellipse at center, transparent 20%, rgba(88, 28, 135, 0.2) 60%, rgba(15, 23, 42, 0.45) 90%, transparent 100%);
+    animation: spin-clockwise 5.5s infinite linear;
+    filter: blur(6px);
+  }
+}
+
+/* ==========================================================================
+   7. Orbiting Elements: Dark-Grey, Crimson & Gold Gift Boxes (3D wraps around character)
+   ========================================================================== */
+.orbit-gift {
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+  
+  /* Crimson-ribbon style */
+  &.og1, &.og4 {
+    font-size: 19px;
+    filter: sepia(100%) saturate(1600%) hue-rotate(-50deg) brightness(0.75) drop-shadow(0 0 7px #dc2626);
+  }
+  
+  /* Dark-grey style */
+  &.og2, &.og5 {
+    font-size: 17px;
+    filter: grayscale(100%) brightness(0.3) contrast(1.3) drop-shadow(0 0 6px #4b5563);
+  }
+
+  /* Dark-gold/Crimson style */
+  &.og3, &.og6 {
+    font-size: 15px;
+    filter: sepia(100%) saturate(1300%) hue-rotate(15deg) brightness(0.7) drop-shadow(0 0 7px #d97706);
+  }
+}
+
+.og1 { animation: orbit-path-1 4.8s infinite linear; }
+.og2 { animation: orbit-path-2 5.4s infinite linear -0.9s; }
+.og3 { animation: orbit-path-3 4.4s infinite linear -1.8s; }
+.og4 { animation: orbit-path-4 5.0s infinite linear -2.7s; }
+.og5 { animation: orbit-path-5 5.2s infinite linear -3.6s; }
+.og6 { animation: orbit-path-6 5.6s infinite linear -4.5s; }
+
+@keyframes orbit-path-1 {
+  0% {
+    transform: translate3d(-70px, 160px, 0) scale(0.6);
+    z-index: 4; /* Behind character */
+    opacity: 0.35;
+  }
+  25% {
+    transform: translate3d(0px, 120px, 0) scale(1.3);
+    z-index: 6; /* In front of character */
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(70px, 90px, 0) scale(0.6);
+    z-index: 4; /* Behind character */
+    opacity: 0.35;
+  }
+  75% {
+    transform: translate3d(0px, 130px, 0) scale(0.45);
+    z-index: 4; /* Behind character */
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate3d(-70px, 160px, 0) scale(0.6);
+    z-index: 4;
+    opacity: 0.35;
+  }
+}
+
+@keyframes orbit-path-2 {
+  0% {
+    transform: translate3d(70px, 180px, 0) scale(0.55);
+    z-index: 4;
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate3d(10px, 130px, 0) scale(1.25);
+    z-index: 6; /* In front of character */
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(-70px, 100px, 0) scale(0.55);
+    z-index: 4; /* Behind character */
+    opacity: 0.3;
+  }
+  75% {
+    transform: translate3d(-10px, 140px, 0) scale(0.4);
+    z-index: 4; /* Behind character */
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(70px, 180px, 0) scale(0.55);
+    z-index: 4;
+    opacity: 0.3;
+  }
+}
+
+@keyframes orbit-path-3 {
+  0% {
+    transform: translate3d(-60px, 110px, 0) scale(0.65);
+    z-index: 4;
+    opacity: 0.35;
+  }
+  25% {
+    transform: translate3d(20px, 95px, 0) scale(1.35);
+    z-index: 6; /* In front of character */
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(60px, 80px, 0) scale(0.65);
+    z-index: 4; /* Behind character */
+    opacity: 0.35;
+  }
+  75% {
+    transform: translate3d(-20px, 100px, 0) scale(0.5);
+    z-index: 4; /* Behind character */
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate3d(-60px, 110px, 0) scale(0.65);
+    z-index: 4;
+    opacity: 0.35;
+  }
+}
+
+@keyframes orbit-path-4 {
+  0% {
+    transform: translate3d(80px, 200px, 0) scale(0.5);
+    z-index: 4;
+    opacity: 0.25;
+  }
+  25% {
+    transform: translate3d(-20px, 160px, 0) scale(1.2);
+    z-index: 6; /* In front of character */
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(-80px, 130px, 0) scale(0.5);
+    z-index: 4; /* Behind character */
+    opacity: 0.25;
+  }
+  75% {
+    transform: translate3d(20px, 175px, 0) scale(0.4);
+    z-index: 4; /* Behind character */
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(80px, 200px, 0) scale(0.5);
+    z-index: 4;
+    opacity: 0.25;
+  }
+}
+
+@keyframes orbit-path-5 {
+  0% {
+    transform: translate3d(-50px, 210px, 0) scale(0.5);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  30% {
+    transform: translate3d(30px, 150px, 0) scale(1.25);
+    z-index: 6; /* In front of character */
+    opacity: 0.9;
+  }
+  60% {
+    transform: translate3d(50px, 100px, 0) scale(0.6);
+    z-index: 4; /* Behind character */
+    opacity: 0.3;
+  }
+  85% {
+    transform: translate3d(-10px, 160px, 0) scale(0.4);
+    z-index: 4; /* Behind character */
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(-50px, 210px, 0) scale(0.5);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+@keyframes orbit-path-6 {
+  0% {
+    transform: translate3d(50px, 220px, 0) scale(0.45);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  30% {
+    transform: translate3d(-30px, 170px, 0) scale(1.3);
+    z-index: 6; /* In front of character */
+    opacity: 0.95;
+  }
+  60% {
+    transform: translate3d(-50px, 120px, 0) scale(0.55);
+    z-index: 4; /* Behind character */
+    opacity: 0.25;
+  }
+  85% {
+    transform: translate3d(10px, 180px, 0) scale(0.38);
+    z-index: 4; /* Behind character */
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(50px, 220px, 0) scale(0.45);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+/* ==========================================================================
+   8. Orbiting Elements: Light-Catching Black Snowflakes (3D wraps around character)
+   ========================================================================== */
+.orbit-snowflake {
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+  
+  /* Near-black base with extremely vibrant ice-cyan & purple aura glow */
+  color: #0b0f19;
+  text-shadow: 0 0 4px rgba(6, 182, 212, 0.95), 0 0 10px rgba(124, 58, 237, 0.6);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+
+  &.os1, &.os2 { font-size: 18px; }
+  &.os3, &.os4 { font-size: 14px; }
+  &.os5, &.os6, &.os7 { font-size: 16px; }
+}
+
+.os1 { animation: drift-path-1 3.8s infinite linear; }
+.os2 { animation: drift-path-2 4.4s infinite linear -0.6s; }
+.os3 { animation: drift-path-3 4.0s infinite linear -1.2s; }
+.os4 { animation: drift-path-4 4.6s infinite linear -1.8s; }
+.os5 { animation: drift-path-5 4.2s infinite linear -2.4s; }
+.os6 { animation: drift-path-6 4.8s infinite linear -3.0s; }
+.os7 { animation: drift-path-7 4.5s infinite linear -3.6s; }
+
+@keyframes drift-path-1 {
+  0% {
+    transform: translate3d(-65px, 190px, 0) scale(0.5) rotate(0deg);
+    z-index: 4; /* Behind character */
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(45px, 110px, 0) scale(1.25) rotate(180deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(-65px, 190px, 0) scale(0.5) rotate(360deg);
+    z-index: 4;
+    opacity: 0.25;
+  }
+}
+
+@keyframes drift-path-2 {
+  0% {
+    transform: translate3d(65px, 200px, 0) scale(0.45) rotate(0deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(-35px, 120px, 0) scale(1.3) rotate(-180deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate3d(65px, 200px, 0) scale(0.45) rotate(-360deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+@keyframes drift-path-3 {
+  0% {
+    transform: translate3d(-35px, 150px, 0) scale(0.6) rotate(45deg);
+    z-index: 4;
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(55px, 90px, 0) scale(1.2) rotate(225deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-35px, 150px, 0) scale(0.6) rotate(405deg);
+    z-index: 4;
+    opacity: 0.25;
+  }
+}
+
+@keyframes drift-path-4 {
+  0% {
+    transform: translate3d(35px, 140px, 0) scale(0.55) rotate(-45deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(-45px, 85px, 0) scale(1.35) rotate(-225deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(35px, 140px, 0) scale(0.55) rotate(-405deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+@keyframes drift-path-5 {
+  0% {
+    transform: translate3d(-50px, 210px, 0) scale(0.5) rotate(10deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  35% {
+    opacity: 0.9;
+  }
+  55% {
+    transform: translate3d(30px, 130px, 0) scale(1.2) rotate(190deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(-50px, 210px, 0) scale(0.5) rotate(370deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+@keyframes drift-path-6 {
+  0% {
+    transform: translate3d(50px, 175px, 0) scale(0.4) rotate(-10deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(-20px, 105px, 0) scale(1.15) rotate(-190deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(50px, 175px, 0) scale(0.4) rotate(-370deg);
+    z-index: 4;
+    opacity: 0.2;
+  }
+}
+
+@keyframes drift-path-7 {
+  0% {
+    transform: translate3d(-15px, 130px, 0) scale(0.5) rotate(90deg);
+    z-index: 4;
+    opacity: 0.25;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(40px, 80px, 0) scale(1.25) rotate(270deg);
+    z-index: 6; /* In front of character */
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(-15px, 130px, 0) scale(0.5) rotate(450deg);
+    z-index: 4;
+    opacity: 0.25;
+  }
+}

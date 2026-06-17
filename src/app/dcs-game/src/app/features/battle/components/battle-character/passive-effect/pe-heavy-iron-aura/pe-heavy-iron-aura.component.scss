@@ -1,0 +1,428 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Base Wrapper for the Gravitational Aura */
+.heavy-iron-aura-wrapper {
+  position: absolute;
+  bottom: 0px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 300px;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* ==========================================================================
+   1. BACKGROUND GLOW & KINETIC MIST (Brought forward / layered around sprite)
+   ========================================================================== */
+.gravitational-center-glow {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 150px;
+  /* Glowing golden-yellow backlight */
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.45) 0%, rgba(245, 158, 11, 0.2) 45%, rgba(217, 119, 6, 0.05) 70%, transparent 100%);
+  border-radius: 50%;
+  filter: blur(10px);
+  z-index: 2; /* Back-lit layer behind character */
+  animation: core-pulse-gravity 3.5s infinite ease-in-out;
+}
+
+.kinetic-mist-field {
+  position: absolute;
+  bottom: 30px;
+  left: 10%;
+  width: 80%;
+  height: 120px;
+  z-index: 6; /* Brought in front of the character sprite (z-index 5) */
+  opacity: 0.6; /* Semi-transparent to not obscure the character */
+}
+
+.mist-particle {
+  position: absolute;
+  bottom: 0;
+  width: 35px;
+  height: 35px;
+  /* Golden light particle mist */
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.7) 0%, rgba(245, 158, 11, 0.35) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(4px);
+  opacity: 0;
+  animation: rise-mist 3s infinite linear;
+
+  &.mp1 { left: 15%; animation-delay: 0s; width: 40px; height: 40px; }
+  &.mp2 { left: 35%; animation-delay: 0.6s; width: 28px; height: 28px; animation-duration: 3.5s; }
+  &.mp3 { left: 55%; animation-delay: 1.2s; width: 35px; height: 35px; }
+  &.mp4 { left: 75%; animation-delay: 1.8s; width: 30px; height: 30px; animation-duration: 3.2s; }
+  &.mp5 { left: 45%; animation-delay: 2.4s; width: 36px; height: 36px; }
+}
+
+@keyframes core-pulse-gravity {
+  0%, 100% { transform: translateX(-50%) scale(0.95); opacity: 0.7; }
+  50% { transform: translateX(-50%) scale(1.12); opacity: 0.95; }
+}
+
+@keyframes rise-mist {
+  0% {
+    transform: translateY(15px) scale(0.7);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(-40px) scale(1.1);
+  }
+  100% {
+    transform: translateY(-90px) scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   2. GOLDEN-YELLOW LIGHT RAY SWIRLING ENERGY RIBBONS (Brought In Front)
+   ========================================================================== */
+.gravity-ribbons-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  transform-style: preserve-3d;
+  z-index: 7; /* Placed in front of character sprite (z-index 5) */
+}
+
+.gravity-ribbon {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  border-radius: 50%;
+  /* Glowing yellow light ray border style */
+  border: 3.5px solid rgba(253, 224, 71, 0.85);
+  box-shadow: 0 0 15px rgba(253, 224, 71, 0.9), 
+              0 0 30px rgba(245, 158, 11, 0.6), 
+              inset 0 0 10px rgba(253, 224, 71, 0.5);
+  background: rgba(253, 224, 71, 0.04); /* Sightly tinted interior */
+  filter: blur(0.5px);
+  transform-origin: center center;
+  opacity: 0.65; /* Softened so it does not block character details */
+
+  &.ribbon-1 {
+    width: 200px;
+    height: 70px;
+    margin-left: -100px;
+    animation: swirl-ribbon-1 6s infinite linear;
+  }
+
+  &.ribbon-2 {
+    width: 220px;
+    height: 80px;
+    margin-left: -110px;
+    bottom: 45px;
+    animation: swirl-ribbon-2 8s infinite linear;
+  }
+
+  &.ribbon-3 {
+    width: 170px;
+    height: 60px;
+    margin-left: -85px;
+    bottom: 70px;
+    animation: swirl-ribbon-3 5s infinite linear;
+  }
+}
+
+@keyframes swirl-ribbon-1 {
+  0% {
+    transform: rotateX(68deg) rotateY(12deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(68deg) rotateY(12deg) rotateZ(360deg);
+  }
+}
+
+@keyframes swirl-ribbon-2 {
+  0% {
+    transform: rotateX(72deg) rotateY(-18deg) rotateZ(360deg);
+  }
+  100% {
+    transform: rotateX(72deg) rotateY(-18deg) rotateZ(0deg);
+  }
+}
+
+@keyframes swirl-ribbon-3 {
+  0% {
+    transform: rotateX(65deg) rotateY(5deg) rotateZ(180deg);
+  }
+  100% {
+    transform: rotateX(65deg) rotateY(5deg) rotateZ(540deg);
+  }
+}
+
+/* ==========================================================================
+   3. 3D ORBITING IRON OBJECTS WITH GOLDEN GLOWS
+   ========================================================================== */
+.iron-orbit-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.orbit-object {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  pointer-events: none;
+}
+
+/* SVG Weight Plate 20KG */
+.plate-20kg {
+  width: 44px;
+  height: 44px;
+  margin-top: -22px;
+  margin-left: -22px;
+  /* Gold glow drop-shadow for high contrast */
+  filter: drop-shadow(0 0 8px rgba(253, 224, 71, 0.95)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
+  animation: orbit-item-1 10s infinite linear;
+}
+
+/* SVG Weight Plate 15KG */
+.plate-15kg {
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  margin-left: -18px;
+  filter: drop-shadow(0 0 6px rgba(253, 224, 71, 0.9)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.6));
+  animation: orbit-item-2 8s infinite linear;
+}
+
+/* Broken Dumbbell Piece 1 (Rod + One weight) */
+.broken-dumbbell-1 {
+  width: 40px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -20px;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 0 6px rgba(253, 224, 71, 0.8)) drop-shadow(0 3px 4px rgba(0, 0, 0, 0.6));
+  animation: orbit-item-3 12s infinite linear;
+
+  .db-shaft {
+    position: absolute;
+    top: 9px;
+    left: 4px;
+    width: 32px;
+    height: 3px;
+    background: linear-gradient(to bottom, #888, #333);
+    border: 0.5px solid #111;
+    border-radius: 1px;
+  }
+
+  .db-weight.intact-weight {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    width: 10px;
+    height: 17px;
+    background: radial-gradient(circle, #3a3a3e 0%, #151518 100%);
+    border: 1px solid #000;
+    border-radius: 2px;
+  }
+
+  .db-broken-tip {
+    position: absolute;
+    top: 8px;
+    right: 2px;
+    width: 3px;
+    height: 5px;
+    background: #666;
+    clip-path: polygon(0% 0%, 100% 30%, 60% 60%, 100% 100%, 0% 100%);
+  }
+}
+
+/* Broken Dumbbell Piece 2 (Single Hex Weight) */
+.broken-dumbbell-2 {
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  margin-left: -9px;
+  filter: drop-shadow(0 0 6px rgba(253, 224, 71, 0.8)) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.6));
+  animation: orbit-item-4 9s infinite linear;
+
+  .db-hex-weight {
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #333336 0%, #151517 100%);
+    border: 1px solid #000;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      width: 6px;
+      height: 6px;
+      background: #000;
+      border-radius: 50%;
+    }
+  }
+}
+
+/* 3D Orbit Keyframes using dynamic z-indexing and scaling */
+/* Adjusted z-indices to shift orbiting items forward (front is 12, back is 6 which is still in front of sprite) */
+@keyframes orbit-item-1 {
+  0% {
+    transform: translate3d(-110px, 0px, -20px) rotate(0deg) scale(0.75);
+    z-index: 6; /* Slightly in front of character (5) */
+  }
+  25% {
+    transform: translate3d(0px, 25px, 20px) rotate(90deg) scale(1.0);
+    z-index: 12; /* High foreground */
+  }
+  50% {
+    transform: translate3d(110px, 0px, -20px) rotate(180deg) scale(0.75);
+    z-index: 6; /* Slightly in front */
+  }
+  75% {
+    transform: translate3d(0px, -25px, -40px) rotate(270deg) scale(0.6);
+    z-index: 6; /* Slightly in front */
+  }
+  100% {
+    transform: translate3d(-110px, 0px, -20px) rotate(360deg) scale(0.75);
+    z-index: 6;
+  }
+}
+
+@keyframes orbit-item-2 {
+  0% {
+    transform: translate3d(100px, -15px, -20px) rotate(180deg) scale(0.8);
+    z-index: 6;
+  }
+  25% {
+    transform: translate3d(0px, -35px, -35px) rotate(90deg) scale(0.65);
+    z-index: 6;
+  }
+  50% {
+    transform: translate3d(-100px, -15px, -20px) rotate(0deg) scale(0.8);
+    z-index: 6;
+  }
+  75% {
+    transform: translate3d(0px, 15px, 25px) rotate(-90deg) scale(1.05);
+    z-index: 12; /* Foreground */
+  }
+  100% {
+    transform: translate3d(100px, -15px, -20px) rotate(-180deg) scale(0.8);
+    z-index: 6;
+  }
+}
+
+@keyframes orbit-item-3 {
+  0% {
+    transform: translate3d(-50px, -50px, -30px) rotateY(0deg) rotateZ(0deg) scale(0.7);
+    z-index: 6;
+  }
+  30% {
+    transform: translate3d(50px, -30px, -30px) rotateY(180deg) rotateZ(120deg) scale(0.7);
+    z-index: 6;
+  }
+  60% {
+    transform: translate3d(0px, 20px, 30px) rotateY(360deg) rotateZ(240deg) scale(1.05);
+    z-index: 12; /* Foreground */
+  }
+  100% {
+    transform: translate3d(-50px, -50px, -30px) rotateY(720deg) rotateZ(360deg) scale(0.7);
+    z-index: 6;
+  }
+}
+
+@keyframes orbit-item-4 {
+  0% {
+    transform: translate3d(60px, 30px, 30px) rotate(0deg) scale(1.0);
+    z-index: 12; /* Foreground */
+  }
+  25% {
+    transform: translate3d(110px, 5px, -10px) rotate(90deg) scale(0.8);
+    z-index: 6;
+  }
+  50% {
+    transform: translate3d(0px, -25px, -30px) rotate(180deg) scale(0.65);
+    z-index: 6;
+  }
+  75% {
+    transform: translate3d(-110px, 5px, -10px) rotate(270deg) scale(0.8);
+    z-index: 6;
+  }
+  100% {
+    transform: translate3d(60px, 30px, 30px) rotate(360deg) scale(1.0);
+    z-index: 12;
+  }
+}
+
+/* ==========================================================================
+   4. STYLIZED KANJI TEXT FOR THE PASSIVE EFFECT NAME
+   ========================================================================== */
+.gravity-text-badge {
+  position: absolute;
+  top: 40px;
+  right: -25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 12, 15, 0.92);
+  /* Gold-yellow borders matching the new theme */
+  border: 1.5px solid #fbbf24; 
+  box-shadow: 0 0 12px rgba(253, 224, 71, 0.55), 
+              0 0 4px rgba(0, 0, 0, 0.95),
+              inset 0 0 6px rgba(253, 224, 71, 0.2);
+  border-radius: 4px;
+  padding: 4px 6px;
+  z-index: 15; /* Always on top */
+  animation: gravity-badge-float 4s infinite ease-in-out;
+  transform: rotateZ(3deg);
+
+  .kanji-chars {
+    font-family: 'Outfit', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 2px;
+    /* Golden glow for Kanji characters */
+    text-shadow: 0 0 6px rgba(253, 224, 71, 0.95), 0 0 1px #000;
+    line-height: 1.1;
+  }
+
+  .sub-label {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 6px;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 1px;
+    margin-top: 2px;
+    text-shadow: 0 0 4px rgba(253, 224, 71, 0.8);
+  }
+}
+
+@keyframes gravity-badge-float {
+  0%, 100% {
+    transform: translateY(0) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}

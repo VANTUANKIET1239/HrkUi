@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
+import { FormationManagementComponent } from '../../components/formation-management/formation-management.component';
 
 interface PlayerInfo {
   name: string;
@@ -31,11 +33,13 @@ interface FeatureItem {
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
 export class GameHomeComponent implements OnInit {
+  isHeroManagementOpen = false;
+  isFormationManagementOpen = false;
   playerInfo: PlayerInfo = {
     name: 'Runy997_8T6y',
     level: 120,
@@ -106,7 +110,11 @@ export class GameHomeComponent implements OnInit {
   }
 
   onFeatureClick(feature: FeatureItem): void {
-    if (feature.locked) {
+    if (feature.name === 'Võ Tướng') {
+      this.isHeroManagementOpen = true;
+    } else if (feature.name === 'Đội Ngũ') {
+      this.isFormationManagementOpen = true;
+    } else if (feature.locked) {
       alert(`Tính năng "${feature.name}" đang bị khóa!`);
     } else {
       alert(`Đang chuyển đến tính năng: ${feature.name}`);

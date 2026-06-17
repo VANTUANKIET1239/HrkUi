@@ -1,0 +1,103 @@
+<div class="heavy-iron-aura-wrapper">
+  <!-- 1. BACKGROUND DUST & GLOWS (Rendered behind the character) -->
+  <div class="gravitational-center-glow"></div>
+  
+  <!-- Dark kinetic mist rising from the ground -->
+  <div class="kinetic-mist-field">
+    <span class="mist-particle mp1"></span>
+    <span class="mist-particle mp2"></span>
+    <span class="mist-particle mp3"></span>
+    <span class="mist-particle mp4"></span>
+    <span class="mist-particle mp5"></span>
+  </div>
+
+  <!-- 2. FLUID SWIRLING RIBBONS OF DENSE JET-BLACK GRAVITATIONAL ENERGY -->
+  <div class="gravity-ribbons-container">
+    <div class="gravity-ribbon ribbon-1"></div>
+    <div class="gravity-ribbon ribbon-2"></div>
+    <div class="gravity-ribbon ribbon-3"></div>
+  </div>
+
+  <!-- 3. FLOATING & ROTATING MINIMALIST IRON WEIGHT PLATES & BROKEN DUMBBELLS -->
+  <div class="iron-orbit-field">
+    <!-- SVG Weight Plate 1: 20KG Grip Plate -->
+    <div class="orbit-object plate-20kg">
+      <svg viewBox="0 0 100 100" class="weight-plate-svg">
+        <!-- Main Plate Body -->
+        <circle cx="50" cy="50" r="46" fill="url(#plateGrad)" stroke="#111111" stroke-width="4"/>
+        <circle cx="50" cy="50" r="36" fill="none" stroke="#080808" stroke-width="2" stroke-dasharray="8 4"/>
+        
+        <!-- Grip Cutouts (3 slots around the plate) -->
+        <!-- Top grip slot -->
+        <path d="M35 25 A 22 22 0 0 1 65 25 A 16 16 0 0 0 35 25 Z" fill="#080808" stroke="#1c1c1c" stroke-width="1.5"/>
+        <!-- Bottom left grip slot -->
+        <path d="M22 60 A 22 22 0 0 1 37 40 A 16 16 0 0 0 22 60 Z" fill="#080808" stroke="#1c1c1c" stroke-width="1.5"/>
+        <!-- Bottom right grip slot -->
+        <path d="M63 40 A 22 22 0 0 1 78 60 A 16 16 0 0 0 63 40 Z" fill="#080808" stroke="#1c1c1c" stroke-width="1.5"/>
+
+        <!-- Center Hub -->
+        <circle cx="50" cy="50" r="14" fill="#181818" stroke="#333333" stroke-width="2"/>
+        <circle cx="50" cy="50" r="6" fill="#080808"/>
+        
+        <!-- Text Labels -->
+        <text x="50" y="54" font-size="8" font-family="'Courier New', monospace" font-weight="900" fill="#a8a8a8" text-anchor="middle">20</text>
+        <text x="50" y="80" font-size="7" font-family="'Courier New', monospace" font-weight="900" fill="#666666" text-anchor="middle">KG</text>
+        
+        <!-- Gradients definition -->
+        <defs>
+          <radialGradient id="plateGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#2a2a2d"/>
+            <stop offset="70%" stop-color="#1e1e20"/>
+            <stop offset="100%" stop-color="#121214"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- SVG Weight Plate 2: 15KG Grip Plate (slightly different shading and markings) -->
+    <div class="orbit-object plate-15kg">
+      <svg viewBox="0 0 100 100" class="weight-plate-svg">
+        <circle cx="50" cy="50" r="42" fill="url(#plateGrad2)" stroke="#0f0f10" stroke-width="3.5"/>
+        <circle cx="50" cy="50" r="32" fill="none" stroke="#0a0a0b" stroke-width="1.5"/>
+        
+        <!-- 2 Symmetrical Grip Cutouts -->
+        <path d="M32 28 A 20 20 0 0 1 68 28 A 15 15 0 0 0 32 28 Z" fill="#050505" stroke="#151515" stroke-width="1"/>
+        <path d="M32 72 A 20 20 0 0 0 68 72 A 15 15 0 0 1 32 72 Z" fill="#050505" stroke="#151515" stroke-width="1"/>
+
+        <!-- Center Hub -->
+        <circle cx="50" cy="50" r="12" fill="#151517" stroke="#2d2d30" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="5" fill="#050505"/>
+        
+        <!-- Text Labels -->
+        <text x="50" y="53" font-size="8" font-family="'Courier New', monospace" font-weight="900" fill="#9c9c9c" text-anchor="middle">15</text>
+        <text x="50" y="60" font-size="5" font-family="'Courier New', monospace" font-weight="900" fill="#555555" text-anchor="middle">KG</text>
+
+        <defs>
+          <radialGradient id="plateGrad2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#242426"/>
+            <stop offset="75%" stop-color="#18181a"/>
+            <stop offset="100%" stop-color="#0e0e10"/>
+          </radialGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Broken Dumbbell Piece 1 (Rod + One side weight intact) -->
+    <div class="orbit-object broken-dumbbell-1">
+      <div class="db-shaft"></div>
+      <div class="db-weight intact-weight"></div>
+      <div class="db-broken-tip"></div>
+    </div>
+
+    <!-- Broken Dumbbell Piece 2 (Single loose hexagonal weight plate) -->
+    <div class="orbit-object broken-dumbbell-2">
+      <div class="db-hex-weight"></div>
+    </div>
+  </div>
+
+  <!-- 4. STYLIZED KANJI TEXT FOR THE PASSIVE EFFECT NAME -->
+  <div class="gravity-text-badge">
+    <div class="kanji-chars">重力</div>
+    <div class="sub-label">GRAVITY</div>
+  </div>
+</div>

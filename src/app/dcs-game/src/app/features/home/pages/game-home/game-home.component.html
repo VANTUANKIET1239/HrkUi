@@ -179,8 +179,13 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
+
+  <!-- Hero Management Popup/Modal -->
+  <app-hero-management *ngIf="isHeroManagementOpen" (close)="isHeroManagementOpen = false"></app-hero-management>
+
+  <!-- Formation Management Popup/Modal -->
+  <app-formation-management *ngIf="isFormationManagementOpen" (close)="isFormationManagementOpen = false"></app-formation-management>
 </div>

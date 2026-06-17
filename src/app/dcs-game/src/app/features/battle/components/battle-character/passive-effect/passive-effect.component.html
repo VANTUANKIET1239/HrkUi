@@ -31,4 +31,85 @@
 
   <!-- Vortex of Vicious Debt Effect -->
   <app-pe-vicious-debt *ngIf="hasViciousDebt" [character]="character"></app-pe-vicious-debt>
+
+  <!-- Marked reticle overlay on top of the sprite -->
+  <div class="marked-crosshair-overlay" *ngIf="hasMarkedEffect">
+    <div class="crosshair-wrapper">
+      <img src="/assets/images/dcs-game/hongtam.png" class="crosshair-img" alt="Marked" />
+      <div class="crosshair-lock">LOCK</div>
+    </div>
+  </div>
+
+  <!-- Dizzy effect above the character when they have Choáng Váng debuff -->
+  <div class="dizzy-debuff-overlay" *ngIf="isDizzy">
+    <div class="dizzy-spiral sp1"></div>
+    <div class="dizzy-spiral sp2"></div>
+    <div class="mini-scissor-particle ms1">✂️</div>
+    <div class="mini-scissor-particle ms2">✂️</div>
+  </div>
+
+  <!-- Jackpot/Win the Gamble Gold Rain and Glow -->
+  <div class="jackpot-overlay" *ngIf="isJackpot">
+    <div class="golden-glowing-aura"></div>
+    <div class="jackpot-win-text">JACKPOT!</div>
+    <div class="gold-coin-rain">
+      <span class="jc-coin c1">🪙</span>
+      <span class="jc-coin c2">🎰</span>
+      <span class="jc-coin c3">🪙</span>
+      <span class="jc-coin c4">🎰</span>
+      <span class="jc-coin c5">🪙</span>
+      <span class="jc-coin c6">🪙</span>
+    </div>
+  </div>
+
+  <!-- Bankruptcy/Lose the Gamble chains & lock -->
+  <div class="bankruptcy-overlay" *ngIf="isBankrupt">
+    <div class="dark-drain-shadow"></div>
+    <div class="padlock-chains">
+      <span class="padlock">🔒</span>
+      <span class="padlock-chain pc-1">⛓️</span>
+      <span class="padlock-chain pc-2">⛓️</span>
+    </div>
+  </div>
+
+  <!-- Quà Bảo Kê / Damage Redirection Shield Matrix under feet -->
+  <div class="bao-ke-overlay" *ngIf="hasBaoKeEffect">
+    <div class="shield-matrix-ring"></div>
+    <div class="shield-matrix-hex-grid"></div>
+    <img src="/assets/images/dcs-game/hopqua-special.png" class="bao-ke-gift-box" alt="Special Gift Box" />
+  </div>
+
+  <!-- Noel's Da Thịt Vững Chãi defensive shield aura -->
+  <div class="da-thit-overlay" *ngIf="hasDaThitEffect">
+    <div class="defensive-aurora"></div>
+    <div class="defensive-shield-badge">🛡️</div>
+  </div>
+
+  <!-- Damage Redirection Beam connecting hit target to Noel (ID 9) -->
+  <div class="redirection-beam" *ngIf="isHit && hasBaoKeEffect && character.id !== 9">
+    <div class="beam-line"></div>
+    <div class="beam-energy-pulse"></div>
+  </div>
+
+  <!-- Dark Blizzard Sleighstream Effect for Noel -->
+  <app-pe-dark-blizzard *ngIf="hasDarkBlizzard" [character]="character"></app-pe-dark-blizzard>
+
+  <!-- Deadlift Dia Chan Kinetic Dome Shield & Rotating Weight Plates -->
+  <div class="deadlift-shield-overlay" *ngIf="hasDeadliftShield">
+    <div class="kinetic-dome"></div>
+    <div class="rotating-weight-plates">
+      <span class="plate p-left">🏋️</span>
+      <span class="plate p-right">🏋️</span>
+      <span class="plate p-center">🏋️</span>
+    </div>
+    <!-- Electric sparks if "Khóa Khớp" is active -->
+    <div class="joint-lock-sparks" *ngIf="hasJointLock">
+      <span class="spark s1">⚡</span>
+      <span class="spark s2">⚡</span>
+      <span class="spark s3">⚡</span>
+    </div>
+  </div>
+
+  <!-- Heavy Iron Gravitational Aura for Hoàng Nguyên -->
+  <app-pe-heavy-iron-aura *ngIf="hasHeavyIronAura" [character]="character"></app-pe-heavy-iron-aura>
 </div>

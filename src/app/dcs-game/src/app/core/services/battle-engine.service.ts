@@ -166,6 +166,73 @@ export class BattleEngineService {
             }, 0);
           }
           
+          if (statusEffects.includes('Da Thịt Vững Chãi (2 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Da Thịt Vững Chãi (2 lượt)').concat('Da Thịt Vững Chãi (1 lượt)');
+          } else if (statusEffects.includes('Da Thịt Vững Chãi (1 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Da Thịt Vững Chãi (1 lượt)');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `🛡️ Hiệu ứng **Da Thịt Vững Chãi** của **${h.name}** đã hết tác dụng.`]);
+            }, 0);
+          }
+
+          if (statusEffects.includes('Quà Bảo Kê (2 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Quà Bảo Kê (2 lượt)').concat('Quà Bảo Kê (1 lượt)');
+          } else if (statusEffects.includes('Quà Bảo Kê (1 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Quà Bảo Kê (1 lượt)');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `🎁 Hiệu ứng **Quà Bảo Kê** của **${h.name}** đã hết tác dụng.`]);
+            }, 0);
+          }
+
+          if (statusEffects.includes('Deadlift Shield (2 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Deadlift Shield (2 lượt)').concat('Deadlift Shield (1 lượt)');
+          } else if (statusEffects.includes('Deadlift Shield (1 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Deadlift Shield (1 lượt)');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `✨ Lớp giáp tạ xích của **${h.name}** đã biến mất.`]);
+            }, 0);
+          }
+
+          if (statusEffects.includes('Khóa Khớp (2 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Khóa Khớp (2 lượt)').concat('Khóa Khớp (1 lượt)');
+          } else if (statusEffects.includes('Khóa Khớp (1 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Khóa Khớp (1 lượt)');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `🔓 Trạng thái **Khóa Khớp** của **${h.name}** đã hết tác dụng.`]);
+            }, 0);
+          }
+
+          if (statusEffects.includes('Taunted (2 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Taunted (2 lượt)').concat('Taunted (1 lượt)');
+          } else if (statusEffects.includes('Taunted (1 lượt)')) {
+            statusEffects = statusEffects.filter(e => e !== 'Taunted (1 lượt)');
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [...logs, `⚡ **${h.name}** đã thoát khỏi trạng thái Khiêu Khích.`]);
+            }, 0);
+          }
+
+          // Rep stack increment on Hoàng Nguyên's action (gains +1)
+          if (h.id === 10) {
+            let repCount = 0;
+            const repEffect = statusEffects.find(e => e.startsWith('Rep:'));
+            if (repEffect) {
+              const match = repEffect.match(/Rep:\s*(\d+)/);
+              if (match) {
+                repCount = parseInt(match[1], 10);
+              }
+              statusEffects = statusEffects.filter(e => !e.startsWith('Rep:'));
+            }
+            repCount = Math.min(10, repCount + 1);
+            statusEffects = [...statusEffects, `Rep: ${repCount}`];
+            
+            setTimeout(() => {
+              this.narrativeLogs.update(logs => [
+                ...logs,
+                `🏋️ **${h.name}** bắt đầu hành động, tích lũy thêm 1 tầng Rep (Hiện tại: ${repCount} Rep)!`
+              ]);
+            }, 0);
+          }
+          
           return { ...h, statusEffects };
         }
         return h;
@@ -222,7 +289,11 @@ export class BattleEngineService {
       });
     }
 
-    if (isMultipleTargets) {
+    // For DEADLIFT_DIA_CHAN: defer target highlighting to phase 2 so effects only fire when character visually arrives
+    if (log.skillId === 'DEADLIFT_DIA_CHAN') {
+      this.activeTargetIds.set([]);
+      this.activeTargetId.set(null);
+    } else if (isMultipleTargets) {
       this.activeTargetIds.set(enemyTargets);
       this.activeTargetId.set(null);
     } else {
@@ -233,7 +304,8 @@ export class BattleEngineService {
     // Add entry in Narrative Log
     const critText = log.isCrit ? ' 💥 CHÍ MẠNG' : '';
     let targetDesc = '';
-    if (targetType === 'all') targetDesc = 'TOÀN BỘ ĐỘI HÌNH địch';
+    if (targetType === 'friendly_all') targetDesc = 'TOÀN BỘ ĐỒNG ĐỘI';
+    else if (targetType === 'all') targetDesc = 'TOÀN BỘ ĐỘI HÌNH địch';
     else if (targetType === 'front_row') targetDesc = 'HÀNG TRƯỚC địch';
     else if (targetType === 'back_row') targetDesc = 'HÀNG SAU địch';
     else if (targetType === 'same_lane_back_row') targetDesc = 'hàng sau cùng làn';
@@ -244,6 +316,10 @@ export class BattleEngineService {
     if (log.skillId === 'DARK_KNOWLEDGE_SHIELD_CONVERSION') {
       const totalShield = enemyTargets.length * log.damage;
       skillLog = `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** đè bẹp ${targetDesc}, gây ${log.damage} sát thương cho mỗi mục tiêu và tích lũy ${totalShield} Giáp Hư Không!`;
+    } else if (log.skillId === 'WINTER_NIGHT_BLESSINGS') {
+      skillLog = `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** hồi máu và ban quà bảo vệ cho ${targetDesc}!`;
+    } else if (log.skillId === 'DEADLIFT_DIA_CHAN') {
+      skillLog = `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** deadlift vung tạ đập mạnh xuống đất chấn động ${targetDesc}, gây ${log.damage} sát thương!`;
     } else {
       skillLog = isMultipleTargets
         ? `[Lượt ${log.turn}] **${actor.name}** dùng **${skillDetail.name}** tấn công ${targetDesc}, gây ${log.damage} sát thương${critText} cho mỗi mục tiêu!`
@@ -268,6 +344,12 @@ export class BattleEngineService {
     });
 
     this.currentTimeout = setTimeout(() => {
+      // For DEADLIFT_DIA_CHAN: now set targets so isHit + lightning fire at the same time as damage
+      if (log.skillId === 'DEADLIFT_DIA_CHAN') {
+        this.activeTargetIds.set(enemyTargets);
+        this.activeTargetId.set(null);
+      }
+
       // Check which targets have the shield before updating
       const targetsWithShield = enemyTargets.filter(id => {
         const h = this.heroes().find(hero => hero.id === id);
@@ -286,16 +368,206 @@ export class BattleEngineService {
 
         let updatedHeroes = allHeroes.map(h => {
           if (enemyTargets.includes(h.id)) {
-            if (targetsWithShield.includes(h.id)) {
-              const nextEffects = h.statusEffects?.filter(e => e !== 'Giáp Hư Không') || [];
-              return { ...h, statusEffects: nextEffects };
-            } else {
-              const nextHp = Math.max(0, h.hp - log.damage);
+            if (log.skillId === 'WINTER_NIGHT_BLESSINGS') {
+              const healAmount = Math.floor(actor.maxHp * 0.30);
+              const nextHp = Math.min(h.maxHp, h.hp + healAmount);
               return { ...h, hp: nextHp };
+            } else {
+              if (h.id === 10) {
+                let statusEffects = h.statusEffects || [];
+                let repCount = 0;
+                const repEffect = statusEffects.find(e => e.startsWith('Rep:'));
+                if (repEffect) {
+                  const match = repEffect.match(/Rep:\s*(\d+)/);
+                  if (match) {
+                    repCount = parseInt(match[1], 10);
+                  }
+                  statusEffects = statusEffects.filter(e => !e.startsWith('Rep:'));
+                }
+                repCount = Math.min(10, repCount + 1);
+                statusEffects = [...statusEffects, `Rep: ${repCount}`];
+
+                setTimeout(() => {
+                  this.narrativeLogs.update(logs => [
+                    ...logs,
+                    `🏋️ **${h.name}** bị tấn công, tích lũy thêm 1 tầng Rep (Hiện tại: ${repCount} Rep)!`
+                  ]);
+                }, 0);
+
+                const isTargetWithDeadliftShield = statusEffects.some(e => e.startsWith('Deadlift Shield')) || false;
+                let nextHp = h.hp;
+                if (targetsWithShield.includes(h.id)) {
+                  statusEffects = statusEffects.filter(e => e !== 'Giáp Hư Không');
+                } else if (isTargetWithDeadliftShield) {
+                  // Absorbed by Deadlift Shield, keep HP unchanged
+                } else {
+                  let finalDamage = log.damage;
+                  if (statusEffects.some(e => e.startsWith('Quà Bảo Kê'))) {
+                    finalDamage = Math.floor(log.damage * 0.5);
+                  }
+                  if (statusEffects.some(e => e.startsWith('Da Thịt Vững Chãi'))) {
+                    finalDamage = Math.floor(finalDamage * 0.6);
+                  }
+                  nextHp = Math.max(0, h.hp - finalDamage);
+                }
+                return { ...h, hp: nextHp, statusEffects };
+              }
+
+              const isTargetWithDeadliftShield = h.statusEffects?.some(e => e.startsWith('Deadlift Shield')) || false;
+              if (targetsWithShield.includes(h.id)) {
+                const nextEffects = h.statusEffects?.filter(e => e !== 'Giáp Hư Không') || [];
+                return { ...h, statusEffects: nextEffects };
+              } else if (isTargetWithDeadliftShield) {
+                // Absorbed by Deadlift Shield, keep HP unchanged
+                return h;
+              } else {
+                let finalDamage = log.damage;
+                if (h.statusEffects?.some(e => e.startsWith('Quà Bảo Kê'))) {
+                  finalDamage = Math.floor(log.damage * 0.5);
+                }
+                if (h.statusEffects?.some(e => e.startsWith('Da Thịt Vững Chãi'))) {
+                  finalDamage = Math.floor(finalDamage * 0.6);
+                }
+                const nextHp = Math.max(0, h.hp - finalDamage);
+                return { ...h, hp: nextHp };
+              }
             }
           }
           return h;
         });
+
+        // Handle Winter Night Blessings Buff Application in Phase 2
+        if (log.skillId === 'WINTER_NIGHT_BLESSINGS') {
+          const teammates = updatedHeroes.filter(h => h.team === actor.team && h.hp > 0 && h.id !== actor.id);
+          const shuffled = [...teammates].sort(() => 0.5 - Math.random());
+          const selectedTeammates = shuffled.slice(0, 2);
+          const selectedIds = selectedTeammates.map(h => h.id);
+
+          setTimeout(() => {
+            if (selectedTeammates.length > 0) {
+              const namesList = selectedTeammates.map(h => h.name).join(', ');
+              this.narrativeLogs.update(logs => [
+                ...logs,
+                `🎁 **Quà Bảo Kê** đã được trao cho: **${namesList}**!`
+              ]);
+            }
+            this.narrativeLogs.update(logs => [
+              ...logs,
+              `🛡️ **${actor.name}** kích hoạt **Da Thịt Vững Chãi (2 lượt)**, giảm 40% sát thương!`
+            ]);
+          }, 0);
+
+          updatedHeroes = updatedHeroes.map(h => {
+            let statusEffects = h.statusEffects || [];
+            if (selectedIds.includes(h.id)) {
+              statusEffects = statusEffects.filter(e => !e.startsWith('Quà Bảo Kê'));
+              statusEffects.push('Quà Bảo Kê (2 lượt)');
+            }
+            if (h.id === actor.id) {
+              statusEffects = statusEffects.filter(e => !e.startsWith('Da Thịt Vững Chãi'));
+              statusEffects.push('Da Thịt Vững Chãi (2 lượt)');
+            }
+            return { ...h, statusEffects };
+          });
+        }
+
+        // Handle Deadlift Dia Chan Buff & Taunt Application in Phase 2
+        if (log.skillId === 'DEADLIFT_DIA_CHAN') {
+          // Get the rep count before consuming
+          const actorBefore = this.heroes().find(hero => hero.id === actor.id);
+          const repEffect = actorBefore?.statusEffects?.find(e => e.startsWith('Rep:'));
+          let repCount = 0;
+          if (repEffect) {
+            const match = repEffect.match(/Rep:\s*(\d+)/);
+            if (match) {
+              repCount = parseInt(match[1], 10);
+            }
+          }
+          
+          const shieldPercent = repCount * 5;
+          const isMaxRep = repCount === 10;
+
+          setTimeout(() => {
+            const logsToAdd = [
+              `😤 **${actor.name}** thu hồi ${repCount} cộng dồn Rep, tích lũy lớp giáp tạ xích hấp thụ ${shieldPercent}% Max HP!`
+            ];
+            if (isMaxRep) {
+              logsToAdd.push(`⚡ **${actor.name}** đạt tối đa cộng dồn Rep, kích hoạt trạng thái **Khóa Khớp (2 lượt)**, phản hồi 30% sát thương!`);
+            }
+            logsToAdd.push(`🎯 Khiêu khích toàn bộ kẻ địch hàng trước: **Taunted (2 lượt)**!`);
+            this.narrativeLogs.update(logs => [...logs, ...logsToAdd]);
+          }, 0);
+
+          updatedHeroes = updatedHeroes.map(h => {
+            let statusEffects = h.statusEffects || [];
+            if (h.id === actor.id) {
+              statusEffects = statusEffects.filter(e => !e.startsWith('Deadlift Shield') && !e.startsWith('Khóa Khớp') && !e.startsWith('Rep:'));
+              statusEffects.push('Deadlift Shield (2 lượt)');
+              if (isMaxRep) {
+                statusEffects.push('Khóa Khớp (2 lượt)');
+              }
+            }
+            if (enemyTargets.includes(h.id) && h.hp > 0) {
+              statusEffects = statusEffects.filter(e => !e.startsWith('Taunted'));
+              statusEffects.push('Taunted (2 lượt)');
+            }
+            return { ...h, statusEffects };
+          });
+        }
+
+        // Redirect damage from Quà Bảo Kê to Noel (ID 9)
+        if (log.skillId !== 'WINTER_NIGHT_BLESSINGS') {
+          enemyTargets.forEach(id => {
+            const h = allHeroes.find(hero => hero.id === id);
+            if (h && h.statusEffects?.some(e => e.startsWith('Quà Bảo Kê')) && h.id !== 9) {
+              const noel = updatedHeroes.find(hero => hero.id === 9 && hero.hp > 0);
+              if (noel) {
+                const redirectedDamage = log.damage - Math.floor(log.damage * 0.5);
+                let finalNoelDamage = redirectedDamage;
+                if (noel.statusEffects?.some(e => e.startsWith('Da Thịt Vững Chãi'))) {
+                  finalNoelDamage = Math.floor(redirectedDamage * 0.6);
+                }
+                updatedHeroes = updatedHeroes.map(hero => {
+                  if (hero.id === 9) {
+                    const nextHp = Math.max(0, hero.hp - finalNoelDamage);
+                    return { ...hero, hp: nextHp };
+                  }
+                  return hero;
+                });
+                setTimeout(() => {
+                  this.narrativeLogs.update(logs => [
+                    ...logs,
+                    `🔗 **Quà Bảo Kê** chuyển hướng ${redirectedDamage} sát thương từ **${h.name}** sang **${noel.name}** (Noel nhận ${finalNoelDamage} sát thương sau giảm trừ)!`
+                  ]);
+                }, 0);
+              }
+            }
+          });
+        }
+
+        // Handle damage reflection for Khóa Khớp in Phase 2
+        if (log.skillId !== 'WINTER_NIGHT_BLESSINGS') {
+          enemyTargets.forEach(id => {
+            const h = allHeroes.find(hero => hero.id === id);
+            if (h && h.statusEffects?.some(e => e.startsWith('Khóa Khớp'))) {
+              // Attacker is actor. Apply reflection damage (30% of log.damage) to actor
+              const reflectedDamage = Math.floor(log.damage * 0.3);
+              updatedHeroes = updatedHeroes.map(hero => {
+                if (hero.id === actor.id) {
+                  const nextHp = Math.max(0, hero.hp - reflectedDamage);
+                  return { ...hero, hp: nextHp };
+                }
+                return hero;
+              });
+              setTimeout(() => {
+                this.narrativeLogs.update(logs => [
+                  ...logs,
+                  `⚡ **${h.name}** kích hoạt Khóa Khớp, phản hồi lại ${reflectedDamage} sát thương phép phản hồi lên **${actor.name}**!`
+                ]);
+              }, 0);
+            }
+          });
+        }
 
         if (log.skillId === 'DARK_KNOWLEDGE_SHIELD_CONVERSION') {
           updatedHeroes = updatedHeroes.map(h => {
@@ -381,13 +653,67 @@ export class BattleEngineService {
       this.damageEvents.update(events => {
         const nextEvents = { ...events };
         enemyTargets.forEach(id => {
-          const hasShield = targetsWithShield.includes(id);
-          nextEvents[id] = {
-            text: hasShield ? 'HẤP THỤ' : `-${log.damage}${log.isCrit ? '!' : ''}`,
-            isCrit: hasShield ? false : log.isCrit,
-            key: this.damageEventCounter++
-          };
+          if (log.skillId === 'WINTER_NIGHT_BLESSINGS') {
+            const healAmount = Math.floor(actor.maxHp * 0.30);
+            nextEvents[id] = {
+              text: `+${healAmount}`,
+              isCrit: false,
+              key: this.damageEventCounter++
+            };
+          } else {
+            const targetHero = this.heroes().find(hero => hero.id === id);
+            const hasShield = targetsWithShield.includes(id) || targetHero?.statusEffects?.some(e => e.startsWith('Deadlift Shield')) || false;
+            let finalDmg = log.damage;
+            if (targetHero && targetHero.statusEffects?.some(e => e.startsWith('Quà Bảo Kê'))) {
+              finalDmg = Math.floor(log.damage * 0.5);
+            }
+            if (targetHero && targetHero.statusEffects?.some(e => e.startsWith('Da Thịt Vững Chãi'))) {
+              finalDmg = Math.floor(finalDmg * 0.6);
+            }
+            nextEvents[id] = {
+              text: hasShield ? 'HẤP THỤ' : `-${finalDmg}${log.isCrit ? '!' : ''}`,
+              isCrit: hasShield ? false : log.isCrit,
+              key: this.damageEventCounter++
+            };
+          }
         });
+
+        // Noel redirected damage floating text
+        if (log.skillId !== 'WINTER_NIGHT_BLESSINGS') {
+          enemyTargets.forEach(id => {
+            const h = this.heroes().find(hero => hero.id === id);
+            if (h && h.statusEffects?.some(e => e.startsWith('Quà Bảo Kê')) && h.id !== 9) {
+              const noel = this.heroes().find(hero => hero.id === 9 && hero.hp > 0);
+              if (noel) {
+                const redirectedDamage = log.damage - Math.floor(log.damage * 0.5);
+                let finalNoelDamage = redirectedDamage;
+                if (noel.statusEffects?.some(e => e.startsWith('Da Thịt Vững Chãi'))) {
+                  finalNoelDamage = Math.floor(redirectedDamage * 0.6);
+                }
+                nextEvents[9] = {
+                  text: `-${finalNoelDamage}`,
+                  isCrit: false,
+                  key: this.damageEventCounter++
+                };
+              }
+            }
+          });
+        }
+
+        // Khóa Khớp reflection floating text on attacker (actor.id)
+        if (log.skillId !== 'WINTER_NIGHT_BLESSINGS') {
+          enemyTargets.forEach(id => {
+            const h = this.heroes().find(hero => hero.id === id);
+            if (h && h.statusEffects?.some(e => e.startsWith('Khóa Khớp'))) {
+              const reflectedDamage = Math.floor(log.damage * 0.3);
+              nextEvents[actor.id] = {
+                text: `-${reflectedDamage}`,
+                isCrit: false,
+                key: this.damageEventCounter++
+              };
+            }
+          });
+        }
         return nextEvents;
       });
 
@@ -406,6 +732,7 @@ export class BattleEngineService {
             enemyTargets.forEach(id => {
               nextEvents[id] = null;
             });
+            nextEvents[9] = null; // Also clear Noel's floating redirected damage
             return nextEvents;
           });
 
@@ -452,6 +779,8 @@ export class BattleEngineService {
             });
           }
 
+
+
           // Check Win/Loss conditions
           const leftAlive = this.heroes().some(h => h.team === 'left' && h.hp > 0);
           const rightAlive = this.heroes().some(h => h.team === 'right' && h.hp > 0);
@@ -497,7 +826,11 @@ export class BattleEngineService {
     const enemyTeam = target.team;
     let enemyTargets: number[] = [];
 
-    if (targetType === 'single') {
+    if (targetType === 'friendly_all') {
+      enemyTargets = this.heroes()
+        .filter(h => h.team === actor.team && h.hp > 0)
+        .map(h => h.id);
+    } else if (targetType === 'single') {
       enemyTargets = [target.id];
     } else if (targetType === 'all' || targetType === 'aoe_all') {
       enemyTargets = this.heroes()

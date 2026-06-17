@@ -16,3 +16,665 @@
   height: 100%;
   pointer-events: none;
 }
+
+/* ==========================================================================
+   Passive: Marked (Đánh Dấu) Holographic Crosshair reticle
+   ========================================================================== */
+.marked-crosshair-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.crosshair-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: reticle-pulse-scale 1.5s infinite alternate ease-in-out;
+}
+
+.crosshair-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Glowing neon yellow effect using CSS filters */
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.8)) sepia(100%) saturate(1000%) hue-rotate(10deg) brightness(1.2);
+  animation: reticle-spin-slow 6s linear infinite;
+}
+
+.crosshair-lock {
+  position: absolute;
+  bottom: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8px;
+  font-weight: 900;
+  color: #fbbf24;
+  background: rgba(10, 15, 10, 0.85);
+  border: 1px solid #fbbf24;
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 4px #fbbf24;
+  animation: lock-blink-marked 0.6s steps(2, start) infinite;
+}
+
+@keyframes reticle-pulse-scale {
+  0% { transform: scale(0.9); }
+  100% { transform: scale(1.08); }
+}
+
+@keyframes reticle-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes lock-blink-marked {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+/* ==========================================================================
+   Passive: Dizzy Debuff Overlay (Spinning spirals & scissor particles above head)
+   ========================================================================== */
+.dizzy-debuff-overlay {
+  position: absolute;
+  bottom: 280px; /* Positioned above the 270px sprite head */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 30px;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.dizzy-spiral {
+  position: absolute;
+  border: 1.5px solid transparent;
+  border-top-color: #fbbf24;
+  border-radius: 50%;
+  
+  &.sp1 {
+    width: 28px;
+    height: 9px;
+    top: 8px;
+    left: 20px;
+    transform: rotateX(70deg) rotate(0deg);
+    animation: dizzy-spin 1.8s linear infinite;
+    box-shadow: 0 -1px 3px rgba(251, 191, 36, 0.4);
+  }
+  
+  &.sp2 {
+    width: 24px;
+    height: 8px;
+    top: 10px;
+    left: 52px;
+    transform: rotateX(70deg) rotate(180deg);
+    animation: dizzy-spin-reverse 2.0s linear infinite;
+    border-top-color: #d97706;
+    box-shadow: 0 -1px 3px rgba(217, 119, 6, 0.4);
+  }
+}
+
+.mini-scissor-particle {
+  position: absolute;
+  font-size: 10px;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 2px #d97706);
+  opacity: 0.85;
+  
+  &.ms1 {
+    animation: dizzy-particle-orbit 2.4s linear infinite;
+  }
+  
+  &.ms2 {
+    animation: dizzy-particle-orbit 2.4s linear infinite -1.2s;
+  }
+}
+
+@keyframes dizzy-spin {
+  from { transform: rotateX(70deg) rotate(0deg); }
+  to { transform: rotateX(70deg) rotate(360deg); }
+}
+
+@keyframes dizzy-spin-reverse {
+  from { transform: rotateX(70deg) rotate(180deg); }
+  to { transform: rotateX(70deg) rotate(-180deg); }
+}
+
+@keyframes dizzy-particle-orbit {
+  0% {
+    transform: translate(-30px, 0) scale(1) rotate(0deg);
+    opacity: 0.9;
+    z-index: 10;
+  }
+  50% {
+    transform: translate(30px, -4px) scale(0.68) rotate(180deg);
+    opacity: 0.35;
+    z-index: -1;
+  }
+  100% {
+    transform: translate(-30px, 0) scale(1) rotate(360deg);
+    opacity: 0.9;
+    z-index: 10;
+  }
+}
+
+/* ==========================================================================
+   Jackpot / Bankruptcy State Overlays
+   ========================================================================== */
+
+/* Jackpot Overlay (Rain of Gold Coins & Golden Aura) */
+.jackpot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.golden-glowing-aura {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 230px;
+  border-radius: 40px;
+  background: radial-gradient(ellipse, rgba(251, 191, 36, 0.22) 0%, rgba(217, 119, 6, 0.05) 55%, transparent 75%);
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.35), inset 0 0 15px rgba(251, 191, 36, 0.15);
+  animation: gold-glow-pulse 2s infinite alternate ease-in-out;
+}
+
+@keyframes gold-glow-pulse {
+  0% { filter: brightness(0.9); opacity: 0.7; }
+  100% { filter: brightness(1.25); opacity: 1; }
+}
+
+.jackpot-win-text {
+  position: absolute;
+  bottom: 280px; /* Above status overlays */
+  left: 50%;
+  transform: translateX(-50%) scale(1.1);
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 950;
+  color: #fbbf24;
+  text-shadow: 0 0 6px #d97706, 0 0 12px #fbbf24, 0 0 25px #ffffff;
+  animation: win-pulse 0.8s infinite alternate ease-in-out;
+  white-space: nowrap;
+  z-index: 15;
+}
+
+@keyframes win-pulse {
+  0% { transform: translateX(-50%) scale(1); filter: brightness(1); }
+  100% { transform: translateX(-50%) scale(1.25); filter: brightness(1.3); }
+}
+
+.gold-coin-rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gold-coin-rain .jc-coin {
+  position: absolute;
+  font-size: 16px;
+  opacity: 0;
+}
+
+.gold-coin-rain .c1 { left: 20%; animation: coin-fall 1.8s infinite linear; }
+.gold-coin-rain .c2 { left: 45%; animation: coin-fall 1.5s infinite linear -0.5s; }
+.gold-coin-rain .c3 { left: 75%; animation: coin-fall 2.0s infinite linear -1.0s; }
+.gold-coin-rain .c4 { left: 30%; animation: coin-fall 1.6s infinite linear -0.2s; }
+.gold-coin-rain .c5 { left: 60%; animation: coin-fall 1.9s infinite linear -0.7s; }
+.gold-coin-rain .c6 { left: 10%; animation: coin-fall 1.7s infinite linear -1.2s; }
+
+@keyframes coin-fall {
+  0% { transform: translateY(-30px) rotate(0deg) scale(0.6); opacity: 0; }
+  20% { opacity: 0.95; }
+  85% { opacity: 0.95; }
+  100% { transform: translateY(220px) rotate(360deg) scale(1); opacity: 0; }
+}
+
+/* Bankruptcy Overlay (Chains & Padlock) */
+.bankruptcy-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.dark-drain-shadow {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 220px;
+  border-radius: 40px;
+  background: radial-gradient(ellipse, rgba(88, 28, 135, 0.35) 0%, rgba(15, 23, 42, 0.6) 60%, transparent 80%);
+  mix-blend-mode: multiply;
+  filter: grayscale(0.5) blur(3px);
+  animation: dark-drain-pulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes dark-drain-pulse {
+  0% { opacity: 0.65; }
+  100% { opacity: 0.95; }
+}
+
+.padlock-chains {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0 0 10px #701a75) drop-shadow(0 2px 4px #000000);
+}
+
+.padlock-chains .padlock {
+  font-size: 38px;
+  z-index: 12;
+  animation: lock-wobble 2.5s infinite ease-in-out;
+}
+
+.padlock-chains .padlock-chain {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.75;
+  z-index: 11;
+  
+  &.pc-1 {
+    transform: rotate(45deg) translate(-25px, -2px);
+    animation: chain-pulse-anim 3s infinite alternate ease-in-out;
+  }
+  &.pc-2 {
+    transform: rotate(-45deg) translate(25px, -2px);
+    animation: chain-pulse-anim 3s infinite alternate ease-in-out -1.5s;
+  }
+}
+
+@keyframes lock-wobble {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(-8deg) scale(1.08); }
+}
+
+@keyframes chain-pulse-anim {
+  0% { opacity: 0.5; filter: brightness(0.8); }
+  100% { opacity: 0.85; filter: brightness(1.2); }
+}
+
+/* ==========================================================================
+   Passive: Quà Bảo Kê (Damage Redirection Shield Matrix & Special Gift Box)
+   ========================================================================== */
+.bao-ke-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* Glowing matrix ring under feet */
+.shield-matrix-ring {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px dashed #00ff66;
+  box-shadow: 0 0 15px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(0, 255, 102, 0.2);
+  animation: matrix-spin 8s linear infinite;
+}
+
+.shield-matrix-hex-grid {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(0, 255, 102, 0.15) 0%, transparent 70%);
+  animation: matrix-pulse 2s infinite alternate ease-in-out;
+}
+
+/* Floating special blue/green gift box next to character feet */
+.bao-ke-gift-box {
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.85));
+  animation: gift-float 2.2s infinite alternate ease-in-out;
+}
+
+@keyframes matrix-spin {
+  from { transform: translateX(-50%) rotateX(75deg) rotate(0deg); }
+  to { transform: translateX(-50%) rotateX(75deg) rotate(360deg); }
+}
+
+@keyframes matrix-pulse {
+  0% { transform: translateX(-50%) rotateX(75deg) scale(0.9); opacity: 0.5; }
+  100% { transform: translateX(-50%) rotateX(75deg) scale(1.1); opacity: 1; }
+}
+
+@keyframes gift-float {
+  0% { transform: translateY(0) rotate(-5deg); }
+  100% { transform: translateY(-8px) rotate(5deg); }
+}
+
+/* ==========================================================================
+   Noel Self-Buff: Da Thịt Vững Chãi (Defensive aurora & Shield badge)
+   ========================================================================== */
+.da-thit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.defensive-aurora {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 230px;
+  border-radius: 40px;
+  background: radial-gradient(ellipse, rgba(239, 68, 68, 0.18) 0%, rgba(245, 158, 11, 0.05) 55%, transparent 75%);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.25), inset 0 0 10px rgba(239, 68, 68, 0.12);
+  animation: defensive-pulse 2s infinite alternate ease-in-out;
+}
+
+.defensive-shield-badge {
+  position: absolute;
+  bottom: 275px; /* Above status badge area */
+  left: 30px;
+  font-size: 20px;
+  filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.8));
+  animation: shield-wobble-vfx 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes defensive-pulse {
+  0% { opacity: 0.6; transform: translateX(-50%) scale(0.95); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes shield-wobble-vfx {
+  0% { transform: scale(0.9) rotate(-10deg); }
+  100% { transform: scale(1.1) rotate(10deg); }
+}
+
+/* ==========================================================================
+   Damage Redirection Beam (Lasers pointing to Noel at position 4)
+   ========================================================================== */
+.redirection-beam {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  height: 6px;
+  background: linear-gradient(90deg, #00ff66 20%, #fbbf24 50%, #00ff66 80%);
+  box-shadow: 0 0 10px #00ff66, 0 0 20px #fbbf24;
+  transform-origin: left center;
+  z-index: 1000;
+  pointer-events: none;
+  animation: laser-shoot 0.4s ease-out forwards;
+}
+
+:host-context(.pos-right-1) .redirection-beam {
+  width: 250px;
+  transform: rotate(70deg);
+}
+
+:host-context(.pos-right-2) .redirection-beam {
+  width: 240px;
+  transform: rotate(90deg);
+}
+
+:host-context(.pos-right-3) .redirection-beam {
+  width: 140px;
+  transform: rotate(50deg);
+}
+
+:host-context(.pos-right-5) .redirection-beam {
+  width: 100px;
+  transform: rotate(0deg);
+}
+
+@keyframes laser-shoot {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    width: inherit;
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Passive: Deadlift Dia Chan Kinetic Dome Shield & Rotating Weight Plates
+   ========================================================================== */
+.deadlift-shield-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.kinetic-dome {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 190px;
+  border-radius: 65px / 95px; /* Oval dome shape enclosing character */
+  border: 2px solid rgba(251, 191, 36, 0.65);
+  background: radial-gradient(circle at center, rgba(251, 191, 36, 0.15) 0%, rgba(217, 119, 6, 0.05) 60%, transparent 85%);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.55), inset 0 0 15px rgba(251, 191, 36, 0.25);
+  animation: kinetic-dome-pulse 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes kinetic-dome-pulse {
+  0% {
+    opacity: 0.75;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.4), inset 0 0 10px rgba(251, 191, 36, 0.2);
+    border-color: rgba(251, 191, 36, 0.5);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(251, 191, 36, 0.75), inset 0 0 20px rgba(251, 191, 36, 0.35);
+    border-color: rgba(251, 191, 36, 0.85);
+  }
+}
+
+.rotating-weight-plates {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rotating-weight-plates .plate {
+  position: absolute;
+  font-size: 20px;
+  filter: drop-shadow(0 0 6px #fbbf24) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  
+  &.p-left {
+    animation: plate-orbit-1 5s infinite linear;
+  }
+  
+  &.p-right {
+    animation: plate-orbit-2 5s infinite linear -1.6s;
+  }
+  
+  &.p-center {
+    animation: plate-orbit-3 5s infinite linear -3.2s;
+  }
+}
+
+@keyframes plate-orbit-1 {
+  0% {
+    transform: translate3d(-50px, 160px, 0) scale(0.6);
+    z-index: -1; /* Behind character */
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate3d(0px, 120px, 0) scale(1.35);
+    z-index: 10; /* In front of character */
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(50px, 90px, 0) scale(0.6);
+    z-index: -1; /* Behind character */
+    opacity: 0.3;
+  }
+  75% {
+    transform: translate3d(0px, 130px, 0) scale(0.45);
+    z-index: -1; /* Behind character */
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(-50px, 160px, 0) scale(0.6);
+    z-index: -1;
+    opacity: 0.3;
+  }
+}
+
+@keyframes plate-orbit-2 {
+  0% {
+    transform: translate3d(50px, 140px, 0) scale(0.65);
+    z-index: -1;
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate3d(0px, 175px, 0) scale(1.35);
+    z-index: 10; /* In front */
+    opacity: 0.95;
+  }
+  50% {
+    transform: translate3d(-50px, 140px, 0) scale(0.65);
+    z-index: -1;
+    opacity: 0.3;
+  }
+  75% {
+    transform: translate3d(0px, 95px, 0) scale(0.45);
+    z-index: -1;
+    opacity: 0.15;
+  }
+  100% {
+    transform: translate3d(50px, 140px, 0) scale(0.65);
+    z-index: -1;
+    opacity: 0.3;
+  }
+}
+
+@keyframes plate-orbit-3 {
+  0% {
+    transform: translate3d(-20px, 80px, 0) scale(0.45);
+    z-index: -1;
+    opacity: 0.2;
+  }
+  25% {
+    transform: translate3d(30px, 110px, 0) scale(0.65);
+    z-index: -1;
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(-10px, 160px, 0) scale(1.35);
+    z-index: 10; /* In front */
+    opacity: 0.95;
+  }
+  75% {
+    transform: translate3d(-40px, 110px, 0) scale(0.65);
+    z-index: -1;
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate3d(-20px, 80px, 0) scale(0.45);
+    z-index: -1;
+    opacity: 0.2;
+  }
+}
+
+.joint-lock-sparks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.joint-lock-sparks .spark {
+  position: absolute;
+  font-size: 16px;
+  color: #fbbf24;
+  filter: drop-shadow(0 0 6px #fbbf24);
+  opacity: 0;
+  
+  &.s1 {
+    left: 20px;
+    top: 50px;
+    animation: spark-blink-shield 1.5s infinite ease-in-out;
+  }
+  
+  &.s2 {
+    right: 25px;
+    bottom: 60px;
+    animation: spark-blink-shield 1.2s infinite ease-in-out -0.4s;
+  }
+  
+  &.s3 {
+    left: 50%;
+    top: 20px;
+    transform: translateX(-50%);
+    animation: spark-blink-shield 1.8s infinite ease-in-out -0.9s;
+  }
+}
+
+@keyframes spark-blink-shield {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+}
+

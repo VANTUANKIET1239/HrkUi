@@ -28,6 +28,7 @@ export class BattleCharacterComponent {
   @Input() skillColor = '#ffffff';
   @Input() damageEvent: DamageTextEvent | null = null;
   @Input() activeSkillId: string | null = null;
+  @Input() displayMode: 'battle' | 'formation' = 'battle';
 
   getSkillCategory(): 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly' | null {
     if (!this.isCharging || !this.activeSkillId) return null;
@@ -60,12 +61,6 @@ export class BattleCharacterComponent {
     ) || false;
   }
 
-  hasMarkedEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Marked', 'Đánh dấu', 'Đánh Dấu'].includes(e)
-    ) || false;
-  }
-
   hasScorchedEarthEffect(): boolean {
     return this.character.statusEffects?.some(e => 
       ['Scorched Earth Command', 'Scorched Earth', 'Chỉ Huy Thiết Giáp'].includes(e)
@@ -83,6 +78,11 @@ export class BattleCharacterComponent {
       ['Vortex of Vicious Debt', 'Vicious Debt', 'Vòng Xoáy Nợ Nần', 'Chúa Nợ'].includes(e)
     ) || false;
   }
+
+  hasBaoKeEffect(): boolean {
+    return this.character.statusEffects?.some(e => e.startsWith('Quà Bảo Kê')) || false;
+  }
+
 
   getRowLabel(): string {
     const pos = this.character.position;

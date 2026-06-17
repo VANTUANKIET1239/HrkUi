@@ -8,12 +8,8 @@
 
 
   <!-- ACTIVE SKILL EFFECTS (Casting / Attacking state) -->
-  <app-skill 
-    [isCharging]="isCharging"
-    [skillCategory]="getSkillCategory()"
-    [skillColor]="skillColor"
-    [activeSkillId]="activeSkillId"
-    [character]="character">
+  <app-skill [isCharging]="isCharging" [skillCategory]="getSkillCategory()" [skillColor]="skillColor"
+    [activeSkillId]="activeSkillId" [character]="character">
   </app-skill>
 
   <!-- HIT / IMPACT EFFECTS (When receiving damage) -->
@@ -83,7 +79,7 @@
         <span class="fly-page fg4"></span>
         <span class="fly-page fg5"></span>
         <span class="fly-page fg6"></span>
-        
+
         <!-- Glowing paper scraps -->
         <span class="scrap sc1"></span>
         <span class="scrap sc2"></span>
@@ -91,7 +87,7 @@
         <span class="scrap sc4"></span>
         <span class="scrap sc5"></span>
         <span class="scrap sc6"></span>
-        
+
         <!-- Blue cyber matrix fragments -->
         <span class="matrix-shard ms1"></span>
         <span class="matrix-shard ms2"></span>
@@ -109,7 +105,7 @@
     <div class="mushroom-explosion-fx" *ngIf="activeSkillId === 'TACTICAL_AIR_STRIKE'">
       <!-- Screen/Scene Flash -->
       <div class="nuclear-flash"></div>
-      
+
       <!-- Ground dust/smoke wave rolling outward -->
       <div class="ground-dust-wave">
         <span class="dust d1"></span>
@@ -117,16 +113,16 @@
         <span class="dust d3"></span>
         <span class="dust d4"></span>
       </div>
-      
+
       <!-- Ground cracks -->
       <div class="strike-cracks"></div>
-      
+
       <!-- The rising column/stem of the mushroom cloud -->
       <div class="mushroom-stem">
         <div class="stem-column"></div>
         <div class="stem-fire"></div>
       </div>
-      
+
       <!-- The massive glowing dome/cap at the top -->
       <div class="mushroom-cap">
         <div class="cap-fireball outer"></div>
@@ -134,10 +130,10 @@
         <div class="cap-fireball core"></div>
         <div class="cap-smoke"></div>
       </div>
-      
+
       <!-- Expanding condensation ring (torus/halo) -->
       <div class="condensation-ring"></div>
-      
+
       <!-- Flying glowing embers and shrapnel -->
       <div class="nuclear-embers">
         <span class="ember em1"></span>
@@ -156,10 +152,10 @@
         <div class="clip-prong pr1"></div>
         <div class="clip-prong pr2"></div>
       </div>
-      
+
       <!-- Slicing matrix lines -->
       <div class="snipping-slice-line"></div>
-      
+
       <!-- Comical Snip! Snip! scissor animation overlays -->
       <div class="snip-shears-container">
         <div class="snip-glow"></div>
@@ -205,13 +201,88 @@
         <span class="deb card-shard cs1">🃏</span>
         <span class="deb card-shard cs2">🂾</span>
         <span class="deb card-shard cs3">🃟</span>
-        
+
         <span class="deb dice-shard ds1">🎲</span>
         <span class="deb dice-shard ds2">⚅</span>
-        
+
         <span class="deb stock-candle sc1">📉</span>
         <span class="deb stock-candle sc2">-20%</span>
         <span class="deb stock-candle sc3">📉</span>
+      </div>
+    </div>
+
+    <!-- Winter Blessings target-side hit animation (gift box landing and healing burst) -->
+    <div class="winter-blessings-hit-fx" *ngIf="activeSkillId === 'WINTER_NIGHT_BLESSINGS'">
+      <!-- Flying gift box: special box if receiving "Quà Bảo Kê" buff, standard box otherwise -->
+      <div class="flying-box-wrapper">
+        <img
+          [src]="hasBaoKeEffect() ? '/assets/images/dcs-game/hopqua-special.png' : '/assets/images/dcs-game/hopqua-bth.png'"
+          class="landing-gift-box" [class.special-box]="hasBaoKeEffect()" alt="Gift Box" />
+      </div>
+
+      <!-- Healing burst vfx (glowing rings and sparkles) -->
+      <div class="healing-burst-vfx">
+        <div class="healing-ring-blue"></div>
+        <div class="healing-ring"></div>
+        <div class="healing-glow"></div>
+        <div class="healing-sparkles">
+          <span class="h-spark hs1">➕</span>
+          <span class="h-spark hs2">➕</span>
+          <span class="h-spark hs3">➕</span>
+          <span class="h-spark hs4">➕</span>
+          <span class="h-spark hs5">➕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deadlift Dia Chan target-side hit animation (barbell slam + light blades + earth cracks + taunt) -->
+    <div class="deadlift-dia-chan-hit-fx" *ngIf="activeSkillId === 'DEADLIFT_DIA_CHAN'">
+
+      <!-- Incoming Barbell Projectiles (fly in from caster direction) -->
+      <div class="deadlift-barbell-volley">
+        <span class="barbell bb1">🏋️</span>
+        <span class="barbell bb2">🏋️</span>
+        <span class="barbell bb3">🏋️</span>
+      </div>
+
+      <!-- Light Sword Slash Beams (diagonal golden + red light blades) -->
+      <div class="light-blade-slash-fx">
+        <div class="light-blade lb1"></div>
+        <div class="light-blade lb2"></div>
+        <div class="light-blade lb3"></div>
+        <div class="blade-impact-burst"></div>
+      </div>
+
+      <!-- Seismic Ground Shatter on impact -->
+      <div class="deadlift-ground-shatter">
+        <div class="shatter-ring sr1"></div>
+        <div class="shatter-ring sr2"></div>
+        <div class="shatter-ring sr3"></div>
+        <span class="debris-chunk dk1"></span>
+        <span class="debris-chunk dk2"></span>
+        <span class="debris-chunk dk3"></span>
+        <span class="debris-chunk dk4"></span>
+      </div>
+
+      <!-- Earth cracks under feet -->
+      <div class="earthquake-cracks">
+        <div class="crack c1"></div>
+        <div class="crack c2"></div>
+        <div class="crack c3"></div>
+      </div>
+
+      <!-- Angry vein icons and red TAUNTED text floating above head -->
+      <div class="taunted-float">
+        <span class="angry-vein av1">💢</span>
+        <span class="angry-vein av2">💢</span>
+        <div class="taunted-banner">TAUNTED!</div>
+      </div>
+
+      <!-- Forced Target Lock-on Reticle overlay -->
+      <div class="taunt-target-reticle">
+        <div class="t-ring"></div>
+        <div class="t-cross"></div>
+        <div class="t-lock">LOCK</div>
       </div>
     </div>
   </ng-container>
@@ -228,63 +299,18 @@
   <!-- Sprite area -->
   <div class="sprite-area">
     <!-- PASSIVE EFFECTS (Ambient) - Moved inside sprite-area to center relative to character feet and not overlap health bars -->
-    <app-passive-effect 
-      *ngIf="character.hp > 0"
-      [character]="character"
-      [level]="character.level || 1" 
-      [hasMoneyEffect]="hasMoneyEffect()"
-      [hasRedLightning]="hasRedLightningEffect()"
-      [hasObsidianNebula]="hasObsidianNebulaEffect()"
-      [hasDarkShield]="hasDarkShieldEffect()"
-      [hasScorchedEarth]="hasScorchedEarthEffect()"
-      [hasSpectralGrooming]="hasSpectralGroomingEffect()"
-      [hasViciousDebt]="hasViciousDebtEffect()">
+    <app-passive-effect *ngIf="character.hp > 0" [character]="character" [level]="character.level || 1"
+      [hasMoneyEffect]="hasMoneyEffect()" [hasRedLightning]="hasRedLightningEffect()"
+      [hasObsidianNebula]="hasObsidianNebulaEffect()" [hasDarkShield]="hasDarkShieldEffect()"
+      [hasScorchedEarth]="hasScorchedEarthEffect()" [hasSpectralGrooming]="hasSpectralGroomingEffect()"
+      [hasViciousDebt]="hasViciousDebtEffect()" [isHit]="isHit">
     </app-passive-effect>
 
-    <img [src]="character.avatar" [alt]="character.name" class="character-sprite" [class.sprite-flipped]="shouldFlipSprite()" />
-
-    <!-- Marked reticle overlay on top of the sprite -->
-    <div class="marked-crosshair-overlay" *ngIf="hasMarkedEffect() && character.hp > 0">
-      <div class="crosshair-wrapper">
-        <img src="/assets/images/dcs-game/hongtam.png" class="crosshair-img" alt="Marked" />
-        <div class="crosshair-lock">LOCK</div>
-      </div>
-    </div>
-
-    <!-- Dizzy effect above the character when they have Choáng Váng debuff -->
-    <div class="dizzy-debuff-overlay" *ngIf="character.statusEffects?.includes('Choáng Váng') && character.hp > 0">
-      <div class="dizzy-spiral sp1"></div>
-      <div class="dizzy-spiral sp2"></div>
-      <div class="mini-scissor-particle ms1">✂️</div>
-      <div class="mini-scissor-particle ms2">✂️</div>
-    </div>
-
-    <!-- Jackpot/Win the Gamble Gold Rain and Glow -->
-    <div class="jackpot-overlay" *ngIf="character.statusEffects?.includes('Jackpot') && character.hp > 0">
-      <div class="golden-glowing-aura"></div>
-      <div class="jackpot-win-text">JACKPOT!</div>
-      <div class="gold-coin-rain">
-        <span class="jc-coin c1">🪙</span>
-        <span class="jc-coin c2">🎰</span>
-        <span class="jc-coin c3">🪙</span>
-        <span class="jc-coin c4">🎰</span>
-        <span class="jc-coin c5">🪙</span>
-        <span class="jc-coin c6">🪙</span>
-      </div>
-    </div>
-
-    <!-- Bankruptcy/Lose the Gamble chains & lock -->
-    <div class="bankruptcy-overlay" *ngIf="(character.statusEffects?.includes('Bankruptcy_2') || character.statusEffects?.includes('Bankruptcy_1')) && character.hp > 0">
-      <div class="dark-drain-shadow"></div>
-      <div class="padlock-chains">
-        <span class="padlock">🔒</span>
-        <span class="padlock-chain pc-1">⛓️</span>
-        <span class="padlock-chain pc-2">⛓️</span>
-      </div>
-    </div>
+    <img [src]="character.avatar" [alt]="character.name" class="character-sprite"
+      [class.sprite-flipped]="shouldFlipSprite()" />
 
     <!-- Status effects/Buff badges overlaying above the head -->
-    <div class="status-badge-overlay" *ngIf="character.statusEffects?.length">
+    <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && character.statusEffects?.length">
       <span *ngFor="let effect of character.statusEffects" class="status-badge" [ngClass]="{
           'effect-dead': effect === 'Dead', 
           'effect-buff': effect !== 'Dead'
@@ -295,7 +321,7 @@
   </div>
 
   <!-- Info Overlay (Name & Health / Mana) -->
-  <div class="info-block">
+  <div class="info-block" *ngIf="displayMode === 'battle'">
     <div class="name-tag">{{ character.name }}</div>
     <div class="bars-container">
       <app-hp-bar [hp]="character.hp" [maxHp]="character.maxHp"></app-hp-bar>
@@ -304,7 +330,8 @@
   </div>
 
   <!-- Floating Damage Text Layer -->
-  <div *ngIf="damageEvent" class="damage-text-layer" [ngClass]="{ 'is-crit': damageEvent.isCrit }">
+  <div *ngIf="damageEvent" class="damage-text-layer"
+    [ngClass]="{ 'is-crit': damageEvent.isCrit, 'is-heal': damageEvent.text.startsWith('+') }">
     {{ damageEvent.text }}
   </div>
 </div>

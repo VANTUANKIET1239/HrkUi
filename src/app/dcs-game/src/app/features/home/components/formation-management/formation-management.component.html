@@ -1,0 +1,335 @@
+<div class="formation-overlay">
+  <!-- Top Bar: Title, Currencies, and Close Button -->
+  <div class="formation-top-bar d-flex justify-content-between align-items-center">
+    <div class="title-section d-flex align-items-center">
+      <i class="bi bi-grid-3x3-gap-fill title-icon me-2 text-warning fs-3"></i>
+      <h1 class="m-0 page-title">BINH PHÁP TRẬN HÌNH <span class="subtitle">— Battle Lineup</span></h1>
+    </div>
+
+    <!-- Currencies -->
+    <div class="resource-counters d-flex align-items-center">
+      <div class="resource-item d-flex align-items-center">
+        <i class="bi bi-coin text-warning me-1"></i>
+        <span class="value">{{ gold | number }}</span>
+      </div>
+      <div class="resource-item d-flex align-items-center">
+        <i class="bi bi-book-half text-warning me-1"></i>
+        <span class="value">{{ scrolls }} Kinh Thư</span>
+      </div>
+    </div>
+
+    <button class="btn btn-close-modal" (click)="close.emit()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- Main Grid Area -->
+  <div class="formation-body">
+
+    <!-- ========================================== -->
+    <!-- CENTER PANEL: Large Tactical 6-Slot Grid   -->
+    <!-- ========================================== -->
+    <div class="center-panel flex-grow-1">
+      <div class="panel-header text-center">BẢN ĐỒ CHIẾN THUẬT LỤC Ô</div>
+
+      <!-- Battle Board Area -->
+      <div
+        class="battle-board-area position-relative d-flex flex-column justify-content-center align-items-center flex-grow-1">
+
+        <!-- Faint tactical grid overlay background -->
+        <div class="tactical-guidelines">
+          <div class="grid-tactical-mesh"></div>
+        </div>
+
+        <div class="tactical-board-panel vertical-layout">
+          <!-- LEFT COLUMN: BACKLINE -->
+          <div class="tactical-column backline-column-container">
+            <!-- <div class="column-tactical-tag tag-back font-title"><i class="bi bi-lightning me-1"></i>HẬU PHƯƠNG (BACKLINE)</div> -->
+            <div class="slots-column-layout">
+              <div *ngFor="let slot of slots.slice(3, 6); let idx = index" class="tactical-slot-node"
+                [class.drag-over-active]="draggedHero && !slot" (dragover)="onDragOver($event)"
+                (drop)="onDrop($event, idx + 3)" (click)="selectSlotClick(idx + 3)">
+
+                <span class="slot-number-badge">Ô {{ idx + 4 }}</span>
+
+                <!-- Assigned Hero -->
+                <div *ngIf="slot" class="slot-hero-card" draggable="true"
+                  (dragstart)="onDragStart($event, slot, 'grid', idx + 3)" [style.border-color]="slot.auraColor"
+                  [style.box-shadow]="'0 0 15px ' + slot.auraColor + '7f'">
+
+                  <div class="character-wrapper">
+                    <app-battle-character *ngIf="mapToHero(slot, idx + 3) as character" [character]="character"
+                      displayMode="formation">
+                    </app-battle-character>
+                  </div>
+
+                  <span class="hero-slot-class-badge" [ngSwitch]="slot.class">
+                    <i *ngSwitchCase="'Đỡ Đòn'" class="bi bi-shield-fill text-info"></i>
+                    <i *ngSwitchCase="'Chiến Sĩ'" class="bi bi-swords text-danger"></i>
+                    <i *ngSwitchCase="'Sát Thủ'" class="bi bi-lightning-fill text-warning"></i>
+                    <i *ngSwitchCase="'Pháp Sư'" class="bi bi-fire text-purple" style="color: #c084fc;"></i>
+                    <i *ngSwitchCase="'Hỗ Trợ'" class="bi bi-heart-fill text-success"></i>
+                  </span>
+
+                  <!-- Remove Button -->
+                  <button class="btn btn-remove-hero" (click)="$event.stopPropagation(); removeHeroFromSlot(idx + 3)">
+                    <i class="bi bi-x-circle-fill"></i>
+                  </button>
+                </div>
+
+                <!-- Empty Slot Placeholder -->
+                <div *ngIf="!slot"
+                  class="slot-placeholder-box d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-plus-circle text-muted fs-3 mb-1"></i>
+                  <span class="text-uppercase small font-title text-muted"
+                    style="font-size: 9px; letter-spacing: 0.5px;">TRỐNG (EMPTY)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: FRONTLINE -->
+          <div class="tactical-column frontline-column-container">
+            <!-- <div class="column-tactical-tag tag-front font-title"><i class="bi bi-shield-shaded me-1"></i>TIỀN TUYẾN (FRONTLINE)</div> -->
+            <div class="slots-column-layout">
+              <div *ngFor="let slot of slots.slice(0, 3); let idx = index" class="tactical-slot-node"
+                [class.drag-over-active]="draggedHero && !slot" (dragover)="onDragOver($event)"
+                (drop)="onDrop($event, idx)" (click)="selectSlotClick(idx)">
+
+                <span class="slot-number-badge">Ô {{ idx + 1 }}</span>
+
+                <!-- Assigned Hero -->
+                <div *ngIf="slot" class="slot-hero-card" draggable="true"
+                  (dragstart)="onDragStart($event, slot, 'grid', idx)" [style.border-color]="slot.auraColor"
+                  [style.box-shadow]="'0 0 15px ' + slot.auraColor + '7f'">
+
+                  <div class="character-wrapper">
+                    <app-battle-character *ngIf="mapToHero(slot, idx) as character" [character]="character"
+                      displayMode="formation">
+                    </app-battle-character>
+                  </div>
+
+                  <span class="hero-slot-class-badge" [ngSwitch]="slot.class">
+                    <i *ngSwitchCase="'Đỡ Đòn'" class="bi bi-shield-fill text-info"></i>
+                    <i *ngSwitchCase="'Chiến Sĩ'" class="bi bi-swords text-danger"></i>
+                    <i *ngSwitchCase="'Sát Thủ'" class="bi bi-lightning-fill text-warning"></i>
+                    <i *ngSwitchCase="'Pháp Sư'" class="bi bi-fire text-purple" style="color: #c084fc;"></i>
+                    <i *ngSwitchCase="'Hỗ Trợ'" class="bi bi-heart-fill text-success"></i>
+                  </span>
+
+                  <!-- Remove Button -->
+                  <button class="btn btn-remove-hero" (click)="$event.stopPropagation(); removeHeroFromSlot(idx)">
+                    <i class="bi bi-x-circle-fill"></i>
+                  </button>
+                </div>
+
+                <!-- Empty Slot Placeholder -->
+                <div *ngIf="!slot"
+                  class="slot-placeholder-box d-flex flex-column align-items-center justify-content-center">
+                  <i class="bi bi-plus-circle text-muted fs-3 mb-1"></i>
+                  <span class="text-uppercase small font-title text-muted"
+                    style="font-size: 9px; letter-spacing: 0.5px;">TRỐNG (EMPTY)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action buttons under grid -->
+      <div
+        class="board-action-footer d-flex justify-content-center gap-2 p-2 bg-black-opacity border-top border-warning-subtle">
+        <button class="btn btn-board-action font-title text-success" (click)="autoArrange()">
+          <i class="bi bi-arrow-repeat me-1"></i>Tự Động Xếp
+        </button>
+        <button class="btn btn-board-action font-title text-danger" (click)="clearFormation()">
+          <i class="bi bi-trash-fill me-1"></i>Dọn Sạch
+        </button>
+        <button class="btn btn-board-action font-title text-warning" (click)="saveFormation()">
+          <i class="bi bi-check-circle-fill me-1"></i>Lưu Trận Hình
+        </button>
+        <button class="btn btn-board-action font-title text-info" (click)="onActionClick('Recommend Lineup')">
+          <i class="bi bi-hand-index-thumb-fill me-1"></i>Gợi Ý Đội Hình
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- RIGHT PANEL: Formation Info & Upgrades     -->
+    <!-- ========================================== -->
+    <div class="right-panel">
+      <div class="panel-header">Quân Cơ Doanh Trại</div>
+
+      <div class="right-panel-body p-3 flex-grow-1 overflow-auto">
+        <!-- Preset General Information -->
+        <div class="info-section mb-3 border-bottom border-warning-subtle pb-2">
+          <h3 class="m-0 font-title text-gold text-uppercase">{{ formationName }}</h3>
+          <span class="d-block text-muted small mt-1">Cơ cấu: {{ formationType }}</span>
+        </div>
+
+        <!-- Formation statistics totals (Real-time updates) -->
+        <div class="totals-section mb-3 p-2 bg-black-opacity rounded border border-warning-subtle">
+          <span class="small text-muted font-title d-block mb-2 text-gold">Chỉ Số Tổng Quan Đội Ngũ:</span>
+          <div class="row g-2 text-center">
+            <div class="col-6 border-end border-warning-subtle">
+              <span class="small text-muted d-block">Lực Chiến Tổng</span>
+              <strong class="text-warning font-title fs-5" style="color: #ff8c00;">{{ totalPower | number }}</strong>
+            </div>
+            <div class="col-6">
+              <span class="small text-muted d-block">Cấp Trung Bình</span>
+              <strong class="text-white font-title fs-5">Lv.{{ averageLevel }}</strong>
+            </div>
+            <div class="col-6 border-end border-warning-subtle border-top pt-2">
+              <span class="small text-muted d-block">Tiền Tuyến</span>
+              <strong class="text-danger font-title fs-6">{{ frontlineCount }} Tướng</strong>
+            </div>
+            <div class="col-6 border-top pt-2">
+              <span class="small text-muted d-block">Hậu Phương</span>
+              <strong class="text-info font-title fs-6">{{ backlineCount }} Tướng</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Stats Bars layout (Team Bonuses) -->
+        <div class="stats-bonus-section mb-3 bg-black-opacity p-2 border-dotted-gold">
+          <span class="small text-muted font-title d-block mb-2"><i class="bi bi-chevron-right text-warning"></i>Gia Tốc
+            Thuộc Tính Trận:</span>
+
+          <!-- ATK Bonus -->
+          <div class="stat-bonus-item mb-2">
+            <div class="d-flex justify-content-between mb-1 small">
+              <span class="text-muted">Tổng Tấn Công (ATK Bonus)</span>
+              <span class="text-danger font-title">+{{ atkBonus }}%</span>
+            </div>
+            <div class="progress bonus-bar">
+              <div class="progress-bar bg-danger" [style.width.%]="atkBonus * 3"></div>
+            </div>
+          </div>
+
+          <!-- DEF Bonus -->
+          <div class="stat-bonus-item mb-2">
+            <div class="d-flex justify-content-between mb-1 small">
+              <span class="text-muted">Tổng Phòng Thủ (DEF Bonus)</span>
+              <span class="text-info font-title">+{{ defBonus }}%</span>
+            </div>
+            <div class="progress bonus-bar">
+              <div class="progress-bar bg-info" [style.width.%]="defBonus * 3"></div>
+            </div>
+          </div>
+
+          <!-- HP Bonus -->
+          <div class="stat-bonus-item mb-2">
+            <div class="d-flex justify-content-between mb-1 small">
+              <span class="text-muted">Tổng Sinh Mệnh (HP Bonus)</span>
+              <span class="text-success font-title">+{{ hpBonus }}%</span>
+            </div>
+            <div class="progress bonus-bar">
+              <div class="progress-bar bg-success" [style.width.%]="hpBonus * 3"></div>
+            </div>
+          </div>
+
+          <!-- SPD Bonus -->
+          <div class="stat-bonus-item mb-2">
+            <div class="d-flex justify-content-between mb-1 small">
+              <span class="text-muted">Tổng Tốc Độ (SPD Bonus)</span>
+              <span class="text-warning font-title">+{{ spdBonus }}%</span>
+            </div>
+            <div class="progress bonus-bar">
+              <div class="progress-bar bg-warning" [style.width.%]="spdBonus * 15"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Faction Position Synergies -->
+        <div class="live-synergy-box mb-3 bg-black-opacity p-2 border border-warning-subtle rounded">
+          <span class="font-title text-gold d-block mb-2 small"><i class="bi bi-activity text-warning me-1"></i>Hào
+            Quang Trận Pháp (Synergy):</span>
+
+          <div *ngFor="let syn of synergies" class="synergy-row d-flex align-items-start mb-2 opacity-50"
+            [class.active-synergy]="syn.active">
+            <i class="bi me-2 fs-5"
+              [ngClass]="syn.active ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted'"></i>
+            <div>
+              <strong class="d-block small" [class.text-gold]="syn.active">{{ syn.name }}</strong>
+              <span class="small d-block text-muted lh-xs" style="font-size: 10px;">{{ syn.desc }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upgrade Action -->
+        <div class="upgrade-action-box p-2 bg-black-opacity border-dotted-gold text-center">
+          <div class="d-flex justify-content-between align-items-center mb-2 font-title small">
+            <span>Cấp Hiện Tại: <span class="text-gold">Lv.{{ formationLevel }}</span></span>
+            <span *ngIf="formationLevel < 5">Cấp Kế: <span class="text-success">Lv.{{ formationLevel + 1
+                }}</span></span>
+          </div>
+
+          <button class="btn btn-upgrade-formation w-100 font-title" (click)="upgradeFormation()"
+            [disabled]="formationLevel >= 5">
+            <i class="bi bi-chevron-double-up me-1"></i>NÂNG CẤP TRẬN PHÁP
+          </button>
+
+          <div class="upgrade-costs mt-2 d-flex justify-content-around small text-muted font-title"
+            *ngIf="formationLevel < 5">
+            <span>Tốn: <i class="bi bi-coin text-warning"></i> {{ formationLevel * 20000 | number }}</span>
+            <span>Tốn: <i class="bi bi-book-half text-warning"></i> {{ formationLevel * 15 }}</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BOTTOM PANEL: Hero Pool List               -->
+  <!-- ========================================== -->
+  <div class="formation-bottom-panel">
+    <div class="panel-header d-flex justify-content-between align-items-center">
+      <span>Tướng Quân Dự Bị (Bấm chọn hoặc Kéo thả vào ô chiến thuật)</span>
+      <div class="d-flex gap-2">
+        <button class="btn btn-placeholder" (click)="onActionClick('Formation Buff')">Duyên Trận Hình</button>
+        <button class="btn btn-placeholder" (click)="onActionClick('Hero Synergy')">Kích Duyên Tướng</button>
+      </div>
+    </div>
+
+    <!-- Scrolling reserve heroes container -->
+    <div class="hero-pool-scroller-box">
+      <div class="hero-pool-list-wrapper">
+
+        <div *ngFor="let hero of heroes" class="pool-hero-card p-2" [class.placed-active]="isHeroPlaced(hero)"
+          [class.selected-click]="selectedPoolHero?.id === hero.id" draggable="true"
+          (dragstart)="onDragStart($event, hero, 'pool')" (click)="selectPoolHeroClick(hero)">
+
+          <div class="avatar-frame-pool mb-1" [style.border-color]="hero.auraColor">
+            <img [src]="hero.avatar" class="pool-hero-avatar-img" alt="{{ hero.name }}">
+            <span class="level-indicator font-title">Lv.{{ hero.level }}</span>
+            <span class="placed-badge">XUẤT CHIẾN</span>
+          </div>
+
+          <div class="hero-pool-meta text-center text-truncate w-100">
+            <span class="name d-block font-title text-truncate">{{ hero.name }}</span>
+            <span class="power small text-muted"><span class="small">Lực:</span> {{ hero.power }}</span>
+          </div>
+
+          <div class="stars-pool text-warning text-center">
+            <i class="bi bi-star-fill" *ngFor="let s of [].constructor(hero.stars)"></i>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TOAST NOTIFICATION SYSTEM                  -->
+  <!-- ========================================== -->
+  <div class="custom-game-toast" [class.show]="showToast" [class.toast-success]="toastType === 'success'"
+    [class.toast-warning]="toastType === 'warning'" [class.toast-info]="toastType === 'info'">
+    <i class="bi"
+      [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
+    <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
+  </div>
+
+</div>

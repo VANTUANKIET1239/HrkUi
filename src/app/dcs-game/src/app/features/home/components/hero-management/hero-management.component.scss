@@ -1,0 +1,1447 @@
+// Hero Management Stylesheet (Strategy RPG UI)
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Spectral:wght@600;800&display=swap');
+
+// Colors
+$gold-primary: #ffd700;
+$gold-dark: #aa7c11;
+$gold-border: #8e6e3c;
+$gold-light: #fffacd;
+$crimson-red: #a81a1a;
+$crimson-dark: #630505;
+$black-bg: #0e0d0c;
+$black-panel: #161412;
+$glass-dark: rgba(15, 12, 10, 0.9);
+$glow-gold: 0 0 12px rgba(255, 215, 0, 0.6);
+$glow-red: 0 0 12px rgba(255, 56, 56, 0.6);
+
+// Rarity borders
+$color-legendary: #ffc107;
+$color-epic: #c084fc;
+$color-rare: #60a5fa;
+$color-common: #9ca3af;
+
+.font-title {
+  font-family: 'Spectral', serif;
+  font-weight: 800;
+}
+
+// Overlay Wrapper
+.hero-mgmt-overlay {
+  font-family: 'Outfit', sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, rgba(20, 10, 8, 0.95) 0%, rgba(5, 3, 2, 0.98) 100%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  user-select: none;
+  animation: modal-fade-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Top Bar Layout
+.hero-mgmt-top-bar {
+  background: linear-gradient(to bottom, #1f1a14 0%, #0e0d0c 100%);
+  border-bottom: 2.5px solid $gold-border;
+  padding: 12px 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), inset 0 -2px 10px rgba(255, 215, 0, 0.05);
+  z-index: 20;
+
+  .page-title {
+    font-family: 'Spectral', serif;
+    font-weight: 800;
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 215, 0, 0.4);
+
+    .subtitle {
+      font-size: 13px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0;
+    }
+  }
+
+  .title-icon {
+    filter: drop-shadow(0 0 6px $gold-primary);
+  }
+}
+
+// Resource indicators
+.resource-counters {
+  gap: 15px;
+
+  .resource-item {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    padding: 4px 12px;
+    border-radius: 12px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.8);
+
+    i {
+      font-size: 15px;
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+
+    .value {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+  }
+}
+
+.btn-close-modal {
+  background: linear-gradient(to bottom, #c0392b 0%, #78281f 100%);
+  border: 1.5px solid #ff4d4d;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 0 10px rgba(255, 56, 56, 0.8);
+  }
+}
+
+// -------------------------------------------------------------
+// Body & Panels Grid
+// -------------------------------------------------------------
+.hero-mgmt-body {
+  display: flex;
+  flex-grow: 1;
+  padding: 12px;
+  gap: 12px;
+  overflow: hidden;
+  height: calc(100vh - 120px);
+}
+
+// Global panel presets
+.left-panel,
+.center-panel,
+.right-panel {
+  background: $glass-dark;
+  border: 2px solid rgba(255, 215, 0, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(255, 215, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.panel-header {
+  background: linear-gradient(to right, $crimson-dark 0%, #1e1310 100%);
+  border-bottom: 2px solid $gold-border;
+  color: $gold-primary;
+  font-family: 'Spectral', serif;
+  font-weight: 800;
+  padding: 8px 16px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.panel-header-sub {
+  background: linear-gradient(to right, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+  border-left: 3px solid $gold-primary;
+  color: #fff;
+  font-family: 'Spectral', serif;
+  font-weight: 800;
+  padding: 4px 10px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+// -------------------------------------------------------------
+// LEFT PANEL: Hero List Scroll
+// -------------------------------------------------------------
+.left-panel {
+  width: 23%;
+  animation: slide-in-left 0.4s ease-out forwards;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.filter-section {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+
+  .search-box {
+    position: relative;
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    input {
+      padding-left: 30px;
+      font-size: 12px;
+
+      &:focus {
+        border-color: $gold-primary;
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+      }
+    }
+  }
+
+  .form-select {
+    font-size: 11px;
+    padding: 4px 8px;
+
+    &:focus {
+      border-color: $gold-primary;
+      box-shadow: none;
+    }
+  }
+}
+
+.hero-scroll-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $gold-border;
+    border-radius: 3px;
+  }
+}
+
+.border-inner-gold {
+  background: rgba(30, 25, 20, 0.5);
+  border: 1.5px solid rgba(255, 215, 0, 0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: rgba(50, 40, 30, 0.7);
+    transform: translateY(-2px);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, rgba(168, 26, 26, 0.3) 0%, rgba(20, 15, 10, 0.9) 100%);
+    border-color: $gold-primary !important;
+    box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+// Faction and rarity presets inside list items
+.hero-list-item {
+  &.rarity-legendary {
+    border-left: 4px solid $color-legendary;
+  }
+
+  &.rarity-epic {
+    border-left: 4px solid $color-epic;
+  }
+
+  &.rarity-rare {
+    border-left: 4px solid $color-rare;
+  }
+}
+
+.hero-list-avatar {
+  width: 50px;
+  height: 50px;
+
+  .avatar-border {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    border: 2px solid $gold-border;
+    background: radial-gradient(circle, #3a2c20 0%, #1e130a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .level-indicator {
+    position: absolute;
+    bottom: -3px;
+    left: -3px;
+    background: #000;
+    border: 1px solid $gold-primary;
+    color: #ffd700;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 0 4px;
+    border-radius: 4px;
+  }
+
+  .faction-indicator {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+
+    .badge {
+      font-size: 8px;
+      padding: 2px 4px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.hero-name-label {
+  color: #fff;
+  font-size: 13.5px;
+  text-shadow: 0 1px 2px #000;
+}
+
+.text-gold {
+  color: $gold-primary;
+}
+
+// -------------------------------------------------------------
+// CENTER PANEL: Main Hero Display
+// -------------------------------------------------------------
+.center-panel {
+  width: 54%;
+  animation: slide-in-bottom 0.45s ease-out forwards;
+  overflow-y: auto;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $gold-border;
+    border-radius: 3px;
+  }
+}
+
+@keyframes slide-in-bottom {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.character-detail-showcase {
+  height: 380px;
+  background: radial-gradient(circle, rgba(139, 0, 0, 0.15) 0%, rgba(10, 8, 5, 0.95) 100%),
+    url(/assets/images/dcs-game/lobby_bg.png) no-repeat center center;
+  background-size: cover;
+  border-bottom: 2.5px solid $gold-border;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.character-showcase-info {
+  z-index: 10;
+
+  .hero-name-large {
+    font-size: 28px;
+    color: #fff;
+    text-shadow: 0 2px 6px #000, 0 0 10px rgba(255, 255, 255, 0.2);
+    letter-spacing: 1px;
+  }
+
+  .faction-badge {
+    background: $crimson-red;
+    border: 1px solid $gold-primary;
+    color: #fff;
+    font-size: 10px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+}
+
+.combat-power-container {
+  background: rgba(0, 0, 0, 0.65);
+  border: 1.5px solid $gold-primary;
+  border-radius: 8px;
+  padding: 4px 15px;
+  box-shadow: $glow-gold;
+
+  .lbl {
+    font-size: 9px;
+    display: block;
+    color: #ffd700;
+    text-align: center;
+  }
+
+  .val {
+    font-size: 19px;
+    color: #ff8c00;
+    text-shadow: 0 0 5px rgba(255, 140, 0, 0.6);
+  }
+}
+
+// Artwork placeholder
+.character-illustration-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 50px;
+  pointer-events: none;
+}
+
+// EXP and Fantasy Progress bars
+.progress-fantasy {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 4px;
+  overflow: visible;
+
+  .bg-gold {
+    background: linear-gradient(to right, #b8860b 0%, #ffd700 100%);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  }
+}
+
+.exp-bar-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+  z-index: 10;
+}
+
+// Stats bars
+.stats-panel-section {
+  background: rgba(20, 16, 12, 0.9);
+  border-bottom: 1.5px solid rgba(255, 215, 0, 0.15);
+
+  .stat-item {
+    font-size: 11.5px;
+  }
+
+  .stat-bar {
+    height: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+  }
+
+  .secondary-stats-row {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+}
+
+// Skills Grid
+.skills-section-panel {
+  background: rgba(15, 12, 10, 0.95);
+  border-bottom: 1.5px solid rgba(255, 215, 0, 0.15);
+}
+
+.skills-grid {
+  gap: 10px;
+
+  .skill-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid $gold-border;
+    background: radial-gradient(circle, #3a2c20 0%, #16110a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+
+    .icon-inner {
+      font-size: 18px;
+      color: #dfbf8f;
+    }
+
+    &:hover,
+    &.active {
+      border-color: $gold-primary;
+      box-shadow: $glow-gold;
+      transform: scale(1.1);
+
+      .icon-inner {
+        color: $gold-primary;
+      }
+    }
+
+    .skill-indicator-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+
+      &.active {
+        background: #e74c3c;
+        box-shadow: 0 0 4px #e74c3c;
+      }
+
+      &.passive {
+        background: #3498db;
+        box-shadow: 0 0 4px #3498db;
+      }
+    }
+  }
+}
+
+.selected-skill-details {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 6px;
+
+  .skill-title {
+    font-size: 13.5px;
+  }
+
+  .skill-description {
+    color: #ddd;
+    line-height: 1.4;
+  }
+}
+
+// Radial Equipment surrounding the character artwork
+.equipment-radial-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+
+  // Rotating faint magic circle background
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250px;
+    height: 250px;
+    border: 1.5px dashed rgba(255, 215, 0, 0.18);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.03);
+    animation: rotate-ring-back 45s linear infinite;
+  }
+}
+
+@keyframes rotate-ring-back {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.radial-gear-node {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: radial-gradient(circle, #2e241b 0%, #110c08 100%);
+  border: 1.8px solid $gold-border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+
+  .gear-node-icon-bg {
+    font-size: 26px;
+    color: #dfbf8f;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gear-node-lvl {
+    position: absolute;
+    bottom: -4px;
+    right: -2px;
+    background: #000;
+    border: 1px solid $gold-primary;
+    color: $gold-primary;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 0px 4px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+
+  // Hover states & glows matching rarities
+  &:hover {
+    transform: scale(1.18);
+    border-color: $gold-primary;
+    box-shadow: $glow-gold;
+    z-index: 50;
+
+    .gear-node-icon-bg {
+      color: $gold-primary;
+    }
+
+    // Show tooltip
+    .gear-node-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.epic {
+    border-color: rgba($color-epic, 0.65);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7), 0 0 6px rgba($color-epic, 0.25);
+
+    &:hover {
+      border-color: $color-epic;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 12px rgba($color-epic, 0.6);
+    }
+  }
+
+  &.legendary {
+    border-color: rgba($color-legendary, 0.65);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7), 0 0 6px rgba($color-legendary, 0.25);
+
+    &:hover {
+      border-color: $color-legendary;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 12px rgba($color-legendary, 0.6);
+    }
+  }
+
+  &.rare {
+    border-color: rgba($color-rare, 0.65);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7), 0 0 6px rgba($color-rare, 0.25);
+
+    &:hover {
+      border-color: $color-rare;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 12px rgba($color-rare, 0.6);
+    }
+  }
+}
+
+// Positions surrounding the character illustration
+.gear-node-pos-0 {
+  left: 14%;
+  top: 22%;
+}
+
+.gear-node-pos-1 {
+  left: 9%;
+  top: 48%;
+}
+
+.gear-node-pos-2 {
+  left: 14%;
+  top: 74%;
+}
+
+.gear-node-pos-3 {
+  right: 14%;
+  top: 74%;
+}
+
+.gear-node-pos-4 {
+  right: 9%;
+  top: 48%;
+}
+
+.gear-node-pos-5 {
+  right: 14%;
+  top: 22%;
+}
+
+// Tooltip popups
+.gear-node-tooltip {
+  position: absolute;
+  background: rgba(15, 12, 10, 0.95);
+  border: 1.5px solid $gold-border;
+  border-radius: 6px;
+  padding: 8px 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.95), 0 0 10px rgba(255, 215, 0, 0.25);
+  z-index: 100;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+  }
+}
+
+// Tooltips on left nodes slide right
+.gear-node-pos-0,
+.gear-node-pos-1,
+.gear-node-pos-2 {
+  .gear-node-tooltip {
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-5px);
+
+    &::before {
+      right: 100%;
+      border-right-color: $gold-border;
+    }
+  }
+
+  &:hover .gear-node-tooltip {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// Tooltips on right nodes slide left
+.gear-node-pos-3,
+.gear-node-pos-4,
+.gear-node-pos-5 {
+  .gear-node-tooltip {
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%) translateX(5px);
+
+    &::before {
+      left: 100%;
+      border-left-color: $gold-border;
+    }
+  }
+
+  &:hover .gear-node-tooltip {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// -------------------------------------------------------------
+// RIGHT PANEL: Actions, Placeholders & Tabs
+// -------------------------------------------------------------
+.right-panel {
+  width: 23%;
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.btn-action {
+  background: radial-gradient(circle, #2a1f19 0%, #150f0c 100%);
+  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  color: #dfbf8f;
+  font-size: 11px;
+  padding: 6px 2px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $gold-primary;
+    background: radial-gradient(circle, #453328 0%, #1e1510 100%);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+  }
+
+  &.text-danger-hover:hover {
+    border-color: #f87171;
+    color: #f87171;
+  }
+
+  &.text-warning-hover:hover {
+    border-color: #fbbf24;
+    color: #fbbf24;
+  }
+}
+
+.actions-group {
+  padding: 8px;
+}
+
+.extra-features-panel {
+  padding: 0 8px;
+  overflow: hidden;
+}
+
+// Navigation Tabs
+.extra-tabs-nav {
+  border-radius: 4px;
+  overflow: hidden;
+
+  .tab-btn {
+    background: #1a1714;
+    border: none;
+    color: #888;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      color: #fff;
+      background: #25201c;
+    }
+
+    &.active {
+      background: #352a22;
+      color: $gold-primary;
+      border-bottom: 2px solid $gold-primary;
+    }
+  }
+}
+
+.extra-tab-content {
+  border: 1.5px solid rgba(255, 215, 0, 0.15);
+  border-radius: 6px;
+  // max-height: 190px;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.bg-dark-glass {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+// Aura evolve tier selectors
+.aura-tier-card {
+  background: rgba(25, 20, 15, 0.6);
+  border: 1.5px solid rgba(255, 215, 0, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: rgba(45, 35, 25, 0.8);
+  }
+
+  &.active {
+    border-color: $gold-primary;
+    background: rgba(139, 0, 0, 0.25);
+    box-shadow: inset 0 0 8px rgba(255, 215, 0, 0.2);
+  }
+
+  .tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+    &.blue {
+      background: #60a5fa;
+      box-shadow: 0 0 5px #60a5fa;
+    }
+
+    &.purple {
+      background: #c084fc;
+      box-shadow: 0 0 5px #c084fc;
+    }
+
+    &.gold {
+      background: #ffd700;
+      box-shadow: 0 0 5px #ffd700;
+    }
+
+    &.red {
+      background: #ff3838;
+      box-shadow: 0 0 5px #ff3838;
+    }
+  }
+}
+
+.bg-black-opacity {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+// Placeholders section
+.placeholder-features {
+  padding: 8px;
+  border-top: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.placeholder-grid {
+  gap: 4px;
+
+  .btn-placeholder {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 215, 0, 0.12);
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 9.5px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    flex-grow: 1;
+    text-align: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba(255, 215, 0, 0.3);
+      color: #dfbf8f;
+      background: rgba(25, 20, 15, 0.6);
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// BOTTOM PANEL: Quick Action Bar
+// -------------------------------------------------------------
+.hero-mgmt-bottom-panel {
+  background: linear-gradient(to top, #0e0d0c 0%, #1f1a14 100%);
+  border-top: 2.5px solid $gold-border;
+  padding: 10px 24px;
+  z-index: 20;
+}
+
+.btn-quick-action {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  color: #ccc;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(30, 20, 10, 0.8);
+    border-color: $gold-primary;
+    color: #fff;
+  }
+
+  &.locked-active {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+  }
+
+  &.favorite-active {
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.15);
+  }
+}
+
+.btn-quick-action-primary {
+  color: #000;
+  font-weight: 800;
+  font-size: 11.5px;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-family: 'Spectral', serif;
+
+  &.level-up-btn {
+    background: linear-gradient(to bottom, #2ec771 0%, #1e8449 100%);
+    border: 1.5px solid #2ecc71;
+    color: #fff;
+
+    &:hover {
+      background: linear-gradient(to bottom, #39d982 0%, #219653 100%);
+      box-shadow: 0 0 10px rgba(46, 204, 113, 0.6);
+    }
+  }
+
+  &.auto-upgrade-btn {
+    background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%);
+    border: 1.5px solid #e67e22;
+    color: #fff;
+
+    &:hover {
+      background: linear-gradient(to bottom, #f5b041 0%, #e67e22 100%);
+      box-shadow: 0 0 10px rgba(230, 126, 34, 0.6);
+    }
+  }
+
+  &.equip-best-btn {
+    background: linear-gradient(to bottom, #ffd700 0%, #aa7c11 100%);
+    border: 1.5px solid $gold-primary;
+    color: #000;
+
+    &:hover {
+      background: linear-gradient(to bottom, #fffacd 0%, #ffd700 100%);
+      box-shadow: $glow-gold;
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// Interactive Aura effects (Visual Overlays)
+// -------------------------------------------------------------
+.animated-aura-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  transition: all 0.5s ease;
+
+  // Blue Ice Aura
+  &.blue-aura {
+    box-shadow: inset 0 0 30px rgba(96, 165, 250, 0.4), 0 0 20px rgba(96, 165, 250, 0.3);
+
+    .pulse-ring {
+      border: 2px solid rgba(96, 165, 250, 0.5);
+    }
+  }
+
+  // Purple Phantom Aura
+  &.purple-aura {
+    box-shadow: inset 0 0 30px rgba(192, 132, 252, 0.45), 0 0 25px rgba(192, 132, 252, 0.35);
+
+    .pulse-ring {
+      border: 2px solid rgba(192, 132, 252, 0.5);
+      animation-duration: 3s;
+    }
+  }
+
+  // Golden Radiant Aura
+  &.golden-aura {
+    box-shadow: inset 0 0 35px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.4);
+
+    .pulse-ring {
+      border: 2.5px solid rgba(255, 215, 0, 0.6);
+    }
+  }
+
+  // Red Lightning Crackle Aura
+  &.red-lightning-aura {
+    box-shadow: inset 0 0 40px rgba(255, 56, 56, 0.6), 0 0 35px rgba(255, 56, 56, 0.5);
+    animation: lightning-flash 2.5s infinite;
+
+    .pulse-ring {
+      border: 3px solid rgba(255, 56, 56, 0.7);
+    }
+  }
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  animation: pulse-grow 2s linear infinite;
+
+  &.pulse-ring-2 {
+    animation-delay: 1s;
+  }
+}
+
+@keyframes pulse-grow {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes lightning-flash {
+
+  0%,
+  100% {
+    box-shadow: inset 0 0 40px rgba(255, 56, 56, 0.6), 0 0 35px rgba(255, 56, 56, 0.5);
+  }
+
+  45% {
+    box-shadow: inset 0 0 40px rgba(255, 56, 56, 0.6), 0 0 35px rgba(255, 56, 56, 0.5);
+  }
+
+  50% {
+    box-shadow: inset 0 0 55px rgba(255, 255, 255, 0.95), 0 0 50px rgba(255, 56, 56, 0.9);
+  }
+
+  55% {
+    box-shadow: inset 0 0 40px rgba(255, 56, 56, 0.65), 0 0 35px rgba(255, 56, 56, 0.55);
+  }
+}
+
+// -------------------------------------------------------------
+// MODAL overlay styles for rèn & tẩy trang bị
+// -------------------------------------------------------------
+.modal-backdrop-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+  animation: fade-in 0.2s ease-out;
+}
+
+.equipment-modification-modal {
+  width: 480px;
+  background: #191410;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.35);
+  animation: zoom-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes zoom-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.btn-close-modal-small {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 16px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #fff;
+    transform: scale(1.1);
+  }
+}
+
+.gear-icon-box-large {
+  background: rgba(0, 0, 0, 0.5);
+  border: 2.5px solid $gold-border;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.epic {
+    border-color: $color-epic;
+  }
+
+  &.legendary {
+    border-color: $color-legendary;
+  }
+
+  &.rare {
+    border-color: $color-rare;
+  }
+}
+
+.btn-modal-action {
+  background: radial-gradient(circle, #271d18 0%, #150f0c 100%);
+  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  text-align: left;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $gold-primary;
+    background: radial-gradient(circle, #3e2b20 0%, #1c130e 100%);
+    box-shadow: 0 4px 10px rgba(255, 215, 0, 0.15);
+  }
+}
+
+// -------------------------------------------------------------
+// Toast notification
+// -------------------------------------------------------------
+.custom-game-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  padding: 10px 24px;
+  border-radius: 8px;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  &.toast-success {
+    background: linear-gradient(135deg, #1b4d22 0%, #0e2a12 100%);
+    border: 2px solid #2ecc71;
+    color: #2ecc71;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+  }
+
+  &.toast-warning {
+    background: linear-gradient(135deg, #7c2d12 0%, #451a03 100%);
+    border: 2px solid #ea580c;
+    color: #f97316;
+    box-shadow: 0 0 15px rgba(234, 88, 12, 0.4);
+  }
+
+  &.toast-info {
+    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+    border: 2px solid $gold-primary;
+    color: $gold-primary;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+  }
+
+  .toast-text {
+    font-size: 13.5px;
+    letter-spacing: 0.5px;
+  }
+}
+
+// -------------------------------------------------------------
+// Inventory Section Panel Styles
+// -------------------------------------------------------------
+.inventory-section-panel {
+  background: rgba(15, 12, 10, 0.95);
+  border-bottom: 1.5px solid rgba(255, 215, 0, 0.15);
+
+  .section-title {
+    font-size: 14px;
+    color: #ffd700;
+  }
+}
+
+.inventory-filters {
+  .btn-outline-warning {
+    font-size: 10px;
+    border-color: rgba(255, 215, 0, 0.3);
+    color: #dfbf8f;
+    padding: 2px 6px;
+    
+    &:hover, &.active {
+      background: $gold-primary;
+      color: #000;
+      border-color: $gold-primary;
+      box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+    }
+  }
+}
+
+.inventory-grid {
+  max-height: 160px;
+  padding: 5px;
+  
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.inventory-item-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 8px;
+  background: radial-gradient(circle, #2e241b 0%, #110c08 100%);
+  border: 1.8px solid $gold-border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  .item-icon-bg {
+    font-size: 22px;
+    color: #dfbf8f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .item-lvl {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: #000;
+    border: 1px solid $gold-primary;
+    color: $gold-primary;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 0px 3px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .item-slot-tag {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    background: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 7.5px;
+    padding: 0px 3px;
+    border-radius: 2px;
+    border: 0.5px solid rgba(255, 215, 0, 0.2);
+  }
+
+  &:hover {
+    transform: translateY(-3px) scale(1.05);
+    border-color: $gold-primary;
+    box-shadow: $glow-gold;
+    z-index: 10;
+
+    .item-icon-bg {
+      color: $gold-primary;
+    }
+
+    .item-node-tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.epic {
+    border-color: rgba($color-epic, 0.65);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 4px rgba($color-epic, 0.2);
+
+    &:hover {
+      border-color: $color-epic;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba($color-epic, 0.5);
+    }
+  }
+
+  &.legendary {
+    border-color: rgba($color-legendary, 0.65);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 4px rgba($color-legendary, 0.2);
+
+    &:hover {
+      border-color: $color-legendary;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba($color-legendary, 0.5);
+    }
+  }
+
+  &.rare {
+    border-color: rgba($color-rare, 0.65);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 4px rgba($color-rare, 0.2);
+
+    &:hover {
+      border-color: $color-rare;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba($color-rare, 0.5);
+    }
+  }
+}
+
+.item-node-tooltip {
+  position: absolute;
+  background: rgba(15, 12, 10, 0.95);
+  border: 1.5px solid $gold-border;
+  border-radius: 6px;
+  padding: 8px 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.95), 0 0 10px rgba(255, 215, 0, 0.25);
+  z-index: 100;
+  bottom: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: $gold-border;
+  }
+}
