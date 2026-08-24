@@ -1,0 +1,94 @@
+<form [formGroup]="dataForm" (ngSubmit)="submit()" class="game-form" novalidate>
+  <!-- Role selection -->
+  <!-- <div class="role-selector">
+    <div
+      *ngFor="let role of roles"
+      class="role-badge"
+      [class.active]="selectedRole === role.value"
+      (click)="selectedRole = role.value"
+    >
+      <i class="bi bi-shield-lock-fill"></i>
+      <span>{{ role.label }}</span>
+    </div>
+  </div> -->
+
+  <!-- Email Field -->
+  <div class="form-group">
+    <label class="field-label" for="login-email">
+      <i class="bi bi-envelope-fill icon-gold"></i> Email đăng nhập
+    </label>
+    <div class="input-container" [class.error-border]="hasErr('email')">
+      <hrk-input id="login-email" type="email" autocomplete="username" formControlName="email"
+        [invalid]="hasErr('email')" placeholder="vantuankiet@dcs-game.com"></hrk-input>
+    </div>
+    <small class="error-msg" *ngIf="hasErr('email')">
+      <i class="bi bi-exclamation-triangle-fill"></i> Email không đúng định dạng.
+    </small>
+  </div>
+
+  <!-- Password Field -->
+  <div class="form-group">
+    <label class="field-label" for="login-password">
+      <i class="bi bi-key-fill icon-gold"></i> Mật khẩu
+    </label>
+    <div class="pwd-input-wrap" [class.error-border]="hasErr('password')">
+      <hrk-input id="login-password" formControlName="password" [type]="showPwd() ? 'text' : 'password'"
+        autocomplete="current-password" placeholder="••••••••"></hrk-input>
+      <button type="button" class="btn-pwd-toggle" aria-label="Toggle password visibility" (click)="toggleShowPwd()">
+        <hrk-icon [biIconName]="showPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium"
+          color="#ffd700"></hrk-icon>
+      </button>
+    </div>
+    <small class="error-msg" *ngIf="hasErr('password')">
+      <i class="bi bi-exclamation-triangle-fill"></i> Mật khẩu cần tối thiểu 6 ký tự.
+    </small>
+  </div>
+
+  <!-- Remember Me & Forgot Password -->
+  <div class="form-actions-row">
+    <label class="checkbox-label">
+      <hrk-checkbox formControlName="remember" backgroundColor="#ffd700"></hrk-checkbox>
+      <span class="remember-text">Ghi nhớ đăng nhập</span>
+    </label>
+
+    <a href="#" class="game-link" (click)="$event.preventDefault()">Quên mật khẩu?</a>
+  </div>
+
+  <!-- Main Login Button -->
+  <div class="submit-wrap">
+    <button type="submit" class="game-btn-primary" [disabled]="loading()">
+      <span class="btn-glow"></span>
+      <span class="btn-text" *ngIf="!loading()">
+        <i class="bi bi-box-arrow-in-right"></i> VÀO GAME
+      </span>
+      <span class="btn-text" *ngIf="loading()">
+        <i class="bi bi-arrow-repeat spin"></i> ĐANG ĐĂNG NHẬP...
+      </span>
+    </button>
+  </div>
+
+  <!-- Divider -->
+  <div class="game-divider">
+    <span class="divider-line"></span>
+    <span class="divider-text">HOẶC ĐĂNG NHẬP BẰNG</span>
+    <span class="divider-line"></span>
+  </div>
+
+  <!-- SSO Buttons -->
+  <div class="sso-group">
+    <button type="button" class="game-btn-sso" (click)="sso('google')" aria-label="Continue with Google">
+      <hrk-icon [useSvg]="true" svgIconName="google" size="medium"></hrk-icon>
+      <span>Google</span>
+    </button>
+    <button type="button" class="game-btn-sso" (click)="sso('microsoft')" aria-label="Continue with Microsoft">
+      <hrk-icon [useSvg]="true" svgIconName="microsoft" size="medium"></hrk-icon>
+      <span>Microsoft</span>
+    </button>
+  </div>
+
+  <!-- Switch to Register -->
+  <div class="switch-prompt">
+    <span>Chưa có tài khoản Chinh Phạt?</span>
+    <a href="#" class="game-link-highlight" (click)="onGoToRegister($event)">TẠO TÀI KHOẢN MỚI</a>
+  </div>
+</form>

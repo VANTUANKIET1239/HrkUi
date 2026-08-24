@@ -1,0 +1,453 @@
+<div class="inventory-overlay">
+  <!-- TOP BAR: Title, Gold, Diamonds, and Close Button -->
+  <div class="inventory-top-bar d-flex justify-content-between align-items-center">
+    <div class="title-section d-flex align-items-center">
+      <i class="bi bi-briefcase-fill title-icon me-2 text-warning fs-3"></i>
+      <h1 class="m-0 page-title">HÀNH TRANG <span class="subtitle">— Inventory Bag</span></h1>
+    </div>
+
+    <!-- Resource Counters -->
+    <div class="resource-counters d-flex align-items-center">
+      <div class="resource-item d-flex align-items-center">
+        <i class="bi bi-coin text-warning me-1"></i>
+        <span class="value">{{ gold | number }}</span>
+      </div>
+      <div class="resource-item d-flex align-items-center">
+        <i class="bi bi-gem text-info me-1"></i>
+        <span class="value">{{ diamonds | number }}</span>
+      </div>
+      <div class="resource-item d-flex align-items-center">
+        <i class="bi bi-lightning-charge-fill text-danger me-1"></i>
+        <span class="value">{{ upgradeMaterialsCount | number }} Đá</span>
+      </div>
+    </div>
+
+    <button class="btn btn-close-modal" (click)="close.emit()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- MAIN BODY: LEFT, CENTER & RIGHT PANELS -->
+  <div class="inventory-body">
+    
+    <!-- ========================================== -->
+    <!-- LEFT PANEL: Category Filter Panel          -->
+    <!-- ========================================== -->
+    <div class="left-panel">
+      <div class="panel-header">Danh Mục Hành Trang</div>
+      
+      <div class="category-list">
+        <div 
+          *ngFor="let cat of categories" 
+          class="category-item" 
+          [class.active]="selectedCategory === cat.key"
+          (click)="selectCategory(cat.key)">
+          <i class="bi {{ cat.icon }} category-icon"></i>
+          <span class="category-name">{{ cat.name }}</span>
+          <span class="item-count-badge">{{ getCategoryItemCount(cat.key) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- CENTER PANEL: Inventory Item Grid          -->
+    <!-- ========================================== -->
+    <div class="center-panel">
+      <div class="panel-header">Danh Sách Vật Phẩm</div>
+
+      <!-- Filters & Search Bar -->
+      <div class="filter-section">
+        <div class="search-box">
+          <i class="bi bi-search text-muted search-icon"></i>
+          <input 
+            type="text" 
+            class="form-control form-control-sm bg-dark text-white border-warning-subtle" 
+            placeholder="Tìm kiếm vật phẩm..." 
+            [(ngModel)]="searchQuery">
+        </div>
+
+        <div class="filters-row">
+          <!-- Rarity Filter -->
+          <select class="form-select form-select-sm" [(ngModel)]="filterRarity">
+            <option value="All">Phẩm chất (Tất cả)</option>
+            <option value="Mythic">Thần Thoại (Đỏ)</option>
+            <option value="Legendary">Truyền Thuyết (Vàng)</option>
+            <option value="Epic">Sử Thi (Tím)</option>
+            <option value="Rare">Hiếm (Xanh)</option>
+            <option value="Common">Thường (Xám)</option>
+          </select>
+
+          <!-- Equipped/Unequipped Filter -->
+          <select class="form-select form-select-sm" [(ngModel)]="filterEquipped">
+            <option value="All">Trạng thái (Tất cả)</option>
+            <option value="Equipped">Đang trang bị</option>
+            <option value="Unequipped">Trong túi đồ</option>
+          </select>
+
+          <!-- Level Requirements Filter -->
+          <select class="form-select form-select-sm" [(ngModel)]="filterLevel">
+            <option value="All">Cấp yêu cầu (Tất cả)</option>
+            <option value="1-10">Cấp 1 - 10</option>
+            <option value="11-30">Cấp 11 - 30</option>
+            <option value="31+">Cấp 31 trở lên</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Item Grid Slots -->
+      <div class="grid-scroll-container">
+        <div class="item-grid">
+          <div 
+            *ngFor="let item of filteredItems" 
+            class="item-slot"
+            [class.active]="selectedItem && selectedItem.id === item.id"
+            [class.rarity-mythic]="item.rarity === 'Mythic'"
+            [class.rarity-legendary]="item.rarity === 'Legendary'"
+            [class.rarity-epic]="item.rarity === 'Epic'"
+            [class.rarity-rare]="item.rarity === 'Rare'"
+            [class.rarity-common]="item.rarity === 'Common'"
+            (click)="selectItem(item)"
+            draggable="true"
+            (dragstart)="onItemDragStart($event, item)"
+            (dragover)="onItemDragOver($event)"
+            (drop)="onItemDrop($event)">
+            
+            <div class="slot-inner">
+              <!-- Item Icon -->
+              <div class="item-icon-wrapper">
+                <i class="bi {{ item.icon }}"></i>
+              </div>
+
+              <!-- Equipped Status Badge -->
+              <div *ngIf="item.equipped" class="equipped-tag">MẶC</div>
+
+              <!-- Enhancement Level Badge (+10) -->
+              <div *ngIf="isEquipment(item) && item.enhancement > 0" class="level-badge">
+                +{{ item.enhancement }}
+              </div>
+
+              <!-- Stack Count Badge for stackables (potions/materials) -->
+              <div *ngIf="!isEquipment(item) && item.count > 1" class="count-badge">
+                {{ item.count }}
+              </div>
+
+              <!-- Lock Icon -->
+              <div *ngIf="item.locked" class="lock-badge">
+                <i class="bi bi-lock-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredItems.length === 0" class="text-center py-5 text-muted">
+          Không tìm thấy vật phẩm nào phù hợp!
+        </div>
+
+        <!-- Placeholder Drag-and-Drop Area to simulate equip drag -->
+        <div class="drag-placeholder-prompt">
+          <i class="bi bi-info-circle-fill"></i>
+          <span>Kéo thả trang bị từ túi đồ ra ngoài để mặc nhanh lên danh tướng (Giả lập)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- RIGHT PANEL: Item Details Panel            -->
+    <!-- ========================================== -->
+    <div class="right-panel">
+      <div class="panel-header">Chi Tiết Vật Phẩm</div>
+
+      <div class="details-wrapper">
+        <!-- If item selected -->
+        <div *ngIf="selectedItem" class="details-wrapper-inner d-flex flex-column justify-content-between h-100">
+          <div class="details-scroll-content flex-grow-1">
+            <div class="details-header">
+              <!-- Equipped tag -->
+              <span *ngIf="selectedItem.equipped" class="equipped-status-banner">ĐANG TRANG BỊ</span>
+              
+              <!-- Large Icon Box -->
+              <div 
+                class="item-icon-box-large"
+                [class.rarity-mythic]="selectedItem.rarity === 'Mythic'"
+                [class.rarity-legendary]="selectedItem.rarity === 'Legendary'"
+                [class.rarity-epic]="selectedItem.rarity === 'Epic'"
+                [class.rarity-rare]="selectedItem.rarity === 'Rare'"
+                [class.rarity-common]="selectedItem.rarity === 'Common'">
+                <i class="bi {{ selectedItem.icon }}"></i>
+              </div>
+
+              <!-- Item Name -->
+              <h2 class="item-name-large font-title">{{ selectedItem.name }}</h2>
+
+              <!-- Meta Badges -->
+              <div class="item-meta-tags">
+                <span class="badge-rarity" 
+                  [class.rarity-mythic]="selectedItem.rarity === 'Mythic'"
+                  [class.rarity-legendary]="selectedItem.rarity === 'Legendary'"
+                  [class.rarity-epic]="selectedItem.rarity === 'Epic'"
+                  [class.rarity-rare]="selectedItem.rarity === 'Rare'"
+                  [class.rarity-common]="selectedItem.rarity === 'Common'">
+                  {{ getRarityName(selectedItem.rarity) }}
+                </span>
+                <span class="badge-info">{{ getTypeName(selectedItem.category) }}</span>
+                <span class="badge-info">Y/c: Cấp {{ selectedItem.levelReq }}</span>
+              </div>
+            </div>
+
+            <!-- Description & Stats Body -->
+            <div class="details-body">
+              <p class="description-box">{{ selectedItem.desc }}</p>
+
+              <!-- EQUIPMENT STATS -->
+              <div *ngIf="isEquipment(selectedItem)">
+                <div class="stat-group-title">Thuộc Tính Trang Bị</div>
+                <div class="stats-list">
+                  <div *ngIf="selectedItem.stats.atk" class="stat-row">
+                    <span class="stat-label">Công (ATK)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.atk }}</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.def" class="stat-row">
+                    <span class="stat-label">Thủ (DEF)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.def }}</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.hp" class="stat-row">
+                    <span class="stat-label">Sinh Mệnh (HP)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.hp }}</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.crit" class="stat-row">
+                    <span class="stat-label">Bạo Kích (Crit)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.crit }}%</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.spd" class="stat-row">
+                    <span class="stat-label">Tốc Độ (Speed)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.spd }}</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.lifesteal" class="stat-row">
+                    <span class="stat-label">Hút Máu (Lifesteal)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.lifesteal }}%</span>
+                  </div>
+                </div>
+
+                <!-- Special Effect (passive) if any -->
+                <div *ngIf="selectedItem.stats.specialEffect" class="special-effect-box mt-3">
+                  <span class="special-label"><i class="bi bi-stars"></i> Hiệu Ứng Đặc Biệt:</span>
+                  <span class="special-desc">{{ selectedItem.stats.specialEffect }}</span>
+                </div>
+              </div>
+
+              <!-- CONSUMABLE STATS -->
+              <div *ngIf="selectedItem.category === 'consumables'">
+                <div class="stat-group-title">Hiệu Quả Sử Dụng</div>
+                <div class="stats-list">
+                  <div *ngIf="selectedItem.stats.healAmount" class="stat-row">
+                    <span class="stat-label">Trị Liệu (Heal)</span>
+                    <span class="stat-val">+{{ selectedItem.stats.healAmount }} HP</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.buffEffect" class="stat-row">
+                    <span class="stat-label">Tăng ích (Buff)</span>
+                    <span class="stat-val">{{ selectedItem.stats.buffEffect }}</span>
+                  </div>
+                  <div *ngIf="selectedItem.stats.duration" class="stat-row">
+                    <span class="stat-label">Thời gian</span>
+                    <span class="stat-val">{{ selectedItem.stats.duration }} lượt</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MATERIAL STATS / DESCRIPTION -->
+              <div *ngIf="selectedItem.category === 'materials' || selectedItem.category === 'skill_books' || selectedItem.category === 'hero_fragments'">
+                <div class="stat-group-title">Mô Tả Công Dụng</div>
+                <div class="stats-list">
+                  <div class="stat-row">
+                    <span class="stat-label">Cách dùng:</span>
+                    <span class="stat-val text-white" style="font-weight: 500;">{{ selectedItem.stats.usageDesc || 'Sử dụng trực tiếp trong giao diện tương ứng.' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons Area -->
+          <div class="details-footer">
+            
+            <!-- Context sensitive buttons -->
+
+            <!-- EQUIPMENT ACTIONS: Equip/Unequip, Sell, Lock, Upgrade, Enhance -->
+            <div *ngIf="isEquipment(selectedItem)" class="d-flex flex-column gap-2">
+              <button 
+                class="btn btn-detail-action btn-primary-action"
+                (click)="equipOrUnequip(selectedItem)">
+                <i class="bi" [class.bi-shield-fill-minus]="selectedItem.equipped" [class.bi-shield-fill-plus]="!selectedItem.equipped"></i>
+                {{ selectedItem.equipped ? 'Tháo Trang Bị' : 'Mặc Trang Bị' }}
+              </button>
+
+              <div class="double-btn-row">
+                <button 
+                  class="btn btn-detail-action btn-secondary-action"
+                  [disabled]="selectedItem.equipped || selectedItem.locked"
+                  (click)="enhanceEquipment(selectedItem)">
+                  <i class="bi bi-hammer"></i> Cường Hóa (+{{ selectedItem.enhancement }})
+                </button>
+                <button 
+                  class="btn btn-detail-action btn-secondary-action"
+                  [disabled]="selectedItem.equipped || selectedItem.locked"
+                  (click)="upgradeEquipment(selectedItem)">
+                  <i class="bi bi-arrow-up-circle-fill"></i> Tăng Sao
+                </button>
+              </div>
+
+              <div class="double-btn-row">
+                <button 
+                  class="btn btn-detail-action btn-secondary-action"
+                  (click)="toggleLockItem(selectedItem)">
+                  <i class="bi" [class.bi-lock-fill]="selectedItem.locked" [class.bi-unlock-fill]="!selectedItem.locked"></i>
+                  {{ selectedItem.locked ? 'Mở Khóa' : 'Khóa Đồ' }}
+                </button>
+                <button 
+                  class="btn btn-detail-action btn-danger-action"
+                  [disabled]="selectedItem.equipped || selectedItem.locked"
+                  (click)="sellItem(selectedItem)">
+                  <i class="bi bi-coin"></i> Bán
+                </button>
+              </div>
+            </div>
+
+            <!-- CONSUMABLE ACTIONS: Use, Discard -->
+            <div *ngIf="selectedItem.category === 'consumables'" class="d-flex flex-column gap-2">
+              <button 
+                class="btn btn-detail-action btn-primary-action"
+                (click)="useItem(selectedItem)">
+                <i class="bi bi-magic"></i> Sử Dụng
+              </button>
+              <button 
+                class="btn btn-detail-action btn-danger-action"
+                [disabled]="selectedItem.locked"
+                (click)="sellItem(selectedItem)">
+                <i class="bi bi-trash-fill"></i> Bỏ đi
+              </button>
+            </div>
+
+            <!-- MATERIAL ACTIONS: Use (Combine/Refine), Discard -->
+            <div *ngIf="selectedItem.category === 'materials' || selectedItem.category === 'skill_books'" class="d-flex flex-column gap-2">
+              <button 
+                class="btn btn-detail-action btn-primary-action"
+                (click)="useItem(selectedItem)">
+                <i class="bi bi-arrow-up-circle-fill"></i> Sử Dụng (Dùng Đá)
+              </button>
+              <div class="double-btn-row">
+                <button 
+                  class="btn btn-detail-action btn-secondary-action"
+                  (click)="combineItem(selectedItem)">
+                  <i class="bi bi-boxes"></i> Ghép đá
+                </button>
+                <button 
+                  class="btn btn-detail-action btn-danger-action"
+                  [disabled]="selectedItem.locked"
+                  (click)="sellItem(selectedItem)">
+                  <i class="bi bi-trash-fill"></i> Hủy bỏ
+                </button>
+              </div>
+            </div>
+
+            <!-- HERO FRAGMENTS ACTIONS: Use (Summon), Discard -->
+            <div *ngIf="selectedItem.category === 'hero_fragments'" class="d-flex flex-column gap-2">
+              <button 
+                class="btn btn-detail-action btn-primary-action"
+                [disabled]="selectedItem.count < 10"
+                (click)="summonHeroFromFragments(selectedItem)">
+                <i class="bi bi-person-plus-fill"></i> Triệu Hồi (Cần 10 Mảnh)
+              </button>
+              <button 
+                class="btn btn-detail-action btn-danger-action"
+                [disabled]="selectedItem.locked"
+                (click)="sellItem(selectedItem)">
+                <i class="bi bi-trash-fill"></i> Phân Rã
+              </button>
+            </div>
+
+            <!-- QUEST ITEMS ACTIONS: Use -->
+            <div *ngIf="selectedItem.category === 'quests'" class="d-flex flex-column gap-2">
+              <button 
+                class="btn btn-detail-action btn-secondary-action"
+                [disabled]="true">
+                <i class="bi bi-compass"></i> Sử dụng ở Nhiệm Vụ
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- If no item selected -->
+        <div *ngIf="!selectedItem" class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-4 text-center">
+          <i class="bi bi-info-circle fs-1 mb-3 text-warning-subtle"></i>
+          <span>Vui lòng chọn một vật phẩm trong túi đồ để xem thông tin chi tiết.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BOTTOM PANEL: Quick Actions & Status       -->
+  <!-- ========================================== -->
+  <div class="inventory-bottom-panel d-flex justify-content-between align-items-center">
+    
+    <!-- Status stats: Capacity, Gold, Upgrade Materials -->
+    <div class="capacity-stats d-flex align-items-center">
+      <!-- Capacity tab -->
+      <div class="stat-group">
+        <span class="lbl">Sức chứa:</span>
+        <span class="val">{{ items.length }} / {{ maxCapacity }}</span>
+      </div>
+
+      <!-- Gold tab -->
+      <div class="stat-group">
+        <span class="lbl">Vàng hiện có:</span>
+        <span class="val gold"><i class="bi bi-coin text-warning me-1"></i>{{ gold | number }} xu</span>
+      </div>
+
+      <!-- Materials tab -->
+      <div class="stat-group">
+        <span class="lbl">Đá thần binh:</span>
+        <span class="val mats"><i class="bi bi-lightning-charge-fill text-danger me-1"></i>{{ upgradeMaterialsCount }} viên</span>
+      </div>
+    </div>
+
+    <!-- Quick Action Buttons -->
+    <div class="quick-actions-bar d-flex">
+      <button class="btn btn-quick-action" (click)="sortItems('rarity')">
+        Sắp xếp: Phẩm chất
+      </button>
+      <button class="btn btn-quick-action" (click)="sortItems('power')">
+        Sắp xếp: Chiến lực
+      </button>
+      <button class="btn btn-quick-action" (click)="sortItems('type')">
+        Sắp xếp: Chủng loại
+      </button>
+      <button class="btn btn-quick-action-primary" (click)="autoEquipBestItems()">
+        <i class="bi bi-shield-plus me-1"></i> Mặc Nhanh Nhất
+      </button>
+      <button class="btn btn-quick-action" (click)="batchSellItems()">
+        Bán Nhanh Đồ Thường
+      </button>
+      <button class="btn btn-quick-action" (click)="batchUseConsumables()">
+        Dùng Nhanh Thuốc HP
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- CUSTOM TOAST NOTIFICATION SYSTEM           -->
+  <!-- ========================================== -->
+  <div 
+    class="custom-game-toast" 
+    [class.show]="showToast" 
+    [class.toast-success]="toastType === 'success'"
+    [class.toast-warning]="toastType === 'warning'"
+    [class.toast-info]="toastType === 'info'">
+    <i class="bi" [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
+    <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
+  </div>
+
+</div>

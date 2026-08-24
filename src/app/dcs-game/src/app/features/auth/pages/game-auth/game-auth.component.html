@@ -1,0 +1,61 @@
+<div class="auth-wrapper">
+  <!-- Game Overlay & Background Glow -->
+  <div class="bg-overlay"></div>
+  <div class="particles-bg"></div>
+
+  <div class="auth-container">
+    <!-- Game Brand Logo Header -->
+    <div class="brand-header">
+      <div class="emblem-frame">
+        <i class="bi bi-shield-shaded emblem-icon"></i>
+      </div>
+      <h1 class="game-title">DCS CHINH PHẠT</h1>
+      <p class="game-subtitle">CỔNG ĐĂNG NHẬP CỔNG GAME CHIẾN THUẬT Tam Quốc</p>
+    </div>
+
+    <!-- Main Auth Glass Card -->
+    <div class="auth-card">
+      <div class="card-glow-border"></div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-header">
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeTab() === 'login'"
+          (click)="setTab('login')"
+        >
+          <i class="bi bi-shield-lock-fill"></i>
+          <span>ĐĂNG NHẬP</span>
+        </button>
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeTab() === 'register'"
+          (click)="setTab('register')"
+        >
+          <i class="bi bi-person-plus-fill"></i>
+          <span>ĐĂNG KÝ</span>
+        </button>
+      </div>
+
+      <!-- Tab Content Components -->
+      <div class="tab-content">
+        <app-game-login
+          *ngIf="activeTab() === 'login'"
+          (navigateToRegister)="setTab('register')"
+        ></app-game-login>
+
+        <app-game-register
+          *ngIf="activeTab() === 'register'"
+          (navigateToLogin)="setTab('login')"
+        ></app-game-register>
+      </div>
+    </div>
+
+    <!-- Footer Info -->
+    <footer class="auth-footer">
+      <p>© 2026 DCS GAME — Bản quyền thuộc về Hệ Thống Tam Quốc Chinh Phạt.</p>
+    </footer>
+  </div>
+</div>

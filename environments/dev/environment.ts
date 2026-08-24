@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  baseUrl: 'https://localhost:44319/gateway/',
+  baseUrl: 'http://localhost:5000/gateway/',
   featureFlag: true
 };

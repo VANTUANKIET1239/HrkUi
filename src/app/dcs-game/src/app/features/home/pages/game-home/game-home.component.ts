@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
 import { FormationManagementComponent } from '../../components/formation-management/formation-management.component';
+import { InventoryComponent } from '../../components/inventory/inventory.component';
 
 interface PlayerInfo {
   name: string;
@@ -30,16 +31,23 @@ interface FeatureItem {
   locked?: boolean;
 }
 
+import { TokenManagerService } from '../../../../../../../../libs/core/auth/services/token-manager';
+import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
+import { ApiMethod } from '../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
+import { ApiEndpoints } from '../../../../../../../../libs/shared/common/constants/api-endpoints';
+import { PlayerService } from '../../../../core/services/player.service';
+
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent],
+  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
 export class GameHomeComponent implements OnInit {
   isHeroManagementOpen = false;
   isFormationManagementOpen = false;
+  isInventoryOpen = false;
   playerInfo: PlayerInfo = {
     name: 'Runy997_8T6y',
     level: 120,
@@ -72,12 +80,7 @@ export class GameHomeComponent implements OnInit {
   bottomFeaturesLeft: FeatureItem[] = [
     { name: 'Võ Tướng', icon: 'bi-shield-shaded', hasNotification: false },
     { name: 'Đội Ngũ', icon: 'bi-grid-3x3-gap-fill', hasNotification: false },
-    { name: 'Nữ Thần', icon: 'bi-gem', hasNotification: false },
-    { name: 'Thần Binh', icon: 'bi-lightning-charge-fill', hasNotification: false },
     { name: 'Hành Trang', icon: 'bi-briefcase-fill', hasNotification: false },
-    { name: 'Quân Đoàn', icon: 'bi-flag-fill', hasNotification: true },
-    { name: 'Thương Tiệm', icon: 'bi-shop', hasNotification: false },
-    { name: 'Nội Chính', icon: 'bi-bank', hasNotification: false }
   ];
 
   bottomFeaturesRight: FeatureItem[] = [
@@ -88,9 +91,65 @@ export class GameHomeComponent implements OnInit {
 
   showMoreMenu = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private tokenManager: TokenManagerService,
+    private hrkApiService: HrkApiService,
+    private playerService: PlayerService
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadPlayerData();
+  }
+
+  loadPlayerData(): void {
+    this.loadPlayerProfile();
+    this.loadPlayerWallet();
+  }
+
+  loadPlayerProfile(): void {
+    this.playerService.getProfile().subscribe({
+      next: (res) => {
+        if (res && res.success && res.data) {
+          if (res.data.playerName) {
+            this.playerInfo.name = res.data.playerName;
+          }
+          if (res.data.level) {
+            this.playerInfo.level = res.data.level;
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('Could not fetch player profile from backend API, using cached values.', err);
+      }
+    });
+  }
+
+  loadPlayerWallet(): void {
+    this.playerService.getWallet().subscribe({
+      next: (res) => {
+        if (res && res.success && res.data) {
+          if (res.data.gold !== undefined && res.data.gold !== null) {
+            this.playerInfo.gold = this.formatCurrency(res.data.gold);
+          }
+          if (res.data.diamonds !== undefined && res.data.diamonds !== null) {
+            this.playerInfo.diamond = this.formatCurrency(res.data.diamonds);
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('Could not fetch player wallet from backend API, using cached values.', err);
+      }
+    });
+  }
+
+  private formatCurrency(value: number): string {
+    if (value >= 10000) {
+      const van = value / 10000;
+      return `${Number.isInteger(van) ? van : van.toFixed(1)} Vạn`;
+    }
+    return value.toLocaleString('vi-VN');
+  }
 
   toggleMoreMenu(): void {
     this.showMoreMenu = !this.showMoreMenu;
@@ -110,10 +169,14 @@ export class GameHomeComponent implements OnInit {
   }
 
   onFeatureClick(feature: FeatureItem): void {
-    if (feature.name === 'Võ Tướng') {
+    if (feature.name === 'Trở Về') {
+      this.logout();
+    } else if (feature.name === 'Võ Tướng') {
       this.isHeroManagementOpen = true;
     } else if (feature.name === 'Đội Ngũ') {
       this.isFormationManagementOpen = true;
+    } else if (feature.name === 'Hành Trang') {
+      this.isInventoryOpen = true;
     } else if (feature.locked) {
       alert(`Tính năng "${feature.name}" đang bị khóa!`);
     } else {
@@ -121,7 +184,21 @@ export class GameHomeComponent implements OnInit {
     }
   }
 
+  logout(): void {
+    this.hrkApiService.CallApi(ApiMethod.POST, ApiEndpoints.Auth.Logout, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        this.tokenManager.clearTokens();
+        this.router.navigate(['/dcs-game/auth']);
+      },
+      error: () => {
+        this.tokenManager.clearTokens();
+        this.router.navigate(['/dcs-game/auth']);
+      }
+    });
+  }
+
   goToBattle(): void {
     this.router.navigate(['/dcs-game/battle']);
   }
 }
+

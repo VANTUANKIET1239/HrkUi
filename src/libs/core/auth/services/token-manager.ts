@@ -91,6 +91,68 @@ export class TokenManagerService {
 
     forceDeleteAllCache(){
       this.cache.clear();
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('at_')) {
+          localStorage.removeItem(key);
+        }
+      });
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
     }
+
+  /** Set access token for a specific audience (e.g. 'auth-api', 'payroll-api') */
+  setAccessToken(audience: string, token: string): void {
+    const exp = this.parseExp(token);
+    this.cache.set(audience, { token, exp });
+    localStorage.setItem(`at_${audience}`, token);
+  }
+
+  /** Synchronous check: Returns true if valid access token exists in memory cache */
+  hasValidTokenInCache(audience: string = 'auth-api'): boolean {
+    const entry = this.cache.get(audience);
+    return !!(entry && entry.token && !this.isExpiringSoon(entry.token));
+  }
+
+  /**
+   * Asynchronous session check:
+   * Checks memory cache. If not found or expired, calls getAccessToken(audience)
+   * which uses the HTTP-only refresh cookie to retrieve a new AccessToken.
+   * Returns true if user has a valid active session.
+   */
+  async checkAuthSession(audience: string = 'auth-api'): Promise<boolean> {
+    if (this.hasValidTokenInCache(audience)) {
+      return true;
+    }
+    try {
+      const token = await this.getAccessToken(audience);
+      return !!(token && !this.isExpiringSoon(token));
+    } catch {
+      return false;
+    }
+  }
+
+  /** Check if valid token exists for a specific audience (defaults to 'auth-api') */
+  isLoggedIn(audience: string = 'auth-api'): boolean {
+    const entry = this.cache.get(audience);
+    if (entry && entry.token && !this.isExpiringSoon(entry.token)) {
+      return true;
+    }
+    const storedToken = localStorage.getItem(`at_${audience}`) || localStorage.getItem('access_token');
+    if (storedToken && !this.isExpiringSoon(storedToken)) {
+      this.cache.set(audience, { token: storedToken, exp: this.parseExp(storedToken) });
+      return true;
+    }
+    return false;
+  }
+
+  /** Clear token(s) from cache and localStorage */
+  clearTokens(audience?: string): void {
+    if (audience) {
+      this.cache.delete(audience);
+      localStorage.removeItem(`at_${audience}`);
+    } else {
+      this.forceDeleteAllCache();
+    }
+  }
 
 }

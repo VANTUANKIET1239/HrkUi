@@ -299,8 +299,8 @@
   <!-- Sprite area -->
   <div class="sprite-area">
     <!-- PASSIVE EFFECTS (Ambient) - Moved inside sprite-area to center relative to character feet and not overlap health bars -->
-    <app-passive-effect *ngIf="character.hp > 0" [character]="character" [level]="character.level || 1"
-      [hasMoneyEffect]="hasMoneyEffect()" [hasRedLightning]="hasRedLightningEffect()"
+    <app-passive-effect *ngIf="displayMode === 'battle' && character.hp > 0" [character]="character"
+      [level]="character.level || 1" [hasMoneyEffect]="hasMoneyEffect()" [hasRedLightning]="hasRedLightningEffect()"
       [hasObsidianNebula]="hasObsidianNebulaEffect()" [hasDarkShield]="hasDarkShieldEffect()"
       [hasScorchedEarth]="hasScorchedEarthEffect()" [hasSpectralGrooming]="hasSpectralGroomingEffect()"
       [hasViciousDebt]="hasViciousDebtEffect()" [isHit]="isHit">

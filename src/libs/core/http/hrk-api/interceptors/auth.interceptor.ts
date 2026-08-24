@@ -28,6 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
     { prefix: '/gateway/cab', audience: 'cab-api' },
     { prefix: '/gateway/calc', audience: 'calcwork-api' },
     { prefix: '/gateway/auth', audience: 'auth-api' },
+    { prefix: '/gateway/dcs-game', audience: 'game-api' },
   ];
 
 
@@ -47,7 +48,7 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     private tokens: TokenManagerService,
     private navigationService: NavigationService
-  ) {}
+  ) { }
 
   intercept(
     req: HttpRequest<any>,
@@ -77,8 +78,8 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private onCheckRefreshTokenUrl(req: HttpRequest<any>): boolean {
-      let result  = this.uncheckAuthApiUrls.some(url => req.url.includes(url));
-      return result;
+    let result = this.uncheckAuthApiUrls.some(url => req.url.includes(url));
+    return result;
   }
 
   private handle401Error(
@@ -89,33 +90,33 @@ export class AuthInterceptor implements HttpInterceptor {
     // if (!this.isRefreshing) {
     //   this.isRefreshing = true;
     //   this.refreshTokenSubject.next(null);
-      return from(this.tokens.forceRefresh(audience)).pipe(
-        switchMap((token) => {
-          // const newAccess = token;
+    return from(this.tokens.forceRefresh(audience)).pipe(
+      switchMap((token) => {
+        // const newAccess = token;
 
-          // this.refreshTokenSubject.next(newAccess);
+        // this.refreshTokenSubject.next(newAccess);
 
-          // return next.handle(
-          //   req.clone({ setHeaders: { Authorization: `Bearer ${newAccess}` } })
-          // );
+        // return next.handle(
+        //   req.clone({ setHeaders: { Authorization: `Bearer ${newAccess}` } })
+        // );
 
-            const retryReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${token}` },
-               withCredentials: true
-            });
-            return next.handle(retryReq);
-        }),
-        catchError((err) => {
-          // refresh failed -> logout / redirect
-          // this.auth.clearTokens();
-          //  this.router.navigate(['/login'], { queryParams: { sessionExpired: true } });
-          this.navigationService.goTo('/login');
-          return throwError(() => err);
-        }),
-        // finalize(() => {
-        //   this.isRefreshing = false;
-        // })
-      );
+        const retryReq = req.clone({
+          setHeaders: { Authorization: `Bearer ${token}` },
+          withCredentials: true
+        });
+        return next.handle(retryReq);
+      }),
+      catchError((err) => {
+        // refresh failed -> logout / redirect
+        // this.auth.clearTokens();
+        //  this.router.navigate(['/login'], { queryParams: { sessionExpired: true } });
+        this.navigationService.goTo('/login');
+        return throwError(() => err);
+      }),
+      // finalize(() => {
+      //   this.isRefreshing = false;
+      // })
+    );
 
     // } else {
     //   return this.refreshTokenSubject.pipe(

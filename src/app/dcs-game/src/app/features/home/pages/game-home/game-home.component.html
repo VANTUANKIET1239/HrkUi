@@ -1,7 +1,7 @@
 <div class="lobby-container">
   <!-- Top Bar: Player Profile and Currencies -->
   <div class="top-bar d-flex justify-content-between align-items-start">
-    
+
     <!-- A. Player Profile (Top-Left UI) -->
     <div class="player-profile d-flex align-items-center">
       <div class="avatar-container position-relative">
@@ -10,11 +10,11 @@
           <div class="avatar-img-placeholder d-flex align-items-center justify-content-center">
             <i class="bi bi-person-circle text-warning fs-1"></i>
           </div>
-          <span class="level-badge">120</span>
+          <span class="level-badge">{{ playerInfo.level }}</span>
         </div>
-        <div class="vip-badge">VIP 10</div>
+        <!-- <div class="vip-badge">VIP {{ playerInfo.vipLevel }}</div> -->
       </div>
-      
+
       <div class="player-details ms-2">
         <div class="player-name text-truncate">{{ playerInfo.name }}</div>
         <div class="player-power d-flex align-items-center">
@@ -23,7 +23,8 @@
         </div>
         <div class="player-actions d-flex mt-1">
           <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">Nạp</button>
-          <button class="btn btn-sm btn-achievement d-flex align-items-center" (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">
+          <button class="btn btn-sm btn-achievement d-flex align-items-center"
+            (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">
             <i class="bi bi-trophy-fill text-warning me-1"></i>
             <span class="ach-text">Thành tựu</span>
           </button>
@@ -65,9 +66,7 @@
   <!-- C. Events & Benefits (Under Currency Group - Top Right events) -->
   <div class="event-bar-container d-flex flex-column align-items-end">
     <div class="event-bar d-flex align-items-center">
-      <div 
-        *ngFor="let item of topEvents" 
-        class="event-btn position-relative d-flex flex-column align-items-center"
+      <div *ngFor="let item of topEvents" class="event-btn position-relative d-flex flex-column align-items-center"
         (click)="onFeatureClick(item)">
         <div class="event-icon-circle d-flex align-items-center justify-content-center">
           <i class="bi {{ item.icon }} text-white"></i>
@@ -76,7 +75,7 @@
         <!-- Pulse notification badge -->
         <span *ngIf="item.hasNotification" class="notification-badge"></span>
       </div>
-      
+
       <!-- Open/close more button -->
       <div class="event-btn d-flex flex-column align-items-center" (click)="toggleMoreMenu()">
         <div class="event-icon-circle more-btn d-flex align-items-center justify-content-center">
@@ -90,16 +89,15 @@
 
   <!-- D. Showcase Team (Center Area) -->
   <div class="showcase-team d-flex justify-content-center align-items-end">
-    <div 
-      *ngFor="let hero of mainTeam; let i = index" 
+    <div *ngFor="let hero of mainTeam; let i = index"
       class="hero-showcase position-relative d-flex flex-column align-items-center hero-float-{{i % 3}}">
-      
+
       <!-- Hover Card Information -->
       <div class="hero-header-tag text-center">
         <span class="hero-level">Lv{{ hero.level }}</span>
         <span class="hero-name">{{ hero.name }}</span>
       </div>
-      
+
       <!-- Hero Body Illustration (Stylized using CSS gradients and glowing effects representing heroes) -->
       <div class="hero-character-body" [style.background]="'linear-gradient(to top, ' + hero.color + ', transparent)'">
         <div class="hero-silhouette d-flex align-items-center justify-content-center">
@@ -114,7 +112,7 @@
         </div>
         <div class="hero-role-tag">{{ hero.role }}</div>
       </div>
-      
+
       <!-- Hero Pedestal / Reflection Shadow -->
       <div class="hero-shadow"></div>
     </div>
@@ -131,13 +129,11 @@
   <!-- E. Bottom Navigation Menu (Bottom UI) -->
   <div class="bottom-navigation-container">
     <div class="bottom-navigation d-flex justify-content-between align-items-end px-3 pb-2">
-      
+
       <!-- Left Features Section -->
       <div class="nav-group-left d-flex flex-wrap align-items-center">
-        <div 
-          *ngFor="let item of bottomFeaturesLeft" 
-          class="nav-item position-relative d-flex flex-column align-items-center"
-          (click)="onFeatureClick(item)">
+        <div *ngFor="let item of bottomFeaturesLeft"
+          class="nav-item position-relative d-flex flex-column align-items-center" (click)="onFeatureClick(item)">
           <div class="nav-icon-box d-flex align-items-center justify-content-center">
             <i class="bi {{ item.icon }}"></i>
           </div>
@@ -149,10 +145,8 @@
       <!-- Right Feature and Focused "Chính Tuyến" Button -->
       <div class="nav-group-right d-flex align-items-end">
         <!-- Regular right features -->
-        <div 
-          *ngFor="let item of bottomFeaturesRight" 
-          class="nav-item position-relative d-flex flex-column align-items-center me-2"
-          (click)="onFeatureClick(item)">
+        <div *ngFor="let item of bottomFeaturesRight"
+          class="nav-item position-relative d-flex flex-column align-items-center me-2" (click)="onFeatureClick(item)">
           <div class="nav-icon-box d-flex align-items-center justify-content-center">
             <i class="bi {{ item.icon }}"></i>
           </div>
@@ -162,10 +156,11 @@
 
         <!-- Combat / Arena minor button -->
         <div class="combat-group d-flex flex-column align-items-center me-2 position-relative">
-          <div class="arena-btn position-relative" (click)="onFeatureClick({name: 'Đấu Trường', icon: '', hasNotification: false})">
+          <div class="arena-btn position-relative"
+            (click)="onFeatureClick({name: 'Đấu Trường', icon: '', hasNotification: false})">
             <span class="arena-text">Đấu Trường</span>
           </div>
-          
+
           <!-- Highlighted Button (Chính Tuyến / Vượt Ải) -->
           <div class="focus-btn-container" (click)="goToBattle()">
             <div class="focus-btn-pulse"></div>
@@ -187,5 +182,9 @@
   <app-hero-management *ngIf="isHeroManagementOpen" (close)="isHeroManagementOpen = false"></app-hero-management>
 
   <!-- Formation Management Popup/Modal -->
-  <app-formation-management *ngIf="isFormationManagementOpen" (close)="isFormationManagementOpen = false"></app-formation-management>
+  <app-formation-management *ngIf="isFormationManagementOpen"
+    (close)="isFormationManagementOpen = false"></app-formation-management>
+
+  <!-- Inventory (Hành Trang) Popup/Modal -->
+  <app-inventory *ngIf="isInventoryOpen" (close)="isInventoryOpen = false"></app-inventory>
 </div>
