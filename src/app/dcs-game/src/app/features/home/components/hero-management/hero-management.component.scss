@@ -614,12 +614,21 @@ $color-common: #9ca3af;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
 
   .gear-node-icon-bg {
+    width: 100%;
+    height: 100%;
     font-size: 26px;
     color: #dfbf8f;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .gear-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
   }
 
   .gear-node-lvl {
@@ -1339,11 +1348,20 @@ $color-common: #9ca3af;
   }
 
   .item-icon-bg {
+    width: 100%;
+    height: 100%;
     font-size: 22px;
     color: #dfbf8f;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .inv-item-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+    }
   }
 
   .item-lvl {
@@ -1443,5 +1461,21 @@ $color-common: #9ca3af;
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: $gold-border;
+  }
+}
+
+.gear-icon-box-large {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .gear-img-large {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
   }
 }

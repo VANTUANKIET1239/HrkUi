@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
 import { FormationManagementComponent } from '../../components/formation-management/formation-management.component';
 import { InventoryComponent } from '../../components/inventory/inventory.component';
+import { ForgeComponent } from '../../components/forge/forge.component';
 
 interface PlayerInfo {
   name: string;
@@ -40,7 +41,7 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent],
+  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
@@ -48,6 +49,7 @@ export class GameHomeComponent implements OnInit {
   isHeroManagementOpen = false;
   isFormationManagementOpen = false;
   isInventoryOpen = false;
+  isForgeOpen = false;
   playerInfo: PlayerInfo = {
     name: 'Runy997_8T6y',
     level: 120,
@@ -74,13 +76,14 @@ export class GameHomeComponent implements OnInit {
     { name: 'Phúc Lợi', icon: 'bi-award-fill', hasNotification: true },
     { name: 'Chiêu Tài', icon: 'bi-coin', hasNotification: true },
     { name: 'Báo Danh', icon: 'bi-check-circle-fill', hasNotification: true },
-    { name: 'Trở Về', icon: 'bi-arrow-left-circle-fill', hasNotification: false }
+    { name: 'Đăng Xuất', icon: 'bi-box-arrow-right', hasNotification: false }
   ];
 
   bottomFeaturesLeft: FeatureItem[] = [
     { name: 'Võ Tướng', icon: 'bi-shield-shaded', hasNotification: false },
     { name: 'Đội Ngũ', icon: 'bi-grid-3x3-gap-fill', hasNotification: false },
     { name: 'Hành Trang', icon: 'bi-briefcase-fill', hasNotification: false },
+    { name: 'Rèn', icon: 'bi-hammer', hasNotification: false },
   ];
 
   bottomFeaturesRight: FeatureItem[] = [
@@ -90,6 +93,9 @@ export class GameHomeComponent implements OnInit {
   ];
 
   showMoreMenu = false;
+  isLogoutConfirmOpen = false;
+  isLoggingOut = false;
+  logoutError = '';
 
   constructor(
     private router: Router,
@@ -168,15 +174,28 @@ export class GameHomeComponent implements OnInit {
     alert('Chức năng nạp Kim Cương sẽ sớm ra mắt!');
   }
 
+  openLogoutConfirm(): void {
+    this.logoutError = '';
+    this.isLogoutConfirmOpen = true;
+  }
+
+  closeLogoutConfirm(): void {
+    if (this.isLoggingOut) return;
+    this.isLogoutConfirmOpen = false;
+    this.logoutError = '';
+  }
+
   onFeatureClick(feature: FeatureItem): void {
-    if (feature.name === 'Trở Về') {
-      this.logout();
+    if (feature.name === 'Đăng Xuất' || feature.name === 'Trở Về') {
+      this.openLogoutConfirm();
     } else if (feature.name === 'Võ Tướng') {
       this.isHeroManagementOpen = true;
     } else if (feature.name === 'Đội Ngũ') {
       this.isFormationManagementOpen = true;
     } else if (feature.name === 'Hành Trang') {
       this.isInventoryOpen = true;
+    } else if (feature.name === 'Rèn' || feature.name === 'Forge') {
+      this.isForgeOpen = true;
     } else if (feature.locked) {
       alert(`Tính năng "${feature.name}" đang bị khóa!`);
     } else {
@@ -184,13 +203,25 @@ export class GameHomeComponent implements OnInit {
     }
   }
 
+  onForgeItemUpdated(): void {
+    this.loadPlayerWallet();
+  }
+
   logout(): void {
+    this.isLoggingOut = true;
+    this.logoutError = '';
+
     this.hrkApiService.CallApi(ApiMethod.POST, ApiEndpoints.Auth.Logout, {}, { withCredentials: true }).subscribe({
       next: () => {
+        this.isLoggingOut = false;
+        this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
         this.router.navigate(['/dcs-game/auth']);
       },
-      error: () => {
+      error: (err) => {
+        console.warn('Logout API error or expired session, clearing local tokens anyway.', err);
+        this.isLoggingOut = false;
+        this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
         this.router.navigate(['/dcs-game/auth']);
       }

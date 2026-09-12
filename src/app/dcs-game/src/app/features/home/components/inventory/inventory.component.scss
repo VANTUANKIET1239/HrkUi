@@ -57,6 +57,17 @@ $color-common: #9ca3af; // Common = Gray
   }
 }
 
+.spin-icon {
+  display: inline-block;
+  animation: spin-anim 1s linear infinite;
+}
+
+@keyframes spin-anim {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 // Top Bar Layout
 .inventory-top-bar {
   background: linear-gradient(to bottom, #231d17 0%, #0e0d0c 100%);
@@ -396,12 +407,21 @@ $color-common: #9ca3af; // Common = Gray
   }
 
   .item-icon-wrapper {
+    width: 100%;
+    height: 100%;
     font-size: 26px;
     color: #dfbf8f;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .item-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
   }
 
   // Rarity styling
@@ -609,6 +629,14 @@ $color-common: #9ca3af; // Common = Gray
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
     font-size: 34px;
     color: #dfbf8f;
+    overflow: hidden;
+
+    .item-img-large {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 9px;
+    }
 
     &.rarity-mythic {
       border-color: $color-mythic;

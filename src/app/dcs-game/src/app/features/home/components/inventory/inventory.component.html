@@ -7,7 +7,19 @@
     </div>
 
     <!-- Resource Counters -->
-    <div class="resource-counters d-flex align-items-center">
+    <div class="resource-counters d-flex align-items-center gap-3">
+      <div *ngIf="isServerConnected" class="d-none d-md-flex align-items-center gap-1 text-success border border-success-subtle rounded-pill px-2 py-1 bg-success bg-opacity-10" style="font-size: 0.75rem; font-weight: 600;">
+        <i class="bi bi-cloud-check-fill"></i> Máy chủ kết nối
+      </div>
+
+      <button 
+        class="btn btn-sm btn-outline-warning border-0 d-flex align-items-center justify-content-center p-1 text-warning" 
+        [disabled]="isLoading" 
+        (click)="refreshData()" 
+        title="Làm mới hành trang từ máy chủ">
+        <i class="bi fs-5" [class.bi-arrow-clockwise]="!isLoading" [class.bi-arrow-repeat]="isLoading" [class.spin-icon]="isLoading"></i>
+      </button>
+
       <div class="resource-item d-flex align-items-center">
         <i class="bi bi-coin text-warning me-1"></i>
         <span class="value">{{ gold | number }}</span>
@@ -96,7 +108,13 @@
 
       <!-- Item Grid Slots -->
       <div class="grid-scroll-container">
-        <div class="item-grid">
+        <!-- Loading Indicator -->
+        <div *ngIf="isLoading" class="d-flex align-items-center justify-content-center py-4 text-warning gap-2">
+          <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
+          <span class="fs-6 font-title">Đang đồng bộ dữ liệu hành trang từ máy chủ...</span>
+        </div>
+
+        <div class="item-grid" *ngIf="!isLoading">
           <div 
             *ngFor="let item of filteredItems" 
             class="item-slot"
@@ -113,9 +131,12 @@
             (drop)="onItemDrop($event)">
             
             <div class="slot-inner">
-              <!-- Item Icon -->
+              <!-- Item Icon / Image -->
               <div class="item-icon-wrapper">
-                <i class="bi {{ item.icon }}"></i>
+                <img *ngIf="item.imagePath; else itemIconFallback" [src]="item.imagePath" class="item-img" [alt]="item.name" />
+                <ng-template #itemIconFallback>
+                  <i class="bi {{ item.icon }}"></i>
+                </ng-template>
               </div>
 
               <!-- Equipped Status Badge -->
@@ -173,7 +194,10 @@
                 [class.rarity-epic]="selectedItem.rarity === 'Epic'"
                 [class.rarity-rare]="selectedItem.rarity === 'Rare'"
                 [class.rarity-common]="selectedItem.rarity === 'Common'">
-                <i class="bi {{ selectedItem.icon }}"></i>
+                <img *ngIf="selectedItem.imagePath; else selectedIconFallback" [src]="selectedItem.imagePath" class="item-img-large" [alt]="selectedItem.name" />
+                <ng-template #selectedIconFallback>
+                  <i class="bi {{ selectedItem.icon }}"></i>
+                </ng-template>
               </div>
 
               <!-- Item Name -->
@@ -395,9 +419,16 @@
     <!-- Status stats: Capacity, Gold, Upgrade Materials -->
     <div class="capacity-stats d-flex align-items-center">
       <!-- Capacity tab -->
-      <div class="stat-group">
+      <div class="stat-group d-flex align-items-center gap-1">
         <span class="lbl">Sức chứa:</span>
         <span class="val">{{ items.length }} / {{ maxCapacity }}</span>
+        <button 
+          class="btn btn-sm btn-outline-warning ms-1 px-1 py-0 d-flex align-items-center justify-content-center" 
+          style="font-size: 0.75rem; height: 22px; width: 22px; border-radius: 4px;"
+          (click)="expandCapacityAction(10)" 
+          title="Mở rộng +10 ô chứa (Tốn 200 Kim Cương)">
+          <i class="bi bi-plus-lg"></i>
+        </button>
       </div>
 
       <!-- Gold tab -->
@@ -449,5 +480,8 @@
     <i class="bi" [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
     <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
   </div>
+
+  <!-- Reusable Forge Popup (Cường Hóa & Lò Rèn) -->
+  <app-forge *ngIf="isForgeOpen" [preselectedItemId]="selectedEquipmentForForge" (close)="onForgeClosed()" (itemUpdated)="onForgeItemUpdated($event)"></app-forge>
 
 </div>

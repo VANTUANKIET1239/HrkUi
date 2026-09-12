@@ -10,6 +10,11 @@ export const noAuthGuard: CanActivateFn = async (route, state) => {
   const tokenManager = inject(TokenManagerService);
   const router = inject(Router);
 
+  // If user has not logged in or has logged out, allow access immediately without any network call
+  if (!tokenManager.hasSessionHint()) {
+    return true;
+  }
+
   const audience = route.data?.['audience'] || (state.url.includes('dcs-game') ? 'game-api' : 'auth-api');
   const isAuthenticated = await tokenManager.checkAuthSession(audience);
 

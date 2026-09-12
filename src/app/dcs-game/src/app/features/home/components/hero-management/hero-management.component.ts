@@ -17,6 +17,7 @@ interface Gear {
   slot: 'Vũ Khí' | 'Mũ' | 'Giáp' | 'Giày' | 'Nhẫn' | 'Thần Binh';
   name: string;
   icon: string;
+  imagePath?: string;
   rarity: 'Legendary' | 'Epic' | 'Rare' | 'Common';
   enhancement: number;
 }

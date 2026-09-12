@@ -1,12 +1,17 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PlayerService } from '../../../../core/services/player.service';
+import { InventoryService } from '../../../../core/services/inventory.service';
+import { InventoryItemDto } from '../../../../core/models/inventory.model';
+import { ForgeComponent } from '../forge/forge.component';
 
 export interface ItemStats {
   atk?: number;
   def?: number;
   hp?: number;
   crit?: number;
+  critDmg?: number;
   spd?: number;
   lifesteal?: number;
   healAmount?: number;
@@ -19,6 +24,7 @@ export interface ItemStats {
 export interface InventoryItem {
   id: number;
   name: string;
+  imagePath?: string;
   icon: string;
   rarity: 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
   category: 'weapons' | 'armor' | 'helmets' | 'boots' | 'rings' | 'artifacts' | 'consumables' | 'materials' | 'skill_books' | 'hero_fragments' | 'quests';
@@ -40,18 +46,25 @@ interface CategoryConfig {
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ForgeComponent],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
 })
 export class InventoryComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
 
+  isForgeOpen = false;
+  selectedEquipmentForForge: number | undefined = undefined;
+
   // Currency & Capacity
   gold = 1250000;
   diamonds = 99730;
   upgradeMaterialsCount = 450;
   maxCapacity = 200;
+
+  // Server & Loading State
+  isLoading = false;
+  isServerConnected = false;
 
   // Selected state
   selectedCategory = 'all';
@@ -445,11 +458,180 @@ export class InventoryComponent implements OnInit {
     }
   ];
 
+  constructor(
+    private playerService: PlayerService,
+    private inventoryService: InventoryService
+  ) {}
+
   ngOnInit(): void {
     // Select first item by default
     if (this.items.length > 0) {
       this.selectedItem = this.items[0];
     }
+    this.loadWalletData();
+    this.loadInventoryData();
+  }
+
+  // Refresh data from server
+  refreshData(): void {
+    this.loadWalletData();
+    this.loadInventoryData(true);
+  }
+
+  // Fetch player wallet (gold, diamonds, materials, capacity)
+  loadWalletData(): void {
+    this.playerService.getWallet().subscribe({
+      next: (res) => {
+        if (res && res.success && res.data) {
+          if (res.data.gold !== undefined && res.data.gold !== null) {
+            this.gold = res.data.gold;
+          }
+          if (res.data.diamonds !== undefined && res.data.diamonds !== null) {
+            this.diamonds = res.data.diamonds;
+          }
+          if (res.data.upgradeMaterials !== undefined && res.data.upgradeMaterials !== null) {
+            this.upgradeMaterialsCount = res.data.upgradeMaterials;
+          }
+          if (res.data.maxCapacity) {
+            this.maxCapacity = res.data.maxCapacity;
+          }
+        }
+      },
+      error: (err) => {
+        console.warn('Could not fetch player wallet from API, using cached data.', err);
+      }
+    });
+  }
+
+  // Fetch player inventory items from backend
+  loadInventoryData(isManualRefresh = false): void {
+    this.isLoading = true;
+    this.inventoryService.getInventory().subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res && res.success && res.data && res.data.length > 0) {
+          this.isServerConnected = true;
+          this.items = res.data.map(dto => this.mapDtoToInventoryItem(dto));
+          this.triggerToast(
+            `Đã đồng bộ ${this.items.length} vật phẩm từ máy chủ!`,
+            'success'
+          );
+          if (this.items.length > 0) {
+            this.selectedItem = this.items[0];
+          }
+        } else if (res && res.success && res.data && res.data.length === 0) {
+          this.isServerConnected = true;
+          if (isManualRefresh) {
+            this.triggerToast('Hành trang máy chủ trống. Đang hiển thị vật phẩm mẫu trải nghiệm.', 'info');
+          }
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.warn('Could not fetch inventory items from API, keeping cached preview items.', err);
+        if (isManualRefresh) {
+          this.triggerToast('Không thể tải hành trang từ máy chủ!', 'warning');
+        }
+      }
+    });
+  }
+
+  // Map backend DTO to InventoryItem
+  private mapDtoToInventoryItem(dto: InventoryItemDto): InventoryItem {
+    return {
+      id: dto.id,
+      name: dto.name,
+      imagePath: dto.imagePath,
+      icon: this.resolveItemIcon(dto.icon, dto.categoryCode),
+      rarity: this.normalizeRarity(dto.rarityCode),
+      category: this.normalizeCategory(dto.categoryCode),
+      count: dto.count || 1,
+      levelReq: dto.levelReq || 1,
+      desc: dto.description || 'Không có mô tả chi tiết.',
+      stats: this.normalizeStats(dto.stats),
+      locked: dto.isLocked || false,
+      equipped: dto.isEquipped || false,
+      enhancement: dto.enhancement || 0
+    };
+  }
+
+  private resolveItemIcon(icon: string, categoryCode: string): string {
+    if (icon && icon.startsWith('bi-')) {
+      return icon;
+    }
+    const catMap: Record<string, string> = {
+      weapons: 'bi-sword',
+      armor: 'bi-suit-armor',
+      helmets: 'bi-shield-shaded',
+      boots: 'bi-archive-fill',
+      rings: 'bi-gem',
+      artifacts: 'bi-trophy-fill',
+      consumables: 'bi-droplet-fill',
+      materials: 'bi-lightning-charge-fill',
+      skill_books: 'bi-book-half',
+      hero_fragments: 'bi-people-fill',
+      quests: 'bi-key-fill'
+    };
+    return catMap[categoryCode?.toLowerCase()] || 'bi-box-seam';
+  }
+
+  private normalizeRarity(code: string): 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic' {
+    const c = (code || '').toLowerCase();
+    if (c === 'mythic') return 'Mythic';
+    if (c === 'legendary') return 'Legendary';
+    if (c === 'epic') return 'Epic';
+    if (c === 'rare') return 'Rare';
+    return 'Common';
+  }
+
+  private normalizeCategory(code: string): 'weapons' | 'armor' | 'helmets' | 'boots' | 'rings' | 'artifacts' | 'consumables' | 'materials' | 'skill_books' | 'hero_fragments' | 'quests' {
+    const c = (code || '').toLowerCase();
+    const valid = ['weapons', 'armor', 'helmets', 'boots', 'rings', 'artifacts', 'consumables', 'materials', 'skill_books', 'hero_fragments', 'quests'];
+    if (valid.includes(c)) {
+      return c as any;
+    }
+    if (c === 'weapon') return 'weapons';
+    if (c === 'helmet') return 'helmets';
+    if (c === 'boot') return 'boots';
+    if (c === 'ring') return 'rings';
+    if (c === 'artifact') return 'artifacts';
+    if (c === 'consumable') return 'consumables';
+    if (c === 'material') return 'materials';
+    if (c === 'skill_book') return 'skill_books';
+    if (c === 'hero_fragment') return 'hero_fragments';
+    if (c === 'quest') return 'quests';
+    return 'weapons';
+  }
+
+  private normalizeStats(stats: any): ItemStats {
+    if (!stats) return {};
+    let parsed: any = stats;
+    if (typeof stats === 'string') {
+      try {
+        parsed = JSON.parse(stats);
+      } catch {
+        return {};
+      }
+    }
+
+    const res: ItemStats = { ...parsed };
+
+    // Map uppercase relational attribute codes sang lowercase properties cho UI
+    if (parsed.PHYSICAL_ATK !== undefined && res.atk === undefined) res.atk = Number(parsed.PHYSICAL_ATK);
+    if (parsed.MAGIC_ATK !== undefined && res.atk === undefined) res.atk = Number(parsed.MAGIC_ATK);
+    if (parsed.ARMOR !== undefined && res.def === undefined) res.def = Number(parsed.ARMOR);
+    if (parsed.HP !== undefined && res.hp === undefined) res.hp = Number(parsed.HP);
+    if (parsed.SPEED !== undefined && res.spd === undefined) res.spd = Number(parsed.SPEED);
+    if (parsed.CRIT_RATE !== undefined && res.crit === undefined) {
+      const val = Number(parsed.CRIT_RATE);
+      res.crit = val <= 1.0 ? Math.round(val * 100) : val;
+    }
+    if (parsed.CRIT_DAMAGE !== undefined && res.critDmg === undefined) {
+      const val = Number(parsed.CRIT_DAMAGE);
+      res.critDmg = val <= 2.0 ? Math.round(val * 100) : val;
+    }
+
+    return res;
   }
 
   // Toast Trigger Helper
@@ -579,30 +761,41 @@ export class InventoryComponent implements OnInit {
     }
   }
 
-  // Enhance equipment (+ level)
+  // Enhance equipment (+ level) -> Open Forge popup
   enhanceEquipment(item: InventoryItem): void {
-    const costGold = (item.enhancement + 1) * 3000;
-    const costMaterials = (item.enhancement + 1) * 2;
+    this.selectedEquipmentForForge = item.id;
+    this.isForgeOpen = true;
+  }
 
-    if (this.gold < costGold) {
-      this.triggerToast('Không đủ Vàng để cường hóa!', 'warning');
-      return;
+  onForgeClosed(): void {
+    this.isForgeOpen = false;
+    this.selectedEquipmentForForge = undefined;
+    this.refreshData();
+  }
+
+  onForgeItemUpdated(updated: InventoryItemDto): void {
+    const local = this.items.find(i => i.id === updated.id);
+    if (local) {
+      local.enhancement = updated.enhancement;
+      if (updated.stats) {
+        if (updated.stats.PHYSICAL_ATK !== undefined || updated.stats.ATK !== undefined) {
+          local.stats.atk = updated.stats.PHYSICAL_ATK ?? updated.stats.ATK;
+        }
+        if (updated.stats.ARMOR !== undefined || updated.stats.DEF !== undefined) {
+          local.stats.def = updated.stats.ARMOR ?? updated.stats.DEF;
+        }
+        if (updated.stats.HP !== undefined) {
+          local.stats.hp = updated.stats.HP;
+        }
+      }
     }
-    if (this.upgradeMaterialsCount < costMaterials) {
-      this.triggerToast('Không đủ Đá thần binh để cường hóa!', 'warning');
-      return;
+    if (this.selectedItem && this.selectedItem.id === updated.id) {
+      this.selectedItem.enhancement = updated.enhancement;
+      if (local?.stats) {
+        this.selectedItem.stats = { ...local.stats };
+      }
     }
-
-    this.gold -= costGold;
-    this.upgradeMaterialsCount -= costMaterials;
-    item.enhancement += 1;
-
-    // Boost stats
-    if (item.stats.atk) item.stats.atk = Math.round(item.stats.atk * 1.1) + 15;
-    if (item.stats.def) item.stats.def = Math.round(item.stats.def * 1.08) + 8;
-    if (item.stats.hp) item.stats.hp = Math.round(item.stats.hp * 1.1) + 80;
-
-    this.triggerToast(`Cường hóa thành công "${item.name}" lên +${item.enhancement}!`, 'success');
+    this.triggerToast(`Trang bị đã được cường hóa lên +${updated.enhancement}!`, 'success');
   }
 
   // Upgrade equipment stars/rarity
@@ -624,9 +817,30 @@ export class InventoryComponent implements OnInit {
 
   // Lock/Unlock toggle
   toggleLockItem(item: InventoryItem): void {
-    item.locked = !item.locked;
-    const text = item.locked ? 'Đã khóa vật phẩm! Tránh việc bán nhầm.' : 'Đã mở khóa vật phẩm.';
-    this.triggerToast(text, 'info');
+    const targetState = !item.locked;
+    if (this.isServerConnected) {
+      this.inventoryService.toggleLock(item.id, targetState).subscribe({
+        next: (res) => {
+          if (res && res.success) {
+            item.locked = targetState;
+            const text = item.locked ? 'Đã khóa vật phẩm! Tránh việc bán nhầm.' : 'Đã mở khóa vật phẩm.';
+            this.triggerToast(text, 'info');
+          } else {
+            this.triggerToast(res?.message || 'Không thể cập nhật trạng thái khóa vật phẩm.', 'warning');
+          }
+        },
+        error: (err) => {
+          console.warn('Toggle lock API error, falling back to local simulation:', err);
+          item.locked = targetState;
+          const text = item.locked ? 'Đã khóa vật phẩm! Tránh việc bán nhầm.' : 'Đã mở khóa vật phẩm.';
+          this.triggerToast(text, 'info');
+        }
+      });
+    } else {
+      item.locked = targetState;
+      const text = item.locked ? 'Đã khóa vật phẩm! Tránh việc bán nhầm.' : 'Đã mở khóa vật phẩm.';
+      this.triggerToast(text, 'info');
+    }
   }
 
   // Sell individual item
@@ -640,6 +854,36 @@ export class InventoryComponent implements OnInit {
       return;
     }
 
+    if (this.isServerConnected) {
+      this.inventoryService.sellItems([{ inventoryItemId: item.id, count: 1 }]).subscribe({
+        next: (res) => {
+          if (res && res.success && res.data) {
+            this.gold = res.data.currentGold;
+            if (item.count > 1) {
+              item.count -= 1;
+            } else {
+              const idx = this.items.findIndex(i => i.id === item.id);
+              if (idx !== -1) {
+                this.items.splice(idx, 1);
+                this.selectedItem = null;
+              }
+            }
+            this.triggerToast(`Đã bán thành công "${item.name}", nhận được +${res.data.earnedGold} Vàng!`, 'success');
+          } else {
+            this.triggerToast(res?.message || 'Không thể bán vật phẩm.', 'warning');
+          }
+        },
+        error: (err) => {
+          console.warn('Sell item API error, simulating local sell:', err);
+          this.simulateLocalSell(item);
+        }
+      });
+    } else {
+      this.simulateLocalSell(item);
+    }
+  }
+
+  private simulateLocalSell(item: InventoryItem): void {
     let sellPrice = 1000;
     if (item.rarity === 'Rare') sellPrice = 3000;
     if (item.rarity === 'Epic') sellPrice = 8000;
@@ -798,8 +1042,36 @@ export class InventoryComponent implements OnInit {
       return;
     }
 
+    if (this.isServerConnected) {
+      const payload = commons.map(i => ({ inventoryItemId: i.id, count: i.count }));
+      this.inventoryService.sellItems(payload).subscribe({
+        next: (res) => {
+          if (res && res.success && res.data) {
+            this.gold = res.data.currentGold;
+            commons.forEach(item => {
+              const idx = this.items.findIndex(i => i.id === item.id);
+              if (idx !== -1) {
+                this.items.splice(idx, 1);
+              }
+            });
+            this.selectedItem = null;
+            this.triggerToast(`Đã bán nhanh ${commons.length} loại vật phẩm Thường, thu hồi +${res.data.earnedGold} Vàng!`, 'success');
+          } else {
+            this.triggerToast(res?.message || 'Không thể bán nhanh vật phẩm.', 'warning');
+          }
+        },
+        error: (err) => {
+          console.warn('Batch sell API error, falling back to local simulation:', err);
+          this.simulateLocalBatchSell(commons);
+        }
+      });
+    } else {
+      this.simulateLocalBatchSell(commons);
+    }
+  }
+
+  private simulateLocalBatchSell(commons: InventoryItem[]): void {
     let earnedGold = 0;
-    // Remove commons and calculate gold
     commons.forEach(item => {
       earnedGold += 1000 * item.count;
       const idx = this.items.findIndex(i => i.id === item.id);
@@ -811,6 +1083,39 @@ export class InventoryComponent implements OnInit {
     this.gold += earnedGold;
     this.selectedItem = null;
     this.triggerToast(`Đã bán nhanh ${commons.length} loại vật phẩm Thường, thu hồi +${earnedGold} Vàng!`, 'success');
+  }
+
+  // Expand bag capacity using diamonds
+  expandCapacityAction(slots: number = 10): void {
+    const diamondCost = slots * 20;
+    if (this.diamonds < diamondCost) {
+      this.triggerToast(`Không đủ Kim Cương! Cần ${diamondCost} Kim Cương để mở rộng +${slots} ô.`, 'warning');
+      return;
+    }
+
+    if (this.isServerConnected) {
+      this.inventoryService.expandCapacity(slots).subscribe({
+        next: (res) => {
+          if (res && res.success && res.data) {
+            this.diamonds = res.data.diamonds;
+            this.maxCapacity = res.data.maxCapacity;
+            this.triggerToast(`Mở rộng thành công +${slots} ô ba lô! Sức chứa mới: ${this.maxCapacity} ô.`, 'success');
+          } else {
+            this.triggerToast(res?.message || 'Không thể mở rộng ba lô.', 'warning');
+          }
+        },
+        error: (err) => {
+          console.warn('Expand capacity API error:', err);
+          this.diamonds -= diamondCost;
+          this.maxCapacity += slots;
+          this.triggerToast(`Mở rộng thành công +${slots} ô ba lô!`, 'success');
+        }
+      });
+    } else {
+      this.diamonds -= diamondCost;
+      this.maxCapacity += slots;
+      this.triggerToast(`Mở rộng thành công +${slots} ô ba lô!`, 'success');
+    }
   }
 
   // Batch use consumables (quick heal potions)

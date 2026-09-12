@@ -23,10 +23,16 @@
         </div>
         <div class="player-actions d-flex mt-1">
           <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">Nạp</button>
-          <button class="btn btn-sm btn-achievement d-flex align-items-center"
+          <button class="btn btn-sm btn-achievement d-flex align-items-center me-1"
             (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">
             <i class="bi bi-trophy-fill text-warning me-1"></i>
             <span class="ach-text">Thành tựu</span>
+          </button>
+          <button class="btn btn-sm btn-logout d-flex align-items-center"
+            (click)="openLogoutConfirm()"
+            title="Đăng xuất khỏi trò chơi">
+            <i class="bi bi-box-arrow-right text-danger me-1"></i>
+            <span class="logout-text">Đăng xuất</span>
           </button>
         </div>
       </div>
@@ -187,4 +193,40 @@
 
   <!-- Inventory (Hành Trang) Popup/Modal -->
   <app-inventory *ngIf="isInventoryOpen" (close)="isInventoryOpen = false"></app-inventory>
+
+  <!-- Forge (Lò Rèn) Popup/Modal -->
+  <app-forge *ngIf="isForgeOpen" (close)="isForgeOpen = false" (itemUpdated)="onForgeItemUpdated()"></app-forge>
+
+  <!-- Logout Confirmation Modal -->
+  <div class="logout-modal-backdrop" *ngIf="isLogoutConfirmOpen" (click)="closeLogoutConfirm()">
+    <div class="logout-modal-card" (click)="$event.stopPropagation()">
+      <div class="logout-modal-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+          <i class="bi bi-box-arrow-right text-warning fs-5 me-2"></i>
+          <h3 class="m-0 modal-title">XÁC NHẬN ĐĂNG XUẤT</h3>
+        </div>
+        <button class="btn-close-modal" (click)="closeLogoutConfirm()" [disabled]="isLoggingOut">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="logout-modal-body text-center py-4">
+        <div class="logout-icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
+          <i class="bi bi-door-open text-warning fs-1"></i>
+        </div>
+        <h4 class="logout-confirm-title mb-2">Đăng xuất khỏi tài khoản?</h4>
+        <p class="logout-confirm-desc mb-0">Bạn có chắc chắn muốn rời khỏi trò chơi và kết thúc phiên đăng nhập hiện tại?</p>
+      </div>
+
+      <div class="logout-modal-actions d-flex justify-content-center gap-3 pb-3">
+        <button class="btn btn-logout-cancel px-4 py-2" (click)="closeLogoutConfirm()" [disabled]="isLoggingOut">
+          HỦY BỎ
+        </button>
+        <button class="btn btn-logout-confirm px-4 py-2 d-flex align-items-center" (click)="logout()" [disabled]="isLoggingOut">
+          <span *ngIf="isLoggingOut" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <span>{{ isLoggingOut ? 'ĐANG ĐĂNG XUẤT...' : 'ĐĂNG XUẤT' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

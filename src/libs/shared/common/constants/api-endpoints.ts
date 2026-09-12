@@ -22,7 +22,12 @@ export const ApiEndpoints = {
   // Game Service - Inventory
   Inventory: {
     List: 'dcs-game/inventory/items',
-    HeroEquipment: 'dcs-game/inventory/hero-equipment'
+    HeroEquipment: 'dcs-game/inventory/hero-equipment',
+    Sell: 'dcs-game/inventory/sell',
+    Lock: (id: number) => `dcs-game/inventory/items/${id}/lock`,
+    ExpandCapacity: 'dcs-game/inventory/expand-capacity',
+    Enhance: 'dcs-game/inventory/enhance',
+    EnhancementConfigs: 'dcs-game/inventory/enhancement/configs'
   },
 
   // Game Service - Formation

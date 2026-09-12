@@ -81,14 +81,16 @@ export class GameLoginComponent {
         email: this.dataForm.value.email,
         password: this.dataForm.value.password,
         rememberMe: this.dataForm.value.remember,
-        role: this.selectedRole
+        role: this.selectedRole,
+        audience: 'game-api'
       },
       { withCredentials: true }
     ).subscribe({
       next: async (res: any) => {
-        console.log(res);
-        if (res.success) {
-          this.tokenManager.clearTokens();
+        if (res.success && res.data) {
+          if (res.data.accessToken) {
+            this.tokenManager.setAccessToken('game-api', res.data.accessToken);
+          }
           this.navigationService.goTo('/dcs-game/home');
         }
       },

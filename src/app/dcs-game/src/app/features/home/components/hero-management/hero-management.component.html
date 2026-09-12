@@ -201,7 +201,10 @@
                (dragover)="onEquipmentDragOver($event)"
                (drop)="onEquipmentDrop($event, idx)">
             <div class="gear-node-icon-bg">
-              <i class="bi {{ gear.icon }} gear-node-icon"></i>
+              <img *ngIf="gear.imagePath; else gearIconFallback" [src]="gear.imagePath" class="gear-img" [alt]="gear.name" />
+              <ng-template #gearIconFallback>
+                <i class="bi {{ gear.icon }} gear-node-icon"></i>
+              </ng-template>
             </div>
             <div class="gear-node-lvl font-title">+{{ gear.enhancement }}</div>
             <!-- Hover Tooltip -->
@@ -365,7 +368,10 @@
             (dragstart)="onInventoryDragStart($event, item, idx)"
             (click)="equipGearFromInventory(item, idx)">
             <div class="item-icon-bg">
-              <i class="bi {{ item.icon }} item-icon"></i>
+              <img *ngIf="item.imagePath; else invIconFallback" [src]="item.imagePath" class="inv-item-img" [alt]="item.name" />
+              <ng-template #invIconFallback>
+                <i class="bi {{ item.icon }} item-icon"></i>
+              </ng-template>
             </div>
             <div class="item-lvl font-title">+{{ item.enhancement }}</div>
             <div class="item-slot-tag font-title">{{ item.slot }}</div>
@@ -688,7 +694,10 @@
       <div class="modal-body-section" *ngIf="selectedGearToModify">
         <div class="current-gear-info p-3 mb-3 border border-secondary bg-black-opacity d-flex align-items-center rounded">
           <div class="gear-icon-box-large me-3 p-3 border rounded text-center" [class.legendary]="selectedGearToModify.rarity === 'Legendary'" [class.epic]="selectedGearToModify.rarity === 'Epic'" [class.rare]="selectedGearToModify.rarity === 'Rare'">
-            <i class="bi {{ selectedGearToModify.icon }} fs-1 text-warning"></i>
+            <img *ngIf="selectedGearToModify.imagePath; else modifyIconFallback" [src]="selectedGearToModify.imagePath" class="gear-img-large" [alt]="selectedGearToModify.name" />
+            <ng-template #modifyIconFallback>
+              <i class="bi {{ selectedGearToModify.icon }} fs-1 text-warning"></i>
+            </ng-template>
           </div>
           <div>
             <h5 class="m-0 font-title text-white">{{ selectedGearToModify.name }}</h5>
