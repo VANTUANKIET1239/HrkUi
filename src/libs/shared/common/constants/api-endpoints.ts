@@ -41,6 +41,11 @@ export const ApiEndpoints = {
 
   // Game Service - Formation
   Formation: {
+    List: 'dcs-game/formations',
+    Detail: (code: string) => `dcs-game/formations/${code}`,
+    UpdatePositions: (code: string) => `dcs-game/formations/${code}/positions`,
+    Select: (code: string) => `dcs-game/formations/${code}/select`,
+    Upgrade: (code: string) => `dcs-game/formations/${code}/upgrade`,
     Get: 'dcs-game/formation/main'
   },
 
@@ -54,6 +59,7 @@ export const ApiEndpoints = {
 
   // Game Service - Battle Engine
   Battle: {
+    Start: 'dcs-game/battle/start',
     InitialState: 'dcs-game/battle/initial-state',
     Logs: 'dcs-game/battle/logs'
   },

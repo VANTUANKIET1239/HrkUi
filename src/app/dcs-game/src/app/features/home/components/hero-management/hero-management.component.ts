@@ -282,7 +282,12 @@ export class HeroManagementComponent implements OnInit {
     if (type === 'PASSIVE' || skill.cooldown === 'Bị động') {
       return { label: 'Bị Động', badgeClass: 'badge-passive' };
     }
-    return { label: 'Đánh Thường', badgeClass: 'badge-normal' };
+    const isBasicHeal = skill.effects?.some(effect =>
+      (effect.effectTypeCode || '').toUpperCase() === 'HEAL'
+    );
+    return isBasicHeal
+      ? { label: 'Hồi Máu Cơ Bản', badgeClass: 'badge-normal' }
+      : { label: 'Đánh Thường', badgeClass: 'badge-normal' };
   }
 
   getSkillTriggerLabel(skill: HeroSkillDto): string {
@@ -291,7 +296,7 @@ export class HeroManagementComponent implements OnInit {
       case 'MANUAL_ENERGY_FULL':
         return '100 Năng Lượng';
       case 'ON_ATTACK':
-        return 'Khi đánh thường';
+        return 'Mỗi lượt hành động';
       case 'PASSIVE_ALWAYS':
         return 'Bị động vĩnh viễn';
       case 'ON_TURN_START':

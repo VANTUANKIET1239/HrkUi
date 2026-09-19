@@ -1,8 +1,9 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Hero } from '../models/hero.model';
 import { BattleLog } from '../models/battle-log.model';
-import { INITIAL_HEROES, MOCK_BATTLE_LOGS, SKILL_LIST } from '../../features/battle/mocks/mock-battle.data';
+import { SKILL_LIST } from '../../features/battle/mocks/mock-battle.data';
 import { Skill, TargetRangeType } from '../models/skill.model';
+import { BattleEventDto, StartBattleResultDto } from '../models/battle.model';
 
 export interface DamageTextEvent {
   text: string;
@@ -56,6 +57,8 @@ export class BattleEngineService {
   });
 
   private allLogs: BattleLog[] = [];
+  private serverEvents: BattleEventDto[] = [];
+  private serverEventIndex = -1;
   private currentTimeout: any = null;
   private damageEventCounter = 0;
 
@@ -69,9 +72,11 @@ export class BattleEngineService {
       this.currentTimeout = null;
     }
 
-    // Reset to deep copied initial heroes to avoid side effects
-    this.heroes.set(JSON.parse(JSON.stringify(INITIAL_HEROES)));
-    this.allLogs = JSON.parse(JSON.stringify(MOCK_BATTLE_LOGS));
+    this.serverEvents = [];
+    this.serverEventIndex = -1;
+    // Never silently show mock combatants in the server-authoritative flow.
+    this.heroes.set([]);
+    this.allLogs = [];
     this.currentTurn.set(0);
     this.currentLogIndex.set(-1);
     this.status.set('idle');
@@ -80,6 +85,46 @@ export class BattleEngineService {
     this.activeTargetId.set(null);
     this.currentSkillName.set(null);
     this.currentSkillId.set(null);
+    this.activeTargetIds.set([]);
+    this.damageEvents.set({});
+  }
+
+  /** Initializes an authoritative replay. All HP/energy values come from backend events. */
+  loadServerBattle(battle: StartBattleResultDto): void {
+    if (this.currentTimeout) clearTimeout(this.currentTimeout);
+    const mapHero = (h: any, team: 'left' | 'right'): Hero => ({
+      id: team === 'left' ? h.id : -h.id,
+      name: h.name,
+      avatar: h.avatar,
+      hp: h.stats.hp,
+      maxHp: h.stats.hp,
+      mana: 0,
+      maxMana: 100,
+      attack: h.stats.atk,
+      defense: h.stats.def,
+      speed: h.stats.spd,
+      power: h.power,
+      magicDamage: h.stats.magicDamage,
+      magicResistance: h.stats.magicResistance,
+      position: h.position ?? 1,
+      team,
+      statusEffects: [],
+      skills: (h.skills ?? []).map((s: any) => s.id),
+      defaultFacing: team === 'left' ? 'right' : 'left'
+    });
+    this.heroes.set([
+      ...battle.initialState.leftTeam.map(h => mapHero(h, 'left')),
+      ...battle.initialState.rightTeam.map(h => mapHero(h, 'right'))
+    ]);
+    this.serverEvents = [...battle.events].sort((a, b) => a.sequence - b.sequence);
+    this.serverEventIndex = -1;
+    this.allLogs = [];
+    this.currentTurn.set(0);
+    this.currentLogIndex.set(-1);
+    this.status.set('idle');
+    this.narrativeLogs.set([]);
+    this.activeActorId.set(null);
+    this.activeTargetId.set(null);
     this.activeTargetIds.set([]);
     this.damageEvents.set({});
   }
@@ -95,6 +140,11 @@ export class BattleEngineService {
   }
 
   startBattle(): void {
+    if (this.serverEvents.length > 0 && (this.status() === 'idle' || this.status() === 'paused')) {
+      this.status.set('playing');
+      this.playNextServerEvent();
+      return;
+    }
     if (this.status() === 'idle') {
       this.status.set('playing');
       this.narrativeLogs.update(logs => [...logs, '🗡️ Trận đấu bắt đầu!']);
@@ -103,6 +153,53 @@ export class BattleEngineService {
       this.status.set('playing');
       this.playNextLog();
     }
+  }
+
+  private playNextServerEvent(): void {
+    if (this.status() !== 'playing') return;
+    const event = this.serverEvents[++this.serverEventIndex];
+    if (!event) { this.finishBattle(); return; }
+    this.currentTurn.set(event.turn);
+    if (event.actorId != null) this.activeActorId.set(event.actorId);
+    if (event.skillId) {
+      this.currentSkillId.set(event.skillId);
+      this.currentSkillName.set(event.skillId);
+    }
+    if (event.targetId != null) this.activeTargetId.set(event.targetId);
+
+    if (event.eventType === 'DAMAGE' || event.eventType === 'HEAL') {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId && event.hpAfter != null
+        ? { ...h, hp: event.hpAfter }
+        : h));
+      if (event.targetId != null) {
+        this.damageEvents.update(items => ({ ...items, [event.targetId!]: {
+          text: event.eventType === 'HEAL' ? `+${event.value}` : `-${event.value}${event.isCrit ? '!' : ''}`,
+          isCrit: event.isCrit,
+          key: this.damageEventCounter++
+        }}));
+      }
+    } else if (event.eventType === 'ENERGY_CHANGED' && event.targetId != null && event.energyAfter != null) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId ? { ...h, mana: event.energyAfter! } : h));
+    } else if (event.eventType === 'DEATH' && event.targetId != null) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
+        ? { ...h, hp: 0, statusEffects: [...(h.statusEffects ?? []), 'Dead'] }
+        : h));
+    } else if (event.eventType === 'BATTLE_END') {
+      this.finishBattle();
+      return;
+    }
+
+    const delay = event.eventType === 'DAMAGE' || event.eventType === 'HEAL' ? 900 : 160;
+    this.currentTimeout = setTimeout(() => {
+      if (event.targetId != null) this.damageEvents.update(items => ({ ...items, [event.targetId!]: null }));
+      if (event.eventType === 'TURN_END') {
+        this.activeActorId.set(null);
+        this.activeTargetId.set(null);
+        this.currentSkillId.set(null);
+        this.currentSkillName.set(null);
+      }
+      this.playNextServerEvent();
+    }, delay / this.speed());
   }
 
   pauseBattle(): void {
@@ -138,8 +235,16 @@ export class BattleEngineService {
     const actor = this.heroes().find(h => h.id === log.actorId);
     const target = this.heroes().find(h => h.id === log.targetId);
 
-    if (!actor || !target) {
-      // If characters not found, skip to next
+    if (!actor || actor.hp <= 0) {
+      // A defeated hero must never receive an action, even if a malformed
+      // replay log still contains a turn for them.
+      this.playNextLog();
+      return;
+    }
+
+    if (!target || target.hp <= 0) {
+      // A replay log points at the resolved target at battle-generation time.
+      // Do not animate an attack against a target that has already been defeated.
       this.playNextLog();
       return;
     }
@@ -301,6 +406,7 @@ export class BattleEngineService {
     const critText = log.isCrit ? ' 💥 CHÍ MẠNG' : '';
     let targetDesc = '';
     if (targetType === 'friendly_all') targetDesc = 'TOÀN BỘ ĐỒNG ĐỘI';
+    else if (targetType === 'friendly_random') targetDesc = 'MỘT ĐỒNG ĐỘI NGẪU NHIÊN';
     else if (targetType === 'all') targetDesc = 'TOÀN BỘ ĐỘI HÌNH địch';
     else if (targetType === 'front_row') targetDesc = 'HÀNG TRƯỚC địch';
     else if (targetType === 'back_row') targetDesc = 'HÀNG SAU địch';
@@ -881,6 +987,13 @@ export class BattleEngineService {
       enemyTargets = this.heroes()
         .filter(h => h.team === actor.team && h.hp > 0)
         .map(h => h.id);
+    } else if (targetType === 'friendly_random') {
+      const livingAllies = this.heroes()
+        .filter(h => h.team === actor.team && h.hp > 0);
+      if (livingAllies.length > 0) {
+        const randomIndex = Math.floor(Math.random() * livingAllies.length);
+        enemyTargets = [livingAllies[randomIndex].id];
+      }
     } else if (targetType === 'single') {
       enemyTargets = [target.id];
     } else if (targetType === 'all' || targetType === 'aoe_all') {
@@ -933,20 +1046,20 @@ export class BattleEngineService {
         .filter(h => h.team === enemyTeam && h.hp > 0 && targetPositions.includes(h.position))
         .map(h => h.id);
     } else if (targetType === 'random') {
-      const aliveEnemies = this.heroes().filter(h => h.team === enemyTeam && h.hp > 0);
-      if (aliveEnemies.length > 0) {
-        const randomIndex = Math.floor(Math.random() * aliveEnemies.length);
-        enemyTargets = [aliveEnemies[randomIndex].id];
-      } else {
-        enemyTargets = [target.id];
-      }
+      // The battle log already contains the target selected when the battle
+      // was generated. Reusing it makes replay deterministic instead of
+      // rolling a different victim on every playback.
+      enemyTargets = [target.id];
     } else if (targetType === 'random_4') {
       const aliveEnemies = this.heroes().filter(h => h.team === enemyTeam && h.hp > 0);
-      const shuffled = [...aliveEnemies].sort(() => 0.5 - Math.random());
-      enemyTargets = shuffled.slice(0, 4).map(h => h.id);
-      if (enemyTargets.length === 0) {
-        enemyTargets = [target.id];
-      }
+      // Keep the recorded primary target first, then consistently fill the
+      // remaining slots. A production battle log should persist all target
+      // ids; this stable fallback keeps the current mock replay reproducible.
+      enemyTargets = [target.id, ...aliveEnemies
+        .filter(h => h.id !== target.id)
+        .sort((a, b) => a.position - b.position || a.id - b.id)
+        .slice(0, 3)
+        .map(h => h.id)];
     } else if (targetType === 'front_and_back') {
       const front = this.heroes().find(h => h.team === enemyTeam && h.hp > 0 && [1, 3, 5].includes(h.position));
       const back = this.heroes().find(h => h.team === enemyTeam && h.hp > 0 && [2, 4].includes(h.position));

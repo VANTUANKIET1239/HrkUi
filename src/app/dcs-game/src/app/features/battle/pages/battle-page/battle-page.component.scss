@@ -3,3 +3,16 @@
   min-height: 100vh;
   background-color: #030712;
 }
+.battle-state-message {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5d56b;
+  background: #080704;
+  font-size: 1.1rem;
+}
+
+.battle-state-error {
+  color: #ff7777;
+}

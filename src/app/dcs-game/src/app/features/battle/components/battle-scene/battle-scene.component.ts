@@ -51,7 +51,7 @@ export class BattleSceneComponent {
   }
 
   getPowerScore(): number {
-    return 21783;
+    return this.getLeftTeam().reduce((total, hero) => total + (hero.power ?? 0), 0);
   }
 
   getLeaderAvatar(): string {

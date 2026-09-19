@@ -10,7 +10,8 @@ export type TargetRangeType =
   | 'aoe_all'
   | 'front_and_back'
   | 'random_4'
-  | 'friendly_all';
+  | 'friendly_all'
+  | 'friendly_random';
 
 export type SkillTypeCode = 'NORMAL' | 'ENERGY' | 'PASSIVE';
 export type SkillTriggerCode =

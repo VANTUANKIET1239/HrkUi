@@ -1,3 +1,7 @@
 <div class="battle-page-container">
-  <app-battle-scene></app-battle-scene>
+  <div *ngIf="isLoading" class="battle-state-message">Đang tải đội hình và mô phỏng trận đấu...</div>
+  <div *ngIf="!isLoading && loadError" class="battle-state-message battle-state-error">
+    {{ loadError }}
+  </div>
+  <app-battle-scene *ngIf="!isLoading && !loadError"></app-battle-scene>
 </div>

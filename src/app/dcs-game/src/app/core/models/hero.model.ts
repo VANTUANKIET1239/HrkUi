@@ -9,6 +9,7 @@ export interface Hero {
   attack: number;
   defense: number;
   speed: number;
+  power?: number;
   magicDamage?: number;
   magicResistance?: number;
   position: number; // 1 to 5

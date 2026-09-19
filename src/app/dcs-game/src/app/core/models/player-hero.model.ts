@@ -107,6 +107,7 @@ export interface PlayerHeroDto {
   auraTier: number;
   isLocked: boolean;
   isFavorite: boolean;
+  position?: number | null;
   stats: HeroStatsDto;
   skills: HeroSkillDto[];
 }

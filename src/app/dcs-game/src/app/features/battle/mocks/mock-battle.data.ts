@@ -164,7 +164,7 @@ export const INITIAL_HEROES: Hero[] = [
     position: 4,
     team: 'right',
     statusEffects: ['Feedback Loop', 'Dark Blizzard Sleighstream'],
-    skills: ['NORMAL_ATTACK', 'WINTER_NIGHT_BLESSINGS'],
+    skills: ['BASIC_RANDOM_HEAL', 'WINTER_NIGHT_BLESSINGS'],
     level: 2,
     defaultFacing: 'right'
   },
@@ -236,7 +236,9 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
     actorId: 3,
     targetId: 7,
     skillId: 'RICARDO_MILOS',
-    damage: 500,
+    // Keep PM Hối Hả alive after Heavenly Judgment at turn 7 so he can
+    // legitimately take his scheduled turn 9.
+    damage: 300,
     isCrit: true
   },
   {
@@ -322,6 +324,32 @@ export const MOCK_BATTLE_LOGS: BattleLog[] = [
 ];
 
 export const SKILL_LIST: Record<string, Skill> = {
+  BASIC_RANDOM_HEAL: {
+    id: 'BASIC_RANDOM_HEAL',
+    name: 'Hồi Máu Cơ Bản',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'ON_ATTACK',
+    energyCost: 0,
+    cost: 0,
+    costType: 'NONE',
+    category: 'basic',
+    color: '#22c55e',
+    type: 'magical',
+    description: 'Hồi phục cho một đồng minh còn sống được chọn ngẫu nhiên.',
+    damageMultiplier: 0,
+    targetType: 'friendly_random',
+    effects: [
+      {
+        effectTypeCode: 'HEAL',
+        effectTypeName: 'Hồi phục sinh lực',
+        targetTypeCode: 'ALLY_RANDOM',
+        targetTypeName: '1 đồng minh ngẫu nhiên',
+        targetSide: 'ALLY',
+        selectionRule: 'RANDOM',
+        scalings: [{ attributeTypeCode: 'HP', attributeTypeName: 'Máu tối đa', coefficient: 0.2, flatValue: 0 }]
+      }
+    ]
+  },
   NORMAL_ATTACK: {
     id: 'NORMAL_ATTACK',
     name: 'Đánh Thường',
