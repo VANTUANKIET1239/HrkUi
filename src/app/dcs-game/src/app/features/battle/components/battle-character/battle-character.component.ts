@@ -34,7 +34,7 @@ export class BattleCharacterComponent {
     if (!this.isCharging || !this.activeSkillId) return null;
 
     const skill = SKILL_LIST[this.activeSkillId];
-    return skill ? skill.category : 'basic';
+    return (skill?.category as 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly') || 'basic';
   }
 
   hasMoneyEffect(): boolean {

@@ -325,219 +325,522 @@ export const SKILL_LIST: Record<string, Skill> = {
   NORMAL_ATTACK: {
     id: 'NORMAL_ATTACK',
     name: 'Đánh Thường',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'ON_ATTACK',
+    energyCost: 0,
     cost: 0,
     costType: 'MP',
     category: 'basic',
     color: '#aaaaaa',
     type: 'physical',
     description: 'Tấn công vật lý cơ bản gây sát thương chuẩn.',
-    damageMultiplier: 1.0
+    damageMultiplier: 1.0,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        targetTypeName: 'Đơn mục tiêu',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.0, flatValue: 0 }]
+      }
+    ]
   },
   FIREBALL: {
     id: 'FIREBALL',
     name: 'Hỏa Cầu Sếp Phạt',
-    cost: 30,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'rage',
     color: '#ff3333',
     type: 'magical',
     description: 'Sếp ném hỏa cầu thiêu rụi tinh thần coder.',
-    damageMultiplier: 1.5
+    damageMultiplier: 1.5,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'BURN',
+        effectTypeName: 'Thiêu đốt',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        baseValue: 50
+      }
+    ]
   },
   HEAVY_SLASH: {
     id: 'HEAVY_SLASH',
     name: 'Chém Deadline',
-    cost: 25,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'rage',
     color: '#ffaa00',
     type: 'physical',
     description: 'Vung kiếm chém mạnh làm giảm thời gian deadline.',
-    damageMultiplier: 1.4
+    damageMultiplier: 1.4,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.4, flatValue: 0 }]
+      }
+    ]
   },
   LIGHTNING_STRIKE: {
     id: 'LIGHTNING_STRIKE',
     name: 'Sét Đánh Khẩn Cấp',
-    cost: 30,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'thunder',
     color: '#33ccff',
     type: 'magical',
     description: 'PM triệu hồi sét đánh thẳng vào máy chủ.',
-    damageMultiplier: 1.4
+    damageMultiplier: 1.4,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.4, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STUN',
+        effectTypeName: 'Choáng',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 1,
+        chancePercent: 30
+      }
+    ]
   },
   ULTIMATE_SIXPACK: {
     id: 'ULTIMATE_SIXPACK',
     name: 'Nộ Long Sáu Múi',
-    cost: 75,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#ff00aa',
     type: 'ultimate',
     description: 'K cởi trần gồng mình hóa thần công phá địch.',
-    damageMultiplier: 2.5
+    damageMultiplier: 2.5,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_BUFF',
+        effectTypeName: 'Tăng Công',
+        targetTypeCode: 'SELF',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'ATK', valueType: 'PERCENT', value: 20 }]
+      }
+    ]
   },
   CRITICAL_BUG: {
     id: 'CRITICAL_BUG',
     name: 'Bug Nghiêm Trọng',
-    cost: 30,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'rage',
     color: '#cc33ff',
     type: 'magical',
     description: 'QA phát hiện bug critical chặn đứng tiến trình.',
-    damageMultiplier: 1.3
+    damageMultiplier: 1.3,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.3, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Giảm Giáp',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'DEF', valueType: 'PERCENT', value: -20 }]
+      }
+    ]
   },
   SWORD_DANCE: {
     id: 'SWORD_DANCE',
     name: 'Vũ Điệu Chuẩn Men',
-    cost: 70,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#33ffaa',
     type: 'ultimate',
     description: 'Tuyệt chiêu kiếm vũ chuẩn men chém nát deadline.',
-    damageMultiplier: 2.2
+    damageMultiplier: 2.2,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.2, flatValue: 0 }]
+      }
+    ]
   },
   CHANGE_REQUIREMENT: {
     id: 'CHANGE_REQUIREMENT',
     name: 'Đổi Yêu Cầu Gấp',
-    cost: 35,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'rage',
     color: '#ff33cc',
     type: 'magical',
     description: 'Client đổi yêu cầu phút chót gây sát thương tinh thần cực lớn.',
-    damageMultiplier: 1.5
+    damageMultiplier: 1.5,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Giảm Tốc Độ',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'SPD', valueType: 'PERCENT', value: -20 }]
+      }
+    ]
   },
   REFACTOR_CODE: {
     id: 'REFACTOR_CODE',
     name: 'Tái Cấu Trúc Đẹp',
-    cost: 25,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'thunder',
     color: '#00aaff',
     type: 'magical',
     description: 'Tái cấu trúc code mượt mà tối ưu hóa hệ thống.',
-    damageMultiplier: 1.5
+    damageMultiplier: 1.5,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_BUFF',
+        effectTypeName: 'Tăng Phép',
+        targetTypeCode: 'SELF',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'MAGIC_DAMAGE', valueType: 'PERCENT', value: 25 }]
+      }
+    ]
   },
   NULL_POINTER: {
     id: 'NULL_POINTER',
     name: 'Lỗi Con Trỏ Null',
-    cost: 30,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'thunder',
     color: '#ff3300',
     type: 'magical',
     description: 'Gây lỗi Null Pointer làm crash ứng dụng.',
-    damageMultiplier: 1.3
+    damageMultiplier: 1.3,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.3, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'SILENCE',
+        effectTypeName: 'Câm Lặng',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        chancePercent: 50
+      }
+    ]
   },
   AUTOMATION_TEST: {
     id: 'AUTOMATION_TEST',
     name: 'Test Tự Động',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'ON_ATTACK',
+    energyCost: 0,
     cost: 0,
     costType: 'MP',
     category: 'basic',
     color: '#33ff33',
     type: 'physical',
     description: 'Tester tự động hóa kiểm thử liên tục.',
-    damageMultiplier: 1.2
+    damageMultiplier: 1.2,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.2, flatValue: 0 }]
+      }
+    ]
   },
   SLASH: {
     id: 'SLASH',
     name: 'Chém Thường',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'ON_ATTACK',
+    energyCost: 0,
     cost: 0,
     costType: 'MP',
     category: 'basic',
     color: '#dddddd',
     type: 'physical',
     description: 'Tấn công chém thường cơ bản.',
-    damageMultiplier: 1.0
+    damageMultiplier: 1.0,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.0, flatValue: 0 }]
+      }
+    ]
   },
   COMPLAIN: {
     id: 'COMPLAIN',
     name: 'Phàn Nàn Giờ Chót',
-    cost: 25,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'rage',
     color: '#ff6600',
     type: 'magical',
     description: 'Client phàn nàn về thiết kế làm rối loạn đội hình.',
-    damageMultiplier: 1.1
+    damageMultiplier: 1.1,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.1, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Giảm Công',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'ATK', valueType: 'PERCENT', value: -15 }]
+      }
+    ]
   },
   DEPLOY_PROD: {
     id: 'DEPLOY_PROD',
     name: 'Lên Prod Bảnh Tỏn',
-    cost: 75,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#ccff33',
     type: 'ultimate',
     description: 'Coder Bảnh đẩy code thẳng lên Production không cần test.',
-    damageMultiplier: 2.5
+    damageMultiplier: 2.5,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.5, flatValue: 0 }]
+      }
+    ]
   },
   STACK_OVERFLOW: {
     id: 'STACK_OVERFLOW',
     name: 'Tràn Bộ Đệm',
-    cost: 30,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'thunder',
     color: '#ff0000',
     type: 'magical',
     description: 'Tràn bộ đệm làm sập hệ thống phòng ngự.',
-    damageMultiplier: 1.2
+    damageMultiplier: 1.2,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.2, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Giảm Giáp',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'DEF', valueType: 'PERCENT', value: -30 }]
+      }
+    ]
   },
   CLOSE_JIRA: {
     id: 'CLOSE_JIRA',
     name: 'Đóng Task Jira!',
-    cost: 80,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#00ffaa',
     type: 'ultimate',
     description: 'K cởi trần đóng task Jira kết thúc dự án thành công.',
-    damageMultiplier: 3.0
+    damageMultiplier: 3.0,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương chuẩn',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'TRUE',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 3.0, flatValue: 0 }]
+      }
+    ]
   },
   HEAVENLY_JUDGMENT: {
     id: 'HEAVENLY_JUDGMENT',
     name: 'Phán Quyết Sấm Sét Cởi Trần',
-    cost: 90,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'heavenly',
     color: '#ff0055',
     type: 'ultimate',
     description: 'Tuyệt kỹ sấm sét hủy diệt toàn bộ kẻ địch trên chiến trường.',
     damageMultiplier: 3.5,
-    isAoE: true
+    isAoE: true,
+    targetType: 'all',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép diện rộng',
+        targetTypeCode: 'ENEMY_ALL',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 3.5, flatValue: 0 }]
+      }
+    ]
   },
   VAX_A_MILLION_SANITZATION: {
     id: 'VAX_A_MILLION_SANITZATION',
     name: 'Pháo Quang Phổ Tiệt Trùng',
-    cost: 60,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#00ffcc',
     type: 'ultimate',
     description: 'Nam Deadline rút ống tiêm Vax-A-Million bắn luồng laser khử khuẩn cực mạnh quét sạch toàn bộ kẻ địch trên đường thẳng đối diện.',
     damageMultiplier: 2.8,
-    targetType: 'linear'
+    targetType: 'linear',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương laser phép',
+        targetTypeCode: 'ENEMY_ALL',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 2.8, flatValue: 0 }]
+      }
+    ]
   },
   RICARDO_MILOS: {
     id: 'RICARDO_MILOS',
     name: 'Ricardo Milos!',
-    cost: 50,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#ff0033',
     type: 'ultimate',
     description: 'Chuẩn Men hóa thân thành Ricardo Milos thực hiện điệu nhảy Crimson quyến rũ gây chấn động mạnh lên mục tiêu hàng sau cùng làn.',
     damageMultiplier: 2.5,
-    targetType: 'same_lane_back_row'
+    targetType: 'same_lane_back_row',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SAME_LANE_BACK_ROW',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STUN',
+        effectTypeName: 'Choáng',
+        targetTypeCode: 'ENEMY_SAME_LANE_BACK_ROW',
+        durationTurns: 1,
+        chancePercent: 100
+      }
+    ]
   },
   RANDOM_KNOWLEDGE_DROP: {
     id: 'RANDOM_KNOWLEDGE_DROP',
     name: 'Kiến Thức Sang Chấn',
-    cost: 50,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#00d9ff',
@@ -545,24 +848,62 @@ export const SKILL_LIST: Record<string, Skill> = {
     description: 'Coder Bảnh triệu hồi cuốn sách giáo khoa khổng lồ từ trên trời giáng xuống đầu một kẻ địch ngẫu nhiên.',
     damageMultiplier: 2.6,
     targetType: 'random',
-    phase2Duration: 1500
+    phase2Duration: 1500,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_RANDOM',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 2.6, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STUN',
+        effectTypeName: 'Choáng',
+        targetTypeCode: 'ENEMY_RANDOM',
+        durationTurns: 1,
+        chancePercent: 80
+      }
+    ]
   },
   DARK_KNOWLEDGE_SHIELD_CONVERSION: {
     id: 'DARK_KNOWLEDGE_SHIELD_CONVERSION',
     name: 'Giáp Hư Không',
-    cost: 65,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#a855f7',
     type: 'magical',
     description: 'Nghĩa Phúc triệu hồi sách ma thuật hắc ám khổng lồ đè bẹp toàn bộ kẻ địch, hấp thụ 100% sát thương gây ra để tạo thành Giáp Bóng Tối bảo vệ bản thân.',
     damageMultiplier: 1.4,
-    targetType: 'all'
+    targetType: 'all',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép diện rộng',
+        targetTypeCode: 'ENEMY_ALL',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.4, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'SHIELD',
+        effectTypeName: 'Tạo Giáp Hư Không',
+        targetTypeCode: 'SELF',
+        durationTurns: 2,
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 0.8, flatValue: 0 }]
+      }
+    ]
   },
   TACTICAL_AIR_STRIKE: {
     id: 'TACTICAL_AIR_STRIKE',
     name: 'Oanh Tạc Hàng Sau',
-    cost: 50,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#fbbf24',
@@ -570,12 +911,30 @@ export const SKILL_LIST: Record<string, Skill> = {
     description: 'Tướng Long kích hoạt radar cổ tay kêu gọi 3 tên lửa hành trình oanh tạc toàn bộ hàng sau kẻ địch, gây sát thương trung bình và Đánh Dấu mục tiêu.',
     damageMultiplier: 2.0,
     targetType: 'back_row',
-    phase2Duration: 1500
+    phase2Duration: 1500,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý hàng sau',
+        targetTypeCode: 'ENEMY_BACK_ROW',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.0, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'MARK',
+        effectTypeName: 'Đánh Dấu',
+        targetTypeCode: 'ENEMY_BACK_ROW',
+        durationTurns: 2
+      }
+    ]
   },
   DOI_NGOI_DAU_DOC: {
     id: 'DOI_NGOI_DAU_DOC',
     name: 'Đổi Ngôi Đầu Độc',
-    cost: 35,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#d97706',
@@ -583,12 +942,36 @@ export const SKILL_LIST: Record<string, Skill> = {
     description: 'Vinh Barber hoán đổi vị trí của 2 kẻ địch (1 hàng trước, 1 hàng sau) và giảm 15% tốc độ của chúng.',
     damageMultiplier: 1.0,
     targetType: 'front_and_back',
-    phase2Duration: 1400
+    phase2Duration: 1400,
+    effects: [
+      {
+        effectTypeCode: 'POSITION_SWAP',
+        effectTypeName: 'Đổi Ngôi',
+        targetTypeCode: 'ENEMY_FRONT_ROW'
+      },
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương phép',
+        targetTypeCode: 'ENEMY_FRONT_ROW',
+        damageSchoolCode: 'MAGIC',
+        scalings: [{ attributeTypeCode: 'MAGIC_DAMAGE', attributeTypeName: 'Sát thương phép', coefficient: 1.0, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Giảm Tốc Độ',
+        targetTypeCode: 'ENEMY_FRONT_ROW',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'SPD', valueType: 'PERCENT', value: -15 }]
+      }
+    ]
   },
   FATAL_ALL_IN_DIRECTIVE: {
     id: 'FATAL_ALL_IN_DIRECTIVE',
     name: 'Lệnh All-In Hủy Diệt',
-    cost: 50,
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
     costType: 'MP',
     category: 'ultimate',
     color: '#ff0033',
@@ -598,11 +981,42 @@ export const SKILL_LIST: Record<string, Skill> = {
     targetType: 'random_4',
     phase1Duration: 1500,
     phase2Duration: 2200,
-    phase3Duration: 1200
+    phase3Duration: 1200,
+    effects: [
+      {
+        effectTypeCode: 'HP_SACRIFICE',
+        effectTypeName: 'Hiến tế 50% HP',
+        targetTypeCode: 'SELF',
+        baseValue: 50
+      },
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý 4 mục tiêu',
+        targetTypeCode: 'ENEMY_RANDOM_4',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.8, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'STAT_DEBUFF',
+        effectTypeName: 'Phá Sản (Giảm 50% Thủ)',
+        targetTypeCode: 'SELF',
+        durationTurns: 2,
+        statModifiers: [{ attributeTypeCode: 'DEF', valueType: 'PERCENT', value: -50 }]
+      },
+      {
+        effectTypeCode: 'SILENCE',
+        effectTypeName: 'Câm Lặng',
+        targetTypeCode: 'SELF',
+        durationTurns: 2
+      }
+    ]
   },
   WINTER_NIGHT_BLESSINGS: {
     id: 'WINTER_NIGHT_BLESSINGS',
     name: 'Quà Tặng Đêm Đông',
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
     cost: 100,
     costType: 'MP',
     category: 'ultimate',
@@ -616,11 +1030,36 @@ export const SKILL_LIST: Record<string, Skill> = {
     redirectRatio: 0.50,
     phase1Duration: 1600,
     phase2Duration: 2000,
-    phase3Duration: 1200
+    phase3Duration: 1200,
+    effects: [
+      {
+        effectTypeCode: 'HEAL',
+        effectTypeName: 'Hồi phục toàn đội',
+        targetTypeCode: 'ALLY_ALL',
+        scalings: [{ attributeTypeCode: 'HP', attributeTypeName: 'Máu tối đa', coefficient: 0.3, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'DAMAGE_REDUCTION',
+        effectTypeName: 'Quà Bảo Kê (-50% Sát thương)',
+        targetTypeCode: 'ALLY_RANDOM_2',
+        baseValue: 50,
+        durationTurns: 2
+      },
+      {
+        effectTypeCode: 'DAMAGE_REDUCTION',
+        effectTypeName: 'Da Thịt Vững Chãi (-40% Sát thương)',
+        targetTypeCode: 'SELF',
+        baseValue: 40,
+        durationTurns: 2
+      }
+    ]
   },
   DEADLIFT_DIA_CHAN: {
     id: 'DEADLIFT_DIA_CHAN',
     name: 'Deadlift Địa Chấn',
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
     cost: 100,
     costType: 'MP',
     category: 'ultimate',
@@ -631,6 +1070,35 @@ export const SKILL_LIST: Record<string, Skill> = {
     targetType: 'front_row',
     phase1Duration: 1800,
     phase2Duration: 1500,
-    phase3Duration: 1200
+    phase3Duration: 1200,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý hàng trước',
+        targetTypeCode: 'ENEMY_FRONT_ROW',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 2.2, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'TAUNT',
+        effectTypeName: 'Khiêu Khích',
+        targetTypeCode: 'ENEMY_FRONT_ROW',
+        durationTurns: 2
+      },
+      {
+        effectTypeCode: 'SHIELD',
+        effectTypeName: 'Giáp Deadlift',
+        targetTypeCode: 'SELF',
+        durationTurns: 2,
+        scalings: [{ attributeTypeCode: 'DEF', attributeTypeName: 'Phòng thủ', coefficient: 1.5, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'DAMAGE_REFLECTION',
+        effectTypeName: 'Phản Sát Thương',
+        targetTypeCode: 'SELF',
+        baseValue: 30,
+        durationTurns: 2
+      }
+    ]
   }
 };

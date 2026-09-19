@@ -9,6 +9,8 @@ export interface Hero {
   attack: number;
   defense: number;
   speed: number;
+  magicDamage?: number;
+  magicResistance?: number;
   position: number; // 1 to 5
   team: 'left' | 'right';
   statusEffects?: string[];

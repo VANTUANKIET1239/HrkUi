@@ -15,6 +15,15 @@ $glass-dark: rgba(15, 12, 10, 0.9);
 $glow-gold: 0 0 12px rgba(255, 215, 0, 0.6);
 $glow-red: 0 0 12px rgba(255, 56, 56, 0.6);
 
+// High-Contrast Typography & Stats Colors
+$text-primary: #f8f3df;
+$text-secondary: #b8b1a0;
+$text-gold-highlight: #ffd84d;
+$stat-hp: #4ade80;
+$stat-atk: #fb7185;
+$stat-def: #38bdf8;
+$stat-spd: #facc15;
+
 // Rarity borders
 $color-legendary: #ffc107;
 $color-epic: #c084fc;
@@ -278,71 +287,189 @@ $color-common: #9ca3af;
   }
 }
 
-// Faction and rarity presets inside list items
+// Hero card item styles (Fixes oversized avatar bug)
+.hero-card-item,
 .hero-list-item {
+  background: rgba(30, 24, 18, 0.65);
+  border: 1.5px solid rgba(255, 215, 0, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.6);
+    background: rgba(50, 38, 26, 0.85);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  &.selected,
+  &.active {
+    background: linear-gradient(135deg, rgba(168, 26, 26, 0.35) 0%, rgba(30, 20, 14, 0.95) 100%);
+    border-color: $gold-primary !important;
+    box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  &.legendary,
   &.rarity-legendary {
     border-left: 4px solid $color-legendary;
   }
 
+  &.epic,
   &.rarity-epic {
     border-left: 4px solid $color-epic;
   }
 
+  &.rare,
   &.rarity-rare {
     border-left: 4px solid $color-rare;
   }
 }
 
+.hero-avatar-frame,
 .hero-list-avatar {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  border-radius: 8px;
+  border: 2px solid $gold-border;
+  background: radial-gradient(circle, #3a2c20 0%, #1e130a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 
-  .avatar-border {
+  .hero-avatar,
+  .hero-avatar-img {
     width: 100%;
     height: 100%;
-    border-radius: 8px;
-    border: 2px solid $gold-border;
-    background: radial-gradient(circle, #3a2c20 0%, #1e130a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    max-width: 48px;
+    max-height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
   }
 
+  .hero-level-badge,
   .level-indicator {
     position: absolute;
-    bottom: -3px;
-    left: -3px;
+    bottom: -2px;
+    left: -2px;
     background: #000;
     border: 1px solid $gold-primary;
-    color: #ffd700;
+    color: $text-gold-highlight;
     font-size: 8px;
     font-weight: 800;
     padding: 0 4px;
     border-radius: 4px;
+    z-index: 2;
   }
 
-  .faction-indicator {
+  .hero-lock-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    color: #ef4444;
+    text-shadow: 0 1px 3px #000;
+    z-index: 2;
+  }
 
-    .badge {
-      font-size: 8px;
-      padding: 2px 4px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+  .hero-fav-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 10px;
+    color: #fbbf24;
+    text-shadow: 0 1px 3px #000;
+    z-index: 2;
   }
 }
 
-.hero-name-label {
-  color: #fff;
-  font-size: 13.5px;
-  text-shadow: 0 1px 2px #000;
+.hero-card-details {
+  .hero-name,
+  .hero-name-label {
+    color: $text-primary;
+    font-size: 13px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px #000;
+  }
+
+  .rarity-badge {
+    font-size: 8.5px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+
+    &.legendary {
+      background: rgba(255, 193, 7, 0.18);
+      color: #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.45);
+    }
+    &.epic {
+      background: rgba(192, 132, 252, 0.18);
+      color: #c084fc;
+      border: 1px solid rgba(192, 132, 252, 0.45);
+    }
+    &.rare {
+      background: rgba(96, 165, 250, 0.18);
+      color: #60a5fa;
+      border: 1px solid rgba(96, 165, 250, 0.45);
+    }
+  }
+
+  .hero-power,
+  .power-label {
+    color: $text-gold-highlight;
+    font-weight: 700;
+    font-size: 11.5px;
+  }
+
+  .hero-stars {
+    i {
+      font-size: 8.5px;
+      margin-right: 1px;
+    }
+  }
 }
 
 .text-gold {
   color: $gold-primary;
 }
+
+// Detailed equipment-stat tooltips are intentionally separate from the name tooltip,
+// so a player can see the exact bonuses before equipping or removing an item.
+.gear-node-stats-tooltip,
+.item-stats-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 50;
+  min-width: 130px;
+  max-width: 190px;
+  padding: 6px 8px;
+  color: #fff;
+  background: rgba(10, 8, 5, .96);
+  border: 1px solid $gold-border;
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .7);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.radial-gear-node:hover .gear-node-stats-tooltip,
+.inventory-item-box:hover .item-stats-tooltip {
+  display: block;
+}
+
+.gear-node-stats-tooltip { left: calc(100% + 7px); top: 0; }
+.item-stats-tooltip { left: 50%; bottom: calc(100% + 7px); transform: translateX(-50%); }
 
 // -------------------------------------------------------------
 // CENTER PANEL: Main Hero Display
@@ -379,57 +506,131 @@ $color-common: #9ca3af;
   }
 }
 
+.character-viewport,
 .character-detail-showcase {
-  height: 380px;
-  background: radial-gradient(circle, rgba(139, 0, 0, 0.15) 0%, rgba(10, 8, 5, 0.95) 100%),
+  height: 360px;
+  min-height: 360px;
+  background: radial-gradient(circle, rgba(139, 0, 0, 0.18) 0%, rgba(10, 8, 5, 0.98) 100%),
     url(/assets/images/dcs-game/lobby_bg.png) no-repeat center center;
   background-size: cover;
   border-bottom: 2.5px solid $gold-border;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.character-controls-top {
+  position: absolute;
+  top: 8px;
+  left: 95px;
+  right: 95px;
+  z-index: 15;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+
+  .btn-icon-glass {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #dfbf8f;
+    padding: 3px 9px;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: $gold-primary;
+      color: #fff;
+    }
+  }
+
+  .character-rarity-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.legendary {
+      background: rgba(255, 193, 7, 0.25);
+      border: 1px solid #ffd700;
+      color: #ffd700;
+    }
+    &.epic {
+      background: rgba(192, 132, 252, 0.25);
+      border: 1px solid #c084fc;
+      color: #c084fc;
+    }
+    &.rare {
+      background: rgba(96, 165, 250, 0.25);
+      border: 1px solid #60a5fa;
+      color: #60a5fa;
+    }
+  }
 }
 
 .character-showcase-info {
   z-index: 10;
+  padding: 40px 95px 0 95px !important;
 
   .hero-name-large {
-    font-size: 28px;
+    font-size: 24px;
     color: #fff;
     text-shadow: 0 2px 6px #000, 0 0 10px rgba(255, 255, 255, 0.2);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
 
   .faction-badge {
     background: $crimson-red;
     border: 1px solid $gold-primary;
     color: #fff;
-    font-size: 10px;
+    font-size: 9.5px;
     padding: 1px 8px;
     border-radius: 4px;
     display: inline-block;
   }
+
+  .class-role {
+    font-size: 11.5px;
+  }
 }
 
 .combat-power-container {
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.75);
   border: 1.5px solid $gold-primary;
   border-radius: 8px;
-  padding: 4px 15px;
+  padding: 4px 14px;
   box-shadow: $glow-gold;
 
   .lbl {
-    font-size: 9px;
+    font-size: 8.5px;
     display: block;
     color: #ffd700;
     text-align: center;
   }
 
   .val {
-    font-size: 19px;
+    font-size: 18px;
     color: #ff8c00;
     text-shadow: 0 0 5px rgba(255, 140, 0, 0.6);
   }
+}
+
+.hero-detail-loading-overlay {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  z-index: 25;
+  background: rgba(15, 12, 10, 0.88);
+  border: 1.5px solid rgba(255, 215, 0, 0.35);
+  padding: 4px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
 }
 
 // Artwork placeholder
@@ -467,99 +668,440 @@ $color-common: #9ca3af;
   z-index: 10;
 }
 
-// Stats bars
+// Stats panel section (9 Stat Cards & Breakdown Tooltip)
 .stats-panel-section {
-  background: rgba(20, 16, 12, 0.9);
-  border-bottom: 1.5px solid rgba(255, 215, 0, 0.15);
+  background: rgba(20, 16, 12, 0.92);
+  border-bottom: 1.5px solid rgba(255, 215, 0, 0.18);
+  position: relative;
+  overflow: visible;
 
-  .stat-item {
-    font-size: 11.5px;
-  }
-
-  .stat-bar {
-    height: 6px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
-  }
-
-  .secondary-stats-row {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+  .section-title {
+    color: $text-gold-highlight;
+    font-size: 13.5px;
+    letter-spacing: 0.5px;
   }
 }
 
-// Skills Grid
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  position: relative;
+  overflow: visible;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  position: relative;
+  background: rgba(18, 14, 11, 0.95);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+
+  &:hover,
+  &.tooltip-active {
+    background: rgba(34, 25, 18, 0.98);
+    border-color: rgba(255, 215, 0, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 215, 0, 0.2);
+    z-index: 100;
+
+    .stat-breakdown-tooltip {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+  }
+
+  .stat-card-header {
+    display: flex;
+    align-items: center;
+
+    .stat-card-icon {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      flex-shrink: 0;
+    }
+
+    .stat-card-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: $text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .stat-card-value {
+    font-size: 13.5px;
+    font-weight: 800;
+    font-family: 'Spectral', serif;
+    letter-spacing: 0.5px;
+    text-align: right;
+  }
+
+  // Stat color tokens
+  &.stat-hp {
+    border-left: 3px solid #22c55e;
+    .stat-card-icon, .stat-card-value { color: #4ade80; }
+  }
+  &.stat-atk {
+    border-left: 3px solid #ef4444;
+    .stat-card-icon, .stat-card-value { color: #f87171; }
+  }
+  &.stat-def {
+    border-left: 3px solid #38bdf8;
+    .stat-card-icon, .stat-card-value { color: #38bdf8; }
+  }
+  &.stat-spd {
+    border-left: 3px solid #fbbf24;
+    .stat-card-icon, .stat-card-value { color: #fbbf24; }
+  }
+  &.stat-crit {
+    border-left: 3px solid #f97316;
+    .stat-card-icon, .stat-card-value { color: #fb923c; }
+  }
+  &.stat-crit-dmg {
+    border-left: 3px solid #e11d48;
+    .stat-card-icon, .stat-card-value { color: #f43f5e; }
+  }
+  &.stat-lifesteal {
+    border-left: 3px solid #ec4899;
+    .stat-card-icon, .stat-card-value { color: #f472b6; }
+  }
+  &.stat-accuracy {
+    border-left: 3px solid #a855f7;
+    .stat-card-icon, .stat-card-value { color: #c084fc; }
+  }
+  &.stat-resistance {
+    border-left: 3px solid #06b6d4;
+    .stat-card-icon, .stat-card-value { color: #22d3ee; }
+  }
+  &.stat-magic-damage {
+    border-left: 3px solid #8b5cf6;
+    .stat-card-icon, .stat-card-value { color: #c084fc; }
+  }
+  &.stat-magic-res {
+    border-left: 3px solid #14b8a6;
+    .stat-card-icon, .stat-card-value { color: #2dd4bf; }
+  }
+
+  // Column-aware tooltip alignment to avoid container overflow
+  &:nth-child(3n + 1) {
+    .stat-breakdown-tooltip {
+      left: 0;
+      right: auto;
+      transform: translateY(4px);
+
+      &::after {
+        left: 20px;
+        right: auto;
+        transform: none;
+      }
+    }
+    &:hover .stat-breakdown-tooltip,
+    &.tooltip-active .stat-breakdown-tooltip {
+      transform: translateY(0);
+    }
+  }
+
+  &:nth-child(3n + 2) {
+    .stat-breakdown-tooltip {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%) translateY(4px);
+
+      &::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+    &:hover .stat-breakdown-tooltip,
+    &.tooltip-active .stat-breakdown-tooltip {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  &:nth-child(3n) {
+    .stat-breakdown-tooltip {
+      left: auto;
+      right: 0;
+      transform: translateY(4px);
+
+      &::after {
+        left: auto;
+        right: 20px;
+        transform: none;
+      }
+    }
+    &:hover .stat-breakdown-tooltip,
+    &.tooltip-active .stat-breakdown-tooltip {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Rich Breakdown Tooltip
+.stat-breakdown-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  width: 250px;
+  background: rgba(14, 11, 9, 0.98);
+  border: 1.5px solid rgba(255, 215, 0, 0.45);
+  border-radius: 8px;
+  padding: 8px 12px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.92), 0 0 12px rgba(255, 215, 0, 0.25);
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    border: 6px solid transparent;
+    border-top-color: rgba(255, 215, 0, 0.45);
+  }
+
+  .tooltip-header {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+
+    .tooltip-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: $text-gold-highlight;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tooltip-total {
+      font-size: 12.5px;
+      font-weight: 800;
+      font-family: 'Spectral', serif;
+    }
+  }
+
+  .tooltip-divider {
+    height: 1px;
+    background: rgba(255, 215, 0, 0.15);
+  }
+
+  .tooltip-sources-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 6px;
+
+    .tooltip-source-item {
+      font-size: 10.5px;
+    }
+  }
+}
+
+// Skills section panel & Single Horizontal Skill Card
 .skills-section-panel {
   background: rgba(15, 12, 10, 0.95);
   border-bottom: 1.5px solid rgba(255, 215, 0, 0.15);
+
+  .section-title {
+    color: $text-gold-highlight;
+    font-size: 13.5px;
+    letter-spacing: 0.5px;
+  }
 }
 
-.skills-grid {
-  gap: 10px;
+.skills-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
+.skill-item-card {
+  background: rgba(14, 11, 9, 0.88);
+  border: 1.5px solid rgba(255, 215, 0, 0.18);
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+
+  &:hover,
+  &.active-skill {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: rgba(24, 18, 14, 0.96);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 215, 0, 0.2);
+  }
+}
+
+.single-skill-card {
+  background: rgba(14, 11, 9, 0.85);
+  border: 1.5px solid rgba(255, 215, 0, 0.22);
+  border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: rgba(255, 215, 0, 0.45);
+  }
+}
+
+.skill-icon-wrapper {
   .skill-icon-box {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     border: 2px solid $gold-border;
-    background: radial-gradient(circle, #3a2c20 0%, #16110a 100%);
+    background: radial-gradient(circle, #3a2c20 0%, #140f0a 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+    overflow: visible;
 
-    .icon-inner {
-      font-size: 18px;
-      color: #dfbf8f;
+    .skill-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
     }
 
-    &:hover,
-    &.active {
-      border-color: $gold-primary;
-      box-shadow: $glow-gold;
-      transform: scale(1.1);
-
-      .icon-inner {
-        color: $gold-primary;
-      }
-    }
-
-    .skill-indicator-dot {
+    .skill-badge-tag {
       position: absolute;
-      top: -2px;
-      right: -2px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 7.5px;
+      font-weight: 800;
+      padding: 0 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      z-index: 2;
 
+      &.badge-energy,
       &.active {
-        background: #e74c3c;
-        box-shadow: 0 0 4px #e74c3c;
+        background: $crimson-red;
+        border: 1px solid #ef4444;
+        color: #fff;
+        box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
       }
 
+      &.badge-passive,
       &.passive {
-        background: #3498db;
-        box-shadow: 0 0 4px #3498db;
+        background: #1e3a8a;
+        border: 1px solid #3b82f6;
+        color: #bfdbfe;
+        box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
+      }
+
+      &.badge-normal {
+        background: #334155;
+        border: 1px solid #64748b;
+        color: #e2e8f0;
       }
     }
   }
 }
 
-.selected-skill-details {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 215, 0, 0.15);
-  border-radius: 6px;
+.skill-content-details {
+  .skill-name {
+    letter-spacing: 0.3px;
+  }
 
-  .skill-title {
-    font-size: 13.5px;
+  .skill-badges-row {
+    .badge {
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+  }
+
+  .badge-energy {
+    background: rgba(185, 28, 28, 0.85);
+    border: 1px solid #ef4444;
+    color: #fff;
+  }
+
+  .badge-passive {
+    background: rgba(30, 58, 138, 0.85);
+    border: 1px solid #3b82f6;
+    color: #bfdbfe;
+  }
+
+  .badge-normal {
+    background: rgba(51, 65, 85, 0.85);
+    border: 1px solid #64748b;
+    color: #e2e8f0;
+  }
+
+  .badge-physical {
+    background: #b91c1c;
+    color: #fff;
+  }
+
+  .badge-magic {
+    background: #7c3aed;
+    color: #fff;
+  }
+
+  .badge-true {
+    background: #d97706;
+    color: #fff;
   }
 
   .skill-description {
-    color: #ddd;
-    line-height: 1.4;
+    font-size: 11px;
+    color: $text-secondary;
   }
+
+  .skill-effects-pills {
+    .effect-pill {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 215, 0, 0.22);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 9.5px;
+
+      .effect-name {
+        color: #94a3b8;
+      }
+
+      .effect-val {
+        font-size: 10px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.empty-skill-state {
+  color: $text-secondary;
+  border: 1px dashed rgba(255, 215, 0, 0.15);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
 }
 
 // Radial Equipment surrounding the character artwork
@@ -600,8 +1142,8 @@ $color-common: #9ca3af;
 
 .radial-gear-node {
   position: absolute;
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   border-radius: 10px;
   background: radial-gradient(circle, #2e241b 0%, #110c08 100%);
   border: 1.8px solid $gold-border;
@@ -612,6 +1154,39 @@ $color-common: #9ca3af;
   pointer-events: auto;
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+
+  &.empty-slot {
+    border: 1.5px dashed rgba(255, 215, 0, 0.35) !important;
+    background: radial-gradient(circle, rgba(25, 20, 15, 0.7) 0%, rgba(10, 8, 6, 0.85) 100%) !important;
+
+    .dim-icon {
+      color: rgba(255, 215, 0, 0.25);
+      font-size: 22px;
+      transition: all 0.2s ease;
+    }
+
+    .gear-node-empty-tag {
+      position: absolute;
+      bottom: 2px;
+      font-size: 7.5px;
+      font-weight: 700;
+      color: $text-secondary;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+    }
+
+    &:hover {
+      border-color: rgba(255, 215, 0, 0.75) !important;
+      background: radial-gradient(circle, rgba(38, 30, 22, 0.85) 0%, rgba(16, 12, 9, 0.95) 100%) !important;
+      transform: scale(1.08);
+
+      .dim-icon {
+        color: rgba(255, 215, 0, 0.65);
+        transform: scale(1.1);
+      }
+    }
+  }
 
   .gear-node-icon-bg {
     width: 100%;
@@ -647,7 +1222,7 @@ $color-common: #9ca3af;
 
   // Hover states & glows matching rarities
   &:hover {
-    transform: scale(1.18);
+    transform: scale(1.15);
     border-color: $gold-primary;
     box-shadow: $glow-gold;
     z-index: 50;
@@ -694,35 +1269,35 @@ $color-common: #9ca3af;
   }
 }
 
-// Positions surrounding the character illustration
+// Positions surrounding character (Clean wings, no overlap with header)
 .gear-node-pos-0 {
-  left: 14%;
-  top: 22%;
+  left: calc(50% - 230px);
+  top: 68px;
 }
 
 .gear-node-pos-1 {
-  left: 9%;
-  top: 48%;
+  left: calc(50% - 260px);
+  top: 142px;
 }
 
 .gear-node-pos-2 {
-  left: 14%;
-  top: 74%;
+  left: calc(50% - 230px);
+  top: 216px;
 }
 
 .gear-node-pos-3 {
-  right: 14%;
-  top: 74%;
+  right: calc(50% - 230px);
+  top: 216px;
 }
 
 .gear-node-pos-4 {
-  right: 9%;
-  top: 48%;
+  right: calc(50% - 260px);
+  top: 142px;
 }
 
 .gear-node-pos-5 {
-  right: 14%;
-  top: 22%;
+  right: calc(50% - 230px);
+  top: 68px;
 }
 
 // Tooltip popups
@@ -810,18 +1385,23 @@ $color-common: #9ca3af;
 
 .btn-action {
   background: radial-gradient(circle, #2a1f19 0%, #150f0c 100%);
-  border: 1.5px solid rgba(255, 215, 0, 0.25);
+  border: 1.5px solid rgba(255, 215, 0, 0.28);
   color: #dfbf8f;
-  font-size: 11px;
-  padding: 6px 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 8px 4px;
   border-radius: 6px;
   transition: all 0.2s ease;
+
+  i {
+    font-size: 14px;
+  }
 
   &:hover {
     border-color: $gold-primary;
     background: radial-gradient(circle, #453328 0%, #1e1510 100%);
     color: #fff;
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.25);
   }
 
   &.text-danger-hover:hover {
@@ -937,34 +1517,6 @@ $color-common: #9ca3af;
 
 .bg-black-opacity {
   background: rgba(0, 0, 0, 0.65);
-}
-
-// Placeholders section
-.placeholder-features {
-  padding: 8px;
-  border-top: 1px solid rgba(255, 215, 0, 0.15);
-}
-
-.placeholder-grid {
-  gap: 4px;
-
-  .btn-placeholder {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 215, 0, 0.12);
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 9.5px;
-    padding: 3px 6px;
-    border-radius: 4px;
-    flex-grow: 1;
-    text-align: center;
-    transition: all 0.2s ease;
-
-    &:hover {
-      border-color: rgba(255, 215, 0, 0.3);
-      color: #dfbf8f;
-      background: rgba(25, 20, 15, 0.6);
-    }
-  }
 }
 
 // -------------------------------------------------------------
@@ -1147,9 +1699,69 @@ $color-common: #9ca3af;
   }
 }
 
-// -------------------------------------------------------------
-// MODAL overlay styles for rèn & tẩy trang bị
-// -------------------------------------------------------------
+// Custom backdrop for unequip equipment modal
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2500;
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in 0.2s ease-out;
+}
+
+.equipment-action-dialog {
+  width: 380px;
+  max-width: 92vw;
+  background: #181410 !important;
+  border: 1.5px solid rgba(255, 215, 0, 0.45) !important;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 215, 0, 0.25);
+  animation: zoom-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: $text-primary;
+
+  .gear-preview-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    background: radial-gradient(circle, #2e241b 0%, #110c08 100%);
+    border: 2px solid $gold-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    .gear-preview-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    &.epic {
+      border-color: $color-epic;
+      box-shadow: 0 0 10px rgba($color-epic, 0.4);
+    }
+    &.legendary {
+      border-color: $color-legendary;
+      box-shadow: 0 0 10px rgba($color-legendary, 0.4);
+    }
+    &.rare {
+      border-color: $color-rare;
+      box-shadow: 0 0 10px rgba($color-rare, 0.4);
+    }
+  }
+
+  .gear-preview-info {
+    flex-grow: 1;
+  }
+}
+
 .modal-backdrop-overlay {
   position: fixed;
   top: 0;
@@ -1478,4 +2090,12 @@ $color-common: #9ca3af;
     object-fit: cover;
     border-radius: 6px;
   }
+}
+
+.dialog-item-stats {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  padding: 4px 8px;
+  max-height: 110px;
+  overflow-y: auto;
 }

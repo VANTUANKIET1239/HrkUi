@@ -168,7 +168,7 @@
           </div>
 
           <!-- Highlighted Button (Chính Tuyến / Vượt Ải) -->
-          <div class="focus-btn-container" (click)="goToBattle()">
+          <div class="focus-btn-container" *ngIf="focusFeature" (click)="goToBattle()">
             <div class="focus-btn-pulse"></div>
             <div class="focus-btn-pulse pulse-delay"></div>
             <button class="btn btn-chinh-tuyen d-flex flex-column align-items-center justify-content-center">
@@ -195,7 +195,7 @@
   <app-inventory *ngIf="isInventoryOpen" (close)="isInventoryOpen = false"></app-inventory>
 
   <!-- Forge (Lò Rèn) Popup/Modal -->
-  <app-forge *ngIf="isForgeOpen" (close)="isForgeOpen = false" (itemUpdated)="onForgeItemUpdated()"></app-forge>
+  <app-forge *ngIf="isForgeOpen" [currentGold]="getNumericGold()" (close)="isForgeOpen = false" (itemUpdated)="onForgeItemUpdated()"></app-forge>
 
   <!-- Logout Confirmation Modal -->
   <div class="logout-modal-backdrop" *ngIf="isLogoutConfirmOpen" (click)="closeLogoutConfirm()">

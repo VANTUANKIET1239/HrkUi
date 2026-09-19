@@ -47,8 +47,8 @@
         <h3 class="font-title text-warning mb-2">TÍNH NĂNG TĂNG SAO TRANG BỊ</h3>
         <span class="badge bg-warning text-dark px-3 py-2 fs-6 mb-3 fw-bold">TÍNH NĂNG ĐANG ĐƯỢC PHÁT TRIỂN</span>
         <p class="text-light-subtle max-w-md mx-auto mb-4">
-          Hệ thống Tăng Sao rèn đúc Thần Binh đang được sư phụ thần rèn hoàn thiện. 
-          Các vị Tướng Quân vui lòng đón chờ trong bản cập nhật sắp tới!
+          Hệ thống Tăng Sao rèn đúc Thần Binh đang được hoàn thiện. 
+          Các vị Tướng Quân vui lòng đón chờ trong bản cập nhật tiếp theo!
         </p>
         <button class="btn btn-outline-warning px-4 py-2" (click)="activeTab = 'enhance'">
           <i class="bi bi-arrow-left me-1"></i> Quay Lại Cường Hóa
@@ -56,122 +56,196 @@
       </div>
     </div>
 
-    <!-- TAB 1: ENHANCEMENT (CƯỜNG HÓA) ACTIVE CONTENT -->
-    <div class="forge-body tab-content-enhance p-4" *ngIf="activeTab === 'enhance'">
+    <!-- TAB 1: ENHANCEMENT (CƯỜNG HÓA) ACTIVE WORKSPACE -->
+    <div class="forge-body tab-content-enhance p-3 p-md-4" *ngIf="activeTab === 'enhance'">
       
-      <!-- Loading State -->
+      <!-- Initial Loading -->
       <div *ngIf="isLoading" class="d-flex flex-column align-items-center justify-content-center py-5">
         <div class="spinner-border text-warning mb-3" role="status"></div>
-        <span class="text-warning font-title">Đang nhóm lửa lò rèn và nạp dữ liệu...</span>
+        <span class="text-warning font-title">Đang nhóm lửa lò rèn và nạp dữ liệu trang bị...</span>
       </div>
 
-      <!-- Main Forge Workspace -->
-      <div class="forge-workspace row g-4" *ngIf="!isLoading">
+      <!-- Main Two-Column Layout (Left 45% Enhancement / Right 55% Equipment Browser) -->
+      <div class="forge-two-columns row g-3 g-lg-4" *ngIf="!isLoading">
         
-        <!-- LEFT COLUMN: Selected Equipment & Stats Diff -->
-        <div class="col-lg-5 col-md-6 d-flex flex-column gap-3">
+        <!-- ======================================================== -->
+        <!-- LEFT COLUMN (45%): Enhancement Workbench & Selected Slot  -->
+        <!-- ======================================================== -->
+        <div class="col-lg-5 col-12 d-flex flex-column gap-3 left-enhancement-panel">
           
-          <!-- Equipment Card -->
-          <div class="equipment-display-card p-3 rounded-3 border">
+          <!-- Drop Zone / Selected Equipment Target Area -->
+          <div 
+            class="enhancement-slot-card p-3 rounded-3 border position-relative"
+            [class.drop-hover]="isDropZoneHovered"
+            [class.drop-valid]="isDropZoneHovered && isDropZoneValid"
+            [class.drop-invalid]="isDropZoneHovered && !isDropZoneValid"
+            (dragover)="onDropZoneDragOver($event)"
+            (dragleave)="onDropZoneDragLeave($event)"
+            (drop)="onDropZoneDrop($event)">
+            
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="section-label font-title text-warning"><i class="bi bi-shield-shaded me-1"></i> Trang Bị Cường Hóa</span>
-              <button class="btn btn-sm btn-select-gear" (click)="showEquipmentSelector = true">
-                <i class="bi bi-arrow-repeat me-1"></i> Đổi Trang Bị
-              </button>
+              <span class="section-label font-title text-warning">
+                <i class="bi bi-shield-shaded me-1"></i> Trang Bị Rèn Đúc
+              </span>
+              <span class="drop-hint-pill text-muted small" *ngIf="selectedEquipment">
+                Kéo thả hoặc nhấp đôi để đổi
+              </span>
             </div>
 
-            <!-- Empty Equipment State -->
-            <div *ngIf="!selectedEquipment" class="empty-gear-box text-center py-4" (click)="showEquipmentSelector = true">
-              <i class="bi bi-plus-circle-dotted display-4 text-warning mb-2 d-block"></i>
-              <span class="text-warning fw-bold">Nhấn vào đây để chọn trang bị</span>
+            <!-- Empty Drop Zone State -->
+            <div *ngIf="!selectedEquipment" class="empty-drop-zone text-center py-4 rounded-3">
+              <i class="bi bi-plus-circle-dotted display-4 text-warning mb-2 d-block drop-icon-pulse"></i>
+              <span class="text-warning fw-bold d-block">Kéo trang bị vào đây</span>
+              <span class="text-muted small">hoặc nhấp đôi trang bị ở danh sách bên phải</span>
             </div>
 
-            <!-- Selected Equipment Info -->
-            <div *ngIf="selectedEquipment" class="gear-detail-box d-flex align-items-center gap-3">
-              <div class="gear-icon-frame position-relative">
-                <img *ngIf="selectedEquipment.imagePath; else gearIconFallback" [src]="selectedEquipment.imagePath" class="gear-img" [alt]="selectedEquipment.name" />
-                <ng-template #gearIconFallback>
-                  <i class="bi {{ selectedEquipment.icon }} fs-1 text-warning"></i>
+            <!-- Selected Equipment Target -->
+            <div *ngIf="selectedEquipment" class="selected-gear-display d-flex align-items-center gap-3">
+              <div 
+                class="gear-icon-frame position-relative"
+                [style.border-color]="selectedEquipment.rarityColorHex || '#8e6e3c'">
+                <img 
+                  *ngIf="selectedEquipment.imagePath; else fallbackIcon" 
+                  [src]="selectedEquipment.imagePath" 
+                  class="gear-img" 
+                  [alt]="selectedEquipment.name" />
+                <ng-template #fallbackIcon>
+                  <i class="bi {{ selectedEquipment.icon || 'bi-shield' }} fs-1 text-warning"></i>
                 </ng-template>
                 <span class="gear-enhancement-badge">+{{ selectedEquipment.enhancement }}</span>
               </div>
 
-              <div class="gear-info flex-grow-1">
-                <h4 class="gear-name font-title m-0">{{ selectedEquipment.name }}</h4>
-                <div class="gear-tags d-flex gap-2 mt-1">
-                  <span class="badge-rarity">{{ selectedEquipment.rarityName }}</span>
+              <div class="gear-meta flex-grow-1">
+                <h4 class="gear-name font-title m-0" [style.color]="selectedEquipment.rarityColorHex || '#ffd700'">
+                  {{ selectedEquipment.name }}
+                </h4>
+                <div class="gear-tags d-flex flex-wrap gap-2 mt-1">
+                  <span class="badge-rarity" [style.background-color]="(selectedEquipment.rarityColorHex || '#b8860b') + '22'" [style.color]="selectedEquipment.rarityColorHex || '#ffd700'">
+                    {{ selectedEquipment.rarityName }}
+                  </span>
                   <span class="badge-category">{{ selectedEquipment.categoryName }}</span>
                   <span class="badge-req">Cấp {{ selectedEquipment.levelReq }}</span>
+                  <span *ngIf="selectedEquipment.isEquipped" class="badge bg-success-subtle text-success">Đang mang</span>
                 </div>
               </div>
             </div>
 
-            <!-- Max Level Warning Banner -->
-            <div *ngIf="selectedEquipment && isMaxLevel" class="max-level-banner mt-3 p-2 rounded text-center">
+            <!-- Max Level Banner -->
+            <div *ngIf="selectedEquipment && isMaxLevel" class="max-level-banner mt-2 p-2 rounded text-center">
               <i class="bi bi-award-fill text-warning me-1"></i>
-              <span class="fw-bold text-warning">Đã đạt cấp cường hóa tối đa (+15)</span>
+              <span class="fw-bold text-warning">Trang bị đã đạt cấp tối đa (+15)</span>
             </div>
           </div>
 
-          <!-- Stats Comparison Box -->
-          <div class="stats-comparison-card p-3 rounded-3 border flex-grow-1" *ngIf="selectedEquipment">
+          <!-- Stats Comparison Card -->
+          <div class="stats-comparison-card p-3 rounded-3 border" *ngIf="selectedEquipment">
             <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="section-label font-title text-warning"><i class="bi bi-graph-up-arrow me-1"></i> So Sánh Thuộc Tính</span>
+              <span class="section-label font-title text-warning">
+                <i class="bi bi-graph-up-arrow me-1"></i> So Sánh Thuộc Tính
+              </span>
               <div class="level-transition d-flex align-items-center gap-1 font-title">
                 <span class="badge bg-secondary">+{{ currentLevel }}</span>
                 <i class="bi bi-arrow-right text-warning"></i>
-                <span class="badge bg-warning text-dark">+{{ isMaxLevel ? currentLevel : currentLevel + 1 }}</span>
+                <span class="badge bg-warning text-dark">+{{ isMaxLevel ? currentLevel : targetLevel }}</span>
               </div>
             </div>
 
             <div class="stats-table">
               <div class="stat-header-row d-flex justify-content-between text-muted border-bottom pb-1 mb-2">
-                <span>Chỉ số</span>
-                <div class="d-flex gap-4">
-                  <span class="text-center" style="width: 80px;">Hiện tại</span>
-                  <span class="text-center" style="width: 80px;">Sau khi lên</span>
+                <span>Thuộc tính</span>
+                <div class="d-flex gap-3">
+                  <span class="text-center" style="width: 75px;">Hiện tại</span>
+                  <span class="text-center" style="width: 75px;">Sau rèn</span>
                 </div>
               </div>
 
+              <!-- Stat Rows -->
               <div class="stat-rows-container">
-                <div *ngFor="let key of getStatKeys(selectedEquipment.stats)" class="stat-row d-flex justify-content-between align-items-center py-1">
+                <div 
+                  *ngFor="let key of getStatKeys(previewDetails?.currentStats)" 
+                  class="stat-row d-flex justify-content-between align-items-center py-1">
                   <span class="stat-name text-light-emphasis">{{ getStatDisplayName(key) }}</span>
-                  <div class="d-flex gap-4">
-                    <span class="current-stat text-center" style="width: 80px;">{{ formatStatValue(key, selectedEquipment.stats[key]) }}</span>
-                    <span class="next-stat text-center text-success fw-bold" style="width: 80px;">
-                      {{ isMaxLevel ? 'MAX' : calculateExpectedStat(key, selectedEquipment.stats[key]) }}
+                  <div class="d-flex gap-3">
+                    <span class="current-stat text-center text-muted" style="width: 75px;">
+                      {{ formatStatValue(key, previewDetails?.currentStats?.[key] || 0) }}
+                    </span>
+                    <span class="next-stat text-center text-success fw-bold" style="width: 75px;">
+                      {{ isMaxLevel ? 'MAX' : formatStatValue(key, previewDetails?.nextStats?.[key] || 0) }}
                     </span>
                   </div>
                 </div>
 
-                <div *ngIf="getStatKeys(selectedEquipment.stats).length === 0" class="text-muted text-center py-3">
-                  Không có chỉ số cơ bản hiển thị.
+                <div *ngIf="getStatKeys(previewDetails?.currentStats).length === 0" class="text-muted text-center py-2">
+                  <span *ngIf="isLoadingPreview" class="spinner-border spinner-border-sm text-warning me-1"></span>
+                  {{ isLoadingPreview ? 'Đang tính toán thuộc tính...' : 'Không có chỉ số cơ bản.' }}
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- RIGHT COLUMN: Anvil, Materials Slots, Rates, Failure Warning & Enhance Action -->
-        <div class="col-lg-7 col-md-6 d-flex flex-column gap-3">
-          
-          <!-- Anvil & Rate Section -->
-          <div class="anvil-rate-card p-4 rounded-3 border position-relative overflow-hidden text-center">
+          <!-- Anvil & Materials Card -->
+          <div 
+            class="anvil-rate-card p-3 p-md-4 rounded-3 border position-relative overflow-hidden text-center"
+            [class.shake-active]="shakeActive"
+            [class.tier-1-theme]="currentAnimationTier === 1"
+            [class.tier-2-theme]="currentAnimationTier === 2"
+            [class.tier-3-theme]="currentAnimationTier === 3">
             
-            <!-- Suspense Forge Animation Layer -->
-            <div class="forge-animating-overlay d-flex flex-column align-items-center justify-content-center" *ngIf="isForging">
-              <div class="hammer-anim-box mb-2">
+            <!-- White Flash Overlay for Tier 3 Max Attempt -->
+            <div class="white-flash-layer" *ngIf="whiteFlashActive"></div>
+
+            <!-- Tiered Visual Enhancement Animation Overlay -->
+            <div 
+              class="forge-animating-overlay d-flex flex-column align-items-center justify-content-center" 
+              *ngIf="isForging">
+              
+              <!-- Tier 3 Darkening Layer -->
+              <div class="tier-3-darken-bg" *ngIf="currentAnimationTier === 3"></div>
+
+              <!-- Energy Ring (Tier 2 & Tier 3) -->
+              <div class="energy-ring-container" *ngIf="currentAnimationTier >= 2">
+                <div class="energy-ring" [class.mythic]="currentAnimationTier === 3"></div>
+              </div>
+
+              <!-- Lightning / Magic Arcs (Tier 3) -->
+              <div class="lightning-arcs" *ngIf="currentAnimationTier === 3">
+                <div class="arc arc-1"></div>
+                <div class="arc arc-2"></div>
+                <div class="arc arc-3"></div>
+              </div>
+
+              <!-- Hammer Strike Visual -->
+              <div 
+                class="hammer-anim-box"
+                [class.strike-1]="animationPhase === 'strike1'"
+                [class.strike-2]="animationPhase === 'strike2'">
                 <i class="bi bi-hammer hammer-strike-icon text-warning"></i>
               </div>
-              <div class="sparks-burst"></div>
-              <h4 class="font-title text-warning text-uppercase pulsing-text mt-3">Đang Rèn Đúc Thần Binh...</h4>
-              <span class="text-light-subtle" style="font-size: 0.85rem;">Búa rèn giáng xuống đe ngập tràn tia lửa thần...</span>
+
+              <!-- Sparks / Burst -->
+              <div 
+                class="sparks-burst"
+                [class.tier-2-sparks]="currentAnimationTier === 2"
+                [class.tier-3-sparks]="currentAnimationTier === 3">
+              </div>
+
+              <!-- Animated Status Text -->
+              <h4 class="font-title text-warning text-uppercase pulsing-text mt-3">
+                {{ currentAnimationTier === 3 ? 'ĐANG RÈN ĐÚC THẦN THOẠI (+11 → +15)...' : (currentAnimationTier === 2 ? 'ĐANG CƯỜNG HÓA CAO CẤP (+6 → +10)...' : 'ĐANG RÈN ĐÚC TRANG BỊ (+1 → +5)...') }}
+              </h4>
+              <span class="text-light-subtle small">
+                {{ currentAnimationTier === 3 ? 'Khí thế ngút trời, pháp bảo chuẩn bị thăng hoa!' : 'Búa rèn giáng xuống đe ngập tràn tia lửa thần...' }}
+              </span>
             </div>
 
-            <!-- Success Rate Gauge -->
+            <!-- Normal State: Success Rate Gauge -->
             <div class="rate-gauge-container mb-3" *ngIf="!isForging">
               <span class="rate-label font-title text-uppercase text-muted">Tỷ Lệ Thành Công</span>
-              <div class="rate-value-display font-title my-1" [class.text-success]="finalSuccessRate >= 0.7" [class.text-warning]="finalSuccessRate >= 0.4 && finalSuccessRate < 0.7" [class.text-danger]="finalSuccessRate < 0.4">
+              <div 
+                class="rate-value-display font-title my-1" 
+                [class.text-success]="finalSuccessRate >= 0.7" 
+                [class.text-warning]="finalSuccessRate >= 0.4 && finalSuccessRate < 0.7" 
+                [class.text-danger]="finalSuccessRate < 0.4">
                 {{ (finalSuccessRate * 100) | number:'1.0-1' }}%
               </div>
 
@@ -180,17 +254,23 @@
                 <span class="badge badge-rate-item">Cơ bản: {{ (baseSuccessRate * 100) | number:'1.0-1' }}%</span>
                 <span class="badge badge-rate-item text-info" *ngIf="totalStoneBonus > 0">Đá: +{{ (totalStoneBonus * 100) | number:'1.0-1' }}%</span>
                 <span class="badge badge-rate-item text-warning" *ngIf="charmBonus > 0">Bùa: +{{ (charmBonus * 100) | number:'1.0-1' }}%</span>
-                <span class="badge badge-rate-item text-success" *ngIf="isProtectionCharmActive"><i class="bi bi-shield-check"></i> Chống tụt cấp</span>
+                <span class="badge badge-rate-item text-success" *ngIf="isProtectionCharmActive">
+                  <i class="bi bi-shield-check"></i> Chống tụt cấp
+                </span>
               </div>
             </div>
 
             <!-- Material Slots: 3 Stones + 1 Charm -->
-            <div class="material-slots-container mt-3">
-              <div class="d-flex justify-content-center gap-3">
+            <div class="material-slots-container mt-3" *ngIf="!isForging">
+              <div class="d-flex justify-content-center gap-2 gap-md-3">
                 
                 <!-- 3 Stone Slots -->
-                <div *ngFor="let stone of selectedStones; let i = index" class="material-slot-box" [class.occupied]="stone !== null" (click)="openStonePicker(i)">
-                  <!-- Occupied -->
+                <div 
+                  *ngFor="let stone of selectedStones; let i = index" 
+                  class="material-slot-box" 
+                  [class.occupied]="stone !== null" 
+                  (click)="openStonePicker(i)">
+                  <!-- Occupied Stone -->
                   <div *ngIf="stone" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
                     <button class="btn btn-remove-slot" (click)="removeStone(i, $event)" title="Gỡ đá"><i class="bi bi-x"></i></button>
                     <i class="bi bi-gem fs-2 text-info mb-1"></i>
@@ -198,7 +278,7 @@
                     <span class="slot-bonus text-success">+{{ (stone.bonus * 100) | number:'1.0-0' }}%</span>
                   </div>
 
-                  <!-- Empty -->
+                  <!-- Empty Stone Slot -->
                   <div *ngIf="!stone" class="slot-empty d-flex flex-column align-items-center justify-content-center h-100">
                     <i class="bi bi-plus-lg text-muted fs-3 mb-1"></i>
                     <span class="slot-label text-muted">Đá {{ i + 1 }}</span>
@@ -206,8 +286,11 @@
                 </div>
 
                 <!-- 1 Charm Slot -->
-                <div class="material-slot-box charm-slot" [class.occupied]="selectedCharm !== null" (click)="openCharmPicker()">
-                  <!-- Occupied -->
+                <div 
+                  class="material-slot-box charm-slot" 
+                  [class.occupied]="selectedCharm !== null" 
+                  (click)="openCharmPicker()">
+                  <!-- Occupied Charm -->
                   <div *ngIf="selectedCharm" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
                     <button class="btn btn-remove-slot" (click)="removeCharm($event)" title="Gỡ bùa"><i class="bi bi-x"></i></button>
                     <i class="bi {{ selectedCharm.preventsDrop ? 'bi-shield-fill-check text-success' : 'bi-stars text-warning' }} fs-2 mb-1"></i>
@@ -217,7 +300,7 @@
                     </span>
                   </div>
 
-                  <!-- Empty -->
+                  <!-- Empty Charm Slot -->
                   <div *ngIf="!selectedCharm" class="slot-empty d-flex flex-column align-items-center justify-content-center h-100">
                     <i class="bi bi-plus-lg text-muted fs-3 mb-1"></i>
                     <span class="slot-label text-muted">Bùa</span>
@@ -227,11 +310,15 @@
             </div>
           </div>
 
-          <!-- Bottom Warning & Action Bar -->
+          <!-- Bottom Action Bar: Warning, Cost & Button -->
           <div class="action-footer-card p-3 rounded-3 border d-flex flex-column gap-3">
             
-            <!-- Failure Warning Box -->
-            <div class="failure-warning-box p-2 px-3 rounded d-flex align-items-center justify-content-between" [class.protected]="isProtectionCharmActive" [class.no-drop]="failureDropLevels === 0 && !isProtectionCharmActive" [class.drop-danger]="failureDropLevels > 0 && !isProtectionCharmActive">
+            <!-- Failure Consequence Warning -->
+            <div 
+              class="failure-warning-box p-2 px-3 rounded d-flex align-items-center justify-content-between" 
+              [class.protected]="isProtectionCharmActive" 
+              [class.no-drop]="failureDropLevels === 0 && !isProtectionCharmActive" 
+              [class.drop-danger]="failureDropLevels > 0 && !isProtectionCharmActive">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi {{ isProtectionCharmActive ? 'bi-shield-check text-success fs-5' : 'bi-exclamation-triangle-fill fs-5' }}"></i>
                 <span class="warning-title fw-bold">Nếu thất bại:</span>
@@ -239,26 +326,30 @@
               <span class="consequence-text fw-bold">{{ failureConsequenceText }}</span>
             </div>
 
-            <!-- Cost & Enhance Button Row -->
-            <div class="d-flex justify-content-between align-items-center">
-              
-              <!-- Cost Details -->
-              <div class="cost-details d-flex align-items-center gap-2">
+            <!-- Cost & Enhance Button -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div class="cost-details d-flex align-items-center gap-2 flex-wrap">
                 <span class="cost-label text-muted font-title">Chi Phí:</span>
                 <span class="cost-amount fw-bold" [class.text-danger]="!hasEnoughGold" [class.text-warning]="hasEnoughGold">
                   {{ goldCost | number }} Vàng
                 </span>
                 <span *ngIf="!hasEnoughGold" class="badge bg-danger-subtle text-danger ms-1">Không đủ Vàng</span>
+                <span *ngIf="selectedEquipment?.isLocked" class="badge bg-warning-subtle text-warning ms-1"><i class="bi bi-lock-fill"></i> Đang Khóa</span>
               </div>
 
-              <!-- Main Enhance Button -->
-              <button 
-                class="btn btn-enhance-main font-title d-flex align-items-center gap-2 px-4 py-2"
-                [disabled]="!canEnhance"
-                (click)="enhance()">
-                <i class="bi bi-hammer"></i>
-                <span>{{ isMaxLevel ? 'ĐÃ ĐẠT CẤP TỐI ĐA' : (isForging ? 'ĐANG CƯỜNG HÓA...' : 'CƯỜNG HÓA') }}</span>
-              </button>
+              <!-- Action Button -->
+              <div class="d-flex flex-column align-items-end">
+                <button 
+                  class="btn btn-enhance-main font-title d-flex align-items-center gap-2 px-4 py-2"
+                  [disabled]="!canEnhance"
+                  (click)="enhance()">
+                  <i class="bi bi-hammer"></i>
+                  <span>{{ isMaxLevel ? 'ĐÃ ĐẠT CẤP TỐI ĐA' : (isForging ? 'ĐANG CƯỜNG HÓA...' : 'CƯỜNG HÓA') }}</span>
+                </button>
+                <span *ngIf="!canEnhance && cannotEnhanceReason" class="text-warning mt-1 small d-flex align-items-center gap-1 fw-bold">
+                  <i class="bi bi-exclamation-circle-fill"></i> {{ cannotEnhanceReason }}
+                </span>
+              </div>
             </div>
 
             <!-- Error Banner -->
@@ -268,48 +359,172 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- MODAL: Equipment Selector Drawer -->
-  <div class="picker-overlay" *ngIf="showEquipmentSelector" (click)="showEquipmentSelector = false">
-    <div class="picker-card p-4 rounded-4" (click)="$event.stopPropagation()">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-shaded me-2"></i>Chọn Trang Bị Cường Hóa</h4>
-        <button class="btn btn-close-modal" (click)="showEquipmentSelector = false"><i class="bi bi-x-lg"></i></button>
-      </div>
+        <!-- ======================================================== -->
+        <!-- RIGHT COLUMN (55%): Equipment Inventory Browser          -->
+        <!-- ======================================================== -->
+        <div class="col-lg-7 col-12 d-flex flex-column gap-3 right-inventory-panel">
+          
+          <div class="inventory-browser-card p-3 rounded-3 border d-flex flex-column flex-grow-1">
+            
+            <!-- Browser Header: Title & Search -->
+            <div class="browser-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+              <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-backpack4-fill text-warning fs-5"></i>
+                <h4 class="m-0 font-title text-warning">Hành Trang Trang Bị</h4>
+                <span class="badge bg-dark-subtle text-muted border border-secondary-subtle">
+                  {{ filteredEquipments.length }} / {{ forgeEquipments.length }}
+                </span>
+              </div>
 
-      <div class="picker-items-grid">
-        <div 
-          *ngFor="let eq of allEquipments" 
-          class="picker-item-slot p-2 rounded-3 border d-flex align-items-center gap-2"
-          [class.active]="selectedEquipment?.id === eq.id"
-          (click)="selectEquipment(eq)">
-          <div class="item-img-box position-relative">
-            <img *ngIf="eq.imagePath; else eqIconFallback" [src]="eq.imagePath" class="picker-img" [alt]="eq.name" />
-            <ng-template #eqIconFallback>
-              <i class="bi {{ eq.icon }} fs-3 text-warning"></i>
-            </ng-template>
-            <span class="badge-item-level">+{{ eq.enhancement }}</span>
-          </div>
-          <div class="item-meta flex-grow-1">
-            <div class="item-name text-truncate font-title">{{ eq.name }}</div>
-            <div class="d-flex gap-1 mt-1">
-              <span class="badge-mini">{{ eq.categoryName }}</span>
-              <span class="badge-mini">{{ eq.rarityName }}</span>
+              <!-- Search Input -->
+              <div class="search-box position-relative">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-2 text-muted"></i>
+                <input 
+                  type="text" 
+                  class="form-control form-control-sm search-input ps-4" 
+                  placeholder="Tìm trang bị theo tên, mã..." 
+                  [(ngModel)]="searchQuery" 
+                  (ngModelChange)="onSearchChange()" />
+                <button 
+                  *ngIf="searchQuery" 
+                  class="btn btn-sm btn-clear-search position-absolute top-50 end-0 translate-middle-y me-1" 
+                  (click)="searchQuery = ''; onSearchChange()">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filters & Sort Bar -->
+            <div class="filters-bar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              
+              <!-- Category Chips -->
+              <div class="category-chips-scroll d-flex gap-1">
+                <button 
+                  *ngFor="let cat of categories" 
+                  class="btn btn-category-chip btn-sm"
+                  [class.active]="selectedCategory === cat.code"
+                  (click)="setCategoryFilter(cat.code)">
+                  {{ cat.name }}
+                </button>
+              </div>
+
+              <!-- Eligibility & Sort Dropdowns -->
+              <div class="dropdowns-group d-flex align-items-center gap-2">
+                
+                <!-- Eligibility Filter -->
+                <select 
+                  class="form-select form-select-sm filter-select" 
+                  [(ngModel)]="selectedEligibility" 
+                  (ngModelChange)="setEligibilityFilter($event)">
+                  <option value="ALL">Tất cả trang bị</option>
+                  <option value="CAN_ENHANCE">Có thể cường hóa</option>
+                  <option value="CANNOT_ENHANCE">Không thể cường hóa</option>
+                </select>
+
+                <!-- Sort Options -->
+                <select 
+                  class="form-select form-select-sm filter-select" 
+                  [(ngModel)]="selectedSort" 
+                  (ngModelChange)="setSortOption($event)">
+                  <option value="DEFAULT">Sắp xếp: Mặc định</option>
+                  <option value="RARITY_DESC">Phẩm chất: Cao → Thấp</option>
+                  <option value="RARITY_ASC">Phẩm chất: Thấp → Cao</option>
+                  <option value="ENHANCEMENT_DESC">Cường hóa: Cao → Thấp</option>
+                  <option value="ENHANCEMENT_ASC">Cường hóa: Thấp → Cao</option>
+                  <option value="NAME_ASC">Tên: A → Z</option>
+                  <option value="NAME_DESC">Tên: Z → A</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Equipment Cards Grid -->
+            <div class="equipment-grid-scroll flex-grow-1">
+              <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-2 g-md-3" *ngIf="filteredEquipments.length > 0">
+                
+                <div class="col" *ngFor="let eq of filteredEquipments">
+                  <div 
+                    class="forge-eq-card p-2 rounded-3 border position-relative"
+                    [class.is-selected]="selectedEquipment?.inventoryItemId === eq.inventoryItemId"
+                    [class.is-focused]="focusedItem?.inventoryItemId === eq.inventoryItemId"
+                    [class.is-disabled]="!eq.canEnhance"
+                    [class.is-locked]="eq.isLocked"
+                    [style.border-color]="(eq.rarityColorHex || '#8e6e3c') + (selectedEquipment?.inventoryItemId === eq.inventoryItemId ? 'FF' : '66')"
+                    [draggable]="eq.canEnhance"
+                    (dragstart)="onDragStart($event, eq)"
+                    (dragend)="onDragEnd($event)"
+                    (click)="onCardClick(eq)"
+                    (dblclick)="onEquipmentDoubleClick(eq)"
+                    [title]="eq.canEnhance ? (eq.name + ' - Nhấp đôi hoặc kéo thả để chọn') : (eq.enhancementBlockedMessage || 'Không thể cường hóa')">
+                    
+                    <!-- Equipped Tag -->
+                    <span *ngIf="eq.isEquipped" class="badge-equipped-tag">Đang mang</span>
+
+                    <!-- Locked Tag -->
+                    <span *ngIf="eq.isLocked" class="badge-locked-tag" title="Trang bị đang bị khóa">
+                      <i class="bi bi-lock-fill"></i>
+                    </span>
+
+                    <!-- Card Image & Enhancement Badge -->
+                    <div class="eq-img-wrapper position-relative mx-auto text-center mb-2">
+                      <img 
+                        *ngIf="eq.imagePath; else eqGridIconFallback" 
+                        [src]="eq.imagePath" 
+                        class="eq-grid-img" 
+                        [alt]="eq.name" />
+                      <ng-template #eqGridIconFallback>
+                        <i class="bi {{ eq.icon || 'bi-shield' }} fs-2 text-warning"></i>
+                      </ng-template>
+
+                      <!-- Enhancement Badge -->
+                      <span class="badge-eq-enhancement" [class.max-tier]="eq.enhancement >= 15">+{{ eq.enhancement }}</span>
+                    </div>
+
+                    <!-- Card Info -->
+                    <div class="eq-grid-meta text-center">
+                      <div class="eq-grid-name text-truncate font-title" [style.color]="eq.rarityColorHex || '#fff'">
+                        {{ eq.name }}
+                      </div>
+                      <div class="eq-grid-sub d-flex justify-content-center gap-1 mt-1 small">
+                        <span class="text-muted">{{ eq.categoryName }}</span>
+                        <span class="text-muted">•</span>
+                        <span class="text-muted">Cấp {{ eq.levelReq }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Disabled Overlay for Ineligible Items (+15, Locked, etc.) -->
+                    <div class="disabled-card-overlay" *ngIf="!eq.canEnhance">
+                      <span class="disabled-reason-badge">
+                        <i class="bi {{ eq.isLocked ? 'bi-lock-fill' : 'bi-slash-circle' }} me-1"></i>
+                        {{ eq.enhancementBlockedReasonCode === 'MAX_ENHANCEMENT' ? '+15 MAX' : (eq.isLocked ? 'ĐÃ KHÓA' : 'KHÔNG THỂ RÈN') }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty Filter State -->
+              <div *ngIf="filteredEquipments.length === 0" class="empty-filter-state text-center py-5 text-muted">
+                <i class="bi bi-search display-5 text-muted mb-2 d-block"></i>
+                <p class="mb-1">Không tìm thấy trang bị phù hợp với bộ lọc.</p>
+                <button class="btn btn-sm btn-outline-warning mt-2" (click)="searchQuery = ''; selectedCategory = 'ALL'; selectedEligibility = 'ALL'; applyFilters()">
+                  Xóa bộ lọc
+                </button>
+              </div>
+            </div>
+
+            <!-- Footer Quick Legend -->
+            <div class="browser-footer-legend d-flex justify-content-between align-items-center text-muted small pt-2 border-top mt-2">
+              <span><i class="bi bi-mouse2 me-1"></i>Nhấp đôi hoặc kéo thả để chọn trang bị</span>
+              <span><i class="bi bi-info-circle me-1"></i>Trang bị mờ không thể cường hóa</span>
             </div>
           </div>
         </div>
-
-        <div *ngIf="allEquipments.length === 0" class="text-center py-4 text-muted">
-          Không tìm thấy trang bị nào trong hành trang.
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Stone Picker -->
+  <!-- MODAL: Stone Picker Drawer -->
   <div class="picker-overlay" *ngIf="showStonePicker" (click)="showStonePicker = false">
     <div class="picker-card p-4 rounded-4" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -320,109 +535,90 @@
       <div class="picker-items-grid">
         <div 
           *ngFor="let stone of playerStones" 
-          class="picker-material-slot p-3 rounded-3 border d-flex align-items-center justify-content-between"
+          class="picker-item-slot p-2 rounded-3 border d-flex align-items-center gap-2"
           [class.disabled]="getAvailableStoneCount(stone) <= 0"
-          (click)="getAvailableStoneCount(stone) > 0 && selectStone(stone)">
-          <div class="d-flex align-items-center gap-3">
-            <i class="bi bi-gem fs-2 text-info"></i>
-            <div>
-              <div class="material-name font-title text-white">{{ stone.name }}</div>
-              <div class="material-desc text-muted" style="font-size: 0.8rem;">Gia tăng +{{ (stone.bonus * 100) | number:'1.0-0' }}% tỷ lệ thành công</div>
-            </div>
+          (click)="getAvailableStoneCount(stone) > 0 ? selectStone(stone) : null">
+          <i class="bi bi-gem fs-2 text-info"></i>
+          <div class="flex-grow-1">
+            <span class="d-block text-light fw-bold">{{ stone.name }}</span>
+            <span class="text-success small">+{{ (stone.bonus * 100) | number:'1.0-0' }}% Tỷ Lệ</span>
           </div>
-
-          <div class="d-flex align-items-center gap-3">
-            <span class="badge bg-info-subtle text-info fw-bold">+{{ (stone.bonus * 100) | number:'1.0-0' }}%</span>
-            <span class="material-qty text-warning fw-bold">x{{ getAvailableStoneCount(stone) }}</span>
-          </div>
+          <span class="badge bg-secondary">Còn: {{ getAvailableStoneCount(stone) }}</span>
         </div>
 
-        <div *ngIf="playerStones.length === 0" class="text-center py-4 text-muted">
-          Bạn chưa có Đá Cường Hóa trong hành trang.
+        <div *ngIf="playerStones.length === 0" class="text-muted text-center py-4 col-12">
+          Hành trang chưa có Đá Cường Hóa nào.
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Charm Picker -->
+  <!-- MODAL: Charm Picker Drawer -->
   <div class="picker-overlay" *ngIf="showCharmPicker" (click)="showCharmPicker = false">
     <div class="picker-card p-4 rounded-4" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-stars me-2"></i>Chọn Bùa Hộ Mệnh / May Mắn</h4>
+        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-check me-2"></i>Chọn Bùa Hộ Mệnh / May Mắn</h4>
         <button class="btn btn-close-modal" (click)="showCharmPicker = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div class="picker-items-grid">
         <div 
           *ngFor="let charm of playerCharms" 
-          class="picker-material-slot p-3 rounded-3 border d-flex align-items-center justify-content-between"
-          [class.disabled]="charm.count <= 0"
-          (click)="charm.count > 0 && selectCharm(charm)">
-          <div class="d-flex align-items-center gap-3">
-            <i class="bi {{ charm.preventsDrop ? 'bi-shield-fill-check text-success' : 'bi-stars text-warning' }} fs-2"></i>
-            <div>
-              <div class="material-name font-title text-white">{{ charm.name }}</div>
-              <div class="material-desc text-muted" style="font-size: 0.8rem;">
-                {{ charm.preventsDrop ? 'Nếu cường hóa thất bại sẽ không bị tụt cấp trang bị' : 'Gia tăng +' + (charm.bonus * 100) + '% tỷ lệ thành công' }}
-              </div>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center gap-3">
-            <span class="badge" [class.bg-success-subtle]="charm.preventsDrop" [class.text-success]="charm.preventsDrop" [class.bg-warning-subtle]="!charm.preventsDrop" [class.text-warning]="!charm.preventsDrop">
-              {{ charm.preventsDrop ? 'Bảo Toàn Cấp' : '+' + (charm.bonus * 100) + '%' }}
+          class="picker-item-slot p-2 rounded-3 border d-flex align-items-center gap-2"
+          (click)="selectCharm(charm)">
+          <i class="bi {{ charm.preventsDrop ? 'bi-shield-fill-check text-success' : 'bi-stars text-warning' }} fs-2"></i>
+          <div class="flex-grow-1">
+            <span class="d-block text-light fw-bold">{{ charm.name }}</span>
+            <span [class.text-success]="charm.preventsDrop" [class.text-warning]="!charm.preventsDrop" class="small">
+              {{ charm.preventsDrop ? 'Bảo Vệ Cấp Độ (Không Giảm Cấp)' : '+' + (charm.bonus * 100) + '% Tỷ Lệ' }}
             </span>
-            <span class="material-qty text-warning fw-bold">x{{ charm.count }}</span>
           </div>
+          <span class="badge bg-secondary">Còn: {{ charm.count }}</span>
         </div>
 
-        <div *ngIf="playerCharms.length === 0" class="text-center py-4 text-muted">
-          Bạn chưa có Bùa May Mắn hoặc Bùa Hộ Mệnh trong hành trang.
+        <div *ngIf="playerCharms.length === 0" class="text-muted text-center py-4 col-12">
+          Hành trang chưa có Bùa Cường Hóa nào.
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: Result Announcement Dialog -->
-  <div class="result-modal-backdrop" *ngIf="showResultModal" (click)="closeResultModal()">
-    <div class="result-modal-card p-4 rounded-4 border text-center position-relative" [class.result-success]="lastResult?.success" [class.result-failure]="!lastResult?.success" (click)="$event.stopPropagation()">
+  <!-- RESULT MODAL -->
+  <div class="result-overlay" *ngIf="showResultModal" (click)="closeResultModal()">
+    <div 
+      class="result-card p-4 rounded-4 text-center border position-relative" 
+      [class.success-result]="lastResult?.success" 
+      [class.failure-result]="!lastResult?.success"
+      (click)="$event.stopPropagation()">
       
-      <!-- Result Glow Circle -->
-      <div class="result-icon-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
-        <i class="bi {{ lastResult?.success ? 'bi-check-circle-fill' : (lastResult?.wasLevelProtected ? 'bi-shield-fill-check' : 'bi-x-circle-fill') }} display-3"></i>
+      <!-- Result Icon -->
+      <div class="result-icon-box mb-3">
+        <i class="bi {{ lastResult?.success ? 'bi-check-circle-fill text-success' : (lastResult?.wasLevelProtected ? 'bi-shield-fill-check text-warning' : 'bi-x-circle-fill text-danger') }} display-1"></i>
       </div>
 
-      <h3 class="result-title font-title mb-2">
-        {{ lastResult?.success ? 'CƯỜNG HÓA THÀNH CÔNG!' : 'CƯỜNG HÓA THẤT BẠI!' }}
-      </h3>
+      <!-- Result Heading -->
+      <h2 class="font-title mb-2 text-uppercase" [class.text-success]="lastResult?.success" [class.text-warning]="!lastResult?.success && lastResult?.wasLevelProtected" [class.text-danger]="!lastResult?.success && !lastResult?.wasLevelProtected">
+        {{ lastResult?.success ? 'CƯỜNG HÓA THÀNH CÔNG!' : (lastResult?.wasLevelProtected ? 'THẤT BẠI - BÙA ĐÃ BẢO VỆ CẤP' : 'CƯỜNG HÓA THẤT BẠI!') }}
+      </h2>
 
       <!-- Level Transition Display -->
-      <div class="result-level-diff font-title my-3 d-flex align-items-center justify-content-center gap-3">
-        <span class="badge badge-old-level">+{{ lastResult?.oldEnhancement }}</span>
+      <div class="level-transition-badge font-title my-3 d-inline-flex align-items-center gap-3 px-4 py-2 rounded-pill">
+        <span class="fs-4 text-muted">+{{ lastResult?.oldEnhancement }}</span>
         <i class="bi bi-arrow-right fs-4 text-warning"></i>
-        <span class="badge badge-new-level" [class.bg-success]="lastResult?.success" [class.bg-danger]="!lastResult?.success && !lastResult?.wasLevelProtected" [class.bg-warning]="lastResult?.wasLevelProtected">
+        <span class="fs-3 fw-bold" [class.text-success]="lastResult?.success" [class.text-warning]="!lastResult?.success && lastResult?.wasLevelProtected" [class.text-danger]="!lastResult?.success && !lastResult?.wasLevelProtected">
           +{{ lastResult?.newEnhancement }}
         </span>
       </div>
 
-      <!-- Protection Note if applicable -->
-      <div *ngIf="!lastResult?.success && lastResult?.wasLevelProtected" class="alert alert-success py-2 my-2 text-success">
-        <i class="bi bi-shield-fill-check me-1"></i> Bùa Hộ Mệnh đã bảo vệ cấp độ trang bị!
-      </div>
+      <!-- Subtitle Message -->
+      <p class="text-light-emphasis mb-4">
+        {{ lastResult?.message }}
+      </p>
 
-      <!-- Changed Stats Preview -->
-      <div *ngIf="lastResult?.success && selectedEquipment" class="result-stats-box p-3 rounded-3 my-3 text-start">
-        <div class="text-muted mb-2 font-title" style="font-size: 0.85rem;">Thuộc tính gia tăng:</div>
-        <div *ngFor="let key of getStatKeys(selectedEquipment.stats)" class="d-flex justify-content-between py-1 border-bottom border-dark">
-          <span class="text-light-emphasis">{{ getStatDisplayName(key) }}</span>
-          <span class="text-success fw-bold">{{ formatStatValue(key, selectedEquipment.stats[key]) }}</span>
-        </div>
-      </div>
-
-      <!-- Confirmation Button -->
-      <button class="btn btn-result-confirm font-title px-5 py-2 mt-2" (click)="closeResultModal()">
+      <button class="btn btn-outline-warning px-5 py-2 font-title fw-bold" (click)="closeResultModal()">
         TIẾP TỤC
       </button>
     </div>
   </div>
+
 </div>

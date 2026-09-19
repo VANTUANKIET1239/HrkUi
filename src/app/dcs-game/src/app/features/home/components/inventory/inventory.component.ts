@@ -773,8 +773,9 @@ export class InventoryComponent implements OnInit {
     this.refreshData();
   }
 
-  onForgeItemUpdated(updated: InventoryItemDto): void {
-    const local = this.items.find(i => i.id === updated.id);
+  onForgeItemUpdated(updated: any): void {
+    const itemId = updated.inventoryItemId || updated.id;
+    const local = this.items.find(i => i.id === itemId);
     if (local) {
       local.enhancement = updated.enhancement;
       if (updated.stats) {
@@ -789,7 +790,7 @@ export class InventoryComponent implements OnInit {
         }
       }
     }
-    if (this.selectedItem && this.selectedItem.id === updated.id) {
+    if (this.selectedItem && this.selectedItem.id === itemId) {
       this.selectedItem.enhancement = updated.enhancement;
       if (local?.stats) {
         this.selectedItem.stats = { ...local.stats };

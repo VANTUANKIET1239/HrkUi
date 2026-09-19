@@ -7,8 +7,16 @@ import {
   EnhanceEquipmentResult,
   EnhancementConfigResponse,
   EnhancementLevelConfig,
-  EnhancementMaterialConfig
+  EnhancementMaterialConfig,
+  EquipmentEnhancementPreview,
+  ForgeEquipmentItem
 } from '../../../../core/models/enhancement.model';
+import {
+  EnhancementTier,
+  ENHANCEMENT_ANIMATION_CONFIGS,
+  getEnhancementAnimationTier,
+  isMaxLevelAttempt
+} from '../../../../core/configs/enhancement-animation.config';
 import { EnhancementService } from '../../../../core/services/enhancement.service';
 import { InventoryService } from '../../../../core/services/inventory.service';
 import { PlayerService } from '../../../../core/services/player.service';
@@ -31,32 +39,75 @@ export interface CharmInventorySlot extends InventoryItemDto {
 })
 export class ForgeComponent implements OnInit {
   @Input() preselectedItemId?: number;
+  @Input() currentGold?: number;
   @Output() close = new EventEmitter<void>();
-  @Output() itemUpdated = new EventEmitter<InventoryItemDto>();
+  @Output() itemUpdated = new EventEmitter<ForgeEquipmentItem>();
 
   activeTab: 'enhance' | 'star' = 'enhance';
 
+  // Global loading states
   isLoading = true;
   isForging = false;
-  showEquipmentSelector = false;
+  isLoadingPreview = false;
+
+  // Modals & Pickers
   showStonePicker = false;
   pickingStoneSlotIndex = -1;
   showCharmPicker = false;
   showResultModal = false;
 
+  // Metadata Configurations
   levelConfigs: EnhancementLevelConfig[] = [];
   materialConfigs: EnhancementMaterialConfig[] = [];
 
-  allEquipments: InventoryItemDto[] = [];
-  selectedEquipment: InventoryItemDto | null = null;
+  // Equipment Browser State
+  forgeEquipments: ForgeEquipmentItem[] = [];
+  filteredEquipments: ForgeEquipmentItem[] = [];
+  selectedEquipment: ForgeEquipmentItem | null = null;
+  focusedItem: ForgeEquipmentItem | null = null;
+  previewDetails: EquipmentEnhancementPreview | null = null;
 
-  playerGold = 0;
+  // Filtering & Sorting State
+  searchQuery = '';
+  selectedCategory = 'ALL';
+  selectedEligibility: 'ALL' | 'CAN_ENHANCE' | 'CANNOT_ENHANCE' = 'ALL';
+  selectedSort = 'DEFAULT';
+
+  // Category Options
+  categories = [
+    { code: 'ALL', name: 'Tất cả' },
+    { code: 'WEAPON', name: 'Vũ khí' },
+    { code: 'ARMOR', name: 'Giáp' },
+    { code: 'HELMET', name: 'Mũ' },
+    { code: 'BOOTS', name: 'Giày' },
+    { code: 'RING', name: 'Nhẫn' },
+    { code: 'ARTIFACT', name: 'Thần binh' }
+  ];
+
+  // Drag & Drop State
+  isDragging = false;
+  draggedItem: ForgeEquipmentItem | null = null;
+  isDropZoneHovered = false;
+  isDropZoneValid = false;
+
+  // Player Resources
+  playerGold = 1250000;
   playerStones: StoneInventorySlot[] = [];
   playerCharms: CharmInventorySlot[] = [];
 
+  // Selected Materials for Attempt
   selectedStones: (StoneInventorySlot | null)[] = [null, null, null];
   selectedCharm: CharmInventorySlot | null = null;
 
+  // Animation Engine State
+  currentAnimationTier: EnhancementTier = 1;
+  isMaxAttempt = false;
+  animationPhase: 'idle' | 'energy' | 'strike1' | 'strike2' | 'burst' | 'suspense' | 'reveal' = 'idle';
+  shakeActive = false;
+  whiteFlashActive = false;
+  animationResultType: 'success' | 'failure' | null = null;
+
+  // Result & Error Reporting
   lastResult: EnhanceEquipmentResult | null = null;
   errorMessage = '';
 
@@ -64,9 +115,12 @@ export class ForgeComponent implements OnInit {
     private enhancementService: EnhancementService,
     private inventoryService: InventoryService,
     private playerService: PlayerService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    if (this.currentGold !== undefined && this.currentGold > 0) {
+      this.playerGold = this.currentGold;
+    }
     this.loadInitialData();
   }
 
@@ -76,42 +130,46 @@ export class ForgeComponent implements OnInit {
     // 1. Load Player Wallet
     this.playerService.getWallet().subscribe({
       next: (res) => {
-        if (res?.success && res.data) {
-          this.playerGold = res.data.gold ?? 0;
+        if (res?.success && res.data && res.data.gold !== undefined) {
+          this.playerGold = res.data.gold;
+        } else if (this.currentGold !== undefined && this.currentGold > 0) {
+          this.playerGold = this.currentGold;
         }
       },
-      error: (err) => console.warn('Could not load wallet in Forge:', err)
+      error: (err) => {
+        console.warn('Could not load wallet in Forge, using cached/input gold:', err);
+        if (this.currentGold !== undefined && this.currentGold > 0) {
+          this.playerGold = this.currentGold;
+        }
+      }
     });
 
-    // 2. Load Enhancement Configs & Materials Metadata
+    // 2. Load Enhancement Configs
     this.enhancementService.getEnhancementConfigs().subscribe({
       next: (res) => {
         if (res?.success && res.data) {
           this.levelConfigs = res.data.levelConfigs || [];
           this.materialConfigs = res.data.materials || [];
-          this.loadInventoryData();
-        } else {
-          this.isLoading = false;
         }
+        this.loadMaterialsInventory();
+        this.loadForgeEquipment();
       },
       error: (err) => {
-        console.error('Failed to load enhancement configs:', err);
-        this.isLoading = false;
+        console.warn('Failed to load enhancement configs:', err);
+        this.loadMaterialsInventory();
+        this.loadForgeEquipment();
       }
     });
   }
 
-  loadInventoryData(): void {
+  /**
+   * Load stone & charm items from player inventory for the material picker slots
+   */
+  loadMaterialsInventory(): void {
     this.inventoryService.getInventory().subscribe({
       next: (res) => {
-        this.isLoading = false;
         if (res?.success && res.data) {
           const items = res.data;
-
-          // Filter equipments (WEAPON, ARMOR, HELMET, BOOTS, RING, ARTIFACT)
-          this.allEquipments = items.filter((i) => i.isEquipment);
-
-          // Map stones
           const stoneMap = new Map<number, EnhancementMaterialConfig>();
           const charmMap = new Map<number, EnhancementMaterialConfig>();
 
@@ -141,36 +199,238 @@ export class ForgeComponent implements OnInit {
                 preventsDrop: cfg.preventLevelDrop
               };
             });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load material items in Forge:', err);
+      }
+    });
+  }
 
-          // Preselect equipment if requested
+  /**
+   * Load the equipment inventory browser list using the dedicated CQRS Query
+   */
+  loadForgeEquipment(autoSelectFirst = true): void {
+    this.enhancementService.getForgeEquipment().subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        if (res?.success && res.data) {
+          this.forgeEquipments = res.data;
+          this.applyFilters();
+
+          // Preselect equipment if requested or retain current selection
           if (this.preselectedItemId) {
-            const found = this.allEquipments.find((e) => e.id === this.preselectedItemId);
-            if (found) {
+            const found = this.forgeEquipments.find((e) => e.inventoryItemId === this.preselectedItemId);
+            if (found && found.canEnhance) {
+              this.selectEquipment(found);
+            } else if (found) {
               this.selectEquipment(found);
             }
-          } else if (this.allEquipments.length > 0) {
-            // Default to first equipment or leave empty
-            this.selectEquipment(this.allEquipments[0]);
+          } else if (this.selectedEquipment) {
+            // Refresh reference
+            const found = this.forgeEquipments.find((e) => e.inventoryItemId === this.selectedEquipment!.inventoryItemId);
+            if (found) {
+              this.selectedEquipment = found;
+              this.loadPreviewDetails(found.inventoryItemId);
+            }
+          } else if (autoSelectFirst) {
+            // Find first enhanceable equipment or first item
+            const firstValid = this.forgeEquipments.find((e) => e.canEnhance) || this.forgeEquipments[0];
+            if (firstValid) {
+              this.selectEquipment(firstValid);
+            }
           }
         }
       },
       error: (err) => {
-        console.error('Failed to load inventory in Forge:', err);
+        console.error('Failed to load forge equipment list:', err);
         this.isLoading = false;
       }
     });
   }
 
-  selectEquipment(item: InventoryItemDto): void {
-    this.selectedEquipment = item;
-    this.showEquipmentSelector = false;
-    this.errorMessage = '';
+  // --- Filtering & Sorting Pipeline (Client-Side) ---
+
+  applyFilters(): void {
+    let result = [...this.forgeEquipments];
+
+    // 1. Search filter by Name or Code
+    if (this.searchQuery && this.searchQuery.trim()) {
+      const q = this.searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (e) => e.name.toLowerCase().includes(q) || e.code.toLowerCase().includes(q)
+      );
+    }
+
+    // 2. Category filter
+    if (this.selectedCategory !== 'ALL') {
+      result = result.filter(
+        (e) => e.categoryCode.toUpperCase() === this.selectedCategory.toUpperCase()
+      );
+    }
+
+    // 3. Eligibility filter
+    if (this.selectedEligibility === 'CAN_ENHANCE') {
+      result = result.filter((e) => e.canEnhance);
+    } else if (this.selectedEligibility === 'CANNOT_ENHANCE') {
+      result = result.filter((e) => !e.canEnhance);
+    }
+
+    // 4. Sorting
+    switch (this.selectedSort) {
+      case 'RARITY_DESC':
+        result.sort((a, b) => b.rarityOrder - a.rarityOrder || b.enhancement - a.enhancement);
+        break;
+      case 'RARITY_ASC':
+        result.sort((a, b) => a.rarityOrder - b.rarityOrder || a.enhancement - b.enhancement);
+        break;
+      case 'ENHANCEMENT_DESC':
+        result.sort((a, b) => b.enhancement - a.enhancement || b.rarityOrder - a.rarityOrder);
+        break;
+      case 'ENHANCEMENT_ASC':
+        result.sort((a, b) => a.enhancement - b.enhancement || b.rarityOrder - a.rarityOrder);
+        break;
+      case 'NAME_ASC':
+        result.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+        break;
+      case 'NAME_DESC':
+        result.sort((a, b) => b.name.localeCompare(a.name, 'vi'));
+        break;
+      case 'DEFAULT':
+      default:
+        result.sort((a, b) => b.enhancement - a.enhancement || b.rarityOrder - a.rarityOrder);
+        break;
+    }
+
+    this.filteredEquipments = result;
   }
 
-  // --- Calculations ---
+  onSearchChange(): void {
+    this.applyFilters();
+  }
+
+  setCategoryFilter(categoryCode: string): void {
+    this.selectedCategory = categoryCode;
+    this.applyFilters();
+  }
+
+  setEligibilityFilter(eligibility: 'ALL' | 'CAN_ENHANCE' | 'CANNOT_ENHANCE'): void {
+    this.selectedEligibility = eligibility;
+    this.applyFilters();
+  }
+
+  setSortOption(sortKey: string): void {
+    this.selectedSort = sortKey;
+    this.applyFilters();
+  }
+
+  // --- Card Interaction & Selection ---
+
+  onCardClick(item: ForgeEquipmentItem): void {
+    this.focusedItem = item;
+  }
+
+  onEquipmentDoubleClick(item: ForgeEquipmentItem): void {
+    if (this.isForging) return;
+
+    if (!item.canEnhance) {
+      this.errorMessage = item.enhancementBlockedMessage || 'Trang bị không đủ điều kiện cường hóa.';
+      return;
+    }
+    this.selectEquipment(item);
+  }
+
+  // Drag & Drop Handlers
+  onDragStart(event: DragEvent, item: ForgeEquipmentItem): void {
+    if (this.isForging || !item.canEnhance) {
+      event.preventDefault();
+      return;
+    }
+
+    this.isDragging = true;
+    this.draggedItem = item;
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('text/plain', item.inventoryItemId.toString());
+      event.dataTransfer.effectAllowed = 'copy';
+    }
+  }
+
+  onDragEnd(event: DragEvent): void {
+    this.isDragging = false;
+    this.draggedItem = null;
+    this.isDropZoneHovered = false;
+  }
+
+  onDropZoneDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (this.isForging) return;
+
+    this.isDropZoneHovered = true;
+    this.isDropZoneValid = !!this.draggedItem?.canEnhance;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = this.isDropZoneValid ? 'copy' : 'none';
+    }
+  }
+
+  onDropZoneDragLeave(event: DragEvent): void {
+    this.isDropZoneHovered = false;
+  }
+
+  onDropZoneDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDropZoneHovered = false;
+
+    if (this.isForging) return;
+
+    if (this.draggedItem && this.draggedItem.canEnhance) {
+      this.selectEquipment(this.draggedItem);
+    }
+    this.draggedItem = null;
+    this.isDragging = false;
+  }
+
+  /**
+   * Set target equipment, reset materials slots, and load preview stats
+   */
+  selectEquipment(item: ForgeEquipmentItem): void {
+    if (this.isForging) return;
+
+    this.selectedEquipment = item;
+    this.focusedItem = item;
+    this.errorMessage = '';
+
+    // Requirement 9: Reset materials when changing target equipment
+    this.selectedStones = [null, null, null];
+    this.selectedCharm = null;
+
+    // Load preview stats from backend
+    this.loadPreviewDetails(item.inventoryItemId);
+  }
+
+  loadPreviewDetails(inventoryItemId: number): void {
+    this.isLoadingPreview = true;
+    this.enhancementService.getEnhancementPreview(inventoryItemId).subscribe({
+      next: (res) => {
+        this.isLoadingPreview = false;
+        if (res?.success && res.data) {
+          this.previewDetails = res.data;
+        }
+      },
+      error: (err) => {
+        console.warn('Failed to load enhancement preview:', err);
+        this.isLoadingPreview = false;
+      }
+    });
+  }
+
+  // --- Derived Calculations for Rates & Cost ---
 
   get currentLevel(): number {
     return this.selectedEquipment?.enhancement ?? 0;
+  }
+
+  get targetLevel(): number {
+    return Math.min(15, this.currentLevel + 1);
   }
 
   get isMaxLevel(): boolean {
@@ -178,11 +438,11 @@ export class ForgeComponent implements OnInit {
   }
 
   get currentConfig(): EnhancementLevelConfig | undefined {
-    return this.levelConfigs.find((c) => c.currentLevel === this.currentLevel);
+    return this.levelConfigs.find((c) => Number(c.currentLevel) === Number(this.currentLevel));
   }
 
   get baseSuccessRate(): number {
-    return this.currentConfig?.baseSuccessRate ?? 0;
+    return this.previewDetails?.baseSuccessRate ?? this.currentConfig?.baseSuccessRate ?? 0;
   }
 
   get totalStoneBonus(): number {
@@ -198,7 +458,7 @@ export class ForgeComponent implements OnInit {
   }
 
   get goldCost(): number {
-    return this.currentConfig?.goldCost ?? 0;
+    return this.previewDetails?.goldCost ?? this.currentConfig?.goldCost ?? 0;
   }
 
   get hasEnoughGold(): boolean {
@@ -206,7 +466,7 @@ export class ForgeComponent implements OnInit {
   }
 
   get failureDropLevels(): number {
-    return this.currentConfig?.failureDropLevels ?? 0;
+    return this.previewDetails?.failureDropLevels ?? this.currentConfig?.failureDropLevels ?? 0;
   }
 
   get isProtectionCharmActive(): boolean {
@@ -224,9 +484,22 @@ export class ForgeComponent implements OnInit {
     return `Tụt ${this.failureDropLevels} cấp (+${this.currentLevel} → +${dropTo})`;
   }
 
+  get cannotEnhanceReason(): string {
+    if (!this.selectedEquipment) return 'Vui lòng chọn trang bị';
+    if (!this.selectedEquipment.canEnhance) {
+      return this.selectedEquipment.enhancementBlockedMessage || 'Trang bị không đủ điều kiện cường hóa.';
+    }
+    if (this.isMaxLevel) return 'Đã đạt cấp tối đa (+15)';
+    if (this.selectedEquipment.isLocked) return 'Trang bị đang bị KHÓA';
+    if (!this.hasEnoughGold) return `Thiếu Vàng (Cần ${this.goldCost.toLocaleString('vi-VN')} Vàng)`;
+    if (this.isForging) return 'Đang thực hiện rèn...';
+    return '';
+  }
+
   get canEnhance(): boolean {
     return (
       !!this.selectedEquipment &&
+      this.selectedEquipment.canEnhance &&
       !this.isMaxLevel &&
       this.hasEnoughGold &&
       !this.isForging &&
@@ -234,9 +507,10 @@ export class ForgeComponent implements OnInit {
     );
   }
 
-  // --- Stone / Charm Slot Management ---
+  // --- Stone & Charm Slots ---
 
   openStonePicker(slotIndex: number): void {
+    if (this.isForging) return;
     this.pickingStoneSlotIndex = slotIndex;
     this.showStonePicker = true;
   }
@@ -256,10 +530,12 @@ export class ForgeComponent implements OnInit {
 
   removeStone(slotIndex: number, event: Event): void {
     event.stopPropagation();
+    if (this.isForging) return;
     this.selectedStones[slotIndex] = null;
   }
 
   openCharmPicker(): void {
+    if (this.isForging) return;
     this.showCharmPicker = true;
   }
 
@@ -270,10 +546,11 @@ export class ForgeComponent implements OnInit {
 
   removeCharm(event: Event): void {
     event.stopPropagation();
+    if (this.isForging) return;
     this.selectedCharm = null;
   }
 
-  // --- Perform Enhancement ---
+  // --- Tiered Enhancement Animation Execution Engine ---
 
   enhance(): void {
     if (!this.canEnhance || !this.selectedEquipment) {
@@ -282,60 +559,130 @@ export class ForgeComponent implements OnInit {
 
     this.isForging = true;
     this.errorMessage = '';
-    const startTimestamp = Date.now();
+    this.animationResultType = null;
 
+    // Determine Animation Tier strictly by targetLevel = currentLevel + 1
+    const targetLvl = this.targetLevel;
+    this.currentAnimationTier = getEnhancementAnimationTier(targetLvl);
+    this.isMaxAttempt = isMaxLevelAttempt(targetLvl);
+
+    const animConfig = ENHANCEMENT_ANIMATION_CONFIGS[this.currentAnimationTier];
+    const startTime = Date.now();
+
+    // Prepare Request
     const stoneIds = this.selectedStones.filter((s) => !!s).map((s) => s!.id);
     const charmId = this.selectedCharm?.id ?? null;
-
     const request: EnhanceEquipmentRequest = {
       requestId: crypto.randomUUID(),
-      inventoryItemId: this.selectedEquipment.id,
+      inventoryItemId: this.selectedEquipment.inventoryItemId,
       stoneInventoryItemIds: stoneIds,
       charmInventoryItemId: charmId
     };
 
+    // Hold API response and status
+    let apiResponse: EnhanceEquipmentResult | null = null;
+    let apiError: string | null = null;
+    let apiFinished = false;
+    let animationRevealReached = false;
+
+    // 1. Fire API request immediately in parallel (Backend never delays)
     this.enhancementService.enhanceEquipment(request).subscribe({
       next: (res) => {
-        const elapsed = Date.now() - startTimestamp;
-        const remainingDelay = Math.max(0, 1500 - elapsed);
-
-        setTimeout(() => {
-          this.isForging = false;
-          if (res?.success && res.data) {
-            this.handleEnhancementSuccess(res.data);
-          } else {
-            this.errorMessage = res?.message || 'Có lỗi xảy ra trong quá trình cường hóa.';
-          }
-        }, remainingDelay);
+        apiFinished = true;
+        if (res?.success && res.data) {
+          apiResponse = res.data;
+        } else {
+          apiError = res?.message || 'Có lỗi xảy ra trong quá trình cường hóa.';
+        }
+        checkAndReveal();
       },
       error: (err) => {
-        const elapsed = Date.now() - startTimestamp;
-        const remainingDelay = Math.max(0, 1500 - elapsed);
-
-        setTimeout(() => {
-          this.isForging = false;
-          this.errorMessage = err?.error?.message || err?.message || 'Lỗi kết nối máy chủ.';
-        }, remainingDelay);
+        apiFinished = true;
+        apiError = err?.error?.message || err?.message || 'Lỗi kết nối máy chủ.';
+        checkAndReveal();
       }
     });
+
+    // 2. Drive Visual Animation Timeline
+    this.animationPhase = 'energy';
+
+    // Strike 1
+    const strike1Time = animConfig.strikeTimingsMs[0] || 500;
+    setTimeout(() => {
+      if (!this.isForging) return;
+      this.animationPhase = 'strike1';
+      this.triggerShake();
+    }, strike1Time);
+
+    // Strike 2 (for Tier 2 and Tier 3)
+    if (animConfig.strikeCount > 1) {
+      const strike2Time = animConfig.strikeTimingsMs[1] || 1000;
+      setTimeout(() => {
+        if (!this.isForging) return;
+        this.animationPhase = 'strike2';
+        this.triggerShake();
+      }, strike2Time);
+    }
+
+    // Suspense & White Flash (for Tier 3 / Max level attempt)
+    if (animConfig.hasSuspensePause) {
+      setTimeout(() => {
+        if (!this.isForging) return;
+        this.animationPhase = 'suspense';
+        if (this.isMaxAttempt) {
+          this.triggerWhiteFlash();
+        }
+      }, animConfig.revealPointMs - 400);
+    }
+
+    // Reach Animation Reveal Point
+    setTimeout(() => {
+      animationRevealReached = true;
+      checkAndReveal();
+    }, animConfig.revealPointMs);
+
+    // Synchronize visual reveal point with backend API response
+    const checkAndReveal = () => {
+      if (animationRevealReached && apiFinished) {
+        this.animationPhase = 'reveal';
+        if (apiResponse) {
+          this.handleEnhancementResult(apiResponse);
+        } else {
+          this.isForging = false;
+          this.animationPhase = 'idle';
+          this.errorMessage = apiError || 'Lỗi không xác định.';
+        }
+      }
+    };
   }
 
-  private handleEnhancementSuccess(result: EnhanceEquipmentResult): void {
-    this.lastResult = result;
-    this.showResultModal = true;
+  private triggerShake(): void {
+    this.shakeActive = true;
+    setTimeout(() => {
+      this.shakeActive = false;
+    }, 200);
+  }
 
+  private triggerWhiteFlash(): void {
+    this.whiteFlashActive = true;
+    setTimeout(() => {
+      this.whiteFlashActive = false;
+    }, 350);
+  }
+
+  private handleEnhancementResult(result: EnhanceEquipmentResult): void {
+    this.lastResult = result;
+    this.animationResultType = result.success ? 'success' : 'failure';
+
+    // Update locally
     if (this.selectedEquipment) {
       this.selectedEquipment.enhancement = result.newEnhancement;
-      if (result.currentStats) {
-        this.selectedEquipment.stats = { ...this.selectedEquipment.stats, ...result.currentStats };
-      }
-      this.itemUpdated.emit(this.selectedEquipment);
     }
 
     // Deduct Gold
     this.playerGold = Math.max(0, this.playerGold - result.consumed.gold);
 
-    // Deduct Stones
+    // Deduct Stones locally
     if (result.consumed.stones) {
       result.consumed.stones.forEach((cs) => {
         const stoneInPlayer = this.playerStones.find((s) => s.itemTemplateId === cs.itemTemplateId);
@@ -345,15 +692,17 @@ export class ForgeComponent implements OnInit {
       });
     }
 
-    // Deduct Charm
+    // Deduct Charm locally
     if (result.consumed.charm && this.selectedCharm) {
-      const charmInPlayer = this.playerCharms.find((c) => c.itemTemplateId === result.consumed.charm!.itemTemplateId);
+      const charmInPlayer = this.playerCharms.find(
+        (c) => c.itemTemplateId === result.consumed.charm!.itemTemplateId
+      );
       if (charmInPlayer) {
         charmInPlayer.count = Math.max(0, charmInPlayer.count - 1);
       }
     }
 
-    // Revalidate and reset used slots if quantity exhausted
+    // Reset slots if exhausted
     for (let i = 0; i < this.selectedStones.length; i++) {
       const s = this.selectedStones[i];
       if (s && s.count <= 0) {
@@ -363,15 +712,30 @@ export class ForgeComponent implements OnInit {
     if (this.selectedCharm && this.selectedCharm.count <= 0) {
       this.selectedCharm = null;
     }
+
+    // Short reveal flash before opening the result modal
+    setTimeout(() => {
+      this.isForging = false;
+      this.animationPhase = 'idle';
+      this.showResultModal = true;
+
+      // Reload forge equipment from server so newly reached +15 items turn disabled immediately
+      this.loadForgeEquipment(false);
+
+      if (this.selectedEquipment) {
+        this.loadPreviewDetails(this.selectedEquipment.inventoryItemId);
+        this.itemUpdated.emit(this.selectedEquipment);
+      }
+    }, 600);
   }
 
   closeResultModal(): void {
     this.showResultModal = false;
   }
 
-  // --- Helpers for Stats Display ---
+  // --- Stats Display Helpers ---
 
-  getStatKeys(stats: any): string[] {
+  getStatKeys(stats?: { [key: string]: number }): string[] {
     if (!stats) return [];
     return Object.keys(stats).filter((k) => typeof stats[k] === 'number');
   }
@@ -396,23 +760,18 @@ export class ForgeComponent implements OnInit {
   }
 
   formatStatValue(key: string, val: number): string {
-    if (key.includes('RATE') || key.includes('RESIST') || key.includes('DAMAGE') || key === 'ACCURACY' || key === 'DODGE_RATE') {
+    if (
+      key.includes('RATE') ||
+      key.includes('RESIST') ||
+      key.includes('DAMAGE') ||
+      key === 'ACCURACY' ||
+      key === 'DODGE_RATE'
+    ) {
       if (val <= 1.0) {
         return `+${(val * 100).toFixed(1)}%`;
       }
       return `+${val}%`;
     }
     return `+${val.toLocaleString('vi-VN')}`;
-  }
-
-  calculateExpectedStat(key: string, currentVal: number): string {
-    const isPercent = key.includes('RATE') || key.includes('RESIST') || key.includes('DAMAGE') || key === 'ACCURACY';
-    if (isPercent) {
-      const nextVal = currentVal * 1.02;
-      return this.formatStatValue(key, Math.round(nextVal * 1000) / 1000);
-    } else {
-      const nextVal = Math.round(currentVal * 1.08);
-      return `+${nextVal.toLocaleString('vi-VN')}`;
-    }
   }
 }

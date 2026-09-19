@@ -11,6 +11,7 @@ import { HrkCheckboxComponent } from '../../../../../../../../libs/shared/ui/con
 import { HrkIconComponent } from '../../../../../../../../libs/shared/ui/controls/hrk-icon/hrk-icon.component';
 
 import { TokenManagerService } from '../../../../../../../../libs/core/auth/services/token-manager';
+import { LoadingService } from '../../../../../../../../libs/core/loading/loading.service';
 
 @Component({
   selector: 'app-game-login',
@@ -45,7 +46,8 @@ export class GameLoginComponent {
     private fb: FormBuilder,
     private hrkApiService: HrkApiService,
     private navigationService: NavigationService,
-    private tokenManager: TokenManagerService
+    private tokenManager: TokenManagerService,
+    private loadingService: LoadingService
   ) {
     this.initLoginForm();
   }
@@ -91,14 +93,22 @@ export class GameLoginComponent {
           if (res.data.accessToken) {
             this.tokenManager.setAccessToken('game-api', res.data.accessToken);
           }
-          this.navigationService.goTo('/dcs-game/home');
+          // Activate global loading immediately to prevent button or screen flicker
+          this.loadingService.show(true);
+          try {
+            await this.navigationService.goTo('/dcs-game/home');
+          } catch (navErr) {
+            console.error('Navigation error after login:', navErr);
+            this.loading.set(false);
+          } finally {
+            this.loadingService.hide();
+          }
+        } else {
+          this.loading.set(false);
         }
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.loading.set(false);
-      },
-      complete: () => {
         this.loading.set(false);
       }
     });
@@ -107,10 +117,17 @@ export class GameLoginComponent {
   sso(provider: 'google' | 'microsoft'): void {
     console.log('SSO login attempt with:', provider);
     this.loading.set(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       this.tokenManager.setAccessToken('game-api', 'mock_sso_game_token');
-      this.loading.set(false);
-      this.navigationService.goTo('/dcs-game/home');
+      this.loadingService.show(true);
+      try {
+        await this.navigationService.goTo('/dcs-game/home');
+      } catch (navErr) {
+        console.error('Navigation error after SSO:', navErr);
+        this.loading.set(false);
+      } finally {
+        this.loadingService.hide();
+      }
     }, 1000);
   }
 

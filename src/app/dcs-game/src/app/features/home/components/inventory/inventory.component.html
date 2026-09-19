@@ -482,6 +482,6 @@
   </div>
 
   <!-- Reusable Forge Popup (Cường Hóa & Lò Rèn) -->
-  <app-forge *ngIf="isForgeOpen" [preselectedItemId]="selectedEquipmentForForge" (close)="onForgeClosed()" (itemUpdated)="onForgeItemUpdated($event)"></app-forge>
+  <app-forge *ngIf="isForgeOpen" [preselectedItemId]="selectedEquipmentForForge" [currentGold]="gold" (close)="onForgeClosed()" (itemUpdated)="onForgeItemUpdated($event)"></app-forge>
 
 </div>

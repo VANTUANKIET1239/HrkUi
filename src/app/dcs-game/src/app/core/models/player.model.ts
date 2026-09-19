@@ -6,6 +6,11 @@ export interface BaseResponse<T> {
   statusCode: number;
 }
 
+export interface PlayerGameInfoDto {
+  profile: PlayerProfileDto | null;
+  wallet: PlayerWalletDto | null;
+}
+
 export interface PlayerProfileDto {
   id: number;
   userId: string;

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
 import { FormationManagementComponent } from '../../components/formation-management/formation-management.component';
 import { InventoryComponent } from '../../components/inventory/inventory.component';
@@ -27,9 +27,13 @@ interface TeamMember {
 
 interface FeatureItem {
   name: string;
-  icon: string;
+  icon?: string;
   hasNotification: boolean;
   locked?: boolean;
+  code?: string;
+  actionCode?: string;
+  placement?: string;
+  children?: FeatureItem[];
 }
 
 import { TokenManagerService } from '../../../../../../../../libs/core/auth/services/token-manager';
@@ -37,6 +41,9 @@ import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hr
 import { ApiMethod } from '../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
 import { ApiEndpoints } from '../../../../../../../../libs/shared/common/constants/api-endpoints';
 import { PlayerService } from '../../../../core/services/player.service';
+import { GameHomeInitializationService, GameHomeInitialData } from '../../services/game-home-initialization.service';
+import { GameFeatureConfigService } from '../../../../core/services/game-feature-config.service';
+import { GameFeatureConfig } from '../../../../core/models/game-feature-config.model';
 
 @Component({
   selector: 'app-game-home',
@@ -69,7 +76,7 @@ export class GameHomeComponent implements OnInit {
     { name: 'Lưu Bị', level: 2, color: '#8e44ad', role: 'Hỗ trợ / Hồi máu' }
   ];
 
-  topEvents: FeatureItem[] = [
+  topEvents: FeatureItem[] = []; /*
     { name: 'Nạp Đầu', icon: 'bi-gift-fill', hasNotification: true },
     { name: 'Chiêu Mộ', icon: 'bi-people-fill', hasNotification: true },
     { name: 'Sự Kiện', icon: 'bi-calendar-event-fill', hasNotification: true },
@@ -79,60 +86,88 @@ export class GameHomeComponent implements OnInit {
     { name: 'Đăng Xuất', icon: 'bi-box-arrow-right', hasNotification: false }
   ];
 
-  bottomFeaturesLeft: FeatureItem[] = [
+  */ bottomFeaturesLeft: FeatureItem[] = []; /*
     { name: 'Võ Tướng', icon: 'bi-shield-shaded', hasNotification: false },
     { name: 'Đội Ngũ', icon: 'bi-grid-3x3-gap-fill', hasNotification: false },
     { name: 'Hành Trang', icon: 'bi-briefcase-fill', hasNotification: false },
     { name: 'Rèn', icon: 'bi-hammer', hasNotification: false },
   ];
 
-  bottomFeaturesRight: FeatureItem[] = [
+  */ bottomFeaturesRight: FeatureItem[] = []; /*
     { name: 'Hộ Tống', icon: 'bi-truck', hasNotification: false },
     { name: 'Xuất Chinh', icon: 'bi-compass', hasNotification: true },
     { name: 'Chiến Dịch', icon: 'bi-map-fill', hasNotification: false }
-  ];
+  ]; */
 
   showMoreMenu = false;
+  focusFeature?: FeatureItem;
   isLogoutConfirmOpen = false;
   isLoggingOut = false;
   logoutError = '';
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private tokenManager: TokenManagerService,
     private hrkApiService: HrkApiService,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private gameHomeInitService: GameHomeInitializationService,
+    private gameFeatureConfigService: GameFeatureConfigService
   ) { }
 
   ngOnInit(): void {
-    this.loadPlayerData();
+    const resolvedData = this.route.snapshot.data['homeData'] as GameHomeInitialData | undefined;
+    if (resolvedData) {
+      this.applyHomeData(resolvedData);
+    } else {
+      this.gameHomeInitService.loadHomeData().subscribe((data) => {
+        this.applyHomeData(data);
+      });
+    }
+    this.loadFeatureConfigs();
   }
 
-  loadPlayerData(): void {
-    this.loadPlayerProfile();
-    this.loadPlayerWallet();
-  }
-
-  loadPlayerProfile(): void {
-    this.playerService.getProfile().subscribe({
-      next: (res) => {
-        if (res && res.success && res.data) {
-          if (res.data.playerName) {
-            this.playerInfo.name = res.data.playerName;
-          }
-          if (res.data.level) {
-            this.playerInfo.level = res.data.level;
-          }
-        }
+  private loadFeatureConfigs(): void {
+    this.gameFeatureConfigService.getFeatures().subscribe({
+      next: response => {
+        if (!response?.success || !response.data) return;
+        const toFeature = (item: GameFeatureConfig): FeatureItem => ({
+          name: item.name, icon: item.icon, hasNotification: item.hasNotification,
+          locked: item.isLocked, code: item.code, actionCode: item.actionCode,
+          placement: item.placement, children: item.children?.map(toFeature) ?? []
+        });
+        const features = response.data.map(toFeature);
+        this.topEvents = features.filter(x => x.placement === 'TOP_EVENT');
+        this.bottomFeaturesLeft = features.filter(x => x.placement === 'BOTTOM_LEFT');
+        this.bottomFeaturesRight = features.filter(x => x.placement === 'BOTTOM_RIGHT');
+        this.focusFeature = features.find(x => x.placement === 'BOTTOM_FOCUS');
       },
-      error: (err) => {
-        console.warn('Could not fetch player profile from backend API, using cached values.', err);
-      }
+      error: error => console.warn('Could not load game feature configuration.', error)
     });
   }
 
-  loadPlayerWallet(): void {
-    this.playerService.getWallet().subscribe({
+  private applyHomeData(data: GameHomeInitialData): void {
+    if (data.profile) {
+      if (data.profile.playerName) {
+        this.playerInfo.name = data.profile.playerName;
+      }
+      if (data.profile.level) {
+        this.playerInfo.level = data.profile.level;
+      }
+    }
+
+    if (data.wallet) {
+      if (data.wallet.gold !== undefined && data.wallet.gold !== null) {
+        this.playerInfo.gold = this.formatCurrency(data.wallet.gold);
+      }
+      if (data.wallet.diamonds !== undefined && data.wallet.diamonds !== null) {
+        this.playerInfo.diamond = this.formatCurrency(data.wallet.diamonds);
+      }
+    }
+  }
+
+  refreshWallet(): void {
+    this.playerService.getWallet('none').subscribe({
       next: (res) => {
         if (res && res.success && res.data) {
           if (res.data.gold !== undefined && res.data.gold !== null) {
@@ -144,7 +179,7 @@ export class GameHomeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.warn('Could not fetch player wallet from backend API, using cached values.', err);
+        console.warn('Could not refresh player wallet, using cached values.', err);
       }
     });
   }
@@ -186,6 +221,15 @@ export class GameHomeComponent implements OnInit {
   }
 
   onFeatureClick(feature: FeatureItem): void {
+    // Navigation is driven by ActionCode from HRK_GameFeatureConfigs, not display text.
+    switch (feature.actionCode) {
+      case 'HERO_MANAGEMENT': this.isHeroManagementOpen = true; return;
+      case 'FORMATION_MANAGEMENT': this.isFormationManagementOpen = true; return;
+      case 'INVENTORY': this.isInventoryOpen = true; return;
+      case 'FORGE': this.isForgeOpen = true; return;
+      case 'BATTLE': this.router.navigate(['/dcs-game/battle']); return;
+      case 'LOGOUT': this.openLogoutConfirm(); return;
+    }
     if (feature.name === 'Đăng Xuất' || feature.name === 'Trở Về') {
       this.openLogoutConfirm();
     } else if (feature.name === 'Võ Tướng') {
@@ -204,7 +248,7 @@ export class GameHomeComponent implements OnInit {
   }
 
   onForgeItemUpdated(): void {
-    this.loadPlayerWallet();
+    this.refreshWallet();
   }
 
   logout(): void {
@@ -228,8 +272,15 @@ export class GameHomeComponent implements OnInit {
     });
   }
 
+  getNumericGold(): number {
+    return 590000;
+  }
+
   goToBattle(): void {
+    if (this.focusFeature) {
+      this.onFeatureClick(this.focusFeature);
+      return;
+    }
     this.router.navigate(['/dcs-game/battle']);
   }
 }
-

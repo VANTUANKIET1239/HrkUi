@@ -7,7 +7,9 @@ import { BaseResponse } from '../models/player.model';
 import {
   EnhanceEquipmentRequest,
   EnhanceEquipmentResult,
-  EnhancementConfigResponse
+  EnhancementConfigResponse,
+  EquipmentEnhancementPreview,
+  ForgeEquipmentItem
 } from '../models/enhancement.model';
 
 @Injectable({
@@ -25,6 +27,28 @@ export class EnhancementService {
     return this.hrkApiService.CallApi<BaseResponse<EnhancementConfigResponse>>(
       ApiMethod.GET,
       this.inventoryApi.EnhancementConfigs,
+      { withCredentials: true }
+    );
+  }
+
+  /**
+   * Get equipment inventory browser list for the Forge with Domain eligibility
+   */
+  getForgeEquipment(): Observable<BaseResponse<ForgeEquipmentItem[]>> {
+    return this.hrkApiService.CallApi<BaseResponse<ForgeEquipmentItem[]>>(
+      ApiMethod.GET,
+      this.inventoryApi.ForgeEquipment,
+      { withCredentials: true }
+    );
+  }
+
+  /**
+   * Get detailed current vs next level stats & cost preview for selected equipment
+   */
+  getEnhancementPreview(inventoryItemId: number): Observable<BaseResponse<EquipmentEnhancementPreview>> {
+    return this.hrkApiService.CallApi<BaseResponse<EquipmentEnhancementPreview>>(
+      ApiMethod.GET,
+      this.inventoryApi.EnhancementPreview(inventoryItemId),
       { withCredentials: true }
     );
   }

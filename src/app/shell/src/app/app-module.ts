@@ -7,11 +7,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthModule } from './pages/auth/auth-module';
 import { CoreModule } from '../../../../libs/core/core.module';
+import { GlobalLoadingComponent } from '../../../../libs/shared/ui/components/global-loading/global-loading.component';
 
 
 var AppModules = [
     AuthModule,
-    CoreModule
+    CoreModule,
+    GlobalLoadingComponent
 ]
 
 var CoreModules = [

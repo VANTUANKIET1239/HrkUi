@@ -1,0 +1,31 @@
+<div
+  class="global-loading-overlay"
+  *ngIf="loadingService.isLoading()"
+  role="alert"
+  aria-live="assertive"
+  aria-busy="true"
+  aria-label="Đang tải dữ liệu game"
+  (click)="$event.stopPropagation()"
+  (mousedown)="$event.stopPropagation()"
+  (touchstart)="$event.stopPropagation()"
+>
+  <div class="loading-backdrop"></div>
+  <div class="loading-container">
+    <div class="gif-container">
+      <img
+        src="assets/loading/Pippit_DCSGame_LoadingLoop-ezgif.com-optimize.gif"
+        alt="Loading DCS Game"
+        class="loading-gif"
+      />
+    </div>
+
+    <div class="text-group">
+      <h2 class="loading-title">ĐANG TẢI DỮ LIỆU GAME</h2>
+      <p class="loading-subtitle">Đang chuẩn bị thế giới chiến đấu...</p>
+      
+      <div class="loading-bar-track">
+        <div class="loading-bar-thumb"></div>
+      </div>
+    </div>
+  </div>
+</div>

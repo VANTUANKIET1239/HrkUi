@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <button class="btn btn-close-modal" (click)="close.emit()">
+    <button class="btn btn-close-modal" (click)="close.emit()" aria-label="Đóng bảng quản lý võ tướng">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
@@ -99,68 +99,56 @@
       <div class="hero-scroll-list">
         <div 
           *ngFor="let hero of filteredHeroes" 
-          class="hero-list-item d-flex align-items-center p-2 mb-2 border-inner-gold"
-          [class.active]="selectedHero.id === hero.id"
-          [class.rarity-legendary]="hero.rarity === 'Legendary'"
-          [class.rarity-epic]="hero.rarity === 'Epic'"
-          [class.rarity-rare]="hero.rarity === 'Rare'"
+          class="hero-card-item d-flex align-items-center mb-2"
+          [class.selected]="selectedHero.id === hero.id"
+          [class.legendary]="hero.rarity === 'Legendary'"
+          [class.epic]="hero.rarity === 'Epic'"
+          [class.rare]="hero.rarity === 'Rare'"
           (click)="selectHero(hero)">
           
-          <!-- Avatar Icon Container -->
-          <div class="hero-list-avatar position-relative me-2">
-            <div class="avatar-border">
-              <i class="bi bi-person-circle fs-3 text-gold"></i>
-            </div>
-            <span class="level-indicator">Lv.{{ hero.level }}</span>
-            <span class="faction-indicator" [ngSwitch]="hero.faction">
-              <span *ngSwitchCase="'Thục'" class="badge bg-danger text-white">Thục</span>
-              <span *ngSwitchCase="'Ngụy'" class="badge bg-primary text-white">Ngụy</span>
-              <span *ngSwitchCase="'Ngô'" class="badge bg-success text-white">Ngô</span>
-              <span *ngSwitchCase="'Quần'" class="badge bg-secondary text-white">Quần</span>
-            </span>
+          <!-- Avatar Frame -->
+          <div class="hero-avatar-frame position-relative me-2">
+            <img [src]="hero.avatar" class="hero-avatar" [alt]="hero.name" (error)="onAvatarError($event)" />
+            <span class="hero-level-badge">Lv.{{ hero.level }}</span>
+            <i class="bi bi-lock-fill hero-lock-badge" *ngIf="hero.locked"></i>
+            <i class="bi bi-star-fill hero-fav-badge" *ngIf="hero.favorite"></i>
           </div>
 
-          <!-- Hero Basic Details -->
-          <div class="hero-list-info flex-grow-1">
+          <!-- Info Details -->
+          <div class="hero-card-details flex-grow-1 overflow-hidden">
             <div class="d-flex justify-content-between align-items-center">
-              <span class="hero-name-label font-title">{{ hero.name }}</span>
-              <i *ngIf="hero.favorite" class="bi bi-heart-fill text-danger small"></i>
+              <span class="hero-name font-title text-truncate">{{ hero.name }}</span>
+              <span class="badge rarity-badge" [ngClass]="hero.rarity.toLowerCase()">{{ hero.rarity }}</span>
             </div>
             
-            <div class="d-flex align-items-center justify-content-between">
-              <!-- Star count display -->
-              <div class="hero-stars text-warning">
-                <i class="bi bi-star-fill small" *ngFor="let s of [].constructor(hero.stars)"></i>
-              </div>
-              <span class="power-label font-title"><span class="small text-muted">Lực:</span> {{ hero.power }}</span>
+            <div class="d-flex justify-content-between align-items-center text-muted small mt-1">
+              <span>{{ hero.class }} | {{ hero.faction }}</span>
+              <span class="hero-power text-warning font-title">
+                <i class="bi bi-lightning-fill"></i>{{ hero.power | number }}
+              </span>
+            </div>
+
+            <!-- Star Count -->
+            <div class="hero-stars small text-warning mt-1">
+              <i class="bi bi-star-fill me-1" *ngFor="let s of [].constructor(hero.stars)"></i>
             </div>
           </div>
         </div>
-        <div *ngIf="filteredHeroes.length === 0" class="text-center py-5 text-muted">
+
+        <div *ngIf="filteredHeroes.length === 0" class="text-center py-4 text-muted small">
           Không tìm thấy võ tướng phù hợp!
         </div>
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- CENTER PANEL: Selected Hero Detail         -->
+    <!-- CENTER PANEL: Showcase, Stats & Inventory  -->
     <!-- ========================================== -->
     <div class="center-panel">
       
-      <!-- Character Showcase & Artwork View -->
-      <div class="character-detail-showcase position-relative">
+      <!-- Character Viewport Section -->
+      <div class="character-detail-showcase character-viewport position-relative">
         
-        <!-- Active Aura Effect classes: blue-aura, purple-aura, golden-aura, red-lightning-aura -->
-        <div class="animated-aura-overlay" [ngClass]="{
-          'blue-aura': selectedHero.auraTier === 1,
-          'purple-aura': selectedHero.auraTier === 2,
-          'golden-aura': selectedHero.auraTier === 3,
-          'red-lightning-aura': selectedHero.auraTier === 4
-        }">
-          <div class="pulse-ring pulse-ring-1"></div>
-          <div class="pulse-ring pulse-ring-2"></div>
-        </div>
-
         <div class="character-showcase-info d-flex justify-content-between align-items-start p-3 w-100 position-relative">
           <div>
             <div class="faction-badge mb-1 font-title">PHE: {{ selectedHero.faction }}</div>
@@ -182,7 +170,7 @@
           </div>
         </div>
 
-        <!-- Custom CSS Hero Artwork Illustration Placeholder replaced with full-body app-battle-character -->
+        <!-- Full-body Character Animation -->
         <div class="character-illustration-placeholder">
           <app-battle-character 
             [character]="mapToHero(selectedHero)" 
@@ -190,29 +178,57 @@
           </app-battle-character>
         </div>
 
-        <!-- Radial Equipment Slots surrounding the character -->
+        <!-- Local Loading Overlay for Hero Details & Equipment -->
+        <div *ngIf="isLoadingHeroDetail || isProcessingEquipment" class="hero-detail-loading-overlay d-flex align-items-center justify-content-center">
+          <div class="spinner-border text-warning spinner-border-sm me-2" role="status"></div>
+          <span class="text-gold small font-title">{{ isProcessingEquipment ? 'Đang cập nhật trang bị...' : 'Đang tải dữ liệu...' }}</span>
+        </div>
+
+        <!-- Radial Equipment Slots surrounding the character (Fixed 6 slots) -->
         <div class="equipment-radial-container">
-          <div *ngFor="let gear of selectedHero.equipment; let idx = index"
+          <div *ngFor="let slot of equipmentSlots; let idx = index"
                class="radial-gear-node gear-node-pos-{{ idx }}"
-               [class.epic]="gear.rarity === 'Epic'"
-               [class.legendary]="gear.rarity === 'Legendary'"
-               [class.rare]="gear.rarity === 'Rare'"
-               (click)="openGearModification(gear)"
+               [class.empty-slot]="!slot.item"
+               [class.epic]="slot.item?.rarityName === 'Epic' || slot.item?.rarityCode === 'EPIC'"
+               [class.legendary]="slot.item?.rarityName === 'Legendary' || slot.item?.rarityCode === 'LEGENDARY'"
+               [class.rare]="slot.item?.rarityName === 'Rare' || slot.item?.rarityCode === 'RARE'"
+               (click)="onSlotClick(slot)"
                (dragover)="onEquipmentDragOver($event)"
                (drop)="onEquipmentDrop($event, idx)">
-            <div class="gear-node-icon-bg">
-              <img *ngIf="gear.imagePath; else gearIconFallback" [src]="gear.imagePath" class="gear-img" [alt]="gear.name" />
-              <ng-template #gearIconFallback>
-                <i class="bi {{ gear.icon }} gear-node-icon"></i>
-              </ng-template>
-            </div>
-            <div class="gear-node-lvl font-title">+{{ gear.enhancement }}</div>
-            <!-- Hover Tooltip -->
-            <div class="gear-node-tooltip font-title">
-              <div class="small text-muted text-uppercase" style="font-size: 9px; opacity: 0.7; margin-bottom: 2px;">{{ gear.slot }}</div>
-              <div class="text-white" style="font-size: 12px; font-weight: 700; white-space: nowrap; margin-bottom: 2px;">{{ gear.name }}</div>
-              <div class="text-gold font-title" style="font-size: 11px;">+{{ gear.enhancement }} ({{ gear.rarity }})</div>
-            </div>
+            
+            <ng-container *ngIf="slot.item; else emptySlotTemplate">
+              <div class="gear-node-icon-bg">
+                <img *ngIf="slot.item.imagePath; else slotIconFallback" [src]="slot.item.imagePath" class="gear-img" [alt]="slot.item.name" />
+                <ng-template #slotIconFallback>
+                  <i class="bi {{ slot.item.icon || slot.icon }} gear-node-icon"></i>
+                </ng-template>
+              </div>
+              <div class="gear-node-lvl font-title">+{{ slot.item.enhancement }}</div>
+              <!-- Hover Tooltip -->
+              <div *ngIf="slot.item.stats" class="gear-node-stats-tooltip font-title">
+                <div *ngFor="let stat of getItemStatEntries(slot.item.stats)" class="d-flex justify-content-between gap-2 text-success">
+                  <span>{{ stat.label }}</span><span>{{ stat.value }}</span>
+                </div>
+              </div>
+              <div class="gear-node-tooltip font-title">
+                <div class="small text-muted text-uppercase" style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">{{ slot.displayName }}</div>
+                <div class="text-white" style="font-size: 12px; font-weight: 700; white-space: nowrap; margin-bottom: 2px;">{{ slot.item.name }}</div>
+                <div class="text-gold font-title" style="font-size: 11px;">+{{ slot.item.enhancement }} ({{ slot.item.rarityName }})</div>
+                <div class="text-secondary small mt-1" style="font-size: 9px;">Nhấn để tháo trang bị</div>
+              </div>
+            </ng-container>
+
+            <ng-template #emptySlotTemplate>
+              <div class="gear-node-icon-bg empty-slot-bg">
+                <i class="bi {{ slot.icon }} gear-node-icon dim-icon"></i>
+              </div>
+              <div class="gear-node-empty-tag font-title">{{ slot.displayName }}</div>
+              <!-- Hover Tooltip -->
+              <div class="gear-node-tooltip font-title">
+                <div class="text-muted small" style="font-size: 9.5px; margin-bottom: 2px;">{{ slot.displayName }}</div>
+                <div class="text-white" style="font-size: 11px; font-weight: 600;">Chưa trang bị</div>
+              </div>
+            </ng-template>
           </div>
         </div>
 
@@ -228,145 +244,234 @@
         </div>
       </div>
 
-      <!-- Stats Progress Bars Layout -->
+      <!-- ============================================================== -->
+      <!-- SECTION 2: THUỘC TÍNH VÕ TƯỚNG (CARDS/CHIPS GRID & TOOLTIP)    -->
+      <!-- ============================================================== -->
       <div class="stats-panel-section p-3">
-        <div class="section-title mb-2 font-title"><i class="bi bi-sliders text-warning me-1"></i>Thuộc Tính Võ Tướng</div>
-        <div class="row g-2">
-          <!-- HP -->
-          <div class="col-6">
-            <div class="stat-item">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="lbl text-muted">Máu (HP)</span>
-                <span class="val text-success">{{ selectedHero.stats.hp }}</span>
-              </div>
-              <div class="progress stat-bar">
-                <div class="progress-bar bg-success" [style.width.%]="(selectedHero.stats.hp / 20000) * 100"></div>
-              </div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="section-title font-title m-0">
+            <i class="bi bi-sliders text-warning me-1"></i>Thuộc Tính Võ Tướng
           </div>
-          <!-- ATK -->
-          <div class="col-6">
-            <div class="stat-item">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="lbl text-muted">Công (ATK)</span>
-                <span class="val text-danger">{{ selectedHero.stats.atk }}</span>
-              </div>
-              <div class="progress stat-bar">
-                <div class="progress-bar bg-danger" [style.width.%]="(selectedHero.stats.atk / 2500) * 100"></div>
-              </div>
-            </div>
-          </div>
-          <!-- DEF -->
-          <div class="col-6">
-            <div class="stat-item">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="lbl text-muted">Thủ (DEF)</span>
-                <span class="val text-info">{{ selectedHero.stats.def }}</span>
-              </div>
-              <div class="progress stat-bar">
-                <div class="progress-bar bg-info" [style.width.%]="(selectedHero.stats.def / 1500) * 100"></div>
-              </div>
-            </div>
-          </div>
-          <!-- SPD -->
-          <div class="col-6">
-            <div class="stat-item">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="lbl text-muted">Tốc Độ (SPD)</span>
-                <span class="val text-warning">{{ selectedHero.stats.spd }}</span>
-              </div>
-              <div class="progress stat-bar">
-                <div class="progress-bar bg-warning" [style.width.%]="(selectedHero.stats.spd / 200) * 100"></div>
-              </div>
-            </div>
-          </div>
-          <!-- Secondary Stats details -->
-          <div class="col-12 mt-2">
-            <div class="row g-2 secondary-stats-row text-center py-1">
-              <div class="col-4 border-end border-warning-subtle">
-                <span class="small d-block text-muted">Bạo Kích (CRIT)</span>
-                <span class="text-gold font-title">{{ selectedHero.stats.crit }}%</span>
-              </div>
-              <div class="col-4 border-end border-warning-subtle">
-                <span class="small d-block text-muted">Sát Thương Bạo</span>
-                <span class="text-gold font-title">{{ selectedHero.stats.critDmg }}%</span>
-              </div>
-              <div class="col-4">
-                <span class="small d-block text-muted">Hút Máu</span>
-                <span class="text-gold font-title">{{ selectedHero.stats.lifesteal }}%</span>
-              </div>
-            </div>
-            <div class="row g-2 secondary-stats-row text-center py-1 border-top border-warning-subtle">
-              <div class="col-6 border-end border-warning-subtle">
-                <span class="small d-block text-muted">Chính Xác (ACC)</span>
-                <span class="text-gold font-title">{{ selectedHero.stats.accuracy }}%</span>
-              </div>
-              <div class="col-6">
-                <span class="small d-block text-muted">Kháng Hiệu Ứng (RES)</span>
-                <span class="text-gold font-title">{{ selectedHero.stats.resistance }}%</span>
-              </div>
-            </div>
-          </div>
+          <span class="small text-muted font-title" style="font-size: 11px;">
+            <i class="bi bi-info-circle me-1 text-gold"></i>Rê chuột hoặc chạm để xem chi tiết nguồn chỉ số
+          </span>
         </div>
-      </div>
 
-      <!-- Skill Layout Section -->
-      <div class="skills-section-panel p-3">
-        <div class="section-title mb-2 font-title"><i class="bi bi-lightning text-warning me-1"></i>Bộ Kỹ Năng Võ Tướng</div>
-        <div class="skills-grid d-flex justify-content-around mb-2">
+        <!-- Responsive Grid 2-4 Columns for 9 Stat Cards -->
+        <div class="stat-cards-grid">
           <div 
-            *ngFor="let skill of selectedHero.skills; let idx = index" 
-            class="skill-icon-box"
-            [class.active]="selectedSkillIndex === idx"
-            (click)="selectedSkillIndex = idx">
-            <div class="icon-inner">
-              <i class="bi {{ skill.icon }}"></i>
+            *ngFor="let card of statCardList"
+            class="stat-card"
+            [ngClass]="card.colorClass"
+            tabindex="0"
+            role="region"
+            [attr.aria-label]="card.label + ': ' + card.valDisplay"
+            (click)="toggleStatTooltip(card.code)"
+            (keydown.enter)="toggleStatTooltip(card.code)"
+            [class.tooltip-active]="activeTooltipCode === card.code">
+            
+            <div class="stat-card-header d-flex align-items-center">
+              <i class="bi {{ card.icon }} stat-card-icon me-1"></i>
+              <span class="stat-card-label text-truncate">{{ card.label }}</span>
             </div>
-            <div class="skill-indicator-dot" [ngClass]="skill.cooldown === 'Bị động' ? 'passive' : 'active'"></div>
-          </div>
-        </div>
+            
+            <div class="stat-card-value font-title">
+              {{ card.valDisplay }}
+            </div>
 
-        <!-- Selected Skill Details Panel -->
-        <div class="selected-skill-details p-2" *ngIf="selectedHero.skills[selectedSkillIndex]">
-          <div class="d-flex justify-content-between align-items-center border-bottom border-warning-subtle pb-1 mb-1">
-            <span class="skill-title font-title text-gold">{{ selectedHero.skills[selectedSkillIndex].name }}</span>
-            <div class="small-badges">
-              <span class="badge bg-dark border border-warning me-1 text-gold">{{ selectedHero.skills[selectedSkillIndex].damageType }}</span>
-              <span class="badge bg-danger text-white me-1">{{ selectedHero.skills[selectedSkillIndex].effectType }}</span>
-              <span class="badge bg-secondary">Hồi chiêu: {{ selectedHero.skills[selectedSkillIndex].cooldown }}</span>
+            <!-- Dynamic Source Breakdown Tooltip -->
+            <div class="stat-breakdown-tooltip font-title" (click)="$event.stopPropagation()">
+              <div class="tooltip-header d-flex justify-content-between align-items-center">
+                <span class="tooltip-title text-white">{{ card.label }}:</span>
+                <span class="tooltip-total text-gold fs-6">{{ card.valDisplay }}</span>
+              </div>
+              
+              <div class="tooltip-divider my-1"></div>
+
+              <ng-container *ngIf="card.breakdown && card.breakdown.sources && card.breakdown.sources.length > 0; else emptyBreakdownTemplate">
+                <div class="tooltip-sources-list">
+                  <!-- Base Value -->
+                  <div class="tooltip-source-item d-flex justify-content-between" *ngIf="card.breakdown.baseValue > 0">
+                    <span class="text-secondary"><i class="bi bi-shield me-1"></i>Cơ bản:</span>
+                    <span class="text-white">+{{ card.breakdown.baseValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                  </div>
+
+                  <!-- Hero Growth -->
+                  <div class="tooltip-source-item d-flex justify-content-between" *ngIf="card.breakdown.heroGrowthValue > 0">
+                    <span class="text-secondary"><i class="bi bi-arrow-up-right me-1"></i>Tăng trưởng:</span>
+                    <span class="text-white">+{{ card.breakdown.heroGrowthValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                  </div>
+
+                  <!-- Equipment Sources Header -->
+                  <div class="tooltip-equipment-group mt-1" *ngIf="card.breakdown.equipmentValue > 0">
+                    <div class="text-warning-subtle small fw-bold mb-1"><i class="bi bi-hammer me-1"></i>Trang bị (+{{ card.breakdown.equipmentValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}):</div>
+                    <div *ngFor="let src of card.breakdown.sources" class="ms-2">
+                      <div class="tooltip-source-item d-flex justify-content-between" *ngIf="src.sourceType === 'EQUIPMENT' && src.value > 0">
+                        <span class="text-info text-truncate me-2">• {{ src.itemName || src.sourceName }}:</span>
+                        <span class="text-success">+{{ src.value }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Aura Value -->
+                  <div class="tooltip-source-item d-flex justify-content-between mt-1" *ngIf="card.breakdown.auraValue > 0">
+                    <span class="text-secondary"><i class="bi bi-magic me-1"></i>Hào quang:</span>
+                    <span class="text-white">+{{ card.breakdown.auraValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                  </div>
+
+                  <!-- Other Value -->
+                  <div class="tooltip-source-item d-flex justify-content-between" *ngIf="card.breakdown.otherValue > 0">
+                    <span class="text-secondary"><i class="bi bi-plus-circle me-1"></i>Khác:</span>
+                    <span class="text-white">+{{ card.breakdown.otherValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                  </div>
+                </div>
+
+                <div class="tooltip-divider my-1"></div>
+                
+                <div class="tooltip-summary d-flex justify-content-between align-items-center">
+                  <span class="text-gold fw-bold">Tổng cộng:</span>
+                  <span class="text-gold fw-bold fs-6">{{ card.valDisplay }}</span>
+                </div>
+              </ng-container>
+
+              <ng-template #emptyBreakdownTemplate>
+                <div class="text-muted small py-1">Chưa có dữ liệu nguồn chỉ số</div>
+                <div class="tooltip-divider my-1"></div>
+                <div class="tooltip-summary d-flex justify-content-between align-items-center">
+                  <span class="text-gold fw-bold">Tổng:</span>
+                  <span class="text-gold fw-bold">{{ card.valDisplay }}</span>
+                </div>
+              </ng-template>
             </div>
+
           </div>
-          <p class="skill-description m-0 small">{{ selectedHero.skills[selectedSkillIndex].description }}</p>
         </div>
       </div>
 
-      <!-- Inventory Section Panel -->
+      <!-- ============================================================== -->
+      <!-- SECTION 5: KỸ NĂNG VÕ TƯỚNG (ALL HERO SKILLS DATA-DRIVEN)      -->
+      <!-- ============================================================== -->
+      <div class="skills-section-panel p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <div class="section-title font-title m-0">
+            <i class="bi bi-lightning-charge-fill text-warning me-1"></i>Kỹ Năng Võ Tướng ({{ selectedHero.skills.length }})
+          </div>
+          <span class="small text-muted font-title" style="font-size: 11px;">
+            <i class="bi bi-info-circle me-1 text-gold"></i>Hệ thống kỹ năng Data-Driven • Không hồi chiêu
+          </span>
+        </div>
+
+        <div *ngIf="selectedHero.skills && selectedHero.skills.length > 0; else emptySkillsTemplate" class="skills-cards-grid d-flex flex-column gap-2">
+          <div *ngFor="let skill of selectedHero.skills; let sIdx = index"
+               class="skill-item-card p-2 px-3"
+               [class.active-skill]="selectedSkillForDetail?.id === skill.id"
+               (click)="toggleSkillDetail(skill)">
+            <div class="d-flex align-items-start gap-3">
+              <!-- Skill Icon Box with Type Tag -->
+              <div class="skill-icon-wrapper flex-shrink-0">
+                <div class="skill-icon-box position-relative">
+                  <img *ngIf="skill.imagePath; else skillIconFallback" [src]="skill.imagePath" class="skill-img" [alt]="skill.name" />
+                  <ng-template #skillIconFallback>
+                    <i class="bi {{ skill.icon || 'bi-lightning-charge-fill' }} fs-3 text-warning"></i>
+                  </ng-template>
+                  <span class="skill-badge-tag font-title" [ngClass]="getSkillTypeBadge(skill).badgeClass">
+                    {{ getSkillTypeBadge(skill).label }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Comprehensive Skill Details -->
+              <div class="skill-content-details flex-grow-1 overflow-hidden">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">
+                  <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="skill-name font-title fs-6 text-gold fw-bold">{{ skill.name }}</span>
+                    <span class="badge font-title" [ngClass]="getSkillTypeBadge(skill).badgeClass">
+                      {{ getSkillTypeBadge(skill).label }}
+                    </span>
+                  </div>
+
+                  <div class="skill-badges-row d-flex flex-wrap gap-1 align-items-center">
+                    <!-- Trigger badge -->
+                    <span class="badge bg-dark border border-warning text-gold font-title" *ngIf="skill.triggerCode">
+                      <i class="bi bi-play-circle me-1"></i>{{ getSkillTriggerLabel(skill) }}
+                    </span>
+                    <!-- Damage school badge -->
+                    <span class="badge font-title" *ngIf="getSkillDamageSchoolBadge(skill)" [ngClass]="getSkillDamageSchoolBadge(skill)!.badgeClass">
+                      {{ getSkillDamageSchoolBadge(skill)!.label }}
+                    </span>
+                    <!-- Target type badge -->
+                    <span class="badge bg-info text-dark font-title" *ngIf="skill.targetType">
+                      <i class="bi bi-bullseye me-1"></i>{{ skill.targetType }}
+                    </span>
+                    <!-- Energy Cost badge (No cooldown) -->
+                    <span class="badge font-title" [ngClass]="(skill.energyCost || 0) > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white'">
+                      <i class="bi bi-battery-charging me-1"></i>{{ getSkillCostDisplay(skill) }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Skill Description -->
+                <p class="skill-description m-0 small lh-base text-secondary mb-1">
+                  {{ skill.description || 'Chưa có mô tả kỹ năng.' }}
+                </p>
+
+                <!-- Data-Driven Effects Breakdown Badges/Chips -->
+                <div *ngIf="skill.effects && skill.effects.length > 0" class="skill-effects-pills d-flex flex-wrap gap-1 mt-1">
+                  <div *ngFor="let eff of skill.effects" class="effect-pill d-inline-flex align-items-center gap-1">
+                    <span class="effect-name font-title">{{ eff.effectTypeName || eff.effectTypeCode }}:</span>
+                    <span class="effect-val text-gold">{{ formatEffectSummary(eff) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #emptySkillsTemplate>
+          <div class="empty-skill-state p-3 text-center text-muted small border border-warning-subtle rounded bg-black-opacity">
+            <i class="bi bi-slash-circle me-1"></i>Võ tướng này chưa được cấu hình kỹ năng.
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- ============================================================== -->
+      <!-- SECTION 4: HÀNH TRANG TRANG BỊ CHƯA MẶC                        -->
+      <!-- ============================================================== -->
       <div class="inventory-section-panel p-3">
         <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-          <div class="section-title font-title m-0"><i class="bi bi-bag-fill text-warning me-1"></i>Hành Trang Trang Bị</div>
+          <div class="section-title font-title m-0">
+            <i class="bi bi-bag-fill text-warning me-1"></i>Hành Trang Trang Bị Chưa Mặc
+          </div>
           <!-- Filter Tabs for inventory -->
           <div class="inventory-filters d-flex gap-1 flex-wrap">
             <button 
-              *ngFor="let tab of ['All', 'Vũ Khí', 'Mũ', 'Giáp', 'Giày', 'Nhẫn', 'Thần Binh']" 
+              *ngFor="let tab of inventoryTabs" 
               class="btn btn-xs btn-outline-warning py-0 px-2 font-title"
-              [class.active]="inventoryFilter === tab"
-              (click)="inventoryFilter = tab">
-              {{ tab === 'All' ? 'Tất cả' : tab }}
+              [class.active]="selectedInventoryTab === tab.code"
+              (click)="selectedInventoryTab = tab.code">
+              {{ tab.label }}
             </button>
           </div>
         </div>
 
+        <!-- Inventory loading spinner -->
+        <div *ngIf="isLoadingInventory" class="text-center py-4 text-warning">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          <span class="small font-title">Đang tải trang bị...</span>
+        </div>
+
         <!-- Inventory grid list -->
-        <div class="inventory-grid d-flex flex-wrap gap-2 overflow-auto">
+        <div *ngIf="!isLoadingInventory" class="inventory-grid d-flex flex-wrap gap-2 overflow-auto">
           <div 
-            *ngFor="let item of filteredInventoryItems; let idx = index" 
+            *ngFor="let item of filteredInventoryEquipments; let idx = index" 
             class="inventory-item-box"
-            [class.epic]="item.rarity === 'Epic'"
-            [class.legendary]="item.rarity === 'Legendary'"
-            [class.rare]="item.rarity === 'Rare'"
+            [class.epic]="item.rarityName === 'Epic' || item.rarityCode === 'EPIC'"
+            [class.legendary]="item.rarityName === 'Legendary' || item.rarityCode === 'LEGENDARY'"
+            [class.rare]="item.rarityName === 'Rare' || item.rarityCode === 'RARE'"
+            [class.disabled]="isProcessingEquipment"
             draggable="true"
             (dragstart)="onInventoryDragStart($event, item, idx)"
-            (click)="equipGearFromInventory(item, idx)">
+            (click)="equipGearFromInventory(item)">
             <div class="item-icon-bg">
               <img *ngIf="item.imagePath; else invIconFallback" [src]="item.imagePath" class="inv-item-img" [alt]="item.name" />
               <ng-template #invIconFallback>
@@ -374,88 +479,60 @@
               </ng-template>
             </div>
             <div class="item-lvl font-title">+{{ item.enhancement }}</div>
-            <div class="item-slot-tag font-title">{{ item.slot }}</div>
+            <div class="item-slot-tag font-title">{{ item.categoryName || item.categoryCode }}</div>
             <!-- Tooltip -->
+            <div *ngIf="item.stats" class="item-stats-tooltip font-title">
+              <div *ngFor="let stat of getItemStatEntries(item.stats)" class="d-flex justify-content-between gap-2 text-success">
+                <span>{{ stat.label }}</span><span>{{ stat.value }}</span>
+              </div>
+            </div>
             <div class="item-node-tooltip font-title">
-              <div class="small text-muted text-uppercase" style="font-size: 9px; opacity: 0.7; margin-bottom: 2px;">{{ item.slot }}</div>
+              <div class="small text-muted text-uppercase" style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">{{ item.categoryName || item.categoryCode }}</div>
               <div class="text-white" style="font-size: 12px; font-weight: 700; white-space: nowrap; margin-bottom: 2px;">{{ item.name }}</div>
-              <div class="text-gold font-title" style="font-size: 11px;">+{{ item.enhancement }} ({{ item.rarity }})</div>
-              <div class="text-muted small mt-1" style="font-size: 9.5px;">Click hoặc Kéo thả vào ô để mặc</div>
+              <div class="text-gold font-title" style="font-size: 11px;">+{{ item.enhancement }} ({{ item.rarityName }})</div>
+              <div class="text-secondary small mt-1" style="font-size: 9.5px;">Click để mặc ngay cho võ tướng</div>
             </div>
           </div>
-          <div *ngIf="filteredInventoryItems.length === 0" class="text-center w-100 py-3 text-muted small">
-            Không tìm thấy trang bị phù hợp!
+          <div *ngIf="filteredInventoryEquipments.length === 0" class="text-center w-100 py-3 text-muted small">
+            Không có trang bị phù hợp trong hành trang!
           </div>
         </div>
       </div>
-
-
 
     </div>
 
     <!-- ========================================== -->
-    <!-- RIGHT PANEL: Actions / Tabs / Extra        -->
+    <!-- RIGHT PANEL: Actions & Tabs (Cleaned)      -->
     <!-- ========================================== -->
-    <div class="right-panel">
+    <div class="right-panel d-flex flex-column">
       
-      <!-- Premium Action Grid -->
+      <!-- Premium Action Grid (Growth Operations) -->
       <div class="actions-group mb-3">
         <div class="panel-header-sub">Tính Năng Tăng Trưởng</div>
+        <div *ngIf="upgradePreview as preview" class="p-2 mb-2 border border-warning-subtle rounded small">
+          <div class="d-flex justify-content-between text-gold font-title"><span>Cấp {{ preview.currentLevel }} → {{ preview.nextLevel }}</span><span>Tối đa {{ preview.maxLevel }}</span></div>
+          <div class="d-flex justify-content-between mt-1 text-warning"><span>Vàng</span><span>{{ preview.goldCost | number }}</span></div>
+          <div class="d-flex justify-content-between text-info"><span>Đá nâng cấp</span><span>{{ preview.materialCost }}</span></div>
+          <div class="border-top border-secondary mt-1 pt-1 text-success">HP +{{ preview.statIncrease.hp }} · ATK +{{ preview.statIncrease.atk }} · DEF +{{ preview.statIncrease.def }} · SPD +{{ preview.statIncrease.spd }}</div>
+        </div>
         <div class="action-grid row g-1">
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="levelUp()">
+          <div class="col-6">
+            <button class="btn btn-action w-100 font-title" (click)="upgradeHero(1)" [disabled]="isUpgradingHero || !upgradePreview || upgradePreview.currentLevel >= upgradePreview.maxLevel">
               <i class="bi bi-chevron-double-up text-success d-block mb-1"></i>Nâng Cấp
             </button>
           </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="onActionClick('Ascend')">
-              <i class="bi bi-gem text-warning d-block mb-1"></i>Đột Phá
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="onActionClick('Awaken')">
-              <i class="bi bi-brightness-high-fill text-danger d-block mb-1"></i>Thức Tỉnh
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="onActionClick('Promote')">
-              <i class="bi bi-award-fill text-warning d-block mb-1"></i>Thăng Tinh
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="onActionClick('Train')">
-              <i class="bi bi-person-fill-add text-info d-block mb-1"></i>Huấn Luyện
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="onActionClick('Skill Upgrade')">
-              <i class="bi bi-lightning-charge-fill text-warning d-block mb-1"></i>Nâng Chiêu
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title" (click)="equipBest()">
-              <i class="bi bi-shield-plus text-success d-block mb-1"></i>Mặc Nhanh
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title text-danger-hover" (click)="removeEquipment()">
-              <i class="bi bi-shield-minus text-muted d-block mb-1"></i>Tháo Đồ
-            </button>
-          </div>
-          <div class="col-4">
-            <button class="btn btn-action w-100 font-title text-warning-hover" (click)="onActionClick('Reset Hero')">
-              <i class="bi bi-arrow-counterclockwise text-danger d-block mb-1"></i>Trùng Sinh
+          <div class="col-6">
+            <button class="btn btn-action w-100 font-title text-warning-hover" (click)="upgradeHero(5)" [disabled]="isUpgradingHero || !upgradePreview || upgradePreview.currentLevel >= upgradePreview.maxLevel">
+              <i class="bi bi-lightning-fill text-warning d-block mb-1"></i>Đột Phá Nhanh
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Extra Game Features Tab Layout -->
+      <!-- Extra Features Tabs -->
       <div class="extra-features-panel flex-grow-1 d-flex flex-column">
-        <div class="panel-header-sub">Hệ Thống Phụ Trợ</div>
-        
-        <!-- Tab Headers Navigation -->
-        <div class="extra-tabs-nav d-flex flex-wrap bg-dark border-bottom border-warning-subtle mb-2">
+        <!-- Navigation Buttons -->
+        <div class="extra-tabs-nav d-flex mb-2 border border-warning-subtle">
           <button 
             class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
             [class.active]="activeTab === 'PassiveAura'"
@@ -595,11 +672,11 @@
             <span class="font-title text-gold d-block mb-2">Kích Duyên Định Mệnh</span>
             <div class="bonds-list small text-muted">
               <div class="bond-item p-2 mb-2 border border-warning-subtle bg-black-opacity">
-                <span class="d-block text-gold font-title">Sát Thủ Trị Deadline (K Cởi Trần + Nam Deadline)</span>
+                <span class="d-block text-gold font-title">Sát Thủ Trị Deadline</span>
                 <span class="text-success small">Tình trạng: <span class="badge bg-success">Đang Kích Hoạt (+10% Công)</span></span>
               </div>
               <div class="bond-item p-2 mb-2 border border-warning-subtle bg-black-opacity opacity-50">
-                <span class="d-block text-gold font-title">Thần Binh Vô Cực (K Cởi Trần + Long Bug Hunter)</span>
+                <span class="d-block text-gold font-title">Thần Binh Vô Cực</span>
                 <span class="text-danger small">Tình trạng: Chưa Đủ Tướng (+15% HP)</span>
               </div>
             </div>
@@ -608,134 +685,61 @@
         </div>
       </div>
 
-      <!-- Temporary Feature Placeholder Buttons List -->
-      <div class="placeholder-features mt-3">
-        <div class="panel-header-sub">Hệ Thống Mở Rộng</div>
-        <div class="placeholder-grid d-flex flex-wrap">
-          <button class="btn btn-placeholder" (click)="onActionClick('Trận Pháp')">Trận Pháp</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Nhân Duyên')">Nhân Duyên</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Âm Thanh')">Âm Thanh</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Danh Hiệu')">Danh Hiệu</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Sách Kỹ Năng')">Sách Chiêu</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Cây Thiên Phú')">Thiên Phú</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Bảo Vật')">Bảo Vật</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Tọa Kỵ')">Tọa Kỵ</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Thần Thú')">Thần Thú</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Kinh Mạch')">Kinh Mạch</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Ngọc Khảm')">Khảm Ngọc</button>
-          <button class="btn btn-placeholder" (click)="onActionClick('Liên Kết')">Liên Kết Hồn</button>
+    </div>
+
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: THÁO TRANG BỊ ĐANG MẶC TRÊN SLOT                        -->
+  <!-- ============================================================== -->
+  <div class="modal-backdrop-custom d-flex align-items-center justify-content-center" 
+       *ngIf="showSlotActionModal && selectedSlotForAction && selectedSlotForAction.item" 
+       (click)="closeSlotActionModal()">
+    <div class="equipment-action-dialog p-3 bg-dark border border-warning rounded shadow-lg" (click)="$event.stopPropagation()" *ngIf="selectedSlotForAction as slot">
+      <div class="dialog-header d-flex justify-content-between align-items-center border-bottom border-warning-subtle pb-2 mb-3">
+        <h5 class="m-0 text-gold font-title">
+          <i class="bi {{ slot.icon }} me-2"></i>{{ slot.displayName }}
+        </h5>
+        <button class="btn btn-sm btn-outline-warning py-0 px-2" (click)="closeSlotActionModal()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="dialog-body d-flex align-items-center gap-3 mb-3" *ngIf="slot.item as actionItem">
+        <div class="gear-preview-icon" [ngClass]="(actionItem.rarityCode || '').toLowerCase()">
+          <img *ngIf="actionItem.imagePath; else dialogIconFallback" [src]="actionItem.imagePath" class="gear-preview-img" [alt]="actionItem.name" />
+          <ng-template #dialogIconFallback>
+            <i class="bi {{ actionItem.icon || slot.icon }} fs-1 text-warning"></i>
+          </ng-template>
+        </div>
+        <div class="gear-preview-info flex-grow-1">
+          <h6 class="text-white font-title m-0">{{ actionItem.name }}</h6>
+          <div class="text-gold small mb-1">+{{ actionItem.enhancement }} ({{ actionItem.rarityName }})</div>
+          <div class="text-muted small">{{ actionItem.categoryName }}</div>
+          <div *ngIf="actionItem.stats" class="dialog-item-stats border-top border-secondary pt-1 mt-1">
+            <div *ngFor="let stat of getItemStatEntries(actionItem.stats)" class="d-flex justify-content-between gap-3 text-success small font-title">
+              <span>{{ stat.label }}</span><span>{{ stat.value }}</span>
+            </div>
+          </div>
         </div>
       </div>
-
-    </div>
-
-  </div>
-
-  <!-- ========================================== -->
-  <!-- BOTTOM PANEL: Quick Actions                -->
-  <!-- ========================================== -->
-  <div class="hero-mgmt-bottom-panel d-flex justify-content-between align-items-center">
-    
-    <div class="meta-status">
-      <span class="text-muted small">Võ tướng đang chọn:</span>
-      <span class="text-gold font-title ms-1">{{ selectedHero.name }}</span>
-      <span class="badge bg-gold text-dark ms-2">{{ selectedHero.rarity }}</span>
-    </div>
-
-    <!-- Quick Action Buttons -->
-    <div class="quick-actions-bar d-flex gap-2">
-      <!-- Lock status button -->
-      <button 
-        class="btn btn-quick-action" 
-        [class.locked-active]="selectedHero.locked"
-        (click)="toggleLock()">
-        <i class="bi" [ngClass]="selectedHero.locked ? 'bi-lock-fill text-danger' : 'bi-unlock-fill text-success'"></i>
-        {{ selectedHero.locked ? 'Mở Khóa' : 'Khóa Tướng' }}
-      </button>
-
-      <!-- Favorite button -->
-      <button 
-        class="btn btn-quick-action" 
-        [class.favorite-active]="selectedHero.favorite"
-        (click)="toggleFavorite()">
-        <i class="bi" [ngClass]="selectedHero.favorite ? 'bi-heart-fill text-danger' : 'bi-heart text-muted'"></i>
-        Yêu Thích
-      </button>
-
-      <!-- Level Up Button -->
-      <button class="btn btn-quick-action-primary level-up-btn" (click)="levelUp()">
-        <i class="bi bi-arrow-up-circle-fill me-1"></i>Nâng 1 Cấp
-      </button>
-
-      <!-- Auto Upgrade Button -->
-      <button class="btn btn-quick-action-primary auto-upgrade-btn" (click)="autoUpgrade()">
-        <i class="bi bi-chevron-double-up me-1"></i>Đột Phá Nhanh
-      </button>
-
-      <!-- Equip Best Button -->
-      <button class="btn btn-quick-action-primary equip-best-btn" (click)="equipBest()">
-        <i class="bi bi-shield-fill-plus me-1"></i>Mặc Nhanh +15
-      </button>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- MODAL: EQUIPMENT MODIFICATION OVERLAY      -->
-  <!-- ========================================== -->
-  <div class="modal-backdrop-overlay d-flex align-items-center justify-content-center" *ngIf="showEquipmentModal">
-    <div class="equipment-modification-modal p-4 border border-warning rounded">
-      <div class="modal-header-section d-flex justify-content-between align-items-center border-bottom border-warning-subtle pb-2 mb-3">
-        <h4 class="m-0 text-gold font-title"><i class="bi bi-hammer me-2 text-warning"></i>Rèn & Tẩy Trang Bị</h4>
-        <button class="btn btn-close-modal-small" (click)="showEquipmentModal = false">
-          <i class="bi bi-x-lg"></i>
+      <div class="dialog-footer d-flex justify-content-end gap-2 border-top border-warning-subtle pt-2">
+        <button class="btn btn-sm btn-outline-secondary font-title px-3" (click)="closeSlotActionModal()">Đóng</button>
+        <button class="btn btn-sm btn-danger font-title px-3" 
+                [disabled]="isProcessingEquipment" 
+                (click)="unequipCurrentSlot()">
+          <span *ngIf="isProcessingEquipment" class="spinner-border spinner-border-sm me-1"></span>
+          <i *ngIf="!isProcessingEquipment" class="bi bi-box-arrow-up-left me-1"></i>Tháo Trang Bị
         </button>
       </div>
-
-      <div class="modal-body-section" *ngIf="selectedGearToModify">
-        <div class="current-gear-info p-3 mb-3 border border-secondary bg-black-opacity d-flex align-items-center rounded">
-          <div class="gear-icon-box-large me-3 p-3 border rounded text-center" [class.legendary]="selectedGearToModify.rarity === 'Legendary'" [class.epic]="selectedGearToModify.rarity === 'Epic'" [class.rare]="selectedGearToModify.rarity === 'Rare'">
-            <img *ngIf="selectedGearToModify.imagePath; else modifyIconFallback" [src]="selectedGearToModify.imagePath" class="gear-img-large" [alt]="selectedGearToModify.name" />
-            <ng-template #modifyIconFallback>
-              <i class="bi {{ selectedGearToModify.icon }} fs-1 text-warning"></i>
-            </ng-template>
-          </div>
-          <div>
-            <h5 class="m-0 font-title text-white">{{ selectedGearToModify.name }}</h5>
-            <span class="d-block text-gold small font-title">Cường hóa: +{{ selectedGearToModify.enhancement }}</span>
-            <span class="badge" [ngClass]="selectedGearToModify.rarity === 'Legendary' ? 'bg-warning text-dark' : selectedGearToModify.rarity === 'Epic' ? 'bg-purple' : 'bg-primary'">{{ selectedGearToModify.rarity }}</span>
-          </div>
-        </div>
-
-        <!-- Enhance and Upgrade Actions -->
-        <div class="d-flex flex-column gap-2">
-          <button class="btn btn-modal-action d-flex justify-content-between align-items-center font-title" (click)="enhanceGear()">
-            <span><i class="bi bi-chevron-double-up text-success me-2"></i>Cường Hóa Trang Bị</span>
-            <span class="small text-gold">Tốn: {{ (selectedGearToModify.enhancement + 1) * 1500 | number }} Vàng</span>
-          </button>
-          <button class="btn btn-modal-action d-flex justify-content-between align-items-center font-title" (click)="changeRarityGear()">
-            <span><i class="bi bi-gem text-info me-2"></i>Nâng Phẩm Chất (Tẩy Trang Bị)</span>
-            <span class="small text-info">Tốn: 500 KNB (Diamond)</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="modal-footer-section text-end mt-4">
-        <button class="btn btn-secondary btn-sm" (click)="showEquipmentModal = false">Đóng</button>
-      </div>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TOAST NOTIFICATION SYSTEM                  -->
-  <!-- ========================================== -->
-  <div 
-    class="custom-game-toast" 
-    [class.show]="showToast" 
-    [class.toast-success]="toastType === 'success'"
-    [class.toast-warning]="toastType === 'warning'"
-    [class.toast-info]="toastType === 'info'">
-    <i class="bi" [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
-    <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
+  <!-- Toast Message System -->
+  <div class="toast-notification font-title" *ngIf="showToast" [ngClass]="toastType">
+    <i class="bi me-2" [ngClass]="{
+      'bi-check-circle-fill': toastType === 'success',
+      'bi-exclamation-triangle-fill': toastType === 'warning',
+      'bi-info-circle-fill': toastType === 'info'
+    }"></i>
+    <span>{{ toastMessage }}</span>
   </div>
 
 </div>

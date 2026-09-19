@@ -66,3 +66,42 @@ export interface EnhancementConfigResponse {
   levelConfigs: EnhancementLevelConfig[];
   materials: EnhancementMaterialConfig[];
 }
+
+export interface ForgeEquipmentItem {
+  inventoryItemId: number;
+  itemTemplateId: number;
+  code: string;
+  name: string;
+  imagePath?: string;
+  icon?: string;
+  categoryCode: string;
+  categoryName: string;
+  rarityCode: string;
+  rarityName: string;
+  rarityColorHex?: string;
+  rarityOrder: number;
+  levelReq: number;
+  enhancement: number;
+  stars: number;
+  isEquipped: boolean;
+  isLocked: boolean;
+  canEnhance: boolean;
+  enhancementBlockedReasonCode?: string | null;
+  enhancementBlockedMessage?: string | null;
+}
+
+export interface EquipmentEnhancementPreview {
+  inventoryItemId: number;
+  currentEnhancement: number;
+  targetEnhancement: number;
+  currentStats: { [key: string]: number };
+  nextStats: { [key: string]: number };
+  baseSuccessRate: number;
+  goldCost: number;
+  failureDropLevels: number;
+  maxStoneSlots: number;
+  canEnhance: boolean;
+  reasonCode?: string | null;
+  message?: string | null;
+}
+

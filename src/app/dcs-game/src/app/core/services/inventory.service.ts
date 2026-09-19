@@ -36,6 +36,25 @@ export class InventoryService {
   }
 
   /**
+   * Get player equipment inventory (only items where category IsEquipment = true)
+   */
+  getEquipment(categoryCode?: string, includeEquipped: boolean = false): Observable<BaseResponse<InventoryItemDto[]>> {
+    let params = new HttpParams().set('includeEquipped', includeEquipped.toString());
+    if (categoryCode && categoryCode !== 'all' && categoryCode !== 'All') {
+      params = params.set('categoryCode', categoryCode);
+    }
+
+    return this.hrkApiService.CallApi<BaseResponse<InventoryItemDto[]>>(
+      ApiMethod.GET,
+      this.inventoryApi.Equipment,
+      {
+        withCredentials: true,
+        params
+      }
+    );
+  }
+
+  /**
    * Get equipment equipped on a specific hero
    */
   getHeroEquipment(heroId: number): Observable<BaseResponse<HeroEquipmentDto>> {
