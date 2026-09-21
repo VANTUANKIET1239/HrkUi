@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { Hero } from '../models/hero.model';
 import { BattleLog } from '../models/battle-log.model';
-import { SKILL_LIST } from '../../features/battle/mocks/mock-battle.data';
+import { SKILL_LIST, INITIAL_HEROES } from '../../features/battle/mocks/mock-battle.data';
 import { Skill, TargetRangeType } from '../models/skill.model';
 import { BattleEventDto, StartBattleResultDto } from '../models/battle.model';
 
@@ -30,6 +30,8 @@ export class BattleEngineService {
   readonly currentSkillColor = signal<string>('#ffffff');
   readonly currentSkillName = signal<string | null>(null);
   readonly currentSkillId = signal<string | null>(null);
+  readonly currentSkillCategory = signal<'basic' | 'ultimate'>('basic');
+  readonly battlePhase = signal<'idle' | 'cast' | 'impact' | 'status' | 'recovery'>('idle');
 
   // Floating damage text tracker by Hero ID
   readonly damageEvents = signal<{ [heroId: number]: DamageTextEvent | null }>({});
@@ -56,11 +58,17 @@ export class BattleEngineService {
     return actorId !== null ? this.heroes().find(h => h.id === actorId) : null;
   });
 
+  readonly isActorTeamRight = computed(() => {
+    return this.activeActor()?.team === 'right';
+  });
+
   private allLogs: BattleLog[] = [];
   private serverEvents: BattleEventDto[] = [];
   private serverEventIndex = -1;
   private currentTimeout: any = null;
+  private visualTimeouts: ReturnType<typeof setTimeout>[] = [];
   private damageEventCounter = 0;
+  private serverSkillMetadata = new Map<string, any>();
 
   constructor() {
     this.resetBattle();
@@ -71,6 +79,8 @@ export class BattleEngineService {
       clearTimeout(this.currentTimeout);
       this.currentTimeout = null;
     }
+    this.visualTimeouts.forEach(timeout => clearTimeout(timeout));
+    this.visualTimeouts = [];
 
     this.serverEvents = [];
     this.serverEventIndex = -1;
@@ -87,13 +97,22 @@ export class BattleEngineService {
     this.currentSkillId.set(null);
     this.activeTargetIds.set([]);
     this.damageEvents.set({});
+    this.serverSkillMetadata.clear();
+    this.battlePhase.set('idle');
   }
 
   /** Initializes an authoritative replay. All HP/energy values come from backend events. */
   loadServerBattle(battle: StartBattleResultDto): void {
     if (this.currentTimeout) clearTimeout(this.currentTimeout);
+    this.visualTimeouts.forEach(timeout => clearTimeout(timeout));
+    this.visualTimeouts = [];
+    this.serverSkillMetadata.clear();
     const mapHero = (h: any, team: 'left' | 'right'): Hero => ({
       id: team === 'left' ? h.id : -h.id,
+      heroTemplateId: h.heroTemplateId 
+        ?? INITIAL_HEROES.find(ih => ih.name === h.name || ih.avatar === h.avatar)?.heroTemplateId 
+        ?? INITIAL_HEROES.find(ih => ih.name === h.name || ih.avatar === h.avatar)?.id,
+      heroCode: h.heroCode,
       name: h.name,
       avatar: h.avatar,
       hp: h.stats.hp,
@@ -109,9 +128,18 @@ export class BattleEngineService {
       position: h.position ?? 1,
       team,
       statusEffects: [],
+      battleStatuses: [],
       skills: (h.skills ?? []).map((s: any) => s.id),
-      defaultFacing: team === 'left' ? 'right' : 'left'
+      defaultFacing: h.defaultFacing 
+        ?? INITIAL_HEROES.find(ih => ih.name === h.name || ih.avatar === h.avatar)?.defaultFacing 
+        ?? 'right',
+      stars: Math.max(0, Math.min(5, h.stars ?? INITIAL_HEROES.find(ih => ih.name === h.name || ih.avatar === h.avatar)?.stars ?? 1)),
+      auraTier: h.auraTier,
+      starAura: h.starAura ?? null
     });
+    [...battle.initialState.leftTeam, ...battle.initialState.rightTeam]
+      .flatMap(hero => hero.skills ?? [])
+      .forEach(skill => this.serverSkillMetadata.set(skill.id, skill));
     this.heroes.set([
       ...battle.initialState.leftTeam.map(h => mapHero(h, 'left')),
       ...battle.initialState.rightTeam.map(h => mapHero(h, 'right'))
@@ -127,6 +155,7 @@ export class BattleEngineService {
     this.activeTargetId.set(null);
     this.activeTargetIds.set([]);
     this.damageEvents.set({});
+    this.battlePhase.set('idle');
   }
 
   isTargetHit(heroId: number): boolean {
@@ -160,23 +189,41 @@ export class BattleEngineService {
     const event = this.serverEvents[++this.serverEventIndex];
     if (!event) { this.finishBattle(); return; }
     this.currentTurn.set(event.turn);
-    if (event.actorId != null) this.activeActorId.set(event.actorId);
-    if (event.skillId) {
+    if ((event.eventType === 'TURN_START' || event.eventType === 'SKILL_CAST') && event.actorId != null)
+      this.activeActorId.set(event.actorId);
+    if (event.eventType === 'SKILL_CAST' && event.skillId) {
+      const metadata = this.serverSkillMetadata.get(event.skillId);
+      const mockSkill = SKILL_LIST[event.skillId];
       this.currentSkillId.set(event.skillId);
-      this.currentSkillName.set(event.skillId);
+      this.currentSkillName.set(metadata?.name ?? mockSkill?.name ?? event.skillId);
+      this.currentSkillColor.set(mockSkill?.color ?? '#fbbf24');
+      this.currentSkillCategory.set((metadata?.skillTypeCode ?? 'NORMAL') === 'ENERGY' ? 'ultimate' : 'basic');
     }
-    if (event.targetId != null) this.activeTargetId.set(event.targetId);
+    this.battlePhase.set(this.toBattlePhase(event.phaseCode));
+
+    if (event.targetId != null && ['DAMAGE', 'HEAL', 'STATUS_APPLIED', 'SHIELD_APPLIED', 'POSITION_CHANGED'].includes(event.eventType)) {
+      const phaseTargets = this.serverEvents
+        .filter(e => e.castSequence === event.castSequence && e.phaseCode === event.phaseCode && e.targetId != null)
+        .map(e => e.targetId!)
+        .filter((id, index, all) => all.indexOf(id) === index);
+      this.activeTargetIds.set(phaseTargets.length > 1 ? phaseTargets : []);
+      this.activeTargetId.set(phaseTargets.length === 1 ? phaseTargets[0] : null);
+    }
 
     if (event.eventType === 'DAMAGE' || event.eventType === 'HEAL') {
       this.heroes.update(heroes => heroes.map(h => h.id === event.targetId && event.hpAfter != null
         ? { ...h, hp: event.hpAfter }
         : h));
       if (event.targetId != null) {
-        this.damageEvents.update(items => ({ ...items, [event.targetId!]: {
-          text: event.eventType === 'HEAL' ? `+${event.value}` : `-${event.value}${event.isCrit ? '!' : ''}`,
-          isCrit: event.isCrit,
-          key: this.damageEventCounter++
-        }}));
+        const damageKey = this.damageEventCounter++;
+        this.damageEvents.update(items => ({
+          ...items, [event.targetId!]: {
+            text: event.eventType === 'HEAL' ? `+${event.value}` : `-${event.value}${event.isCrit ? '!' : ''}`,
+            isCrit: event.isCrit,
+            key: damageKey
+          }
+        }));
+        this.scheduleCombatTextClear(event.targetId, damageKey);
       }
     } else if (event.eventType === 'ENERGY_CHANGED' && event.targetId != null && event.energyAfter != null) {
       this.heroes.update(heroes => heroes.map(h => h.id === event.targetId ? { ...h, mana: event.energyAfter! } : h));
@@ -184,22 +231,138 @@ export class BattleEngineService {
       this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
         ? { ...h, hp: 0, statusEffects: [...(h.statusEffects ?? []), 'Dead'] }
         : h));
+    } else if ((event.eventType === 'STATUS_APPLIED' || event.eventType === 'SHIELD_APPLIED') &&
+      event.targetId != null && event.effectTypeCode) {
+      const skill = event.skillId ? this.serverSkillMetadata.get(event.skillId) : null;
+      const effect = skill?.effects?.find((item: any) =>
+        item.effectTypeCode?.toUpperCase() === event.effectTypeCode?.toUpperCase());
+      const status = this.createBattleStatus(event, effect);
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
+        ? {
+          ...h,
+          statusEffects: [...new Set([...(h.statusEffects ?? []), event.effectTypeCode!])],
+          battleStatuses: [
+            ...(h.battleStatuses ?? []).filter(item => item.instanceId !== status.instanceId),
+            status
+          ]
+        }
+        : h));
+    } else if (event.eventType === 'STATUS_UPDATED' && event.targetId != null && event.effectTypeCode) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
+        ? {
+          ...h, battleStatuses: (h.battleStatuses ?? []).map(status => status.code === event.effectTypeCode
+            ? { ...status, remainingTurns: event.remainingTurns ?? status.remainingTurns }
+            : status)
+        }
+        : h));
+    } else if (event.eventType === 'STATUS_EXPIRED' && event.targetId != null && event.effectTypeCode) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
+        ? {
+          ...h,
+          statusEffects: (h.statusEffects ?? []).filter(code => code !== event.effectTypeCode),
+          battleStatuses: (h.battleStatuses ?? []).filter(status => status.code !== event.effectTypeCode)
+        }
+        : h));
+    } else if (event.eventType === 'SHIELD_ABSORBED' && event.targetId != null) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId
+        ? {
+          ...h, battleStatuses: (h.battleStatuses ?? []).map(status => status.code === 'SHIELD'
+            ? { ...status, value: Math.max(0, status.value - event.value) }
+            : status)
+        }
+        : h));
+    } else if (event.eventType === 'POSITION_CHANGED' && event.targetId != null) {
+      this.heroes.update(heroes => heroes.map(h => h.id === event.targetId ? { ...h, position: event.value } : h));
     } else if (event.eventType === 'BATTLE_END') {
       this.finishBattle();
       return;
     }
 
-    const delay = event.eventType === 'DAMAGE' || event.eventType === 'HEAL' ? 900 : 160;
+    const nextEvent = this.serverEvents[this.serverEventIndex + 1];
+    const sameCast = event.castSequence != null && nextEvent?.castSequence === event.castSequence;
+    const timelineDelay = sameCast
+      ? Math.max(20, (nextEvent.timelineOffsetMs ?? 0) - (event.timelineOffsetMs ?? 0))
+      : 160;
+    const delay = timelineDelay;
     this.currentTimeout = setTimeout(() => {
-      if (event.targetId != null) this.damageEvents.update(items => ({ ...items, [event.targetId!]: null }));
       if (event.eventType === 'TURN_END') {
         this.activeActorId.set(null);
         this.activeTargetId.set(null);
         this.currentSkillId.set(null);
         this.currentSkillName.set(null);
+        this.currentSkillCategory.set('basic');
+        this.battlePhase.set('idle');
+        this.activeTargetIds.set([]);
       }
       this.playNextServerEvent();
     }, delay / this.speed());
+  }
+
+  private scheduleCombatTextClear(heroId: number, eventKey: number): void {
+    const timeout = setTimeout(() => {
+      this.damageEvents.update(items => items[heroId]?.key === eventKey
+        ? { ...items, [heroId]: null }
+        : items);
+      this.visualTimeouts = this.visualTimeouts.filter(item => item !== timeout);
+    }, 1250 / this.speed());
+    this.visualTimeouts.push(timeout);
+  }
+
+  private toBattlePhase(phaseCode?: string | null): 'idle' | 'cast' | 'impact' | 'status' | 'recovery' {
+    switch ((phaseCode ?? '').toUpperCase()) {
+      case 'CAST': return 'cast';
+      case 'IMPACT': return 'impact';
+      case 'STATUS': return 'status';
+      case 'RECOVERY': return 'recovery';
+      default: return 'idle';
+    }
+  }
+
+  private createBattleStatus(event: BattleEventDto, effect: any): import('../models/hero.model').BattleStatusEffectViewModel {
+    const code = event.effectTypeCode!.toUpperCase();
+    const controls = ['STUN', 'SILENCE', 'TAUNT'];
+    const debuffs = ['MARK', 'STAT_DEBUFF'];
+    const fallbackIcons: Record<string, string> = {
+      STUN: '/assets/images/dcs-game/effects/stun.png',
+      SHIELD: '/assets/images/dcs-game/effects/shield.png',
+      MARK: '/assets/images/dcs-game/effects/mark.png',
+      SILENCE: '/assets/images/dcs-game/effects/silence.png',
+      DAMAGE_REDUCTION: '/assets/images/dcs-game/effects/damage-reduction.png',
+      TAUNT: '/assets/images/dcs-game/effects/taunt.png',
+      DAMAGE_REFLECTION: '/assets/images/dcs-game/effects/damage-reflection.png',
+      STAT_BUFF: '/assets/images/dcs-game/effects/stat-buff.png',
+      STAT_DEBUFF: '/assets/images/dcs-game/effects/stat-debuff.png'
+    };
+    const fallbackNames: Record<string, string> = {
+      STUN: 'Choáng', SHIELD: 'Khiên', MARK: 'Đánh dấu', SILENCE: 'Câm lặng',
+      DAMAGE_REDUCTION: 'Giảm sát thương', TAUNT: 'Khiêu khích',
+      DAMAGE_REFLECTION: 'Phản sát thương', STAT_BUFF: 'Tăng thuộc tính',
+      STAT_DEBUFF: 'Giảm thuộc tính'
+    };
+    const fallbackDescriptions: Record<string, string> = {
+      STUN: 'Không thể hành động trong lượt.',
+      TAUNT: 'Bị buộc ưu tiên tấn công người đã gây Khiêu Khích.'
+    };
+    return {
+      instanceId: `${event.actorId}:${event.skillId}:${code}:${event.targetId}`,
+      code,
+      name: effect?.effectTypeName ?? fallbackNames[code] ?? code,
+      description: effect?.effectDescription ?? fallbackDescriptions[code] ?? null,
+      iconPath: effect?.effectImagePath ?? fallbackIcons[code] ?? fallbackIcons['STAT_DEBUFF'],
+      colorHex: effect?.effectColorHex ?? (debuffs.includes(code) ? '#ef4444' : '#22c55e'),
+      category: controls.includes(code) ? 'CONTROL' : debuffs.includes(code) ? 'DEBUFF' :
+        effect?.isBeneficial === false ? 'SPECIAL' : 'BUFF',
+      value: event.value ?? 0,
+      remainingTurns: event.remainingTurns ?? 0,
+      stacks: 1,
+      modifiers: (effect?.statModifiers ?? []).map((modifier: any) => ({
+        attributeCode: modifier.attributeTypeCode,
+        attributeName: modifier.attributeTypeName,
+        valueType: modifier.valueType,
+        value: modifier.value
+      })),
+      sourceSkillId: event.skillId
+    };
   }
 
   pauseBattle(): void {

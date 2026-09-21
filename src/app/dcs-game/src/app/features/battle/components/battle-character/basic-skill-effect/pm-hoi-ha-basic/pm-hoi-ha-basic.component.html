@@ -1,0 +1,25 @@
+<div class="pm-hoi-ha-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="dual-shears-snip">
+      <div class="shear-blade blade-1"></div>
+      <div class="shear-blade blade-2"></div>
+      <div class="snip-cyan-spark"></div>
+    </div>
+    <div class="shear-wind-dash"></div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="cross-scissor-slash">
+      <span class="slash-line sl1"></span>
+      <span class="slash-line sl2"></span>
+    </div>
+    <div class="hair-cut-particles">
+      <span class="strand st1"></span>
+      <span class="strand st2"></span>
+      <span class="strand st3"></span>
+      <span class="strand st4"></span>
+    </div>
+  </ng-container>
+</div>

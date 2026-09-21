@@ -1,0 +1,55 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#e11d48'"
+  [style.--aura-secondary]="secondaryColor || '#f59e0b'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Base glow under feet and subtle red sparks -->
+  <div class="aura-core">
+    <div class="electric-base"></div>
+    <div class="core-sparks">
+      <span class="spk spk-1"></span>
+      <span class="spk spk-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Reduced red lightning bolts and body arcs -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <svg class="bolt-svg diag-tl-br" viewBox="0 0 40 120" preserveAspectRatio="none">
+      <path d="M 5 20 L 25 55 L 12 85 L 35 120" class="lightning-path"></path>
+    </svg>
+    <svg class="bolt-svg diag-tr-bl" viewBox="0 0 40 120" preserveAspectRatio="none">
+      <path d="M 35 20 L 15 55 L 28 85 L 5 120" class="lightning-path"></path>
+    </svg>
+    <svg class="bolt-svg chest-ring" viewBox="0 0 40 80" preserveAspectRatio="none">
+      <path d="M 4 30 Q 20 60 36 30" class="lightning-path"></path>
+    </svg>
+    <div class="tier3-sparks">
+      <span class="spk spk-3"></span>
+      <span class="spk spk-4"></span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Outer red-gold electric ring & energy pulse -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="electric-ring"></div>
+    <div class="energy-pulse-circle"></div>
+    <div class="orbiting-sparks">
+      <span class="orb-spark os-1">⚡</span>
+      <span class="orb-spark os-2">⚡</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin thunder halo, golden power rune, maximum lightning arcs -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-thunder-ring outer"></div>
+    <div class="golden-power-rune">🗲</div>
+    <div class="ground-arc-burst">
+      <span class="arc arc-1"></span>
+      <span class="arc arc-2"></span>
+      <span class="arc arc-3"></span>
+    </div>
+  </div>
+
+</div>

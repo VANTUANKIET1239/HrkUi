@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.generic-basic-effect {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+
+  .generic-strike-flash {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff, rgba(255, 255, 255, 0.4) 60%, transparent 100%);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+    animation: generic-flash 0.35s ease-out forwards;
+  }
+
+  .generic-slash-trail {
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    width: 65px;
+    height: 10px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(255, 255, 255, 0.9) 70%,
+      #ffffff 100%
+    );
+    border-radius: 6px;
+    animation: generic-slash 0.4s ease-out forwards;
+  }
+
+  &.is-impact {
+    .generic-strike-flash {
+      width: 45px;
+      height: 45px;
+      animation: generic-impact-flash 0.38s ease-out forwards;
+    }
+  }
+}
+
+@keyframes generic-flash {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; }
+}
+
+@keyframes generic-slash {
+  0% { transform: translate(-50%, -50%) translateX(calc(-10px * var(--facing))) scaleX(0.3); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) translateX(calc(80px * var(--facing))) scaleX(1.2); opacity: 0; }
+}
+
+@keyframes generic-impact-flash {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}

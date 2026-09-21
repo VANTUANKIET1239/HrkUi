@@ -2,8 +2,14 @@
   <!-- Active selection ring (base color matching skill) -->
   <div class="active-ring" [style.--skill-color]="skillColor"></div>
 
-  <!-- Skill 1: Basic Attack Visuals -->
-  <app-skill-basic *ngIf="skillCategory === 'basic' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-basic>
+  <!-- Skill 1: Basic Skill Visuals (Cast Phase) -->
+  <app-basic-skill-effect 
+    *ngIf="(skillCategory === 'basic' || activeSkillId === 'NORMAL_ATTACK' || activeSkillId === 'BASIC_RANDOM_HEAL') && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"
+    [character]="character"
+    [activeSkillId]="activeSkillId"
+    [phase]="'cast'"
+    [isTeamRight]="isTeamRight">
+  </app-basic-skill-effect>
 
   <!-- Skill 2: Rage Burst Visuals -->
   <app-skill-rage *ngIf="skillCategory === 'rage' && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"></app-skill-rage>

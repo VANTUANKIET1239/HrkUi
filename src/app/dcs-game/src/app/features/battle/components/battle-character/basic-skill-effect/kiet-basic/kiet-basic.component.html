@@ -1,0 +1,29 @@
+<div class="kiet-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="muscle-shockwave"></div>
+    <div class="fist-charge"></div>
+    <div class="fist-trail">
+      <div class="fist-head"></div>
+      <div class="flame-tail"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="punch-impact-ring"></div>
+    <div class="punch-impact-core"></div>
+    <div class="light-cracks">
+      <span class="crack c1"></span>
+      <span class="crack c2"></span>
+      <span class="crack c3"></span>
+      <span class="crack c4"></span>
+    </div>
+    <div class="muscle-force-sparks">
+      <span class="spk s1"></span>
+      <span class="spk s2"></span>
+      <span class="spk s3"></span>
+      <span class="spk s4"></span>
+    </div>
+  </ng-container>
+</div>

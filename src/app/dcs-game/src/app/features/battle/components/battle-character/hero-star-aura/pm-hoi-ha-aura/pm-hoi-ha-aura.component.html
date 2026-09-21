@@ -1,0 +1,46 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#14b8a6'"
+  [style.--aura-secondary]="secondaryColor || '#8b5cf6'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Gentle teal ground aura and hair wisps -->
+  <div class="aura-core">
+    <div class="grooming-base"></div>
+    <div class="hair-wisps">
+      <span class="wisp w-1">~</span>
+      <span class="wisp w-2">~</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Spectral scissors cut arcs and hair vortex -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="scissor-cuts">
+      <span class="shear-cut sc-1">/</span>
+      <span class="shear-cut sc-2">\</span>
+    </div>
+    <div class="hair-vortex-ring"></div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Orbiting scissors and dense hair cyclone -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="barber-cyclone-ring"></div>
+    <div class="scissors-orbit">
+      <span class="scissor sz-1">✂️</span>
+      <span class="scissor sz-2">✂️</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Barber crown halo, twin scissors rings and spectral cyclone -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-barber-ring outer"></div>
+    <div class="barber-halo-crown">𐂂</div>
+    <div class="spectral-shear-burst">
+      <span class="burst b-1">✦</span>
+      <span class="burst b-2">✦</span>
+      <span class="burst b-3">✦</span>
+    </div>
+  </div>
+
+</div>

@@ -515,7 +515,9 @@ export class HeroManagementComponent implements OnInit {
       magicResistance: hero.stats.magicResistance,
       position: 1,
       team: 'left',
-      statusEffects: []
+      statusEffects: [],
+      stars: hero.stars || 1,
+      auraTier: hero.auraTier
     };
   }
 

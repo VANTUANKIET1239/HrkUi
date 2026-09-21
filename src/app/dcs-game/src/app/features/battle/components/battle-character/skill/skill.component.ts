@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Hero } from '../../../../../core/models/hero.model';
-import { SkillBasicComponent } from './skill-basic/skill-basic.component';
+import { BasicSkillEffectComponent } from '../basic-skill-effect/basic-skill-effect.component';
 import { SkillRageComponent } from './skill-rage/skill-rage.component';
 import { SkillThunderComponent } from './skill-thunder/skill-thunder.component';
 import { SkillUltimateComponent } from './skill-ultimate/skill-ultimate.component';
@@ -21,7 +21,7 @@ import { SkillDeadliftDiaChanComponent } from './skill-deadlift-dia-chan/skill-d
   standalone: true,
   imports: [
     CommonModule,
-    SkillBasicComponent,
+    BasicSkillEffectComponent,
     SkillRageComponent,
     SkillThunderComponent,
     SkillUltimateComponent,

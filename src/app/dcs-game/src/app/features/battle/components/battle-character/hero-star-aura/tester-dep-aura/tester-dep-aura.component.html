@@ -1,0 +1,51 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#a855f7'"
+  [style.--aura-secondary]="secondaryColor || '#1e1b4b'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Subtle violet-black mist under feet -->
+  <div class="aura-core">
+    <div class="obsidian-base"></div>
+    <div class="void-wisps">
+      <span class="wisp w-1"></span>
+      <span class="wisp w-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Obsidian particles and violet arcane tendrils -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="tendril-lattice">
+      <div class="violet-tendril vt-1"></div>
+      <div class="violet-tendril vt-2"></div>
+    </div>
+    <div class="obsidian-particles">
+      <span class="op op-1"></span>
+      <span class="op op-2"></span>
+      <span class="op op-3"></span>
+      <span class="op op-4"></span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Violet crystal orbit and nebula ring -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="nebula-orbit-ring"></div>
+    <div class="crystal-orbit">
+      <span class="crystal c-1">♦</span>
+      <span class="crystal c-2">♦</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Dual nebula layers, obsidian shards and void runes -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-nebula-ring outer"></div>
+    <div class="void-rune-sigil">⛧</div>
+    <div class="obsidian-shards">
+      <span class="shard sh-1"></span>
+      <span class="shard sh-2"></span>
+      <span class="shard sh-3"></span>
+    </div>
+  </div>
+
+</div>

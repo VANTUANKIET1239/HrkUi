@@ -1,0 +1,46 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#06b6d4'"
+  [style.--aura-secondary]="secondaryColor || '#e0f2fe'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Gentle cyan sterile ground disc -->
+  <div class="aura-core">
+    <div class="sterile-base"></div>
+    <div class="core-bubbles">
+      <span class="bubble bb-1"></span>
+      <span class="bubble bb-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Medical scan ring and sanitization droplets/particles -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="scan-radar-ring"></div>
+    <div class="sanitizing-droplets">
+      <span class="drop dr-1">💧</span>
+      <span class="drop dr-2">✦</span>
+      <span class="drop dr-3">💧</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Small syringe orbit and cyan-white pulse wave -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="cyan-white-pulse"></div>
+    <div class="syringe-orbit">
+      <span class="syringe s-1">💉</span>
+      <span class="syringe s-2">💉</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin medical rings, illuminated medical cross rune and vapor glow -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-medical-ring outer"></div>
+    <div class="medical-cross-rune">✚</div>
+    <div class="vapor-mist-cloud">
+      <span class="mist m-1"></span>
+      <span class="mist m-2"></span>
+    </div>
+  </div>
+
+</div>

@@ -7,6 +7,10 @@ import { DamageTextEvent } from '../../../../core/services/battle-engine.service
 import { SKILL_LIST } from '../../mocks/mock-battle.data';
 import { SkillComponent } from './skill/skill.component';
 import { PassiveEffectComponent } from './passive-effect/passive-effect.component';
+import { getSpriteFlipState } from '../../utils/battle-facing.util';
+
+import { BasicSkillEffectComponent } from './basic-skill-effect/basic-skill-effect.component';
+import { HeroStarAuraComponent } from './hero-star-aura/hero-star-aura.component';
 
 @Component({
   selector: 'app-battle-character',
@@ -16,7 +20,9 @@ import { PassiveEffectComponent } from './passive-effect/passive-effect.componen
     HpBarComponent, 
     ManaBarComponent,
     SkillComponent,
-    PassiveEffectComponent
+    PassiveEffectComponent,
+    BasicSkillEffectComponent,
+    HeroStarAuraComponent
   ],
   templateUrl: './battle-character.component.html',
   styleUrl: './battle-character.component.scss'
@@ -28,13 +34,20 @@ export class BattleCharacterComponent {
   @Input() skillColor = '#ffffff';
   @Input() damageEvent: DamageTextEvent | null = null;
   @Input() activeSkillId: string | null = null;
+  @Input() activeSkillCategory: 'basic' | 'ultimate' = 'basic';
   @Input() displayMode: 'battle' | 'formation' = 'battle';
+  @Input() activeActor: Hero | null | undefined = null;
+
+  isBasicSkill(skillId: string | null): boolean {
+    if (!skillId) return false;
+    return skillId === 'NORMAL_ATTACK' || skillId === 'BASIC_RANDOM_HEAL' || this.activeSkillCategory === 'basic';
+  }
 
   getSkillCategory(): 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly' | null {
     if (!this.isCharging || !this.activeSkillId) return null;
 
     const skill = SKILL_LIST[this.activeSkillId];
-    return (skill?.category as 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly') || 'basic';
+    return (skill?.category as 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly') || this.activeSkillCategory;
   }
 
   hasMoneyEffect(): boolean {
@@ -43,39 +56,10 @@ export class BattleCharacterComponent {
     ) || false;
   }
 
-  hasRedLightningEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Red Lightning', 'Sấm Sét Đỏ'].includes(e)
-    ) || false;
-  }
-
-  hasObsidianNebulaEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Veil of the Obsidian Nebulae', 'Obsidian Nebula', 'Veil of Obsidian Nebulae'].includes(e)
-    ) || false;
-  }
-
   hasDarkShieldEffect(): boolean {
+    if (this.character.statusEffects?.includes('SHIELD')) return true;
     return this.character.statusEffects?.some(e => 
       ['Dark Shield', 'Giáp Hư Không'].includes(e)
-    ) || false;
-  }
-
-  hasScorchedEarthEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Scorched Earth Command', 'Scorched Earth', 'Chỉ Huy Thiết Giáp'].includes(e)
-    ) || false;
-  }
-
-  hasSpectralGroomingEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Spectral Grooming Swarm', 'Spectral Grooming', 'Vortex Tóc Tai'].includes(e)
-    ) || false;
-  }
-
-  hasViciousDebtEffect(): boolean {
-    return this.character.statusEffects?.some(e => 
-      ['Vortex of Vicious Debt', 'Vicious Debt', 'Vòng Xoáy Nợ Nần', 'Chúa Nợ'].includes(e)
     ) || false;
   }
 
@@ -90,11 +74,10 @@ export class BattleCharacterComponent {
   }
 
   shouldFlipSprite(): boolean {
-    const defaultFacing = this.character.defaultFacing || 'right';
-    if (this.character.team === 'left') {
-      return defaultFacing === 'left';
-    } else {
-      return defaultFacing === 'right';
-    }
+    return getSpriteFlipState(this.character.team, this.character.defaultFacing);
   }
 }
+
+export { getSpriteFlipState } from '../../utils/battle-facing.util';
+
+

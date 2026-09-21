@@ -16,7 +16,9 @@ export interface BattleInitialStateDto {
 export type BattleEventType =
   | 'BATTLE_START' | 'ROUND_START' | 'TURN_START' | 'SKILL_CAST'
   | 'DAMAGE' | 'HEAL' | 'ENERGY_CHANGED' | 'STATUS_APPLIED'
-  | 'STATUS_EXPIRED' | 'DEATH' | 'TURN_END' | 'BATTLE_END';
+  | 'STATUS_UPDATED' | 'STATUS_EXPIRED' | 'SHIELD_APPLIED' | 'SHIELD_ABSORBED'
+  | 'TURN_SKIPPED' | 'POSITION_CHANGED' | 'SKILL_COMPLETED'
+  | 'DEATH' | 'TURN_END' | 'BATTLE_END';
 
 export interface BattleEventDto {
   sequence: number;
@@ -35,6 +37,9 @@ export interface BattleEventDto {
   energyAfter?: number | null;
   isCrit: boolean;
   remainingTurns?: number | null;
+  castSequence?: number | null;
+  timelineOffsetMs: number;
+  phaseCode?: 'CAST' | 'IMPACT' | 'STATUS' | 'RECOVERY' | string | null;
 }
 
 export interface StartBattleResultDto {

@@ -1,0 +1,37 @@
+<div class="coder-banh-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="code-stream-burst">
+      <span class="code-char c1">{{ '{' }}</span>
+      <span class="code-char c2">&lt;/&gt;</span>
+      <span class="code-char c3">;</span>
+      <span class="code-char c4">01</span>
+    </div>
+    <div class="pixel-digital-trail">
+      <span class="pixel p1"></span>
+      <span class="pixel p2"></span>
+      <span class="pixel p3"></span>
+      <span class="pixel p4"></span>
+      <span class="pixel p5"></span>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="terminal-error-box">
+      <div class="terminal-header">
+        <span class="term-dot"></span>
+        <span class="term-title">ERR 404</span>
+      </div>
+      <div class="terminal-body">&gt; BUG_INJECTED</div>
+    </div>
+    <div class="code-pixel-shards">
+      <span class="shard s1"></span>
+      <span class="shard s2"></span>
+      <span class="shard s3"></span>
+      <span class="shard s4"></span>
+      <span class="shard s5"></span>
+      <span class="shard s6"></span>
+    </div>
+  </ng-container>
+</div>

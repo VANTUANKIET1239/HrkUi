@@ -1,0 +1,217 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.tester-dep-basic-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Dark Violet Orb + Shadow Missile + Local Motes
+   ======================================================== */
+.dark-violet-orb {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .orb-core {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f3e8ff 15%, #a855f7 60%, #3b0764 100%);
+    box-shadow: 0 0 16px #a855f7, 0 0 28px #581c87;
+    animation: tester-orb-pulse 0.38s ease-out forwards;
+  }
+
+  .orb-shadow-aura {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    box-shadow: inset 0 0 10px rgba(126, 34, 206, 0.5);
+    animation: tester-aura-spin 0.4s linear forwards;
+  }
+}
+
+@keyframes tester-orb-pulse {
+  0% { transform: scale(0.3); opacity: 0; }
+  40% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0; }
+}
+
+@keyframes tester-aura-spin {
+  0% { transform: rotate(0deg) scale(0.6); opacity: 0.8; }
+  100% { transform: rotate(180deg) scale(1.4); opacity: 0; }
+}
+
+.dark-missile-streak {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 75px;
+  height: 22px;
+  transform-origin: center center;
+  animation: tester-missile-fly 0.46s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+
+  .streak-head {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fdf4ff 10%, #c084fc 45%, #6b21a8 80%, #2e1065 100%);
+    box-shadow: 0 0 14px #c084fc, 0 0 24px #7e22ce;
+  }
+
+  .streak-trail {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 12px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(88, 28, 135, 0.6) 35%,
+      rgba(168, 85, 247, 0.85) 80%,
+      #f3e8ff 100%
+    );
+    border-radius: 10px;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes tester-missile-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-15px * var(--facing))) scaleX(0.4);
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(95px * var(--facing))) scaleX(1.3);
+  }
+}
+
+.local-shadow-motes {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+
+  .mote {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #c084fc;
+    box-shadow: 0 0 6px #7e22ce;
+    animation: tester-mote-anim 0.4s ease-out forwards;
+
+    &.m1 { top: -14px; left: calc(12px * var(--facing)); animation-delay: 0.03s; }
+    &.m2 { top: 12px; left: calc(-8px * var(--facing)); animation-delay: 0.06s; }
+    &.m3 { top: -6px; left: calc(-18px * var(--facing)); animation-delay: 0.09s; }
+  }
+}
+
+@keyframes tester-mote-anim {
+  0% { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* ========================================================
+   IMPACT PHASE: Bug Scan Reticle + Obsidian Wisps
+   ======================================================== */
+.bug-scan-circle {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+
+  .scan-ring-outer {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px dashed #c084fc;
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.6), inset 0 0 10px rgba(126, 34, 206, 0.4);
+    animation: tester-scan-ring 0.42s ease-out forwards;
+  }
+
+  .scan-crosshair {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(192, 132, 252, 0.6);
+  }
+
+  .scan-laser-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e9d5ff, #a855f7, transparent);
+    box-shadow: 0 0 8px #c084fc;
+    animation: tester-laser-sweep 0.38s ease-in-out forwards;
+  }
+}
+
+@keyframes tester-scan-ring {
+  0% { transform: scale(0.3) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.3) rotate(90deg); opacity: 0; }
+}
+
+@keyframes tester-laser-sweep {
+  0% { top: 10%; opacity: 0.8; }
+  50% { top: 50%; opacity: 1; }
+  100% { top: 90%; opacity: 0; }
+}
+
+.obsidian-burst-wisps {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .wisp {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #e9d5ff, #7e22ce 60%, #2e1065 100%);
+    box-shadow: 0 0 10px #a855f7;
+    animation: tester-wisp-anim 0.44s ease-out forwards;
+
+    &.w1 { --wx: 28px; --wy: -24px; }
+    &.w2 { --wx: -26px; --wy: -28px; }
+    &.w3 { --wx: 30px; --wy: 20px; }
+    &.w4 { --wx: -28px; --wy: 22px; }
+    &.w5 { --wx: 0; --wy: -32px; }
+  }
+}
+
+@keyframes tester-wisp-anim {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(var(--wx) * var(--facing)), var(--wy)) scale(0.2); opacity: 0; }
+}

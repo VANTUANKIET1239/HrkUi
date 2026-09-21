@@ -46,6 +46,9 @@ export interface SkillEffect {
   effectTypeName?: string;
   effectGroup?: string;
   isBeneficial?: boolean;
+  effectDescription?: string | null;
+  effectImagePath?: string | null;
+  effectColorHex?: string | null;
   targetTypeCode: string;
   targetTypeName?: string;
   targetSide?: string;
@@ -87,4 +90,10 @@ export interface Skill {
   healMultiplier?: number;
   damageReductionMultiplier?: number;
   redirectRatio?: number;
+  animation?: {
+    animationKey: string;
+    totalDurationMs: number;
+    defaultPlaybackSpeed: number;
+    phases: Array<{ phaseCode: string; startAtMs: number; durationMs: number; triggerEventType?: string | null }>;
+  } | null;
 }

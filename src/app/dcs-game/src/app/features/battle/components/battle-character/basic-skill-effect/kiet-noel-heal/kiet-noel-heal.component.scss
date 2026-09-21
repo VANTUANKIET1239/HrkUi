@@ -1,0 +1,220 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.kiet-noel-heal-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Holy Gift Aura + Healing Starlight Flight
+   ======================================================== */
+.holy-gift-aura {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .gift-box-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 0 10px #22c55e) drop-shadow(0 0 18px #10b981);
+    animation: kiet-gift-float 0.42s ease-out forwards;
+  }
+
+  .star-halo {
+    font-size: 13px;
+    color: #fef08a;
+    text-shadow: 0 0 8px #fde047;
+    margin-top: -6px;
+    animation: kiet-halo-twinkle 0.38s ease-in-out forwards;
+  }
+}
+
+@keyframes kiet-gift-float {
+  0% { transform: scale(0.3) translateY(10px); opacity: 0; }
+  40% { transform: scale(1.15) translateY(-5px); opacity: 1; }
+  100% { transform: scale(0.8) translateY(-18px); opacity: 0; }
+}
+
+@keyframes kiet-halo-twinkle {
+  0% { transform: scale(0.4) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+  100% { transform: scale(1.4) rotate(90deg); opacity: 0; }
+}
+
+.healing-beam-flight {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 70px;
+  height: 20px;
+  transform-origin: center center;
+  animation: kiet-beam-fly 0.48s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+
+  .beam-head {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #86efac;
+    text-shadow: 0 0 12px #22c55e, 0 0 20px #10b981;
+  }
+
+  .beam-emerald-trail {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 55px;
+    height: 8px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(16, 185, 129, 0.3) 30%,
+      rgba(74, 222, 128, 0.85) 80%,
+      #ffffff 100%
+    );
+    border-radius: 8px;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes kiet-beam-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-10px * var(--facing))) scaleX(0.4);
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(95px * var(--facing))) scaleX(1.3);
+  }
+}
+
+/* ========================================================
+   IMPACT PHASE: Healing Sanctuary Ring + Rising Pluses + Star Sparkles
+   (Rendered on the ally being healed)
+   ======================================================== */
+.healing-sanctuary-ring {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(75deg);
+  width: 95px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2.5px solid #4ade80;
+  box-shadow: 0 0 20px #22c55e, inset 0 0 14px rgba(74, 222, 128, 0.7);
+  animation: kiet-heal-ring-expand 0.52s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes kiet-heal-ring-expand {
+  0% {
+    transform: translateX(-50%) rotateX(75deg) scale(0.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) rotateX(75deg) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.healing-sanctuary-glow {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f0fdf4 15%, #4ade80 55%, transparent 80%);
+  filter: blur(4px);
+  animation: kiet-heal-glow 0.48s ease-out forwards;
+}
+
+@keyframes kiet-heal-glow {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+.rising-plus-signs {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+
+  .plus {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 900;
+    color: #22c55e;
+    text-shadow: 0 0 8px #86efac, 0 0 16px #22c55e;
+    line-height: 1;
+    animation: kiet-plus-rise 0.56s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+
+    &.p1 { left: -22px; animation-delay: 0.02s; }
+    &.p2 { left: 16px; animation-delay: 0.08s; font-size: 18px; }
+    &.p3 { left: -8px; animation-delay: 0.14s; font-size: 14px; }
+    &.p4 { left: 8px; animation-delay: 0.18s; font-size: 15px; }
+  }
+}
+
+@keyframes kiet-plus-rise {
+  0% {
+    transform: translateY(0) scale(0.4);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(-15px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-55px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.emerald-star-sparkles {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+
+  .star {
+    position: absolute;
+    line-height: 1;
+    color: #bbf7d0;
+    text-shadow: 0 0 8px #4ade80;
+    animation: kiet-star-spark 0.5s ease-out forwards;
+
+    &.s1 { font-size: 12px; --sx: 24px; --sy: -20px; animation-delay: 0.04s; }
+    &.s2 { font-size: 10px; --sx: -22px; --sy: -24px; animation-delay: 0.08s; }
+    &.s3 { font-size: 13px; --sx: 20px; --sy: 16px; animation-delay: 0.12s; }
+    &.s4 { font-size: 11px; --sx: -18px; --sy: 18px; animation-delay: 0.15s; }
+  }
+}
+
+@keyframes kiet-star-spark {
+  0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
+  100% { transform: translate(var(--sx), var(--sy)) scale(1.1); opacity: 0; }
+}

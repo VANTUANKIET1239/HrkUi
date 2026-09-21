@@ -1,0 +1,33 @@
+<div class="tuong-long-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="muzzle-flash-burst">
+      <div class="muzzle-core"></div>
+      <div class="muzzle-sparks">
+        <span class="msp ms1"></span>
+        <span class="msp ms2"></span>
+        <span class="msp ms3"></span>
+      </div>
+    </div>
+    <div class="tracer-bullet-streak">
+      <div class="bullet-slug"></div>
+      <div class="tracer-line"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="bullet-impact-puff">
+      <span class="dust d1"></span>
+      <span class="dust d2"></span>
+      <span class="dust d3"></span>
+    </div>
+    <div class="bullet-impact-flash"></div>
+    <div class="shrapnel-sparks">
+      <span class="shp sh1"></span>
+      <span class="shp sh2"></span>
+      <span class="shp sh3"></span>
+      <span class="shp sh4"></span>
+    </div>
+  </ng-container>
+</div>

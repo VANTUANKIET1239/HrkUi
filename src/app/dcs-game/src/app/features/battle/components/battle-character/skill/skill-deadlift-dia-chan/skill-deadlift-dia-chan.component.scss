@@ -17,6 +17,11 @@
   width: 200px;
   height: 250px;
   pointer-events: none;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
 }
 
 /* ==========================================
@@ -162,11 +167,11 @@
   }
   60% {
     opacity: 0.95;
-    transform: translateX(-50%) scale(1.15, 1.15) skewX(2deg);
+    transform: translateX(-50%) scale(1.15, 1.15) skewX(calc(2deg * var(--facing)));
     filter: brightness(1.2);
   }
   100% {
-    transform: translateX(-50%) scale(0.85, 1.4) skewX(-2deg);
+    transform: translateX(-50%) scale(0.85, 1.4) skewX(calc(-2deg * var(--facing)));
     opacity: 0;
   }
 }

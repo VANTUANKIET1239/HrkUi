@@ -1,0 +1,47 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#f97316'"
+  [style.--aura-secondary]="secondaryColor || '#eab308'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Embers and smoldering ashes under feet -->
+  <div class="aura-core">
+    <div class="scorched-base"></div>
+    <div class="ember-sparks">
+      <span class="emb emb-1"></span>
+      <span class="emb emb-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Scorched fissures and rising heat flames -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="lava-fissures"></div>
+    <div class="rising-heat-flames">
+      <span class="flame f-1">🔥</span>
+      <span class="flame f-2">🔥</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Military command ring, bullet shells and flame pulse -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="command-ring"></div>
+    <div class="shell-orbit">
+      <span class="shell sh-1">💥</span>
+      <span class="shell sh-2">💥</span>
+    </div>
+    <div class="flame-shock-pulse"></div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Battlefield insignia, twin fire ring and burning ember storm -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-fire-ring outer"></div>
+    <div class="battlefield-insignia">★</div>
+    <div class="blazing-embers">
+      <span class="blaze b-1"></span>
+      <span class="blaze b-2"></span>
+      <span class="blaze b-3"></span>
+    </div>
+  </div>
+
+</div>

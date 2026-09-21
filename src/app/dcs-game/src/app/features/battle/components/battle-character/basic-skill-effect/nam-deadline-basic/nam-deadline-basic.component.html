@@ -1,0 +1,32 @@
+<div class="nam-deadline-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="sterile-prep-flash"></div>
+    <div class="syringe-projectile">
+      <div class="syringe-body">
+        <div class="syringe-barrel">
+          <span class="fluid-level"></span>
+        </div>
+        <div class="syringe-needle"></div>
+        <div class="syringe-plunger"></div>
+      </div>
+      <div class="cyan-stream-trail"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="cyan-sanitizing-ring"></div>
+    <div class="cyan-cross-burst">
+      <span class="cross-arm h-arm"></span>
+      <span class="cross-arm v-arm"></span>
+    </div>
+    <div class="medicine-droplets">
+      <span class="drop d1"></span>
+      <span class="drop d2"></span>
+      <span class="drop d3"></span>
+      <span class="drop d4"></span>
+      <span class="drop d5"></span>
+    </div>
+  </ng-container>
+</div>

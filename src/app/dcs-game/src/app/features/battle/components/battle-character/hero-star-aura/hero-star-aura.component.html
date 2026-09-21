@@ -1,0 +1,133 @@
+<ng-container *ngIf="effectiveStarLevel >= 2 && visualKey">
+  <!-- Hero 1: K Cởi Trần -->
+  <app-kiet-aura
+    *ngIf="visualKey === 'kiet-red-lightning' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-kiet-aura>
+
+  <!-- Hero 2: Nam Deadline -->
+  <app-nam-deadline-aura
+    *ngIf="visualKey === 'nam-deadline-sterile-pulse'"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-nam-deadline-aura>
+
+  <!-- Hero 3: Chuẩn Men -->
+  <app-chuan-men-aura
+    *ngIf="visualKey === 'chuan-men-crimson-rhythm' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-chuan-men-aura>
+
+  <!-- Hero 4: Coder Bảnh -->
+  <app-coder-banh-aura
+    *ngIf="visualKey === 'coder-banh-digital-knowledge'"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-coder-banh-aura>
+
+  <!-- Hero 5: Tester Đẹp -->
+  <app-tester-dep-aura
+    *ngIf="visualKey === 'tester-dep-obsidian-nebula' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-tester-dep-aura>
+
+  <!-- Hero 6: Tướng Long Quân Đội -->
+  <app-tuong-long-aura
+    *ngIf="visualKey === 'tuong-long-scorched-command' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-tuong-long-aura>
+
+  <!-- Hero 7: PM Hối Hả -->
+  <app-pm-hoi-ha-aura
+    *ngIf="visualKey === 'pm-hoi-ha-spectral-grooming' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-pm-hoi-ha-aura>
+
+  <!-- Hero 8: QA Kỹ Tính -->
+  <app-qa-ky-tinh-aura
+    *ngIf="visualKey === 'qa-ky-tinh-vicious-debt' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-qa-ky-tinh-aura>
+
+  <!-- Hero 9: Kiet Noel -->
+  <app-kiet-noel-aura
+    *ngIf="visualKey === 'kiet-noel-dark-blizzard' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-kiet-noel-aura>
+
+  <!-- Hero 10: Hoàng Nguyên -->
+  <app-hoang-nguyen-aura
+    *ngIf="visualKey === 'hoang-nguyen-heavy-iron' && effectiveStarLevel < 5"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-hoang-nguyen-aura>
+
+  <!-- Five-star legacy visuals are reused verbatim so their DOM, CSS and timing stay unchanged. -->
+  <app-pe-red-lightning
+    *ngIf="effectiveStarLevel === 5 && (visualKey === 'kiet-red-lightning' || visualKey === 'chuan-men-crimson-rhythm')">
+  </app-pe-red-lightning>
+
+  <app-pe-obsidian-nebula
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'tester-dep-obsidian-nebula'">
+  </app-pe-obsidian-nebula>
+
+  <app-pe-scorched-earth
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'tuong-long-scorched-command'">
+  </app-pe-scorched-earth>
+
+  <app-pe-spectral-grooming
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'pm-hoi-ha-spectral-grooming'">
+  </app-pe-spectral-grooming>
+
+  <app-pe-vicious-debt
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'qa-ky-tinh-vicious-debt' && hero"
+    [character]="hero!">
+  </app-pe-vicious-debt>
+
+  <app-pe-dark-blizzard
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'kiet-noel-dark-blizzard' && hero"
+    [character]="hero!">
+  </app-pe-dark-blizzard>
+
+  <app-pe-heavy-iron-aura
+    *ngIf="effectiveStarLevel === 5 && visualKey === 'hoang-nguyen-heavy-iron' && hero"
+    [character]="hero!">
+  </app-pe-heavy-iron-aura>
+</ng-container>

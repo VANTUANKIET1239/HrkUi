@@ -1,0 +1,34 @@
+<div class="tester-dep-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="dark-violet-orb">
+      <div class="orb-core"></div>
+      <div class="orb-shadow-aura"></div>
+    </div>
+    <div class="dark-missile-streak">
+      <div class="streak-head"></div>
+      <div class="streak-trail"></div>
+    </div>
+    <div class="local-shadow-motes">
+      <span class="mote m1"></span>
+      <span class="mote m2"></span>
+      <span class="mote m3"></span>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="bug-scan-circle">
+      <div class="scan-ring-outer"></div>
+      <div class="scan-crosshair"></div>
+      <div class="scan-laser-line"></div>
+    </div>
+    <div class="obsidian-burst-wisps">
+      <span class="wisp w1"></span>
+      <span class="wisp w2"></span>
+      <span class="wisp w3"></span>
+      <span class="wisp w4"></span>
+      <span class="wisp w5"></span>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,238 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.nam-deadline-basic-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Sterile Flash + Cyan Syringe Projectile
+   ======================================================== */
+.sterile-prep-flash {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e0f2fe 10%, #06b6d4 50%, transparent 80%);
+  filter: blur(2px);
+  animation: nam-flash-anim 0.3s ease-out forwards;
+}
+
+@keyframes nam-flash-anim {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+
+.syringe-projectile {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 60px;
+  height: 20px;
+  transform-origin: center center;
+  animation: nam-syringe-fly 0.46s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+
+  .syringe-body {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleX(var(--facing));
+    display: flex;
+    align-items: center;
+
+    .syringe-plunger {
+      width: 6px;
+      height: 10px;
+      background: #94a3b8;
+      border-radius: 1px;
+    }
+
+    .syringe-barrel {
+      width: 22px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid #06b6d4;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 10px #06b6d4;
+
+      .fluid-level {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #0284c7, #22d3ee);
+        width: 75%;
+      }
+    }
+
+    .syringe-needle {
+      width: 14px;
+      height: 2px;
+      background: #f8fafc;
+      box-shadow: 0 0 6px #22d3ee;
+    }
+  }
+
+  .cyan-stream-trail {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 4px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(6, 182, 212, 0.4) 30%,
+      rgba(34, 211, 238, 0.9) 80%,
+      #ffffff 100%
+    );
+    border-radius: 4px;
+    filter: drop-shadow(0 0 8px #06b6d4);
+  }
+}
+
+@keyframes nam-syringe-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-10px * var(--facing))) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(110px * var(--facing))) scale(1.1);
+  }
+}
+
+/* ========================================================
+   IMPACT PHASE: Sanitizing Ring + Cross Burst + Droplets
+   ======================================================== */
+.cyan-sanitizing-ring {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 2px solid #22d3ee;
+  box-shadow: 0 0 20px #06b6d4, inset 0 0 12px rgba(34, 211, 238, 0.6);
+  animation: nam-sanit-ring 0.45s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes nam-sanit-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.cyan-cross-burst {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .cross-arm {
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0 0 10px #22d3ee, 0 0 18px #06b6d4;
+    border-radius: 2px;
+    animation: nam-cross-anim 0.35s ease-out forwards;
+
+    &.h-arm {
+      width: 32px;
+      height: 4px;
+      top: -2px;
+      left: -16px;
+    }
+    &.v-arm {
+      width: 4px;
+      height: 32px;
+      top: -16px;
+      left: -2px;
+    }
+  }
+}
+
+@keyframes nam-cross-anim {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.3) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.medicine-droplets {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .drop {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a5f3fc;
+    box-shadow: 0 0 8px #06b6d4;
+
+    &.d1 { animation: nam-drop-1 0.42s ease-out forwards; }
+    &.d2 { animation: nam-drop-2 0.42s ease-out forwards; }
+    &.d3 { animation: nam-drop-3 0.42s ease-out forwards; }
+    &.d4 { animation: nam-drop-4 0.42s ease-out forwards; }
+    &.d5 { animation: nam-drop-5 0.42s ease-out forwards; }
+  }
+}
+
+@keyframes nam-drop-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(28px * var(--facing)), -25px) scale(0.2); opacity: 0; }
+}
+@keyframes nam-drop-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-24px * var(--facing)), -30px) scale(0.2); opacity: 0; }
+}
+@keyframes nam-drop-3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(32px * var(--facing)), 20px) scale(0.2); opacity: 0; }
+}
+@keyframes nam-drop-4 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-28px * var(--facing)), 22px) scale(0.2); opacity: 0; }
+}
+@keyframes nam-drop-5 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(0, -35px) scale(0.2); opacity: 0; }
+}

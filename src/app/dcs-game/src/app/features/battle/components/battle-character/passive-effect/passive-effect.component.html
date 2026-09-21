@@ -1,36 +1,9 @@
-<div class="passive-wrapper level-{{ level || 1 }}">
-  <!-- Level 1 Base Passive (Runes and base floating dust particles) -->
-  <app-pe-level-1 *ngIf="(level || 1) >= 1"></app-pe-level-1>
-  
-  <!-- Level 2 Extra Passive (Spark arcs and orbiting spheres) -->
-  <app-pe-level-2 *ngIf="(level || 1) >= 2"></app-pe-level-2>
-
-  <!-- Level 3 Premium Passive (Spinning runic shield ring and vertical energy beams) -->
-  <app-pe-level-3 *ngIf="(level || 1) >= 3"></app-pe-level-3>
-
-  <!-- Level 4 Masterpiece Passive (Divine golden halo/crown, rising flame-like mist, gold sparkles) -->
-  <app-pe-level-4 *ngIf="(level || 1) >= 4"></app-pe-level-4>
-
-  <!-- Flying Money (VND 500k Bills) Effect -->
+<div class="passive-wrapper">
+  <!-- Flying Money (VND 500k Bills) Status Effect -->
   <app-pe-flying-money *ngIf="hasMoneyEffect"></app-pe-flying-money>
 
-  <!-- Red Lightning Effect -->
-  <app-pe-red-lightning *ngIf="hasRedLightning"></app-pe-red-lightning>
-
-  <!-- Veil of the Obsidian Nebulae Effect -->
-  <app-pe-obsidian-nebula *ngIf="hasObsidianNebula"></app-pe-obsidian-nebula>
-
-  <!-- Dark Shield / Giáp Hư Không Effect -->
+  <!-- Dark Shield / Giáp Hư Không Status Effect -->
   <app-pe-dark-shield *ngIf="hasDarkShield"></app-pe-dark-shield>
-
-  <!-- Scorched Earth Command Effect -->
-  <app-pe-scorched-earth *ngIf="hasScorchedEarth"></app-pe-scorched-earth>
-
-  <!-- Spectral Grooming Swarm Effect -->
-  <app-pe-spectral-grooming *ngIf="hasSpectralGrooming"></app-pe-spectral-grooming>
-
-  <!-- Vortex of Vicious Debt Effect -->
-  <app-pe-vicious-debt *ngIf="hasViciousDebt" [character]="character"></app-pe-vicious-debt>
 
   <!-- Marked reticle overlay on top of the sprite -->
   <div class="marked-crosshair-overlay" *ngIf="hasMarkedEffect">
@@ -91,9 +64,6 @@
     <div class="beam-energy-pulse"></div>
   </div>
 
-  <!-- Dark Blizzard Sleighstream Effect for Noel -->
-  <app-pe-dark-blizzard *ngIf="hasDarkBlizzard" [character]="character"></app-pe-dark-blizzard>
-
   <!-- Deadlift Dia Chan Kinetic Dome Shield & Rotating Weight Plates -->
   <div class="deadlift-shield-overlay" *ngIf="hasDeadliftShield">
     <div class="kinetic-dome"></div>
@@ -109,7 +79,4 @@
       <span class="spark s3">⚡</span>
     </div>
   </div>
-
-  <!-- Heavy Iron Gravitational Aura for Hoàng Nguyên -->
-  <app-pe-heavy-iron-aura *ngIf="hasHeavyIronAura" [character]="character"></app-pe-heavy-iron-aura>
 </div>

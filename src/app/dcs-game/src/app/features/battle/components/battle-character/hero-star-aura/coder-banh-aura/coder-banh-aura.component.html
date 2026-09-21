@@ -1,0 +1,52 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#10b981'"
+  [style.--aura-secondary]="secondaryColor || '#06b6d4'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Digital ground glow and floating code symbols -->
+  <div class="aura-core">
+    <div class="digital-base"></div>
+    <div class="core-symbols">
+      <span class="sym sym-1">{{ '{ }' }}</span>
+      <span class="sym sym-2">01</span>
+      <span class="sym sym-3">&lt;/&gt;</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Digital rotating ring and floating code pages -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="digital-ring"></div>
+    <div class="code-pages">
+      <span class="doc-page dp-1">📄</span>
+      <span class="doc-page dp-2">📑</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Matrix ring, code orbit and pixel particles -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="matrix-orbit-ring"></div>
+    <div class="matrix-code-orbit">
+      <span class="m-bit mb-1">0101</span>
+      <span class="m-bit mb-2">1010</span>
+    </div>
+    <div class="pixel-particles">
+      <span class="px px-1"></span>
+      <span class="px px-2"></span>
+      <span class="px px-3"></span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin matrix rings, mini hologram knowledge construct and data pillars -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-matrix-ring outer"></div>
+    <div class="hologram-glyph">⚡DATA⚡</div>
+    <div class="data-pillars">
+      <span class="pillar pil-1"></span>
+      <span class="pillar pil-2"></span>
+      <span class="pillar pil-3"></span>
+    </div>
+  </div>
+
+</div>

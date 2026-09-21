@@ -1,0 +1,77 @@
+<ng-container [ngSwitch]="effectCode">
+  <!-- 1. K Cởi Trần -->
+  <app-kiet-basic
+    *ngSwitchCase="'kiet'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-kiet-basic>
+
+  <!-- 2. Nam Deadline -->
+  <app-nam-deadline-basic
+    *ngSwitchCase="'nam-deadline'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-nam-deadline-basic>
+
+  <!-- 3. Chuẩn Men -->
+  <app-chuan-men-basic
+    *ngSwitchCase="'chuan-men'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-chuan-men-basic>
+
+  <!-- 4. Coder Bảnh -->
+  <app-coder-banh-basic
+    *ngSwitchCase="'coder-banh'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-coder-banh-basic>
+
+  <!-- 5. Tester Đẹp -->
+  <app-tester-dep-basic
+    *ngSwitchCase="'tester-dep'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-tester-dep-basic>
+
+  <!-- 6. Tướng Long Quân Đội -->
+  <app-tuong-long-basic
+    *ngSwitchCase="'tuong-long'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-tuong-long-basic>
+
+  <!-- 7. PM Hối Hả -->
+  <app-pm-hoi-ha-basic
+    *ngSwitchCase="'pm-hoi-ha'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-pm-hoi-ha-basic>
+
+  <!-- 8. QA Kỹ Tính -->
+  <app-qa-ky-tinh-basic
+    *ngSwitchCase="'qa-ky-tinh'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-qa-ky-tinh-basic>
+
+  <!-- 9. Kiet Noel (BASIC_RANDOM_HEAL) -->
+  <app-kiet-noel-heal
+    *ngSwitchCase="'kiet-noel'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-kiet-noel-heal>
+
+  <!-- 10. Hoàng Nguyên -->
+  <app-hoang-nguyen-basic
+    *ngSwitchCase="'hoang-nguyen'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-hoang-nguyen-basic>
+
+  <!-- Generic Fallback for Unknown Heroes -->
+  <div *ngSwitchDefault class="generic-basic-effect" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="generic-strike-flash"></div>
+    <div class="generic-slash-trail"></div>
+  </div>
+</ng-container>

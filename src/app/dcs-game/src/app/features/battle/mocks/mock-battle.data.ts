@@ -6,6 +6,7 @@ export const INITIAL_HEROES: Hero[] = [
   // Left Team (Heroes)
   {
     id: 1,
+    heroTemplateId: 1,
     name: 'K Cởi Trần',
     avatar: '/assets/images/dcs-game/kiet.png',
     hp: 1000,
@@ -17,13 +18,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 120,
     position: 1,
     team: 'left',
-    statusEffects: ['Sixpack Glow', 'Red Lightning'],
+    statusEffects: ['Sixpack Glow'],
     skills: ['HEAVENLY_JUDGMENT', 'ULTIMATE_SIXPACK'],
     level: 4,
-    defaultFacing: 'right'
+    stars: 5,
+    auraTier: 1,
+    defaultFacing: 'right',
+    starAura: {
+      heroTemplateId: 1,
+      starLevel: 5,
+      auraCode: 'KIET_STAR_5',
+      visualKey: 'kiet-red-lightning',
+      name: 'Chí Tôn Lôi Thần',
+      intensity: 2.2,
+      particleLevel: 4,
+      primaryColorHex: '#e11d48',
+      secondaryColorHex: '#fef08a'
+    }
   },
   {
     id: 2,
+    heroTemplateId: 2,
     name: 'Nam Deadline',
     avatar: '/assets/images/dcs-game/trg-kiet-covid.png',
     hp: 900,
@@ -38,10 +53,24 @@ export const INITIAL_HEROES: Hero[] = [
     statusEffects: ['Overtime'],
     skills: ['NORMAL_ATTACK', 'HEAVY_SLASH', 'VAX_A_MILLION_SANITZATION'],
     level: 3,
-    defaultFacing: 'left'
+    stars: 4,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 2,
+      starLevel: 4,
+      auraCode: 'NAM_DEADLINE_STAR_4',
+      visualKey: 'nam-deadline-sterile-pulse',
+      name: 'Dược Thể Cao Tốc',
+      intensity: 1.75,
+      particleLevel: 3,
+      primaryColorHex: '#0891b2',
+      secondaryColorHex: '#ffffff'
+    }
   },
   {
     id: 3,
+    heroTemplateId: 3,
     name: 'Chuẩn Men',
     avatar: '/assets/images/dcs-game/ricardo-milos.png',
     hp: 1100,
@@ -53,13 +82,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 100,
     position: 3,
     team: 'left',
-    statusEffects: ['Shield', 'Red Lightning'],
+    statusEffects: ['Shield'],
     skills: ['NORMAL_ATTACK', 'SLASH', 'SWORD_DANCE', 'RICARDO_MILOS'],
     level: 2,
-    defaultFacing: 'left'
+    stars: 3,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 3,
+      starLevel: 3,
+      auraCode: 'CHUAN_MEN_STAR_3',
+      visualKey: 'chuan-men-crimson-rhythm',
+      name: 'Xích Huyết Cuồng Vũ',
+      intensity: 1.3,
+      particleLevel: 2,
+      primaryColorHex: '#dc2626',
+      secondaryColorHex: '#7e22ce'
+    }
   },
   {
     id: 4,
+    heroTemplateId: 4,
     name: 'Coder Bảnh',
     avatar: '/assets/images/dcs-game/vantrong-hs.png',
     hp: 850,
@@ -74,10 +117,24 @@ export const INITIAL_HEROES: Hero[] = [
     statusEffects: ['Clean Code'],
     skills: ['NORMAL_ATTACK', 'RANDOM_KNOWLEDGE_DROP', 'REFACTOR_CODE', 'DEPLOY_PROD'],
     level: 2,
-    defaultFacing: 'right'
+    stars: 2,
+    auraTier: 1,
+    defaultFacing: 'right',
+    starAura: {
+      heroTemplateId: 4,
+      starLevel: 2,
+      auraCode: 'CODER_BANH_STAR_2',
+      visualKey: 'coder-banh-digital-knowledge',
+      name: 'Ký Tự Nhị Phân',
+      intensity: 0.85,
+      particleLevel: 1,
+      primaryColorHex: '#10b981',
+      secondaryColorHex: '#06b6d4'
+    }
   },
   {
     id: 5,
+    heroTemplateId: 5,
     name: 'Tester Đẹp',
     avatar: '/assets/images/dcs-game/nghiaphuc-bongtoi.png',
     hp: 950,
@@ -89,15 +146,29 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 110,
     position: 5,
     team: 'left',
-    statusEffects: ['Bug Radar', 'Veil of the Obsidian Nebulae'],
+    statusEffects: ['Bug Radar'],
     skills: ['NORMAL_ATTACK', 'AUTOMATION_TEST', 'DARK_KNOWLEDGE_SHIELD_CONVERSION'],
     level: 1,
-    defaultFacing: 'left'
+    stars: 3,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 5,
+      starLevel: 3,
+      auraCode: 'TESTER_DEP_STAR_3',
+      visualKey: 'tester-dep-obsidian-nebula',
+      name: 'Màn Che Tinh Vân',
+      intensity: 1.3,
+      particleLevel: 2,
+      primaryColorHex: '#9333ea',
+      secondaryColorHex: '#0f172a'
+    }
   },
 
   // Right Team (Enemies)
   {
     id: 6,
+    heroTemplateId: 6,
     name: 'Tướng Long Quân Đội',
     avatar: '/assets/images/dcs-game/tuonglong-quandoi.png',
     hp: 900,
@@ -109,13 +180,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 125,
     position: 1,
     team: 'right',
-    statusEffects: ['Scorched Earth Command'],
+    statusEffects: [],
     skills: ['NORMAL_ATTACK', 'TACTICAL_AIR_STRIKE'],
     level: 4,
-    defaultFacing: 'left'
+    stars: 4,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 6,
+      starLevel: 4,
+      auraCode: 'TUONG_LONG_STAR_4',
+      visualKey: 'tuong-long-scorched-command',
+      name: 'Quân Lệnh Thiết Huyết',
+      intensity: 1.75,
+      particleLevel: 3,
+      primaryColorHex: '#f97316',
+      secondaryColorHex: '#dc2626'
+    }
   },
   {
     id: 7,
+    heroTemplateId: 7,
     name: 'PM Hối Hả',
     avatar: '/assets/images/dcs-game/quangvinh-barber.png',
     hp: 800,
@@ -127,13 +212,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 112,
     position: 2,
     team: 'right',
-    statusEffects: ['ASAP', 'Spectral Grooming Swarm'],
+    statusEffects: ['ASAP'],
     skills: ['NORMAL_ATTACK', 'DOI_NGOI_DAU_DOC'],
     level: 3,
-    defaultFacing: 'right'
+    stars: 5,
+    auraTier: 1,
+    defaultFacing: 'right',
+    starAura: {
+      heroTemplateId: 7,
+      starLevel: 5,
+      auraCode: 'PM_HOI_HA_STAR_5',
+      visualKey: 'pm-hoi-ha-spectral-grooming',
+      name: 'Đại Sư Tạo Mẫu',
+      intensity: 2.2,
+      particleLevel: 4,
+      primaryColorHex: '#2dd4bf',
+      secondaryColorHex: '#c4b5fd'
+    }
   },
   {
     id: 8,
+    heroTemplateId: 8,
     name: 'QA Kỹ Tính',
     avatar: '/assets/images/dcs-game/vantrong-cobac.png',
     hp: 850,
@@ -145,13 +244,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 95,
     position: 3,
     team: 'right',
-    statusEffects: ['Edge Case', 'Vortex of Vicious Debt'],
+    statusEffects: ['Edge Case'],
     skills: ['NORMAL_ATTACK', 'FATAL_ALL_IN_DIRECTIVE'],
     level: 2,
-    defaultFacing: 'left'
+    stars: 3,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 8,
+      starLevel: 3,
+      auraCode: 'QA_KY_TINH_STAR_3',
+      visualKey: 'qa-ky-tinh-vicious-debt',
+      name: 'Vòng Xoáy Nợ Nần',
+      intensity: 1.3,
+      particleLevel: 2,
+      primaryColorHex: '#dc2626',
+      secondaryColorHex: '#ca8a04'
+    }
   },
   {
     id: 9,
+    heroTemplateId: 9,
     name: 'Kiet Noel',
     avatar: '/assets/images/dcs-game/TruongKiet-Noel.png',
     hp: 900,
@@ -163,13 +276,27 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 105,
     position: 4,
     team: 'right',
-    statusEffects: ['Feedback Loop', 'Dark Blizzard Sleighstream'],
+    statusEffects: ['Feedback Loop'],
     skills: ['BASIC_RANDOM_HEAL', 'WINTER_NIGHT_BLESSINGS'],
     level: 2,
-    defaultFacing: 'right'
+    stars: 4,
+    auraTier: 1,
+    defaultFacing: 'right',
+    starAura: {
+      heroTemplateId: 9,
+      starLevel: 4,
+      auraCode: 'KIET_NOEL_STAR_4',
+      visualKey: 'kiet-noel-dark-blizzard',
+      name: 'Cực Quang Bắc Cực',
+      intensity: 1.75,
+      particleLevel: 3,
+      primaryColorHex: '#38bdf8',
+      secondaryColorHex: '#a855f7'
+    }
   },
   {
     id: 10,
+    heroTemplateId: 10,
     name: 'Hoàng Nguyên',
     avatar: '/assets/images/dcs-game/HoangNguyen-Gymer.png',
     hp: 1000,
@@ -181,10 +308,23 @@ export const INITIAL_HEROES: Hero[] = [
     speed: 90,
     position: 5,
     team: 'right',
-    statusEffects: ['Immortal Bug', 'Rep: 9', 'Heavy Iron Gravitational Aura'],
+    statusEffects: ['Immortal Bug', 'Rep: 9'],
     skills: ['NORMAL_ATTACK', 'DEADLIFT_DIA_CHAN'],
     level: 1,
-    defaultFacing: 'left'
+    stars: 2,
+    auraTier: 1,
+    defaultFacing: 'left',
+    starAura: {
+      heroTemplateId: 10,
+      starLevel: 2,
+      auraCode: 'HOANG_NGUYEN_STAR_2',
+      visualKey: 'hoang-nguyen-heavy-iron',
+      name: 'Trọng Lực Thô Sơ',
+      intensity: 0.85,
+      particleLevel: 1,
+      primaryColorHex: '#eab308',
+      secondaryColorHex: '#64748b'
+    }
   }
 ];
 

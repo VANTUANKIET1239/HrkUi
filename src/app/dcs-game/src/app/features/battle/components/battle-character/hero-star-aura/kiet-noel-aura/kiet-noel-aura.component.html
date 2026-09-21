@@ -1,0 +1,46 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#38bdf8'"
+  [style.--aura-secondary]="secondaryColor || '#7c3aed'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Frost ground disc and light snowflakes -->
+  <div class="aura-core">
+    <div class="blizzard-base"></div>
+    <div class="gentle-flakes">
+      <span class="flake fl-1">❄</span>
+      <span class="flake fl-2">❄</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Dark blizzard vortex and gift sparkles -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="blizzard-vortex-ring"></div>
+    <div class="gift-sparkles">
+      <span class="gift gf-1">🎁</span>
+      <span class="sparkle sp-1">✦</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Aurora ring and multilayer snow whirl -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="aurora-ring"></div>
+    <div class="multilayer-snow">
+      <span class="snow-layer sl-1">❅</span>
+      <span class="snow-layer sl-2">❆</span>
+      <span class="snow-layer sl-3">❄</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin snow halo, dark aurora and sleighstream orbit -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-snow-ring outer"></div>
+    <div class="sleighstream-orbit">
+      <span class="sleigh-star ss-1">⭐</span>
+      <span class="sleigh-star ss-2">🛷</span>
+    </div>
+    <div class="dark-aurora-curtain"></div>
+  </div>
+
+</div>

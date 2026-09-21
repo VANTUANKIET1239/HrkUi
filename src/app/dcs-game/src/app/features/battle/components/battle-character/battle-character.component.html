@@ -12,19 +12,28 @@
     [activeSkillId]="activeSkillId" [character]="character">
   </app-skill>
 
-  <!-- HIT / IMPACT EFFECTS (When receiving damage) -->
+  <!-- HIT / IMPACT EFFECTS (When receiving damage or heal) -->
   <ng-container *ngIf="isHit">
     <div class="impact-flash"></div>
-    <div class="impact-sparks">
+    <div class="impact-sparks" *ngIf="activeSkillId !== 'BASIC_RANDOM_HEAL'">
       <span class="spk sp1"></span>
       <span class="spk sp2"></span>
       <span class="spk sp3"></span>
       <span class="spk sp4"></span>
     </div>
-    <div class="slash-burst"></div>
+    <div class="slash-burst" *ngIf="activeSkillId !== 'BASIC_RANDOM_HEAL' && !isBasicSkill(activeSkillId)"></div>
+
+    <!-- Basic Skill Impact Effect (Theme matches Caster / activeActor) -->
+    <app-basic-skill-effect
+      *ngIf="isBasicSkill(activeSkillId) && (activeActor || character)"
+      [character]="activeActor || character"
+      [activeSkillId]="activeSkillId"
+      [phase]="'impact'"
+      [isTeamRight]="activeActor ? activeActor.team === 'right' : character.team === 'right'">
+    </app-basic-skill-effect>
 
     <!-- Critical Explosion visual -->
-    <div class="crit-explosion" *ngIf="damageEvent?.isCrit">
+    <div class="crit-explosion" *ngIf="damageEvent?.isCrit && activeSkillId !== 'BASIC_RANDOM_HEAL'">
       <div class="crit-shockwave"></div>
       <div class="crit-flash"></div>
     </div>
@@ -298,24 +307,45 @@
 
   <!-- Sprite area -->
   <div class="sprite-area">
-    <!-- PASSIVE EFFECTS (Ambient) - Moved inside sprite-area to center relative to character feet and not overlap health bars -->
+    <!-- HERO STAR AURA (Permanent ambient aura by hero star tier: 2-5 stars) -->
+    <app-hero-star-aura
+      *ngIf="displayMode === 'battle' && character.hp > 0 && (character.stars || 0) >= 2"
+      [heroTemplateId]="character.heroTemplateId"
+      [stars]="character.stars || 0"
+      [auraConfig]="character.starAura"
+      [hero]="character">
+    </app-hero-star-aura>
+
+    <!-- PASSIVE EFFECTS (In-battle status effects: Money, Dark Shield, Mark, Stun, Jackpot, Bao Ke, etc.) -->
     <app-passive-effect *ngIf="displayMode === 'battle' && character.hp > 0" [character]="character"
-      [level]="character.level || 1" [hasMoneyEffect]="hasMoneyEffect()" [hasRedLightning]="hasRedLightningEffect()"
-      [hasObsidianNebula]="hasObsidianNebulaEffect()" [hasDarkShield]="hasDarkShieldEffect()"
-      [hasScorchedEarth]="hasScorchedEarthEffect()" [hasSpectralGrooming]="hasSpectralGroomingEffect()"
-      [hasViciousDebt]="hasViciousDebtEffect()" [isHit]="isHit">
+      [hasMoneyEffect]="hasMoneyEffect()" [hasDarkShield]="hasDarkShieldEffect()" [isHit]="isHit">
     </app-passive-effect>
 
     <img [src]="character.avatar" [alt]="character.name" class="character-sprite"
       [class.sprite-flipped]="shouldFlipSprite()" />
 
     <!-- Status effects/Buff badges overlaying above the head -->
-    <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && character.statusEffects?.length">
-      <span *ngFor="let effect of character.statusEffects" class="status-badge" [ngClass]="{
-          'effect-dead': effect === 'Dead', 
-          'effect-buff': effect !== 'Dead'
-        }">
-        {{ effect }}
+    <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && character.battleStatuses && character.battleStatuses.length > 0">
+      <div *ngFor="let status of character.battleStatuses | slice:0:5" class="status-icon"
+        [class.is-debuff]="status.category === 'DEBUFF' || status.category === 'CONTROL'"
+        [style.--status-color]="status.colorHex" tabindex="0">
+        <img [src]="status.iconPath" [alt]="status.name" />
+        <span class="status-turns" *ngIf="status.remainingTurns > 0">{{ status.remainingTurns }}</span>
+        <span class="status-stacks" *ngIf="status.stacks > 1">{{ status.stacks }}</span>
+        <div class="status-tooltip">
+          <strong>{{ status.name }}</strong>
+          <span class="status-description" *ngIf="status.description">{{ status.description }}</span>
+          <span *ngIf="status.code === 'SHIELD'">Khiên còn lại: {{ status.value | number }}</span>
+          <span *ngIf="status.value && status.code !== 'SHIELD'">Giá trị: {{ status.value }}%</span>
+          <span *ngFor="let modifier of status.modifiers">
+            {{ modifier.attributeName || modifier.attributeCode }}:
+            {{ modifier.value > 0 ? '+' : '' }}{{ modifier.value }}{{ modifier.valueType === 'PERCENT' ? '%' : '' }}
+          </span>
+          <small *ngIf="status.remainingTurns > 0">Còn lại {{ status.remainingTurns }} lượt</small>
+        </div>
+      </div>
+      <span class="status-more" *ngIf="character.battleStatuses && character.battleStatuses.length > 5">
+        +{{ character.battleStatuses.length - 5 }}
       </span>
     </div>
   </div>
@@ -332,6 +362,7 @@
   <!-- Floating Damage Text Layer -->
   <div *ngIf="damageEvent" class="damage-text-layer"
     [ngClass]="{ 'is-crit': damageEvent.isCrit, 'is-heal': damageEvent.text.startsWith('+') }">
-    {{ damageEvent.text }}
+    <span class="crit-mark" *ngIf="damageEvent.isCrit"><span class="crit-icon">✦</span> CRITICAL</span>
+    <span class="combat-number">{{ damageEvent.text }}</span>
   </div>
 </div>

@@ -1,0 +1,189 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.qa-ky-tinh-basic-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Spinning Casino Chip Projectile + Gold Trail
+   ======================================================== */
+.casino-chip-projectile {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 65px;
+  height: 24px;
+  transform-origin: center center;
+  animation: qa-chip-flight 0.44s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+
+  .chip-disc {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fef08a 20%, #eab308 60%, #b45309 100%);
+    border: 2px dashed #dc2626;
+    box-shadow: 0 0 12px #f59e0b, 0 0 20px #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: qa-chip-spin 0.4s linear infinite;
+
+    .chip-pattern {
+      font-size: 11px;
+      color: #dc2626;
+      line-height: 1;
+    }
+  }
+
+  .chip-gold-trail {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 6px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(220, 38, 38, 0.4) 30%,
+      rgba(234, 179, 8, 0.9) 85%,
+      #ffffff 100%
+    );
+    border-radius: 4px;
+    filter: blur(1.5px);
+  }
+}
+
+@keyframes qa-chip-spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+@keyframes qa-chip-flight {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-10px * var(--facing))) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(105px * var(--facing))) scale(1.1);
+  }
+}
+
+/* ========================================================
+   IMPACT PHASE: QA Fail Stamp + Card Burst + Coin Sparks
+   ======================================================== */
+.qa-fail-stamp {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: qa-stamp-slam 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+
+  .stamp-box {
+    display: inline-block;
+    padding: 2px 7px;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 900;
+    color: #ef4444;
+    border: 2px solid #ef4444;
+    border-radius: 3px;
+    background: rgba(15, 23, 42, 0.75);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    letter-spacing: 1px;
+    transform: rotate(calc(-10deg * var(--facing)));
+  }
+}
+
+@keyframes qa-stamp-slam {
+  0% {
+    transform: translateX(-50%) scale(2.2);
+    opacity: 0;
+  }
+  30% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.casino-card-burst {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .card-suit {
+    position: absolute;
+    font-size: 14px;
+    line-height: 1;
+    animation: qa-suit-anim 0.42s ease-out forwards;
+
+    &.c1 { color: #f87171; text-shadow: 0 0 6px #ef4444; --cx: 26px; --cy: -24px; }
+    &.c2 { color: #fde047; text-shadow: 0 0 6px #eab308; --cx: -24px; --cy: -26px; }
+    &.c3 { color: #f87171; text-shadow: 0 0 6px #ef4444; --cx: 28px; --cy: 18px; }
+    &.c4 { color: #fde047; text-shadow: 0 0 6px #eab308; --cx: -26px; --cy: 20px; }
+  }
+}
+
+@keyframes qa-suit-anim {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+  100% { transform: translate(calc(var(--cx) * var(--facing)), var(--cy)) scale(1.1); opacity: 0; }
+}
+
+.gold-coin-sparks {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .coin {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fde047;
+    box-shadow: 0 0 8px #f59e0b;
+    animation: qa-coin-anim 0.38s ease-out forwards;
+
+    &.cn1 { --cnx: 18px; --cny: -28px; }
+    &.cn2 { --cnx: -16px; --cny: -30px; }
+    &.cn3 { --cnx: 0px; --cny: 26px; }
+  }
+}
+
+@keyframes qa-coin-anim {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(var(--cnx) * var(--facing)), var(--cny)) scale(0); opacity: 0; }
+}

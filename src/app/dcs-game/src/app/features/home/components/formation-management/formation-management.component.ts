@@ -405,7 +405,11 @@ export class FormationManagementComponent implements OnInit {
       magicResistance: rpgHero.stats?.magicResistance || 0,
       position: slotIndex + 1,
       team: 'left',
-      statusEffects: []
+      statusEffects: [],
+      stars: rpgHero.stars || 1,
+      auraTier: rpgHero.auraTier,
+      starAura: rpgHero.starAura,
+      heroTemplateId: rpgHero.heroTemplateId
     };
   }
 

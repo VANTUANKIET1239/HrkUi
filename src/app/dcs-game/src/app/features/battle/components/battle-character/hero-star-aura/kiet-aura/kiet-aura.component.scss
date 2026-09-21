@@ -1,0 +1,232 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1; /* Under sprite */
+}
+
+.aura-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
+  /* Base Glow under feet */
+  .electric-base {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 35px;
+    background: radial-gradient(ellipse at center, rgba(225, 29, 72, calc(0.45 * var(--aura-intensity))) 0%, rgba(245, 158, 11, calc(0.25 * var(--aura-intensity))) 50%, transparent 80%);
+    filter: blur(6px);
+    border-radius: 50%;
+    animation: electric-pulse 1.8s infinite alternate ease-in-out;
+  }
+
+  .core-sparks .spk {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--aura-primary);
+    box-shadow: 0 0 6px var(--aura-secondary);
+    animation: spark-rise 2s infinite ease-out;
+
+    &.spk-1 { bottom: -10px; left: 35%; animation-delay: 0.2s; }
+    &.spk-2 { bottom: -8px; right: 35%; animation-delay: 0.9s; }
+  }
+
+  /* Tier 3 Layer */
+  .bolt-svg {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 30px);
+    overflow: visible;
+
+    .lightning-path {
+      fill: none;
+      stroke: var(--aura-primary);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 5px var(--aura-primary)) drop-shadow(0 0 8px var(--aura-secondary));
+      animation: lightning-strike 1.6s infinite steps(2, start);
+    }
+  }
+
+  .bolt-svg.chest-ring {
+    top: 25px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    .lightning-path {
+      stroke: var(--aura-secondary);
+      stroke-width: 1.8;
+      animation: ring-flicker 1.2s infinite ease-in-out;
+    }
+  }
+
+  .tier3-sparks .spk {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 8px var(--aura-primary);
+    animation: spark-rise 1.5s infinite ease-out;
+
+    &.spk-3 { bottom: 15px; left: 20%; animation-delay: 0.4s; }
+    &.spk-4 { bottom: 35px; right: 20%; animation-delay: 1.1s; }
+  }
+
+  /* Tier 4 Layer */
+  .electric-ring {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 42px;
+    border: 2px dashed rgba(245, 158, 11, calc(0.75 * var(--aura-intensity)));
+    border-radius: 50%;
+    box-shadow: 0 0 12px rgba(225, 29, 72, 0.6), inset 0 0 8px rgba(245, 158, 11, 0.4);
+    animation: ring-rotate 4s infinite linear;
+  }
+
+  .energy-pulse-circle {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 30px;
+    border: 1.5px solid var(--aura-primary);
+    border-radius: 50%;
+    animation: pulse-expand 2s infinite ease-out;
+  }
+
+  .orbiting-sparks .orb-spark {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    font-size: 14px;
+    color: #fef08a;
+    filter: drop-shadow(0 0 6px #f59e0b);
+    animation: orbit-horizontal 3s infinite linear;
+
+    &.os-2 {
+      animation-delay: -1.5s;
+    }
+  }
+
+  /* Tier 5 Layer */
+  .twin-thunder-ring.outer {
+    position: absolute;
+    bottom: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 50px;
+    border: 2px solid rgba(225, 29, 72, 0.85);
+    border-radius: 50%;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.8), 0 0 28px rgba(225, 29, 72, 0.5);
+    animation: ring-rotate-reverse 3s infinite linear;
+  }
+
+  .golden-power-rune {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    color: #fef08a;
+    text-shadow: 0 0 12px #f59e0b, 0 0 20px #e11d48;
+    animation: rune-float 2.5s infinite alternate ease-in-out;
+  }
+
+  .ground-arc-burst .arc {
+    position: absolute;
+    bottom: -10px;
+    width: 20px;
+    height: 12px;
+    border: 2px solid #ffffff;
+    border-color: transparent transparent var(--aura-secondary) transparent;
+    border-radius: 50%;
+    filter: drop-shadow(0 0 6px var(--aura-primary));
+    animation: arc-flicker 1.4s infinite alternate ease-in-out;
+
+    &.arc-1 { left: 15%; animation-delay: 0.1s; }
+    &.arc-2 { left: 45%; animation-delay: 0.5s; }
+    &.arc-3 { right: 15%; animation-delay: 0.8s; }
+  }
+}
+
+@keyframes electric-pulse {
+  0% { transform: translateX(-50%) scale(0.92); opacity: 0.6; }
+  100% { transform: translateX(-50%) scale(1.08); opacity: 0.95; }
+}
+
+@keyframes lightning-strike {
+  0%, 100% { opacity: 0.85; transform: scaleY(1); }
+  35% { opacity: 0.2; transform: scaleY(0.95); }
+  70% { opacity: 1; transform: scaleY(1.04); }
+}
+
+@keyframes ring-flicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes spark-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(-40px); opacity: 0; }
+}
+
+@keyframes ring-rotate {
+  0% { transform: translateX(-50%) rotate(0deg); }
+  100% { transform: translateX(-50%) rotate(360deg); }
+}
+
+@keyframes ring-rotate-reverse {
+  0% { transform: translateX(-50%) rotate(360deg); }
+  100% { transform: translateX(-50%) rotate(0deg); }
+}
+
+@keyframes pulse-expand {
+  0% { transform: translateX(-50%) scale(0.6); opacity: 0.8; }
+  100% { transform: translateX(-50%) scale(1.4); opacity: 0; }
+}
+
+@keyframes orbit-horizontal {
+  0% { transform: translateX(-50px) translateY(0) scale(0.8); opacity: 0.4; }
+  50% { transform: translateX(35px) translateY(-5px) scale(1.2); opacity: 1; }
+  100% { transform: translateX(-50px) translateY(0) scale(0.8); opacity: 0.4; }
+}
+
+@keyframes rune-float {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-6px); }
+}
+
+@keyframes arc-flicker {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aura-root * {
+    animation: none !important;
+    opacity: 0.85 !important;
+  }
+}

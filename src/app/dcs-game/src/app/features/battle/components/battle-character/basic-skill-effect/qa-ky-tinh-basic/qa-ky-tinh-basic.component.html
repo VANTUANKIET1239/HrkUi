@@ -1,0 +1,30 @@
+<div class="qa-ky-tinh-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="casino-chip-projectile">
+      <div class="chip-disc">
+        <span class="chip-pattern">♦</span>
+      </div>
+      <div class="chip-gold-trail"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <!-- QA Inspection Fail Stamp: placed below torso to avoid obscuring floating damage numbers -->
+    <div class="qa-fail-stamp">
+      <span class="stamp-box">FAIL</span>
+    </div>
+    <div class="casino-card-burst">
+      <span class="card-suit c1">♠</span>
+      <span class="card-suit c2">♦</span>
+      <span class="card-suit c3">♣</span>
+      <span class="card-suit c4">♥</span>
+    </div>
+    <div class="gold-coin-sparks">
+      <span class="coin cn1"></span>
+      <span class="coin cn2"></span>
+      <span class="coin cn3"></span>
+    </div>
+  </ng-container>
+</div>

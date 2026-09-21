@@ -1,0 +1,193 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.pm-hoi-ha-basic-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Dual Shears Snip + Shear Wind Dash
+   ======================================================== */
+.dual-shears-snip {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 40px;
+
+  .shear-blade {
+    position: absolute;
+    width: 32px;
+    height: 4px;
+    background: linear-gradient(90deg, #a855f7, #38bdf8, #ffffff);
+    box-shadow: 0 0 10px #06b6d4, 0 0 16px #9333ea;
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+
+    &.blade-1 {
+      animation: pm-blade-1-anim 0.38s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+    }
+    &.blade-2 {
+      animation: pm-blade-2-anim 0.38s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+    }
+  }
+
+  .snip-cyan-spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff, #06b6d4 70%, transparent);
+    box-shadow: 0 0 12px #38bdf8;
+    animation: pm-snip-spark 0.3s ease-out forwards;
+  }
+}
+
+@keyframes pm-blade-1-anim {
+  0% { transform: translate(-50%, -50%) rotate(calc(40deg * var(--facing))) scaleX(0.5); opacity: 0; }
+  30% { transform: translate(-50%, -50%) rotate(calc(5deg * var(--facing))) scaleX(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(calc(0deg * var(--facing))) scaleX(0.8); opacity: 0; }
+}
+
+@keyframes pm-blade-2-anim {
+  0% { transform: translate(-50%, -50%) rotate(calc(-40deg * var(--facing))) scaleX(0.5); opacity: 0; }
+  30% { transform: translate(-50%, -50%) rotate(calc(-5deg * var(--facing))) scaleX(1.1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) rotate(calc(0deg * var(--facing))) scaleX(0.8); opacity: 0; }
+}
+
+@keyframes pm-snip-spark {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  40% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(0.6); opacity: 0; }
+}
+
+.shear-wind-dash {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 65px;
+  height: 18px;
+  transform-origin: center center;
+  background: linear-gradient(
+    calc(90deg * var(--facing)),
+    transparent 0%,
+    rgba(147, 51, 234, 0.4) 30%,
+    rgba(6, 182, 212, 0.9) 85%,
+    #ffffff 100%
+  );
+  border-radius: 10px;
+  filter: blur(1.5px);
+  animation: pm-dash-anim 0.42s cubic-bezier(0.2, 0.8, 0.1, 1) forwards;
+}
+
+@keyframes pm-dash-anim {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-10px * var(--facing))) scaleX(0.3);
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(90px * var(--facing))) scaleX(1.3);
+  }
+}
+
+/* ========================================================
+   IMPACT PHASE: Cross Scissor Slash + Hair Cut Strands
+   ======================================================== */
+.cross-scissor-slash {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .slash-line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, #ffffff, #06b6d4, #a855f7, transparent);
+    height: 3px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px #38bdf8, 0 0 18px #9333ea;
+    animation: pm-cross-slash 0.36s ease-out forwards;
+
+    &.sl1 {
+      width: 60px;
+      left: -30px;
+      top: -1.5px;
+      transform: rotate(calc(-35deg * var(--facing)));
+    }
+    &.sl2 {
+      width: 60px;
+      left: -30px;
+      top: -1.5px;
+      transform: rotate(calc(35deg * var(--facing)));
+      animation-delay: 0.04s;
+    }
+  }
+}
+
+@keyframes pm-cross-slash {
+  0% { transform: scaleX(0.2); opacity: 1; }
+  100% { transform: scaleX(1.3); opacity: 0; }
+}
+
+.hair-cut-particles {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .strand {
+    position: absolute;
+    width: 8px;
+    height: 2px;
+    border-radius: 1px;
+    background: #c084fc;
+    box-shadow: 0 0 4px #06b6d4;
+    animation: pm-strand-anim 0.38s ease-out forwards;
+
+    &.st1 { animation-name: pm-st-1; }
+    &.st2 { animation-name: pm-st-2; }
+    &.st3 { animation-name: pm-st-3; }
+    &.st4 { animation-name: pm-st-4; }
+  }
+}
+
+@keyframes pm-st-1 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(22px * var(--facing)), -20px) rotate(45deg); opacity: 0; }
+}
+@keyframes pm-st-2 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(-18px * var(--facing)), -24px) rotate(-40deg); opacity: 0; }
+}
+@keyframes pm-st-3 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(20px * var(--facing)), 16px) rotate(60deg); opacity: 0; }
+}
+@keyframes pm-st-4 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(calc(-16px * var(--facing)), 18px) rotate(-55deg); opacity: 0; }
+}

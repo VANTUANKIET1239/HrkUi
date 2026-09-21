@@ -1,4 +1,4 @@
-<div class="battle-container" style="">
+<div class="battle-container">
 
   <!-- Header UI -->
   <div class="header-ui">
@@ -48,10 +48,6 @@
 
   <!-- Battlefield Grid (3D perspective sa-ban) -->
   <div class="battlefield" [class.screen-shake]="isScreenShaking()">
-    <!-- Sky Darkening Overlay -->
-    <div class="battlefield-darkness" 
-      [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT' || battleEngine.currentSkillId() === 'DARK_KNOWLEDGE_SHIELD_CONVERSION'">
-    </div>
 
     <!-- Battlefield-wide energy shockwave -->
     <div class="aoe-field-shockwave"
@@ -84,7 +80,10 @@
     </div>
 
     <!-- Deadlift Dia Chan – Scene-level Golden Lightning Strike VFX -->
-    <div class="deadlift-scene-lightning" *ngIf="battleEngine.currentSkillId() === 'DEADLIFT_DIA_CHAN' && battleEngine.activeTargetIds().length > 0">
+    <div class="deadlift-scene-lightning" 
+      *ngIf="battleEngine.currentSkillId() === 'DEADLIFT_DIA_CHAN' && battleEngine.activeTargetIds().length > 0"
+      [class.caster-right]="battleEngine.isActorTeamRight()"
+      [class.caster-left]="!battleEngine.isActorTeamRight()">
       <!-- Background battlefield golden flash -->
       <div class="deadlift-field-flash"></div>
 
@@ -124,7 +123,8 @@
       <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}">
         <app-battle-character [character]="hero" [isCharging]="battleEngine.activeActorId() === hero.id"
           [isHit]="battleEngine.isTargetHit(hero.id)" [skillColor]="battleEngine.currentSkillColor()"
-          [damageEvent]="battleEngine.damageEvents()[hero.id] || null" [activeSkillId]="battleEngine.currentSkillId()">
+          [damageEvent]="battleEngine.damageEvents()[hero.id] || null" [activeSkillId]="battleEngine.currentSkillId()"
+          [activeSkillCategory]="battleEngine.currentSkillCategory()" [activeActor]="battleEngine.activeActor()">
         </app-battle-character>
       </div>
 
@@ -137,7 +137,8 @@
       <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}">
         <app-battle-character [character]="enemy" [isCharging]="battleEngine.activeActorId() === enemy.id"
           [isHit]="battleEngine.isTargetHit(enemy.id)" [skillColor]="battleEngine.currentSkillColor()"
-          [damageEvent]="battleEngine.damageEvents()[enemy.id] || null" [activeSkillId]="battleEngine.currentSkillId()">
+          [damageEvent]="battleEngine.damageEvents()[enemy.id] || null" [activeSkillId]="battleEngine.currentSkillId()"
+          [activeSkillCategory]="battleEngine.currentSkillCategory()" [activeActor]="battleEngine.activeActor()">
         </app-battle-character>
       </div>
     </div>

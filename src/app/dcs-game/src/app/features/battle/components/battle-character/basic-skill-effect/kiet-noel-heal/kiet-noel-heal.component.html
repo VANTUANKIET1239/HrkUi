@@ -1,0 +1,31 @@
+<div class="kiet-noel-heal-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE (Caster releases healing starlight & gift) -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="holy-gift-aura">
+      <div class="gift-box-icon">🎁</div>
+      <div class="star-halo">★</div>
+    </div>
+    <div class="healing-beam-flight">
+      <div class="beam-head">✦</div>
+      <div class="beam-emerald-trail"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE (Target receives healing sanctuary ring & plus signs) -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="healing-sanctuary-ring"></div>
+    <div class="healing-sanctuary-glow"></div>
+    <div class="rising-plus-signs">
+      <span class="plus p1">+</span>
+      <span class="plus p2">+</span>
+      <span class="plus p3">+</span>
+      <span class="plus p4">+</span>
+    </div>
+    <div class="emerald-star-sparkles">
+      <span class="star s1">✦</span>
+      <span class="star s2">★</span>
+      <span class="star s3">✦</span>
+      <span class="star s4">★</span>
+    </div>
+  </ng-container>
+</div>

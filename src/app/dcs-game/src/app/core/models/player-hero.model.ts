@@ -73,6 +73,7 @@ export interface HeroSkillDto {
   energyCost?: number;
   displayOrder?: number;
   effects?: SkillEffect[];
+  animation?: SkillAnimationConfigDto | null;
 
   // Legacy fields
   cost?: number;
@@ -89,8 +90,27 @@ export interface HeroSkillDto {
   cooldown?: string;
 }
 
+export interface SkillTimelinePhaseDto {
+  phaseCode: string;
+  startAtMs: number;
+  durationMs: number;
+  triggerEventType?: string | null;
+  displayOrder: number;
+}
+
+export interface SkillAnimationConfigDto {
+  animationKey: string;
+  totalDurationMs: number;
+  defaultPlaybackSpeed: number;
+  phases: SkillTimelinePhaseDto[];
+}
+
+import { HeroStarAuraConfig } from './hero.model';
+
 export interface PlayerHeroDto {
   id: number;
+  heroTemplateId?: number;
+  heroCode?: string;
   name: string;
   avatar: string;
   factionName: string;
@@ -110,6 +130,7 @@ export interface PlayerHeroDto {
   position?: number | null;
   stats: HeroStatsDto;
   skills: HeroSkillDto[];
+  starAura?: HeroStarAuraConfig | null;
 }
 
 export interface PlayerHeroDetailDto extends PlayerHeroDto {

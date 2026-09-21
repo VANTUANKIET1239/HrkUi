@@ -1,0 +1,51 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#ef4444'"
+  [style.--aura-secondary]="secondaryColor || '#eab308'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Gold-red ground glow and small coin/card particles -->
+  <div class="aura-core">
+    <div class="casino-base"></div>
+    <div class="core-gambles">
+      <span class="gamble g-1">🪙</span>
+      <span class="gamble g-2">♠</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Vicious debt card vortex & spinning gold coin ring -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="card-vortex-ring"></div>
+    <div class="spinning-cards">
+      <span class="card cd-1">♦</span>
+      <span class="card cd-2">♣</span>
+      <span class="card cd-3">♥</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Casino chip orbit, stock candles and crimson-gold ring -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="crimson-gold-ring"></div>
+    <div class="chip-orbit">
+      <span class="chip cp-1">🎰</span>
+      <span class="chip cp-2">💰</span>
+    </div>
+    <div class="stock-candles">
+      <span class="candle c-up">🕯️</span>
+      <span class="candle c-down">🕯️</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Apex casino vortex, JACKPOT rune & localized coin storm -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-casino-ring outer"></div>
+    <div class="jackpot-apex-rune">JACKPOT</div>
+    <div class="coin-storm">
+      <span class="coin cn-1">🪙</span>
+      <span class="coin cn-2">🪙</span>
+      <span class="coin cn-3">🪙</span>
+    </div>
+  </div>
+
+</div>

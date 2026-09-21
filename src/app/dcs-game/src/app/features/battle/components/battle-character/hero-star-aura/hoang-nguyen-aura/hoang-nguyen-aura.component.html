@@ -1,0 +1,42 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#eab308'"
+  [style.--aura-secondary]="secondaryColor || '#64748b'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Gravity ground pressure disc and floating stone debris -->
+  <div class="aura-core">
+    <div class="gravity-base"></div>
+    <div class="floating-debris">
+      <span class="stone st-1">▲</span>
+      <span class="stone st-2">▲</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Heavy iron golden gravity compression ring -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="heavy-iron-ring"></div>
+    <div class="gravity-wave-rings">
+      <span class="wave wv-1"></span>
+      <span class="wave wv-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Weight plate orbit and ground-pressure pulse -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="pressure-pulse-disc"></div>
+    <div class="weight-plate-orbit">
+      <span class="plate pl-1">🏋️</span>
+      <span class="plate pl-2">🏋️</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin golden iron halo, barbell rune & gravity distortion -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-iron-halo outer"></div>
+    <div class="barbell-rune-sigil">重力</div>
+    <div class="gravity-distortion-circle"></div>
+  </div>
+
+</div>

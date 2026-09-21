@@ -1,0 +1,222 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.chuan-men-basic-wrapper {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+}
+
+/* ========================================================
+   CAST PHASE: Crimson Crescent Kick + Sweep Trail
+   ======================================================== */
+.crimson-crescent-kick {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 90px;
+  height: 60px;
+  transform-origin: center center;
+  animation: chuan-kick-sweep 0.45s cubic-bezier(0.15, 0.8, 0.2, 1) forwards;
+
+  .crescent-arc {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(calc(20deg * var(--facing)));
+    width: 60px;
+    height: 45px;
+    border-radius: 50%;
+    border-right: 5px solid #ef4444;
+    border-top: 3px solid #f87171;
+    filter: drop-shadow(0 0 12px #dc2626) drop-shadow(0 0 20px #e11d48);
+  }
+
+  .crimson-sweep-trail {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 75px;
+    height: 22px;
+    background: linear-gradient(
+      calc(90deg * var(--facing)),
+      transparent 0%,
+      rgba(225, 29, 72, 0.4) 30%,
+      rgba(239, 68, 68, 0.85) 75%,
+      #fef2f2 100%
+    );
+    border-radius: 20px;
+    filter: blur(2px);
+  }
+}
+
+@keyframes chuan-kick-sweep {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(-20px * var(--facing))) rotate(calc(-30deg * var(--facing))) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateX(calc(90px * var(--facing))) rotate(calc(25deg * var(--facing))) scale(1.3);
+  }
+}
+
+.rhythm-accent {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+
+  .note {
+    position: absolute;
+    font-size: 14px;
+    color: #f87171;
+    text-shadow: 0 0 8px #ef4444;
+    animation: chuan-note-float 0.4s ease-out forwards;
+
+    &.n1 {
+      top: -15px;
+      left: calc(10px * var(--facing));
+    }
+    &.n2 {
+      top: 15px;
+      left: calc(25px * var(--facing));
+      animation-delay: 0.08s;
+    }
+  }
+}
+
+@keyframes chuan-note-float {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* ========================================================
+   IMPACT PHASE: Crimson Pulse Wave + Slash Cross + Sparkles
+   ======================================================== */
+.crimson-pulse-wave {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 3px solid #ef4444;
+  box-shadow: 0 0 24px #dc2626, inset 0 0 16px rgba(225, 29, 72, 0.6);
+  animation: chuan-pulse-ring 0.44s cubic-bezier(0.1, 0.7, 0.2, 1) forwards;
+}
+
+@keyframes chuan-pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+.crimson-slash-cross {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .slash {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, #ffffff, #ef4444, transparent);
+    height: 4px;
+    border-radius: 2px;
+    box-shadow: 0 0 14px #ef4444;
+    animation: chuan-slash-anim 0.36s ease-out forwards;
+
+    &.s-main {
+      width: 70px;
+      left: -35px;
+      top: -2px;
+      transform: rotate(calc(-35deg * var(--facing)));
+    }
+    &.s-sub {
+      width: 50px;
+      left: -25px;
+      top: -2px;
+      transform: rotate(calc(40deg * var(--facing)));
+      animation-delay: 0.05s;
+    }
+  }
+}
+
+@keyframes chuan-slash-anim {
+  0% {
+    opacity: 1;
+    transform: scaleX(0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1.4);
+  }
+}
+
+.crimson-energy-sparkles {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+
+  .sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fecdd3;
+    box-shadow: 0 0 10px #e11d48;
+    animation: chuan-spk-out 0.42s ease-out forwards;
+
+    &.sp1 { animation-name: chuan-spk-1; }
+    &.sp2 { animation-name: chuan-spk-2; }
+    &.sp3 { animation-name: chuan-spk-3; }
+    &.sp4 { animation-name: chuan-spk-4; }
+  }
+}
+
+@keyframes chuan-spk-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(26px * var(--facing)), -24px) scale(0); opacity: 0; }
+}
+@keyframes chuan-spk-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-22px * var(--facing)), -28px) scale(0); opacity: 0; }
+}
+@keyframes chuan-spk-3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(30px * var(--facing)), 20px) scale(0); opacity: 0; }
+}
+@keyframes chuan-spk-4 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-24px * var(--facing)), 22px) scale(0); opacity: 0; }
+}

@@ -1,0 +1,50 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#dc2626'"
+  [style.--aura-secondary]="secondaryColor || '#9333ea'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Crimson glow under feet -->
+  <div class="aura-core">
+    <div class="crimson-base"></div>
+    <div class="rhythm-pulses">
+      <span class="rp rp-1"></span>
+      <span class="rp rp-2"></span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Red lightning flashing to the beat -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="rhythm-lightning-burst">
+      <svg class="bolt-svg left-bolt" viewBox="0 0 40 100" preserveAspectRatio="none">
+        <path d="M 10 10 L 25 45 L 15 70 L 30 100" class="lightning-path"></path>
+      </svg>
+      <svg class="bolt-svg right-bolt" viewBox="0 0 40 100" preserveAspectRatio="none">
+        <path d="M 30 10 L 15 45 L 25 70 L 10 100" class="lightning-path"></path>
+      </svg>
+    </div>
+    <div class="rhythm-sparkles">
+      <span class="spk spk-1">♥</span>
+      <span class="spk spk-2">♥</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Red rhythm ring and diamond particles -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="crimson-rhythm-ring"></div>
+    <div class="diamond-orbit">
+      <span class="diamond d-1">✦</span>
+      <span class="diamond d-2">✦</span>
+      <span class="diamond d-3">✦</span>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Twin crimson halo & intense lightning pulse -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="twin-crimson-halo outer"></div>
+    <div class="manly-crest-rune">亗</div>
+    <div class="sub-bass-shockwave"></div>
+  </div>
+
+</div>

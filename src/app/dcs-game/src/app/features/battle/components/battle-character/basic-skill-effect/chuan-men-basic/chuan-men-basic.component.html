@@ -1,0 +1,28 @@
+<div class="chuan-men-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="crimson-crescent-kick">
+      <div class="crescent-arc"></div>
+      <div class="crimson-sweep-trail"></div>
+    </div>
+    <div class="rhythm-accent">
+      <span class="note n1">✦</span>
+      <span class="note n2">✦</span>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="crimson-pulse-wave"></div>
+    <div class="crimson-slash-cross">
+      <span class="slash s-main"></span>
+      <span class="slash s-sub"></span>
+    </div>
+    <div class="crimson-energy-sparkles">
+      <span class="sparkle sp1"></span>
+      <span class="sparkle sp2"></span>
+      <span class="sparkle sp3"></span>
+      <span class="sparkle sp4"></span>
+    </div>
+  </ng-container>
+</div>

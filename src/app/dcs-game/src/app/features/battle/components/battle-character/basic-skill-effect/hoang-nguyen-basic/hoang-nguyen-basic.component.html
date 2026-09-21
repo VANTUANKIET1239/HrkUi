@@ -1,0 +1,21 @@
+<div class="hoang-nguyen-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="golden-dumbbell-fist">
+      <div class="weight-head"></div>
+      <div class="kinetic-gold-trail"></div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="mini-ground-crack-ring"></div>
+    <div class="mini-seismic-debris">
+      <span class="stone stn1"></span>
+      <span class="stone stn2"></span>
+      <span class="stone stn3"></span>
+      <span class="stone stn4"></span>
+    </div>
+    <div class="amber-gold-impact-flash"></div>
+  </ng-container>
+</div>
