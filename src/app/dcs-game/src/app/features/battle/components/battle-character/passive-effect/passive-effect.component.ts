@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Hero } from '../../../../../core/models/hero.model';
 import { PeFlyingMoneyComponent } from './pe-flying-money/pe-flying-money.component';
 import { PeDarkShieldComponent } from './pe-dark-shield/pe-dark-shield.component';
+import { PeBleedComponent } from './pe-bleed/pe-bleed.component';
 
 @Component({
   selector: 'app-passive-effect',
@@ -10,7 +11,8 @@ import { PeDarkShieldComponent } from './pe-dark-shield/pe-dark-shield.component
   imports: [
     CommonModule,
     PeFlyingMoneyComponent,
-    PeDarkShieldComponent
+    PeDarkShieldComponent,
+    PeBleedComponent
   ],
   templateUrl: './passive-effect.component.html',
   styleUrl: './passive-effect.component.scss'
@@ -20,6 +22,11 @@ export class PassiveEffectComponent {
   @Input() hasDarkShield = false;
   @Input() isHit = false;
   @Input({ required: true }) character!: Hero;
+
+  get hasBleedEffect(): boolean {
+    if (this.character?.statusEffects?.includes('BLEED')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'BLEED') || false;
+  }
 
   get hasMarkedEffect(): boolean {
     if (this.character?.statusEffects?.includes('MARK')) return true;
@@ -34,7 +41,7 @@ export class PassiveEffectComponent {
   }
 
   get isJackpot(): boolean {
-    return this.character?.statusEffects?.includes('Jackpot') || false;
+    return this.character?.statusEffects?.some(effect => effect === 'Jackpot' || effect.startsWith('Jackpot (')) || false;
   }
 
   get isBankrupt(): boolean {
@@ -67,4 +74,3 @@ export class PassiveEffectComponent {
     ) || false;
   }
 }
-

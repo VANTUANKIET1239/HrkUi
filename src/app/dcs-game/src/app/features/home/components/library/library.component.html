@@ -1,0 +1,73 @@
+<div class="library-overlay">
+  <header class="library-header">
+    <div>
+      <span class="eyebrow">BÁCH KHOA DCS</span>
+      <h1><i class="bi bi-book-half"></i> THƯ VIỆN</h1>
+      <p>Khám phá toàn bộ võ tướng và trang bị theo phẩm chất.</p>
+    </div>
+    <button class="close-button" type="button" aria-label="Đóng thư viện" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+  </header>
+
+  <div class="library-toolbar">
+    <nav class="library-tabs" aria-label="Loại thư viện">
+      <button type="button" [class.active]="activeTab === 'heroes'" (click)="selectTab('heroes')">
+        <i class="bi bi-shield-shaded"></i> Nhân vật <span>{{ heroes.length }}</span>
+      </button>
+      <button type="button" [class.active]="activeTab === 'items'" (click)="selectTab('items')">
+        <i class="bi bi-gem"></i> Trang bị <span>{{ items.length }}</span>
+      </button>
+    </nav>
+    <label class="search-box">
+      <i class="bi bi-search"></i>
+      <input [(ngModel)]="searchTerm" placeholder="Tìm theo tên, phe hoặc loại..." />
+    </label>
+  </div>
+
+  <main class="library-content">
+    <div *ngIf="loading" class="state-box"><span class="spinner-border text-warning"></span><span>Đang mở thư viện...</span></div>
+    <div *ngIf="!loading && error" class="state-box error"><i class="bi bi-exclamation-triangle"></i>{{ error }}</div>
+
+    <ng-container *ngIf="!loading && !error">
+      <section *ngFor="let group of currentGroups; trackBy: trackGroup" class="rarity-section"
+        [style.--rarity-color]="group.color">
+        <div class="rarity-heading">
+          <span class="rarity-gem"></span>
+          <h2>{{ group.name }}</h2>
+          <span class="count">{{ group.items.length }} mục</span>
+          <span class="heading-line"></span>
+        </div>
+
+        <div class="entry-grid">
+          <button *ngFor="let entry of group.items; trackBy: trackEntry" type="button" class="entry-card"
+            [class.selected]="selected?.id === entry.id" (click)="selectEntry(entry)">
+            <div class="entry-art">
+              <img [src]="getEntryImage(entry)" [alt]="entry.name" />
+              <span class="rarity-strip"></span>
+            </div>
+            <strong>{{ entry.name }}</strong>
+            <span>{{ getEntrySubtitle(entry) }}</span>
+          </button>
+        </div>
+      </section>
+
+      <div *ngIf="currentGroups.length === 0" class="state-box">
+        <i class="bi bi-search"></i>Không tìm thấy nội dung phù hợp.
+      </div>
+    </ng-container>
+  </main>
+
+  <aside class="detail-drawer" *ngIf="selected as entry">
+    <button class="detail-close" type="button" (click)="selected = null"><i class="bi bi-x"></i></button>
+    <img [src]="getEntryImage(entry)" [alt]="entry.name" />
+    <span class="detail-rarity" [style.color]="rarityColor(entry.rarityCode, isHero(entry) ? entry.rarityColorHex : undefined)">{{ entry.rarityName }}</span>
+    <h3>{{ entry.name }}</h3>
+    <ng-container *ngIf="isHero(entry); else itemDetail">
+      <p>{{ entry.factionName }} · {{ entry.className }}</p>
+      <div class="stats"><span>HP <b>{{ entry.baseHp | number }}</b></span><span>ATK <b>{{ entry.baseAtk | number }}</b></span><span>DEF <b>{{ entry.baseDef | number }}</b></span><span>SPD <b>{{ entry.baseSpd }}</b></span></div>
+    </ng-container>
+    <ng-template #itemDetail>
+      <p>{{ asItem(entry).categoryName }} · Yêu cầu cấp {{ asItem(entry).levelReq }}</p>
+      <p class="description">{{ asItem(entry).description || 'Chưa có mô tả.' }}</p>
+    </ng-template>
+  </aside>
+</div>

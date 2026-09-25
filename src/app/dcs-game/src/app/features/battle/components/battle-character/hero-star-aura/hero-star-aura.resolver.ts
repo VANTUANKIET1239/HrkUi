@@ -10,7 +10,8 @@ const TEMPLATE_TO_KEY: Record<number, StarAuraVisualKey> = {
   7: 'pm-hoi-ha-spectral-grooming',
   8: 'qa-ky-tinh-vicious-debt',
   9: 'kiet-noel-dark-blizzard',
-  10: 'hoang-nguyen-heavy-iron'
+  10: 'hoang-nguyen-heavy-iron',
+  11: 'hai-last-smile-aura'
 };
 
 const VALID_KEYS = new Set<string>([
@@ -23,7 +24,8 @@ const VALID_KEYS = new Set<string>([
   'pm-hoi-ha-spectral-grooming',
   'qa-ky-tinh-vicious-debt',
   'kiet-noel-dark-blizzard',
-  'hoang-nguyen-heavy-iron'
+  'hoang-nguyen-heavy-iron',
+  'hai-last-smile-aura'
 ]);
 
 export function resolveAuraVisualKey(
@@ -73,6 +75,9 @@ export function resolveAuraVisualKey(
     }
     if (filename.includes('gymer') || filename.includes('hoangnguyen')) {
       return 'hoang-nguyen-heavy-iron';
+    }
+    if (filename.includes('nhan-cuoi') || filename.includes('hai')) {
+      return 'hai-last-smile-aura';
     }
   }
 

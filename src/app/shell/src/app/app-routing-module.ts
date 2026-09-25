@@ -1,10 +1,23 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { noAuthGuard } from '../../../../libs/core/auth/guards';
 
 const routes: Routes = [
   {
+    path: 'login',
+    canActivate: [noAuthGuard],
+    loadComponent: () => import('../../../dcs-game/src/app/features/auth/pages/game-auth/game-auth.component')
+      .then(m => m.GameAuthComponent)
+  },
+  {
+    path: 'auth/login',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
     path: 'auth',
-    loadChildren: () => import('./pages/auth/auth-module').then(m => m.AuthModule)
+    redirectTo: 'login',
+    pathMatch: 'full'
   },
   {
     path: 'hrm',

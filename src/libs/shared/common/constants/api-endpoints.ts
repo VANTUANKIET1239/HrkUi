@@ -4,14 +4,19 @@ export const ApiEndpoints = {
     Login: 'auth/login',
     Register: 'auth/register',
     Logout: 'auth/logout',
-    Refresh: 'auth/refresh-token'
+    Refresh: 'auth/refresh-token',
+    Applications: 'auth/applications'
   },
 
   // Game Service - Player Profile & Wallet
   Player: {
     Me: 'dcs-game/player/me',
     Profile: 'dcs-game/player/profile',
-    Wallet: 'dcs-game/player/wallet'
+    Wallet: 'dcs-game/player/wallet',
+    Avatars: 'dcs-game/player/avatars',
+    SelectAvatar: 'dcs-game/player/avatar/template',
+    CustomAvatar: 'dcs-game/player/avatar/custom',
+    CustomAvatarImage: (playerId: number) => `dcs-game/player/avatar/custom/${playerId}`
   },
 
   // Game Service - Player Heroes
@@ -62,6 +67,15 @@ export const ApiEndpoints = {
     Start: 'dcs-game/battle/start',
     InitialState: 'dcs-game/battle/initial-state',
     Logs: 'dcs-game/battle/logs'
+  },
+  Dungeon: {
+    Maps: 'dcs-game/dungeons/maps',
+    Map: (id: number) => `dcs-game/dungeons/maps/${id}`,
+    Start: (stageId: number) => `dcs-game/dungeons/stages/${stageId}/start`,
+    FormationPreview: (stageId: number) => `dcs-game/dungeons/stages/${stageId}/formation-preview`,
+    Stamina: 'dcs-game/dungeons/stamina',
+    PurchaseStamina: 'dcs-game/dungeons/stamina/purchase',
+    ClaimChest: (chestId: number) => `dcs-game/dungeons/chests/${chestId}/claim`
   },
 
   // Game Service - Metadata & Enums

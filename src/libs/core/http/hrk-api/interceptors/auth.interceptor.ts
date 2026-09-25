@@ -1,4 +1,5 @@
 import { TokenManagerService } from './../../../auth/services/token-manager';
+import { SessionExpiredService } from './../../../auth/services/session-expired.service';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -18,48 +19,52 @@ import {
   take,
   throwError,
 } from 'rxjs';
-import { NavigationService } from '../../../services/navigation.service';
 import { ApiEndpoints } from '../../../../../app/shell/src/app/core/api-enpoints/api-endpoints';
+import { getAppAuthConfigForApi } from '../../../auth/config/app-auth.config';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private audienceMap = [
+  private legacyAudienceMap = [
     { prefix: '/gateway/payroll', audience: 'payroll-api' },
     { prefix: '/gateway/cab', audience: 'cab-api' },
     { prefix: '/gateway/calc', audience: 'calcwork-api' },
     { prefix: '/gateway/auth', audience: 'auth-api' },
-    { prefix: '/gateway/dcs-game', audience: 'game-api' },
   ];
 
-
-
   public readonly authApi = ApiEndpoints.Auth;
-  // private isRefreshing = false;
-  // // holds the latest access token (or null while refreshing)
-  // private refreshTokenSubject: BehaviorSubject<string | null> =
-  //   new BehaviorSubject<string | null>(null);
+  private isRefreshing = false;
+  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
   private uncheckAuthApiUrls = [
     this.authApi.Login,
     this.authApi.Register,
-    this.authApi.Refresh
+    this.authApi.Refresh,
+    this.authApi.Applications
   ];
 
   constructor(
     private tokens: TokenManagerService,
-    private navigationService: NavigationService
+    private sessionExpiredService: SessionExpiredService
   ) { }
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const found = this.audienceMap.find((m) => req.url.includes(m.prefix));
-    const audience = found?.audience;
+    const appConfig = getAppAuthConfigForApi(req.url);
+    const legacyConfig = this.legacyAudienceMap.find((m) => req.url.includes(m.prefix));
+    const audience = appConfig?.audience ?? legacyConfig?.audience;
 
     if (!audience || this.onCheckRefreshTokenUrl(req)) return next.handle(req); // public endpoints like /auth/login/refresh
 
     return from(this.tokens.getAccessToken(audience)).pipe(
+      catchError((err) => {
+        // getAccessToken can fail before the protected request is sent when
+        // the refresh cookie/token has already expired. This error therefore
+        // never reaches the inner HTTP catchError below.
+        this.expireSession();
+        return throwError(() => err);
+      }),
       switchMap((at) => {
         const withAuth = req.clone({
           setHeaders: { Authorization: `Bearer ${at}` },
@@ -68,7 +73,7 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(withAuth).pipe(
           catchError((err: HttpErrorResponse) => {
             if (err.status === 401) {
-              return this.handle401Error(audience, req, next);
+              return this.handle401Error(audience, req, next, err);
             }
             return throwError(() => err);
           })
@@ -78,59 +83,68 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private onCheckRefreshTokenUrl(req: HttpRequest<any>): boolean {
-    let result = this.uncheckAuthApiUrls.some(url => req.url.includes(url));
-    return result;
+    return this.uncheckAuthApiUrls.some(url => req.url.includes(url));
   }
 
   private handle401Error(
     audience: string,
     req: HttpRequest<any>,
-    next: HttpHandler
+    next: HttpHandler,
+    originalErr: HttpErrorResponse
   ): Observable<HttpEvent<any>> {
-    // if (!this.isRefreshing) {
-    //   this.isRefreshing = true;
-    //   this.refreshTokenSubject.next(null);
-    return from(this.tokens.forceRefresh(audience)).pipe(
-      switchMap((token) => {
-        // const newAccess = token;
+    // If user never had a session or on public auth endpoints, do not open session expired dialog
+    if (!this.tokens.hasSessionHint() || this.onCheckRefreshTokenUrl(req)) {
+      return throwError(() => originalErr);
+    }
 
-        // this.refreshTokenSubject.next(newAccess);
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
 
-        // return next.handle(
-        //   req.clone({ setHeaders: { Authorization: `Bearer ${newAccess}` } })
-        // );
+      return from(this.tokens.forceRefresh(audience)).pipe(
+        switchMap((token) => {
+          this.refreshTokenSubject.next(token);
+          const retryReq = req.clone({
+            setHeaders: { Authorization: `Bearer ${token}` },
+            withCredentials: true
+          });
+          return next.handle(retryReq);
+        }),
+        catchError((err) => {
+          // Refresh token is expired or invalid -> clear session and open single session-expired modal
+          this.expireSession();
 
-        const retryReq = req.clone({
-          setHeaders: { Authorization: `Bearer ${token}` },
-          withCredentials: true
-        });
-        return next.handle(retryReq);
-      }),
-      catchError((err) => {
-        // refresh failed -> logout / redirect
-        // this.auth.clearTokens();
-        //  this.router.navigate(['/login'], { queryParams: { sessionExpired: true } });
-        this.navigationService.goTo('/login');
-        return throwError(() => err);
-      }),
-      // finalize(() => {
-      //   this.isRefreshing = false;
-      // })
-    );
+          return throwError(() => err);
+        }),
+        finalize(() => {
+          this.isRefreshing = false;
+        })
+      );
+    } else {
+      // Single-flight queue for concurrent 401 requests
+      return this.refreshTokenSubject.pipe(
+        filter((token): token is string => token !== null),
+        take(1),
+        switchMap((token) => {
+          const retryReq = req.clone({
+            setHeaders: { Authorization: `Bearer ${token}` },
+            withCredentials: true
+          });
+          return next.handle(retryReq);
+        })
+      );
+    }
+  }
 
-    // } else {
-    //   return this.refreshTokenSubject.pipe(
-    //     filter((token) => token != null), // wait for non-null token
-    //     take(1),
-    //     switchMap((token) => {
-    //       // retry original request with the new token
-    //       return next.handle(
-    //         req.clone({
-    //           setHeaders: { Authorization: `Bearer ${token as string}` },
-    //         })
-    //       );
-    //     })
-    //   );
-    // }
+  private expireSession(): void {
+    this.tokens.forceDeleteAllCache();
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('hrk-dungeon-current-run');
+      sessionStorage.removeItem('hrk-dungeon-current-map');
+    }
+    const currentUrl = typeof window !== 'undefined'
+      ? window.location.pathname + window.location.search
+      : undefined;
+    this.sessionExpiredService.open(currentUrl);
   }
 }

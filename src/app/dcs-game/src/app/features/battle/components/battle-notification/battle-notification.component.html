@@ -1,0 +1,11 @@
+<div *ngIf="skillName" class="skill-notification-banner" [style.--skill-color]="skillColor" aria-live="polite">
+  <div class="banner-aura" [style.background]="skillColor"></div>
+  <div class="banner-content">
+    <span class="skill-category-badge" [class.is-ultimate]="skillCategory === 'ultimate'">
+      {{ skillCategory === 'ultimate' ? 'TUYỆT KỸ' : 'KỸ NĂNG' }}
+    </span>
+    <span class="actor-name">{{ actorName }}</span>
+    <span class="action-verb">thi triển</span>
+    <span class="skill-name-highlight">「 {{ skillName }} 」</span>
+  </div>
+</div>

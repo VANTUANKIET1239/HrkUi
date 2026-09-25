@@ -57,6 +57,7 @@ export interface BattleStatusEffectViewModel {
   value: number;
   remainingTurns: number;
   stacks: number;
+  maxStacks?: number | null;
   modifiers: BattleStatusModifierViewModel[];
   sourceSkillId?: string | null;
 }

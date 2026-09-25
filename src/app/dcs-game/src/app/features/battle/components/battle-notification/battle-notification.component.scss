@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  pointer-events: none !important;
+  position: absolute;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  width: auto;
+  max-width: 90vw;
+}
+
+.skill-notification-banner {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.92) 20%, rgba(15, 23, 42, 0.92) 80%, rgba(15, 23, 42, 0) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid var(--skill-color, #fbbf24);
+  border-bottom: 1px solid var(--skill-color, #fbbf24);
+  padding: 6px 28px;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  animation: banner-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none !important;
+  user-select: none;
+}
+
+.banner-aura {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.banner-content {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.skill-category-badge {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  &.is-ultimate {
+    background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+    color: #fef2f2;
+    border-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+  }
+}
+
+.actor-name {
+  font-weight: 800;
+  color: #f8fafc;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.action-verb {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.skill-name-highlight {
+  font-weight: 900;
+  color: var(--skill-color, #fbbf24);
+  text-shadow: 0 0 10px var(--skill-color, #fbbf24);
+  letter-spacing: 0.5px;
+}
+
+@keyframes banner-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
   min-height: 150px;
-  background: rgba(10, 10, 18, 0.7);
+  background: linear-gradient(145deg, rgba(8, 11, 20, 0.9), rgba(20, 13, 22, 0.88));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73,11 +73,26 @@
   font-size: 12px;
   line-height: 1.5;
   color: #d1d5db;
-  font-family: 'Consolas', 'Courier New', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
   animation: fade-in-row 0.3s ease-out forwards;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-  padding-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 3px solid #94a3b8;
+  border-radius: 7px;
+  padding: 7px 9px;
+  background: rgba(15, 23, 42, .72);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+
+.log-icon { font-size: 14px; width: 18px; text-align: center; color: #cbd5e1; filter: drop-shadow(0 0 5px currentColor); }
+.log-message { min-width: 0; }
+.log-damage { border-left-color: #fb7185; background: linear-gradient(90deg, rgba(127,29,29,.35), rgba(15,23,42,.72)); .log-icon { color: #fb7185; } }
+.log-critical { border-left-color: #facc15; background: linear-gradient(90deg, rgba(133,77,14,.4), rgba(15,23,42,.72)); .log-icon { color: #fde047; } }
+.log-heal { border-left-color: #4ade80; background: linear-gradient(90deg, rgba(20,83,45,.38), rgba(15,23,42,.72)); .log-icon { color: #4ade80; } }
+.log-buff { border-left-color: #38bdf8; .log-icon { color: #38bdf8; } }
+.log-debuff { border-left-color: #c084fc; .log-icon { color: #c084fc; } }
+.log-death { border-left-color: #ef4444; background: linear-gradient(90deg, rgba(69,10,10,.65), rgba(15,23,42,.72)); .log-icon { color: #ef4444; } }
 
 ::ng-deep .combat-highlight {
   color: #fca5a5;

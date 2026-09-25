@@ -1,0 +1,221 @@
+.pe-bleed-wrapper {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+
+  // Puddle at feet
+  .bleed-puddle {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 68px;
+    height: 22px;
+    pointer-events: none;
+
+    .puddle-core {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.75) 0%, rgba(153, 27, 27, 0.5) 60%, transparent 100%);
+      filter: blur(1px);
+      animation: puddlePulse 2s ease-in-out infinite;
+    }
+
+    .puddle-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+      animation: ringSpread 2.5s ease-out infinite;
+    }
+
+    .puddle-splash {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 6px #dc2626;
+
+      &.sp1 {
+        left: 20%;
+        top: 30%;
+        animation: splashBob 1.6s ease-in-out infinite;
+      }
+      &.sp2 {
+        right: 25%;
+        bottom: 25%;
+        animation: splashBob 1.9s ease-in-out infinite 0.4s;
+      }
+    }
+  }
+
+  // Droplets falling
+  .blood-drips {
+    position: absolute;
+    inset: 0;
+
+    .drip {
+      position: absolute;
+      width: 4px;
+      height: 7px;
+      background: linear-gradient(to bottom, #ef4444, #991b1b);
+      border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+      box-shadow: 0 0 4px rgba(239, 68, 68, 0.8);
+      opacity: 0;
+
+      &.dr1 {
+        left: 36%;
+        top: 25%;
+        animation: dripFall 1.8s ease-in infinite;
+      }
+      &.dr2 {
+        left: 54%;
+        top: 35%;
+        animation: dripFall 2.1s ease-in infinite 0.5s;
+      }
+      &.dr3 {
+        left: 45%;
+        top: 45%;
+        animation: dripFall 1.5s ease-in infinite 1s;
+      }
+      &.dr4 {
+        left: 62%;
+        top: 28%;
+        animation: dripFall 2.4s ease-in infinite 0.8s;
+      }
+    }
+  }
+
+  // Rising mist
+  .blood-mist {
+    position: absolute;
+    inset: 0;
+
+    .mist-particle {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(239, 68, 68, 0.35) 0%, transparent 75%);
+      filter: blur(3px);
+
+      &.mp1 {
+        left: 30%;
+        bottom: 15px;
+        animation: mistRise 2.5s ease-out infinite;
+      }
+      &.mp2 {
+        left: 55%;
+        bottom: 20px;
+        animation: mistRise 3s ease-out infinite 0.7s;
+      }
+      &.mp3 {
+        left: 42%;
+        bottom: 10px;
+        animation: mistRise 2.2s ease-out infinite 1.3s;
+      }
+    }
+  }
+
+  // Laceration cut lines
+  .laceration-mark {
+    position: absolute;
+    top: 40%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 18px;
+
+    .slash-line {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ef4444 30%, #ffffff 50%, #dc2626 70%, transparent);
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.9);
+      border-radius: 2px;
+      animation: woundPulse 1.5s ease-in-out infinite alternate;
+
+      &.s1 {
+        width: 22px;
+        transform: rotate(-35deg);
+        top: 4px;
+        left: 1px;
+      }
+      &.s2 {
+        width: 14px;
+        transform: rotate(-25deg);
+        top: 12px;
+        left: 6px;
+      }
+    }
+  }
+}
+
+@keyframes puddlePulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
+@keyframes ringSpread {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes splashBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes dripFall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translateY(10px) scale(1);
+  }
+  80% {
+    opacity: 0.8;
+    transform: translateY(45px) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.3);
+  }
+}
+
+@keyframes mistRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translateY(-25px) scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-55px) scale(2);
+  }
+}
+
+@keyframes woundPulse {
+  0% { opacity: 0.5; filter: drop-shadow(0 0 2px #ef4444); }
+  100% { opacity: 1; filter: drop-shadow(0 0 7px #ef4444); }
+}

@@ -1,0 +1,194 @@
+[
+  {
+    "order": 1,
+    "code": "COMBAT_BROOM_MK2",
+    "name": "Chổi Bay Công Nghiệp MK-II",
+    "category": "WEAPON",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/combat-broom-mk2.png"
+  },
+  {
+    "order": 2,
+    "code": "SIX_STRING_DEMON_GUITAR",
+    "name": "Ma Cầm Sáu Dây",
+    "category": "WEAPON",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/six-string-demon-guitar.png"
+  },
+  {
+    "order": 3,
+    "code": "APOCALYPSE_MICROWAVE_CANNON",
+    "name": "Pháo Vi Sóng Tận Thế",
+    "category": "WEAPON",
+    "rarity": "LEGENDARY",
+    "imagePath": "/assets/images/dcs-game/equipments/apocalypse-microwave-cannon.png"
+  },
+  {
+    "order": 4,
+    "code": "NEBULA_PHOTON_SWORD",
+    "name": "Kiếm Quang Tử Tinh Vân",
+    "category": "WEAPON",
+    "rarity": "MYTHIC",
+    "imagePath": "/assets/images/dcs-game/equipments/nebula-photon-sword.png"
+  },
+  {
+    "order": 5,
+    "code": "LIGHTNING_RAINCOAT",
+    "name": "Áo Mưa Chống Sét",
+    "category": "ARMOR",
+    "rarity": "COMMON",
+    "imagePath": "/assets/images/dcs-game/equipments/lightning-raincoat.png"
+  },
+  {
+    "order": 6,
+    "code": "VIRTUAL_GLASS_ARMOR",
+    "name": "Giáp Kính Thực Tế Ảo",
+    "category": "ARMOR",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/virtual-glass-armor.png"
+  },
+  {
+    "order": 7,
+    "code": "VOID_CIRCUS_COAT",
+    "name": "Chiến Bào Rạp Xiếc Hư Không",
+    "category": "ARMOR",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/void-circus-coat.png"
+  },
+  {
+    "order": 8,
+    "code": "SOLAR_REACTOR_ARMOR",
+    "name": "Giáp Lò Phản Ứng Thái Dương",
+    "category": "ARMOR",
+    "rarity": "LEGENDARY",
+    "imagePath": "/assets/images/dcs-game/equipments/solar-reactor-armor.png"
+  },
+  {
+    "order": 9,
+    "code": "TACTICAL_HONEYCOMB_SANDALS",
+    "name": "Dép Tổ Ong Chiến Thuật",
+    "category": "BOOTS",
+    "rarity": "COMMON",
+    "imagePath": "/assets/images/dcs-game/equipments/tactical-honeycomb-sandals.png"
+  },
+  {
+    "order": 10,
+    "code": "NEON_JET_SKATES",
+    "name": "Giày Trượt Phản Lực Neon",
+    "category": "BOOTS",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/neon-jet-skates.png"
+  },
+  {
+    "order": 11,
+    "code": "QUANTUM_CAT_SLIPPERS",
+    "name": "Hài Mèo Lượng Tử",
+    "category": "BOOTS",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/quantum-cat-slippers.png"
+  },
+  {
+    "order": 12,
+    "code": "ZERO_GRAVITY_CELESTIAL_BOOTS",
+    "name": "Bộ Hành Tinh Không",
+    "category": "BOOTS",
+    "rarity": "MYTHIC",
+    "imagePath": "/assets/images/dcs-game/equipments/zero-gravity-celestial-boots.png"
+  },
+  {
+    "order": 13,
+    "code": "OLD_REPAIR_NOTEBOOK",
+    "name": "Sổ Tay Sửa Máy Cũ",
+    "category": "ARTIFACT",
+    "rarity": "COMMON",
+    "imagePath": "/assets/images/dcs-game/equipments/old-repair-notebook.png"
+  },
+  {
+    "order": 14,
+    "code": "SUMMONING_TABLET",
+    "name": "Máy Tính Bảng Triệu Hồi",
+    "category": "ARTIFACT",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/summoning-tablet.png"
+  },
+  {
+    "order": 15,
+    "code": "ALCHEMY_RICE_COOKER",
+    "name": "Nồi Cơm Luyện Đan",
+    "category": "ARTIFACT",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/alchemy-rice-cooker.jpg"
+  },
+  {
+    "order": 16,
+    "code": "MULTIVERSE_ENCYCLOPEDIA",
+    "name": "Đại Từ Điển Đa Vũ Trụ",
+    "category": "ARTIFACT",
+    "rarity": "LEGENDARY",
+    "imagePath": "/assets/images/dcs-game/equipments/multiverse-encyclopedia.jpg"
+  },
+  {
+    "order": 17,
+    "code": "BOTTLE_OPENER_RING",
+    "name": "Nhẫn Mở Nắp Chai",
+    "category": "RING",
+    "rarity": "COMMON",
+    "imagePath": "/assets/images/dcs-game/equipments/bottle-opener-ring.jpg"
+  },
+  {
+    "order": 18,
+    "code": "MIND_SYNC_HEADSET",
+    "name": "Tai Nghe Đồng Bộ Tâm Trí",
+    "category": "RING",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/mind-sync-headset.jpg"
+  },
+  {
+    "order": 19,
+    "code": "POCKET_PLANET_RING",
+    "name": "Nhẫn Hành Tinh Bỏ Túi",
+    "category": "RING",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/pocket-planet-ring.jpg"
+  },
+  {
+    "order": 20,
+    "code": "TIME_REVERSAL_WATCH",
+    "name": "Đồng Hồ Nghịch Chuyển Thời Gian",
+    "category": "RING",
+    "rarity": "MYTHIC",
+    "imagePath": "/assets/images/dcs-game/equipments/time-reversal-watch.jpg"
+  },
+  {
+    "order": 21,
+    "code": "GUARDIAN_ALUMINUM_POT",
+    "name": "Nồi Nhôm Hộ Mệnh",
+    "category": "HELMET",
+    "rarity": "COMMON",
+    "imagePath": "/assets/images/dcs-game/equipments/guardian-aluminum-pot.jpg"
+  },
+  {
+    "order": 22,
+    "code": "METEOR_PILOT_HELMET",
+    "name": "Mũ Phi Công Sao Băng",
+    "category": "HELMET",
+    "rarity": "RARE",
+    "imagePath": "/assets/images/dcs-game/equipments/meteor-pilot-helmet.jpg"
+  },
+  {
+    "order": 23,
+    "code": "ROBOT_SHARK_HELMET",
+    "name": "Đầu Cá Mập Máy",
+    "category": "HELMET",
+    "rarity": "EPIC",
+    "imagePath": "/assets/images/dcs-game/equipments/robot-shark-helmet.jpg"
+  },
+  {
+    "order": 24,
+    "code": "GALACTIC_ANTENNA_CROWN",
+    "name": "Vương Miện Ăng-Ten Thiên Hà",
+    "category": "HELMET",
+    "rarity": "LEGENDARY",
+    "imagePath": "/assets/images/dcs-game/equipments/galactic-antenna-crown.jpg"
+  }
+]

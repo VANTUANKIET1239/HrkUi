@@ -3,13 +3,27 @@
     'team-right': character.team === 'right',
     'is-charging': isCharging,
     'is-hit': isHit,
-    'is-dead': character.hp <= 0
-  }" [attr.active-skill-id]="activeSkillId">
+    'is-dead': character.hp <= 0,
+    'has-tooltip': showTooltip,
+    'formation-mode': displayMode === 'formation',
+    'hero-tao-la-nhat': isTaoLaNhat(),
+    'is-empowered-ricardo': isEmpoweredRicardo()
+  }" [attr.active-skill-id]="activeSkillId"
+  [style.--visual-speed]="visualSpeed"
+  tabindex="0"
+  role="region"
+  [attr.aria-label]="character.name + ' - HP ' + character.hp + '/' + character.maxHp"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (focus)="onFocus()"
+  (blur)="onBlur()">
 
 
   <!-- ACTIVE SKILL EFFECTS (Casting / Attacking state) -->
   <app-skill [isCharging]="isCharging" [skillCategory]="getSkillCategory()" [skillColor]="skillColor"
-    [activeSkillId]="activeSkillId" [character]="character">
+    [activeSkillId]="activeSkillId" [character]="character"
+    [phase]="phase" [visualSpeed]="visualSpeed" [castSequence]="castSequence"
+    [isEmpowered]="isEmpowered">
   </app-skill>
 
   <!-- HIT / IMPACT EFFECTS (When receiving damage or heal) -->
@@ -294,6 +308,35 @@
         <div class="t-lock">LOCK</div>
       </div>
     </div>
+
+    <!-- Hai Last Laugh Target Hit Visuals (3 Rapid Shadow Strikes + Bleed Detonation Burst) -->
+    <div class="hai-last-laugh-hit-fx" *ngIf="activeSkillId === 'HAI_LAST_LAUGH'">
+      <!-- 3 Rapid Shadow Strike Slashes -->
+      <div class="shadow-strikes">
+        <div class="shadow-slash ss1"></div>
+        <div class="shadow-slash ss2"></div>
+        <div class="shadow-slash ss3"></div>
+      </div>
+
+      <!-- Detonation Shockwave Ring -->
+      <div class="detonation-shockwave"></div>
+
+      <!-- Crimson Detonation Blood Explosion -->
+      <div class="bleed-detonation-burst">
+        <span class="burst-spk b1"></span>
+        <span class="burst-spk b2"></span>
+        <span class="burst-spk b3"></span>
+        <span class="burst-spk b4"></span>
+        <span class="burst-spk b5"></span>
+        <span class="burst-spk b6"></span>
+      </div>
+
+      <!-- Sinister Laugh Phantom Glitch on victim -->
+      <div class="phantom-laugh-glitch">
+        <div class="glitch-grin">😈</div>
+        <div class="panic-tag">PANIC!</div>
+      </div>
+    </div>
   </ng-container>
 
   <!-- Ellipse shadow under feet -->
@@ -322,21 +365,25 @@
     </app-passive-effect>
 
     <img [src]="character.avatar" [alt]="character.name" class="character-sprite"
-      [class.sprite-flipped]="shouldFlipSprite()" />
+      [class.sprite-flipped]="shouldFlipSprite()"
+      [class.tao-la-nhat]="isTaoLaNhat()" />
 
     <!-- Status effects/Buff badges overlaying above the head -->
     <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && character.battleStatuses && character.battleStatuses.length > 0">
       <div *ngFor="let status of character.battleStatuses | slice:0:5" class="status-icon"
         [class.is-debuff]="status.category === 'DEBUFF' || status.category === 'CONTROL'"
+        [class.is-ricardo]="status.code === 'RICARDO'"
+        [class.is-ricardo-rage]="status.code === 'RICARDO' && isStatusFullyStacked(status)"
         [style.--status-color]="status.colorHex" tabindex="0">
         <img [src]="status.iconPath" [alt]="status.name" />
         <span class="status-turns" *ngIf="status.remainingTurns > 0">{{ status.remainingTurns }}</span>
-        <span class="status-stacks" *ngIf="status.stacks > 1">{{ status.stacks }}</span>
+        <span class="status-stacks" *ngIf="status.stacks > 1 || status.code === 'RICARDO'">{{ status.stacks || 1 }}</span>
+        <span class="ricardo-rage-badge" *ngIf="status.code === 'RICARDO' && isStatusFullyStacked(status)">CUỒNG NỘ!</span>
         <div class="status-tooltip">
           <strong>{{ status.name }}</strong>
           <span class="status-description" *ngIf="status.description">{{ status.description }}</span>
           <span *ngIf="status.code === 'SHIELD'">Khiên còn lại: {{ status.value | number }}</span>
-          <span *ngIf="status.value && status.code !== 'SHIELD'">Giá trị: {{ status.value }}%</span>
+          <span *ngIf="status.value && status.code !== 'SHIELD' && status.code !== 'RICARDO'">Giá trị: {{ status.value }}%</span>
           <span *ngFor="let modifier of status.modifiers">
             {{ modifier.attributeName || modifier.attributeCode }}:
             {{ modifier.value > 0 ? '+' : '' }}{{ modifier.value }}{{ modifier.valueType === 'PERCENT' ? '%' : '' }}
@@ -365,4 +412,10 @@
     <span class="crit-mark" *ngIf="damageEvent.isCrit"><span class="crit-icon">✦</span> CRITICAL</span>
     <span class="combat-number">{{ damageEvent.text }}</span>
   </div>
+
+  <!-- Detailed Character Tooltip on Hover/Focus -->
+  <app-battle-character-tooltip
+    *ngIf="showTooltip && displayMode === 'battle'"
+    [hero]="character">
+  </app-battle-character-tooltip>
 </div>

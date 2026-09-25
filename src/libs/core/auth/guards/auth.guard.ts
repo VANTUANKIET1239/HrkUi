@@ -1,30 +1,31 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenManagerService } from '../services/token-manager';
+import { getAppAuthConfig, getAppAuthConfigForRoute } from '../config/app-auth.config';
 
 /**
  * authGuard: Protects routes from unauthenticated access.
- * If user is NOT logged in for auth-api, redirects to the login page (/dcs-game/auth).
+ * Redirects unauthenticated users to the shared shell login page.
  */
 export const authGuard: CanActivateFn = async (route, state) => {
   const tokenManager = inject(TokenManagerService);
   const router = inject(Router);
 
   // If user has not logged in or has logged out, redirect immediately without unnecessary network calls
-  if (!tokenManager.hasSessionHint()) {
-    return router.createUrlTree(['/dcs-game/auth'], {
-      queryParams: { returnUrl: state.url }
-    });
-  }
+  const inferredConfig = getAppAuthConfigForRoute(state.url);
+  const appConfig = getAppAuthConfig(route.data?.['appCode'] ?? inferredConfig.appCode);
+  const loginTree = () => router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url, app: appConfig.appCode }
+  });
 
-  const audience = route.data?.['audience'] || (state.url.includes('dcs-game') ? 'game-api' : 'auth-api');
+  if (!tokenManager.hasSessionHint()) return loginTree();
+
+  const audience = route.data?.['audience'] || appConfig.audience;
   const isAuthenticated = await tokenManager.checkAuthSession(audience);
 
   if (isAuthenticated) {
     return true;
   }
 
-  return router.createUrlTree(['/dcs-game/auth'], {
-    queryParams: { returnUrl: state.url }
-  });
+  return loginTree();
 };

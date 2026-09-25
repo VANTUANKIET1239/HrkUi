@@ -1,0 +1,181 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" [attr.aria-label]="stage.name">
+  <section class="stage-modal">
+    <!-- Close Button -->
+    <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" aria-label="Đóng cửa sổ">
+      <i class="bi bi-x-lg"></i>
+    </button>
+
+    <!-- Modal Header -->
+    <header class="modal-header">
+      <div class="header-badges">
+        <span class="badge-stage-num">ẢI {{ stage.stageNumber }}</span>
+        <span class="badge-stage-type" [class.type-boss]="stage.stageType !== 'NORMAL'">{{ stageTypeLabel }}</span>
+        <span class="badge-stamina">⚡ {{ stage.staminaCost }} Thể Lực</span>
+      </div>
+      <h2 class="modal-title">{{ stage.name }}</h2>
+    </header>
+
+    <!-- Combat Power Comparison Matrix -->
+    <div class="power-matrix">
+      <div class="power-card player-power">
+        <span class="power-label">Lực Chiến Của Bạn</span>
+        <span class="power-value">{{ stage.playerPower | number }}</span>
+        <i class="bi bi-shield-shaded power-icon"></i>
+      </div>
+
+      <div class="power-vs-divider">
+        <span class="vs-text">VS</span>
+        <div class="power-status-tag" [ngClass]="powerStatus.class">
+          <span>{{ powerStatus.icon }} {{ powerStatus.label }}</span>
+        </div>
+      </div>
+
+      <div class="power-card enemy-power">
+        <span class="power-label">Tổng Lực Chiến Địch</span>
+        <span class="power-value">{{ stage.enemyPower | number }}</span>
+        <i class="bi bi-crosshair power-icon"></i>
+      </div>
+
+      <div class="power-card recommended-power">
+        <span class="power-label">Lực Chiến Đề Nghị</span>
+        <span class="power-value">{{ stage.recommendedPower | number }}</span>
+        <i class="bi bi-bullseye power-icon"></i>
+      </div>
+    </div>
+
+    <!-- 3-Star Rating Conditions -->
+    <div class="star-rating-block">
+      <div class="star-rating-header">
+        <span class="rating-title"><i class="bi bi-star-fill text-gold me-1"></i>ĐIỀU KIỆN ĐÁNH GIÁ SAO (Kỷ lục: {{ stage.bestStars || 0 }}★)</span>
+      </div>
+      <div class="star-rules-list">
+        <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 1">
+          <span class="star-badge">★</span>
+          <span class="rule-text">Chiến thắng vượt ải</span>
+        </div>
+        <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 2">
+          <span class="star-badge">★★</span>
+          <span class="rule-text">HP toàn quân còn lại ≥ 40%</span>
+        </div>
+        <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 3">
+          <span class="star-badge">★★★</span>
+          <span class="rule-text">HP toàn quân còn lại ≥ 70%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Alert if Any -->
+    <div class="error-banner" *ngIf="errorMessage || !isStaminaSufficient">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ errorMessage || 'Không đủ thể lực để bắt đầu chiến đấu (cần ' + stage.staminaCost + ', hiện có ' + staminaCurrent + ').' }}</span>
+    </div>
+
+    <!-- Enemy Lineup Section -->
+    <div class="section-block">
+      <div class="section-title">
+        <i class="bi bi-people-fill"></i>
+        <span>ĐỘI HÌNH ĐỐI THỦ ({{ stage.enemies.length }} TƯỚNG)</span>
+      </div>
+      <div class="enemy-grid">
+        <article
+          *ngFor="let enemy of stage.enemies"
+          class="enemy-card"
+          [class.is-boss-card]="enemy.isBoss"
+        >
+          <div class="enemy-art-box">
+            <img [src]="enemy.imagePath" [alt]="enemy.name" class="enemy-avatar" loading="lazy" />
+            <span class="boss-corner-badge" *ngIf="enemy.isBoss">BOSS</span>
+            <span class="position-badge">#{{ enemy.position }}</span>
+          </div>
+          <strong class="enemy-name">{{ enemy.name }}</strong>
+          <span class="enemy-level-star">Lv.{{ enemy.level }} · {{ enemy.stars }}★</span>
+          <span class="enemy-power-score">⚔️ {{ enemy.power | number }}</span>
+        </article>
+      </div>
+    </div>
+
+    <!-- Boss Equipment Drops Section -->
+    <div class="section-block drops-block" *ngIf="stage.possibleDrops && stage.possibleDrops.length > 0">
+      <div class="section-title">
+        <i class="bi bi-shield-shaded text-warning"></i>
+        <span>TRANG BỊ CÓ THỂ RƠI (BOSS STAGE)</span>
+      </div>
+      <div class="drops-grid">
+        <div *ngFor="let drop of stage.possibleDrops"
+             class="drop-card"
+             [ngClass]="(drop.rarityCode || '').toLowerCase()"
+             (mouseenter)="onDropHover($event, drop)"
+             (mouseleave)="onDropLeave()">
+          <div class="drop-icon-box">
+            <img *ngIf="drop.imagePath" [src]="drop.imagePath" [alt]="drop.name" class="drop-img" />
+            <i *ngIf="!drop.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
+          </div>
+          <div class="drop-info">
+            <strong class="drop-name">{{ drop.name }}</strong>
+            <div class="drop-sub">
+              <span class="drop-rarity">{{ drop.rarityName }}</span>
+              <span class="drop-rate">{{ drop.dropRatePercent }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rewards Section -->
+    <div class="section-block rewards-block">
+      <div class="section-title">
+        <i class="bi bi-gift-fill"></i>
+        <span>PHẦN THƯỞNG CHIẾN THẮNG</span>
+      </div>
+      <div class="rewards-grid">
+        <div class="reward-pill gold-pill">
+          <span class="reward-icon">🪙</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ stage.goldReward | number }}</span>
+            <span class="reward-name">Vàng</span>
+          </div>
+        </div>
+
+        <div class="reward-pill player-exp-pill">
+          <span class="reward-icon">👤</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ stage.playerExpReward | number }}</span>
+            <span class="reward-name">EXP Người chơi</span>
+          </div>
+        </div>
+
+        <div class="reward-pill hero-exp-pill">
+          <span class="reward-icon">🛡️</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ stage.heroExpReward | number }}</span>
+            <span class="reward-name">EXP Mỗi tướng</span>
+          </div>
+        </div>
+
+        <div class="reward-pill first-clear-pill" *ngIf="stage.state !== 'CLEARED' && stage.firstClearGoldReward > 0">
+          <span class="reward-icon">🎁</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ stage.firstClearGoldReward | number }}</span>
+            <span class="reward-name">Quà Vượt Ải Đầu</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <footer class="modal-footer">
+      <button
+        type="button"
+        class="btn-fight"
+        [disabled]="isStarting || !isStaminaSufficient"
+        (click)="onFightClick()"
+      >
+        <span class="fight-shimmer"></span>
+        <span class="spinner-border spinner-border-sm" *ngIf="isStarting" role="status" aria-hidden="true"></span>
+        <span class="fight-icon" *ngIf="!isStarting">⚔️</span>
+        <span class="fight-text">{{ isStarting ? 'Đang Khởi Tạo Trận Đấu...' : 'BẮT ĐẦU CHIẾN ĐẤU' }}</span>
+        <span class="fight-cost" *ngIf="!isStarting">(⚡ {{ stage.staminaCost }})</span>
+      </button>
+    </footer>
+  </section>
+</div>

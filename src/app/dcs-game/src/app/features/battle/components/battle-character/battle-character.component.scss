@@ -4,6 +4,12 @@
   max-width: 180px;
   margin: 0 auto;
   position: relative;
+  z-index: 10;
+
+  &:hover,
+  &:focus-within {
+    z-index: 150 !important;
+  }
 }
 
 .character-sprite-wrapper {
@@ -13,10 +19,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  outline: none;
   --facing: 1;
 
   &.team-right {
     --facing: -1;
+  }
+
+  &.has-tooltip,
+  &:hover,
+  &:focus-within {
+    z-index: 150 !important;
+  }
+
+  &:focus-visible {
+    border-radius: 8px;
+    box-shadow: 0 0 0 2px #eab308, 0 0 16px rgba(234, 179, 8, 0.4);
   }
 }
 
@@ -50,6 +68,51 @@
 
   &.sprite-flipped {
     transform: scaleX(-1);
+  }
+
+  &.tao-la-nhat,
+  &[src*="tao-la-nhat"],
+  &[src*="transparent"] {
+    mix-blend-mode: normal !important;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.25)) !important;
+  }
+}
+
+.character-sprite-wrapper.hero-tao-la-nhat {
+  .character-sprite {
+    mix-blend-mode: normal !important;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.25)) !important;
+  }
+}
+
+.character-sprite-wrapper.formation-mode {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+
+  .sprite-area {
+    height: 100%;
+    transform: none !important;
+    align-items: center;
+  }
+
+  .character-sprite {
+    height: auto !important;
+    max-height: 68px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    transform: none !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  }
+
+  .shadow-ellipse {
+    display: none !important;
+  }
+
+  .info-block {
+    display: none !important;
   }
 }
 
@@ -178,6 +241,68 @@
 }
 
 .status-icon.is-debuff { filter: saturate(1.15); }
+
+.status-icon.is-ricardo {
+  --status-color: #dc2626;
+  border-color: #dc2626;
+  box-shadow: 0 0 10px rgba(220, 38, 38, 0.75), 0 0 18px rgba(168, 85, 247, 0.5);
+
+  .status-stacks {
+    background: linear-gradient(135deg, #7f1d1d, #4c1d95);
+    border-color: #fbbf24;
+    color: #fef08a;
+    font-weight: 900;
+  }
+}
+
+.status-icon.is-ricardo.is-ricardo-rage {
+  border-color: #fbbf24;
+  box-shadow: 0 0 15px #dc2626, 0 0 25px #c026d3, 0 0 35px #fbbf24;
+  animation: ricardo-rage-icon-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes ricardo-rage-icon-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 12px #dc2626, 0 0 20px #a855f7, 0 0 25px #fbbf24;
+  }
+  100% {
+    transform: scale(1.12);
+    box-shadow: 0 0 20px #dc2626, 0 0 35px #c026d3, 0 0 45px #fbbf24;
+  }
+}
+
+.ricardo-rage-badge {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #dc2626 0%, #7e22ce 60%, #fbbf24 100%);
+  color: #ffffff;
+  border: 1px solid #fbbf24;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #000, 0 0 6px #fbbf24;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.8), 0 2px 4px rgba(0, 0, 0, 0.6);
+  animation: ricardo-badge-glow 0.8s infinite alternate ease-in-out;
+  z-index: 10;
+}
+
+@keyframes ricardo-badge-glow {
+  0% {
+    filter: brightness(1) drop-shadow(0 0 2px #dc2626);
+    transform: translateX(-50%) scale(0.95);
+  }
+  100% {
+    filter: brightness(1.25) drop-shadow(0 0 6px #fbbf24);
+    transform: translateX(-50%) scale(1.05);
+  }
+}
 
 .status-turns, .status-stacks {
   position: absolute;
@@ -335,6 +460,134 @@
     filter: brightness(1.4) drop-shadow(0 0 20px rgba(251, 191, 36, 0.8)) blur(1px);
   }
   92%, 100% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+}
+
+/* Caster Assassin 8-Phase Dash & Multi-Slash during HAI_LAST_LAUGH */
+.character-sprite-wrapper.is-charging[active-skill-id='HAI_LAST_LAUGH'] .sprite-area {
+  animation: hai-last-laugh-assassin-anim 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes hai-last-laugh-assassin-anim {
+  /* Phase 1: 0% - 14% (0s - 0.4s): Stance prep, sinister crouch */
+  0% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
+  }
+  14% {
+    transform: rotateX(-20deg) translate3d(calc(-20px * var(--facing)), 8px, 0) scale(0.95) skewX(calc(-4deg * var(--facing)));
+    filter: brightness(1.2) drop-shadow(0 0 16px rgba(6, 182, 212, 0.8));
+  }
+  /* Phase 2: 14% - 26% (0.4s - 0.75s): Panic terror pulse & vanish into shadows */
+  22% {
+    transform: rotateX(-20deg) translate3d(calc(-30px * var(--facing)), 12px, 0) scale(0.9) skewX(calc(-8deg * var(--facing)));
+    opacity: 0.85;
+  }
+  26% {
+    transform: rotateX(-20deg) translate3d(calc(60px * var(--facing)), -20px, 40px) scale(1.05);
+    opacity: 0.2;
+    filter: blur(4px) drop-shadow(0 0 25px #06b6d4);
+  }
+  /* Phase 3 & 4: 26% - 48% (0.75s - 1.35s): Instant Phantom Dash + Strike 1 (HIT_1 @ 1.05s / 37%) */
+  35% {
+    transform: rotateX(-20deg) translate3d(calc(240px * var(--facing)), -40px, 80px) scale(1.15) rotate(calc(12deg * var(--facing)));
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 20px #22d3ee);
+  }
+  40% {
+    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), -10px, 80px) scale(1.2) rotate(calc(-10deg * var(--facing)));
+    filter: brightness(1.3) drop-shadow(0 0 15px #06b6d4);
+  }
+  /* Phase 5: 48% - 62% (1.35s - 1.75s): Strike 2 (HIT_2 @ 1.4s / 50%) Reverse Spinning Thrust */
+  50% {
+    transform: rotateX(-20deg) translate3d(calc(280px * var(--facing)), -60px, 90px) scale(1.25) rotate(calc(20deg * var(--facing)));
+    filter: brightness(1.6) drop-shadow(0 0 25px #38bdf8);
+  }
+  56% {
+    transform: rotateX(-20deg) translate3d(calc(250px * var(--facing)), 0px, 80px) scale(1.18) rotate(calc(-5deg * var(--facing)));
+  }
+  /* Phase 6: 62% - 76% (1.75s - 2.15s): Strike 3 (HIT_3 @ 1.9s / 68%) Massive Downward X-Execution */
+  65% {
+    transform: rotateX(-20deg) translate3d(calc(270px * var(--facing)), -130px, 120px) scale(1.35) rotate(calc(-15deg * var(--facing)));
+    filter: brightness(1.8) drop-shadow(0 0 35px #a5f3fc);
+  }
+  70% {
+    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), 15px, 60px) scale(1.2) rotate(calc(5deg * var(--facing)));
+    filter: brightness(1.4) drop-shadow(0 0 20px #ef4444);
+  }
+  /* Phase 7: 76% - 88% (2.15s - 2.45s): Assassin Shadow Teleport Back to Origin */
+  78% {
+    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), 15px, 60px) scale(1.0);
+    opacity: 0.3;
+    filter: blur(6px);
+  }
+  85% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1.05);
+    opacity: 0.9;
+    filter: brightness(1.3) drop-shadow(0 0 18px #06b6d4);
+  }
+  /* Phase 8: 88% - 100% (2.45s - 2.8s): Sheath daggers & smirking finish */
+  100% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
+  }
+}
+
+/* Victim Violent Stagger & 3-Hit Impale Recoil during HAI_LAST_LAUGH */
+.character-sprite-wrapper.is-hit[active-skill-id='HAI_LAST_LAUGH'] .sprite-area {
+  animation: hai-last-laugh-victim-impale-anim 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes hai-last-laugh-victim-impale-anim {
+  /* Idle before impact */
+  0%, 40% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+  /* STRIKE 1 (HIT_1 @ 1.05s / ~44%): Violent diagonal pierce recoil */
+  44% {
+    transform: rotateX(-20deg) translate3d(calc(15px * var(--facing)), 6px, 0) scale(0.92) skewX(calc(-6deg * var(--facing)));
+    filter: brightness(2) drop-shadow(0 0 25px #06b6d4) drop-shadow(0 0 40px #ef4444);
+  }
+  48% {
+    transform: rotateX(-20deg) translate3d(calc(-10px * var(--facing)), -4px, 0) scale(0.96) skewX(calc(4deg * var(--facing)));
+    filter: brightness(1.3) drop-shadow(0 0 15px #dc2626);
+  }
+  54% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+  /* STRIKE 2 (HIT_2 @ 1.4s / ~58%): Twin scissor stab recoil */
+  58% {
+    transform: rotateX(-20deg) translate3d(calc(-18px * var(--facing)), 8px, 0) scale(0.88) skewX(calc(8deg * var(--facing)));
+    filter: brightness(2.2) drop-shadow(0 0 30px #ef4444) drop-shadow(0 0 50px #06b6d4);
+  }
+  63% {
+    transform: rotateX(-20deg) translate3d(calc(12px * var(--facing)), -6px, 0) scale(0.94) skewX(calc(-5deg * var(--facing)));
+    filter: brightness(1.4) drop-shadow(0 0 20px #dc2626);
+  }
+  72% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+  /* STRIKE 3 (HIT_3 @ 1.9s / ~79%): COLOSSAL EXECUTION SLAM & GROUND IMPALE */
+  79% {
+    transform: rotateX(-20deg) translate3d(0, 30px, 0) scaleY(0.7) scaleX(1.2) rotate(calc(6deg * var(--facing)));
+    filter: brightness(2.8) drop-shadow(0 0 40px #06b6d4) drop-shadow(0 0 70px #ef4444);
+  }
+  83% {
+    transform: rotateX(-20deg) translate3d(calc(-8px * var(--facing)), 22px, 0) scaleY(0.78) scaleX(1.15) rotate(calc(-4deg * var(--facing)));
+  }
+  87% {
+    transform: rotateX(-20deg) translate3d(calc(6px * var(--facing)), 15px, 0) scaleY(0.85) scaleX(1.08);
+  }
+  92% {
+    transform: rotateX(-20deg) translate3d(0, 6px, 0) scaleY(0.95);
+  }
+  100% {
     transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
     filter: none;
   }
@@ -948,15 +1201,91 @@
    Ricardo Milos! Blitz Dash Animations & Caster Sprite Hiding
    ========================================================================== */
 .character-sprite-wrapper.is-charging[active-skill-id='RICARDO_MILOS'] {
+  &:not(.is-empowered-ricardo) {
+    .sprite-area,
+    app-skill {
+      animation: ricardo-blitz-anim 2.4s infinite ease-in-out;
+      z-index: 999;
+    }
 
-  .sprite-area,
-  app-skill {
-    animation: ricardo-blitz-anim 2.4s infinite ease-in-out;
-    z-index: 999;
+    .character-sprite {
+      animation: ricardo-standard-sprite-hide 2.4s infinite ease-in-out;
+    }
   }
 
-  .character-sprite {
-    animation: ricardo-standard-sprite-hide 2.4s infinite ease-in-out;
+  &.is-empowered-ricardo {
+    .sprite-area,
+    app-skill {
+      animation: ricardo-empowered-leap-anim 2.4s infinite cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 999;
+    }
+
+    .character-sprite {
+      animation: ricardo-empowered-sprite-fx 2.4s infinite ease-in-out;
+    }
+  }
+}
+
+@keyframes ricardo-empowered-sprite-fx {
+  0%, 25% {
+    opacity: 1;
+    filter: drop-shadow(0 0 25px #dc2626) drop-shadow(0 0 35px #a855f7) brightness(1.3);
+  }
+  26%, 70% {
+    opacity: 0.2;
+    filter: drop-shadow(0 0 30px #c026d3) brightness(2.2);
+  }
+  71%, 78% {
+    opacity: 1;
+    filter: drop-shadow(0 0 45px #fbbf24) brightness(2.5);
+  }
+  79%, 100% {
+    opacity: 1;
+    filter: none;
+  }
+}
+
+@keyframes ricardo-empowered-leap-anim {
+  0% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
+  }
+  /* Giai đoạn 1: Kích hoạt - hạ thấp trọng tâm, tụ lực aura */
+  10%, 24% {
+    transform: rotateX(-20deg) translate3d(calc(-15px * var(--facing)), 8px, 0) scale(0.92);
+    filter: drop-shadow(0 0 25px #dc2626) drop-shadow(0 0 35px #a855f7) brightness(1.3);
+  }
+  /* Giai đoạn 2: Bay lên theo đường cong tới trung tâm đội hình địch */
+  35% {
+    transform: rotateX(-20deg) translate3d(calc(300px * var(--facing)), -300px, 80px) scale(1.15) rotate(calc(15deg * var(--facing)));
+    filter: drop-shadow(0 0 35px #a855f7) brightness(1.8) blur(1px);
+  }
+  48% {
+    transform: rotateX(-20deg) translate3d(calc(460px * var(--facing)), -380px, 120px) scale(1.25) rotate(calc(30deg * var(--facing)));
+    filter: drop-shadow(0 0 40px #c026d3) brightness(2.2);
+  }
+  /* Giai đoạn 3: Nắm đấm giáng xuống */
+  60%, 70% {
+    transform: rotateX(-20deg) translate3d(calc(480px * var(--facing)), -240px, 140px) scale(1.35) rotate(calc(40deg * var(--facing)));
+    filter: drop-shadow(0 0 45px #dc2626) brightness(2);
+  }
+  /* Giai đoạn 4: Va chạm mặt đất (Impact 71% ~ 1700ms) */
+  71% {
+    transform: rotateX(-20deg) translate3d(calc(480px * var(--facing)), -20px, 150px) scale(1.4) rotate(0deg);
+    filter: drop-shadow(0 0 50px #fbbf24) brightness(2.5);
+  }
+  74% {
+    transform: rotateX(-20deg) translate3d(calc(480px * var(--facing)), -20px, 150px) scale(1.35);
+    filter: drop-shadow(0 0 35px #dc2626) brightness(1.8);
+  }
+  /* Giai đoạn 8: Trở về vị trí ban đầu */
+  84% {
+    transform: rotateX(-20deg) translate3d(calc(220px * var(--facing)), -140px, 50px) scale(1.1) rotate(calc(-15deg * var(--facing)));
+    filter: drop-shadow(0 0 20px #a855f7) brightness(1.4);
+  }
+  94%, 100% {
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
+    filter: none;
   }
 }
 
@@ -4026,4 +4355,149 @@
 @keyframes reticle-pulse-taunt {
   0% { transform: scale(0.9); opacity: 0.5; }
   100% { transform: scale(1.1); opacity: 1; }
+}
+
+/* ==========================================================================
+   Hai Last Laugh Hit FX (3 Rapid Shadow Strikes + Bleed Detonation Burst)
+   ========================================================================== */
+.hai-last-laugh-hit-fx {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  z-index: 28;
+
+  .shadow-strikes {
+    position: absolute;
+    inset: 0;
+
+    .shadow-slash {
+      position: absolute;
+      left: 5%;
+      top: 48%;
+      height: 4px;
+      border-radius: 4px;
+      transform-origin: center;
+      opacity: 0;
+
+      &.ss1 {
+        width: 140px;
+        background: linear-gradient(90deg, transparent, #22d3ee 30%, #ffffff 60%, #0d9488 90%, transparent);
+        box-shadow: 0 0 14px #06b6d4, 0 0 24px #22d3ee;
+        transform: rotate(-38deg) scaleX(0);
+        animation: shadowStrikeAnim 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.05s;
+      }
+
+      &.ss2 {
+        width: 150px;
+        top: 42%;
+        background: linear-gradient(90deg, transparent, #ef4444 30%, #ffffff 60%, #991b1b 90%, transparent);
+        box-shadow: 0 0 14px #ef4444, 0 0 24px #dc2626;
+        transform: rotate(32deg) scaleX(0);
+        animation: shadowStrikeAnim 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.16s;
+      }
+
+      &.ss3 {
+        width: 165px;
+        top: 50%;
+        height: 5px;
+        background: linear-gradient(90deg, transparent, #22d3ee 20%, #ef4444 50%, #ffffff 70%, transparent);
+        box-shadow: 0 0 18px #22d3ee, 0 0 25px #ef4444;
+        transform: rotate(-12deg) scaleX(0);
+        animation: shadowStrikeAnim 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.28s;
+      }
+    }
+  }
+
+  .detonation-shockwave {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 3px solid #ef4444;
+    box-shadow: 0 0 20px #dc2626, inset 0 0 15px #ef4444;
+    opacity: 0;
+    animation: detonateShockwave 0.5s ease-out forwards 0.28s;
+  }
+
+  .bleed-detonation-burst {
+    position: absolute;
+    inset: 0;
+
+    .burst-spk {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #dc2626;
+      opacity: 0;
+
+      &.b1 { animation: burstFly1 0.45s ease-out forwards 0.3s; }
+      &.b2 { animation: burstFly2 0.45s ease-out forwards 0.3s; }
+      &.b3 { animation: burstFly3 0.45s ease-out forwards 0.3s; }
+      &.b4 { animation: burstFly4 0.45s ease-out forwards 0.3s; }
+      &.b5 { animation: burstFly5 0.45s ease-out forwards 0.3s; }
+      &.b6 { animation: burstFly6 0.45s ease-out forwards 0.3s; }
+    }
+  }
+
+  .phantom-laugh-glitch {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    animation: laughGlitchFloat 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards 0.2s;
+
+    .glitch-grin {
+      font-size: 22px;
+      filter: drop-shadow(0 0 8px #ef4444);
+    }
+
+    .panic-tag {
+      font-family: 'Outfit', 'Inter', monospace;
+      font-size: 10px;
+      font-weight: 900;
+      color: #facc15;
+      background: rgba(88, 28, 135, 0.85);
+      border: 1px solid #c084fc;
+      box-shadow: 0 0 10px rgba(192, 132, 252, 0.6);
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+@keyframes shadowStrikeAnim {
+  0% { transform: scaleX(0); opacity: 0; }
+  35% { transform: scaleX(1.15); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+
+@keyframes detonateShockwave {
+  0% { width: 10px; height: 10px; opacity: 1; transform: translate(-50%, -50%) scale(0.2); }
+  60% { opacity: 0.8; }
+  100% { width: 140px; height: 140px; opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+}
+
+@keyframes burstFly1 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(45px, -35px) scale(0.4); } }
+@keyframes burstFly2 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-40px, -30px) scale(0.4); } }
+@keyframes burstFly3 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(50px, 25px) scale(0.4); } }
+@keyframes burstFly4 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(-45px, 20px) scale(0.4); } }
+@keyframes burstFly5 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(0px, -50px) scale(0.4); } }
+@keyframes burstFly6 { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(0px, 45px) scale(0.4); } }
+
+@keyframes laughGlitchFloat {
+  0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.6); }
+  40% { opacity: 1; transform: translateX(-50%) translateY(-5px) scale(1.1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.85); }
 }

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { App } from './app';
-import { authGuard, noAuthGuard } from '../../../../libs/core/auth/guards';
+import { authGuard } from '../../../../libs/core/auth/guards';
 
 const routes: Routes = [
   {
@@ -11,20 +11,40 @@ const routes: Routes = [
       {
         path: 'battle',
         canActivate: [authGuard],
-        data: { audience: 'game-api' },
+        data: { appCode: 'dcs-game', audience: 'game-api' },
         loadChildren: () => import('./features/battle/routes').then(m => m.BATTLE_ROUTES)
+      },
+      {
+        path: 'campaign',
+        canActivate: [authGuard],
+        data: { appCode: 'dcs-game', audience: 'game-api' },
+        loadChildren: () => import('./features/campaign/routes').then(m => m.CAMPAIGN_ROUTES)
       },
       {
         path: 'home',
         canActivate: [authGuard],
-        data: { audience: 'game-api' },
+        data: { appCode: 'dcs-game', audience: 'game-api' },
         loadChildren: () => import('./features/home/routes').then(m => m.BATTLE_ROUTES)
       },
       {
+        path: 'auth/login',
+        redirectTo: '/login',
+        pathMatch: 'full'
+      },
+      {
+        path: 'auth/register',
+        redirectTo: '/login',
+        pathMatch: 'full'
+      },
+      {
         path: 'auth',
-        canActivate: [noAuthGuard],
-        data: { audience: 'game-api' },
-        loadChildren: () => import('./features/auth/routes').then(m => m.AUTH_ROUTES)
+        redirectTo: '/login',
+        pathMatch: 'full'
+      },
+      {
+        path: 'login',
+        redirectTo: '/login',
+        pathMatch: 'full'
       },
       {
         path: '',

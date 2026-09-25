@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+.road-container {
+  position: relative;
+  width: 100%;
+  height: 2400px;
+  margin: 0 auto;
+}
+
+.road-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+}
+
+/* Base Shadow & Rim */
+.road-path-shadow {
+  filter: blur(12px);
+}
+
+.road-path-base {
+  stroke: #0f172a;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+.road-path-rim {
+  stroke: #1e293b;
+  opacity: 0.7;
+}
+
+/* Unlocked Path Glow */
+.road-path-unlocked-glow {
+  opacity: 0.85;
+}
+
+.road-path-unlocked-core {
+  opacity: 0.95;
+  box-shadow: 0 0 10px #fef08a;
+}
+
+/* Animated Energy Dash Stream */
+.road-path-energy-stream {
+  opacity: 0.85;
+  animation: energyFlow 2.8s linear infinite reverse;
+}
+
+@keyframes energyFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 64;
+  }
+}
+
+/* Layer holding stage nodes */
+.road-nodes-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .road-path-energy-stream {
+    animation: none !important;
+  }
+}

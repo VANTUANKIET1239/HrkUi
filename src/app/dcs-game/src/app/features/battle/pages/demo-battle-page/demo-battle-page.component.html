@@ -1,0 +1,5 @@
+<main class="demo-battle-page">
+  <div class="loading" *ngIf="loading">Đang tạo đội hình đối thủ ngẫu nhiên…</div>
+  <div class="error" *ngIf="error">{{error}}</div>
+  <app-battle-scene *ngIf="battle && !loading" [replayBattle]="battle" [demoMode]="true"></app-battle-scene>
+</main>

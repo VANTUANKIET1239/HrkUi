@@ -1,39 +1,14 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BattleSceneComponent } from '../../components/battle-scene/battle-scene.component';
-import { BattleApiService } from '../../../../core/services/battle-api.service';
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BattleEngineService } from '../../../../core/services/battle-engine.service';
+import { DungeonSessionService } from '../../../../core/services/dungeon-session.service';
+import { BattleSceneComponent } from '../../components/battle-scene/battle-scene.component';
 
-@Component({
-  selector: 'app-battle-page',
-  standalone: true,
-  imports: [CommonModule, BattleSceneComponent],
-  templateUrl: './battle-page.component.html',
-  styleUrl: './battle-page.component.scss'
-})
+@Component({selector:'app-battle-page',standalone:true,imports:[CommonModule,BattleSceneComponent],templateUrl:'./battle-page.component.html',styleUrl:'./battle-page.component.scss'})
 export class BattlePageComponent implements OnInit {
-  private readonly battleApi = inject(BattleApiService);
-  private readonly battleEngine = inject(BattleEngineService);
-  isLoading = true;
-  loadError = '';
-
-  ngOnInit(): void {
-    this.battleEngine.resetBattle();
-    // Main campaign starts a real server-authoritative simulation.
-    this.battleApi.start({ battleType: 'CAMPAIGN', stageId: 1, randomSeed: 20260920 }).subscribe({
-      next: response => {
-        this.isLoading = false;
-        if (response.success && response.data) {
-          this.battleEngine.loadServerBattle(response.data);
-          return;
-        }
-        this.loadError = response.message || 'Không thể khởi tạo trận đấu.';
-      },
-      error: error => {
-        this.isLoading = false;
-        this.loadError = error?.error?.message || error?.message || 'Không thể kết nối battle service.';
-      }
-    });
-  }
+  private readonly battleEngine=inject(BattleEngineService);readonly session=inject(DungeonSessionService);private readonly router=inject(Router);
+  isLoading=true;loadError='';
+  ngOnInit():void {const run=this.session.current();if(!run){this.router.navigate(['/dcs-game/campaign']);return;}this.battleEngine.resetBattle();this.battleEngine.loadServerBattle(run.battle);this.isLoading=false;this.battleEngine.startBattle();}
 }
 export default BattlePageComponent;

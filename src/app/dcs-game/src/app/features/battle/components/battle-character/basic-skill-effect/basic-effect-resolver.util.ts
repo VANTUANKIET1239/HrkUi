@@ -11,6 +11,7 @@ export type BasicEffectCode =
   | 'qa-ky-tinh'
   | 'kiet-noel'
   | 'hoang-nguyen'
+  | 'hai-last-smile'
   | 'generic';
 
 const TEMPLATE_ID_MAP: Record<number, BasicEffectCode> = {
@@ -24,6 +25,7 @@ const TEMPLATE_ID_MAP: Record<number, BasicEffectCode> = {
   8: 'qa-ky-tinh',
   9: 'kiet-noel',
   10: 'hoang-nguyen',
+  11: 'hai-last-smile',
 };
 
 const CODE_MAP: Record<string, BasicEffectCode> = {
@@ -65,6 +67,9 @@ const CODE_MAP: Record<string, BasicEffectCode> = {
   'hoang_nguyen': 'hoang-nguyen',
   'hoangnguyen-gymer': 'hoang-nguyen',
   'hoangnguyen_gymer': 'hoang-nguyen',
+  'hai-last-smile': 'hai-last-smile',
+  'hai_last_smile': 'hai-last-smile',
+  'hai': 'hai-last-smile',
 };
 
 const AVATAR_FILENAME_MAP: Record<string, BasicEffectCode> = {
@@ -78,6 +83,11 @@ const AVATAR_FILENAME_MAP: Record<string, BasicEffectCode> = {
   'vantrong-cobac.png': 'qa-ky-tinh',
   'truongkiet-noel.png': 'kiet-noel',
   'hoangnguyen-gymer.png': 'hoang-nguyen',
+  'nhan-cuoi-xam-lon.jpg': 'hai-last-smile',
+  'nhan-cuoi-xam-lon.png': 'hai-last-smile',
+  'tao-la-nhat-transparent.png': 'hai-last-smile',
+  'tao-la-nhat.png': 'hai-last-smile',
+  'tao-la-nhat.jpg': 'hai-last-smile',
 };
 
 const NAME_FALLBACK_MAP: Record<string, BasicEffectCode> = {
@@ -91,6 +101,10 @@ const NAME_FALLBACK_MAP: Record<string, BasicEffectCode> = {
   'qa kỹ tính': 'qa-ky-tinh',
   'kiet noel': 'kiet-noel',
   'hoàng nguyên': 'hoang-nguyen',
+  'hoang nguyên': 'hoang-nguyen',
+  'tao là nhất': 'hai-last-smile',
+  'hải "nụ cười cuối"': 'hai-last-smile',
+  'hải nụ cười cuối': 'hai-last-smile',
 };
 
 /**
@@ -108,6 +122,12 @@ export function resolveBasicEffectCode(
 ): BasicEffectCode {
   if (activeSkillId === 'BASIC_RANDOM_HEAL') {
     return 'kiet-noel';
+  }
+  if (activeSkillId === 'HAI_BUG_SLASH') {
+    return 'hai-last-smile';
+  }
+  if (activeSkillId === 'CHUAN_MEN_BASIC') {
+    return 'chuan-men';
   }
 
   if (!hero) {

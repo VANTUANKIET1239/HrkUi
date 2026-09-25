@@ -8,10 +8,6 @@
 
     <!-- Resource Counters -->
     <div class="resource-counters d-flex align-items-center gap-3">
-      <div *ngIf="isServerConnected" class="d-none d-md-flex align-items-center gap-1 text-success border border-success-subtle rounded-pill px-2 py-1 bg-success bg-opacity-10" style="font-size: 0.75rem; font-weight: 600;">
-        <i class="bi bi-cloud-check-fill"></i> Máy chủ kết nối
-      </div>
-
       <button 
         class="btn btn-sm btn-outline-warning border-0 d-flex align-items-center justify-content-center p-1 text-warning" 
         [disabled]="isLoading" 
@@ -49,14 +45,19 @@
       <div class="panel-header">Danh Mục Hành Trang</div>
       
       <div class="category-list">
+        <div class="category-item" [class.active]="selectedCategory === 'all'" (click)="selectCategory('all')">
+          <i class="bi bi-grid-fill category-icon"></i>
+          <span class="category-name">Tất cả</span>
+          <span class="item-count-badge">{{ getCategoryItemCount('all') }}</span>
+        </div>
         <div 
           *ngFor="let cat of categories" 
           class="category-item" 
-          [class.active]="selectedCategory === cat.key"
-          (click)="selectCategory(cat.key)">
-          <i class="bi {{ cat.icon }} category-icon"></i>
+          [class.active]="selectedCategory === cat.code"
+          (click)="selectCategory(cat.code)">
+          <i class="bi {{ cat.icon || 'bi-box-seam' }} category-icon"></i>
           <span class="category-name">{{ cat.name }}</span>
-          <span class="item-count-badge">{{ getCategoryItemCount(cat.key) }}</span>
+          <span class="item-count-badge">{{ getCategoryItemCount(cat.code) }}</span>
         </div>
       </div>
     </div>
@@ -82,11 +83,7 @@
           <!-- Rarity Filter -->
           <select class="form-select form-select-sm" [(ngModel)]="filterRarity">
             <option value="All">Phẩm chất (Tất cả)</option>
-            <option value="Mythic">Thần Thoại (Đỏ)</option>
-            <option value="Legendary">Truyền Thuyết (Vàng)</option>
-            <option value="Epic">Sử Thi (Tím)</option>
-            <option value="Rare">Hiếm (Xanh)</option>
-            <option value="Common">Thường (Xám)</option>
+            <option *ngFor="let rarity of rarities" [value]="rarity.code">{{ rarity.name }}</option>
           </select>
 
           <!-- Equipped/Unequipped Filter -->
@@ -116,19 +113,13 @@
 
         <div class="item-grid" *ngIf="!isLoading">
           <div 
-            *ngFor="let item of filteredItems" 
+            *ngFor="let item of filteredItems; trackBy: trackByItemId" 
             class="item-slot"
             [class.active]="selectedItem && selectedItem.id === item.id"
-            [class.rarity-mythic]="item.rarity === 'Mythic'"
-            [class.rarity-legendary]="item.rarity === 'Legendary'"
-            [class.rarity-epic]="item.rarity === 'Epic'"
-            [class.rarity-rare]="item.rarity === 'Rare'"
-            [class.rarity-common]="item.rarity === 'Common'"
-            (click)="selectItem(item)"
-            draggable="true"
-            (dragstart)="onItemDragStart($event, item)"
-            (dragover)="onItemDragOver($event)"
-            (drop)="onItemDrop($event)">
+            [ngStyle]="rarityStyle(item)"
+            (mouseenter)="onItemHover($event, item)"
+            (mouseleave)="onItemLeave()"
+            (click)="selectItem(item)">
             
             <div class="slot-inner">
               <!-- Item Icon / Image -->
@@ -140,7 +131,10 @@
               </div>
 
               <!-- Equipped Status Badge -->
-              <div *ngIf="item.equipped" class="equipped-tag">MẶC</div>
+              <div *ngIf="item.isEquipped" class="equipped-tag"
+                [title]="'Đang được ' + (item.equippedHeroName || 'một tướng') + ' sử dụng'">
+                {{ item.equippedHeroName || 'Đang mặc' }}
+              </div>
 
               <!-- Enhancement Level Badge (+10) -->
               <div *ngIf="isEquipment(item) && item.enhancement > 0" class="level-badge">
@@ -153,7 +147,7 @@
               </div>
 
               <!-- Lock Icon -->
-              <div *ngIf="item.locked" class="lock-badge">
+              <div *ngIf="item.isLocked" class="lock-badge">
                 <i class="bi bi-lock-fill"></i>
               </div>
             </div>
@@ -164,11 +158,6 @@
           Không tìm thấy vật phẩm nào phù hợp!
         </div>
 
-        <!-- Placeholder Drag-and-Drop Area to simulate equip drag -->
-        <div class="drag-placeholder-prompt">
-          <i class="bi bi-info-circle-fill"></i>
-          <span>Kéo thả trang bị từ túi đồ ra ngoài để mặc nhanh lên danh tướng (Giả lập)</span>
-        </div>
       </div>
     </div>
 
@@ -184,16 +173,13 @@
           <div class="details-scroll-content flex-grow-1">
             <div class="details-header">
               <!-- Equipped tag -->
-              <span *ngIf="selectedItem.equipped" class="equipped-status-banner">ĐANG TRANG BỊ</span>
+              <span *ngIf="selectedItem.isEquipped" class="equipped-status-banner">
+                ĐANG ĐƯỢC {{ selectedItem.equippedHeroName || 'TƯỚNG' }} TRANG BỊ
+              </span>
               
               <!-- Large Icon Box -->
               <div 
-                class="item-icon-box-large"
-                [class.rarity-mythic]="selectedItem.rarity === 'Mythic'"
-                [class.rarity-legendary]="selectedItem.rarity === 'Legendary'"
-                [class.rarity-epic]="selectedItem.rarity === 'Epic'"
-                [class.rarity-rare]="selectedItem.rarity === 'Rare'"
-                [class.rarity-common]="selectedItem.rarity === 'Common'">
+                class="item-icon-box-large" [ngStyle]="rarityStyle(selectedItem)">
                 <img *ngIf="selectedItem.imagePath; else selectedIconFallback" [src]="selectedItem.imagePath" class="item-img-large" [alt]="selectedItem.name" />
                 <ng-template #selectedIconFallback>
                   <i class="bi {{ selectedItem.icon }}"></i>
@@ -205,86 +191,32 @@
 
               <!-- Meta Badges -->
               <div class="item-meta-tags">
-                <span class="badge-rarity" 
-                  [class.rarity-mythic]="selectedItem.rarity === 'Mythic'"
-                  [class.rarity-legendary]="selectedItem.rarity === 'Legendary'"
-                  [class.rarity-epic]="selectedItem.rarity === 'Epic'"
-                  [class.rarity-rare]="selectedItem.rarity === 'Rare'"
-                  [class.rarity-common]="selectedItem.rarity === 'Common'">
-                  {{ getRarityName(selectedItem.rarity) }}
-                </span>
-                <span class="badge-info">{{ getTypeName(selectedItem.category) }}</span>
+                <span class="badge-rarity" [style.color]="selectedItem.rarityColorHex || null">{{ selectedItem.rarityName }}</span>
+                <span class="badge-info">{{ selectedItem.categoryName }}</span>
                 <span class="badge-info">Y/c: Cấp {{ selectedItem.levelReq }}</span>
+                <span class="badge-info text-warning" *ngIf="selectedItem.combatPower"><i class="bi bi-shield-fill-check me-1"></i>CP {{ selectedItem.combatPower }}</span>
+                <span class="badge-info text-info" *ngIf="selectedItem.overallRollPercent"><i class="bi bi-stars me-1"></i>Chất lượng: {{ selectedItem.overallRollPercent }}%</span>
+                <span class="badge-info text-success" *ngIf="selectedItem.enhancementGrowthPercent"><i class="bi bi-graph-up me-1"></i>+{{ selectedItem.enhancementGrowthPercent }}%</span>
               </div>
             </div>
 
             <!-- Description & Stats Body -->
             <div class="details-body">
-              <p class="description-box">{{ selectedItem.desc }}</p>
+              <p class="description-box">{{ selectedItem.description || 'Không có mô tả.' }}</p>
 
               <!-- EQUIPMENT STATS -->
               <div *ngIf="isEquipment(selectedItem)">
                 <div class="stat-group-title">Thuộc Tính Trang Bị</div>
-                <div class="stats-list">
-                  <div *ngIf="selectedItem.stats.atk" class="stat-row">
-                    <span class="stat-label">Công (ATK)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.atk }}</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.def" class="stat-row">
-                    <span class="stat-label">Thủ (DEF)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.def }}</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.hp" class="stat-row">
-                    <span class="stat-label">Sinh Mệnh (HP)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.hp }}</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.crit" class="stat-row">
-                    <span class="stat-label">Bạo Kích (Crit)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.crit }}%</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.spd" class="stat-row">
-                    <span class="stat-label">Tốc Độ (Speed)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.spd }}</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.lifesteal" class="stat-row">
-                    <span class="stat-label">Hút Máu (Lifesteal)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.lifesteal }}%</span>
-                  </div>
+                <div *ngIf="selectedItem.rolledAttributes && selectedItem.rolledAttributes.length > 0">
+                  <app-equipment-roll-details 
+                    [attributes]="selectedItem.rolledAttributes" 
+                    [showEnhancement]="true">
+                  </app-equipment-roll-details>
                 </div>
-
-                <!-- Special Effect (passive) if any -->
-                <div *ngIf="selectedItem.stats.specialEffect" class="special-effect-box mt-3">
-                  <span class="special-label"><i class="bi bi-stars"></i> Hiệu Ứng Đặc Biệt:</span>
-                  <span class="special-desc">{{ selectedItem.stats.specialEffect }}</span>
-                </div>
-              </div>
-
-              <!-- CONSUMABLE STATS -->
-              <div *ngIf="selectedItem.category === 'consumables'">
-                <div class="stat-group-title">Hiệu Quả Sử Dụng</div>
-                <div class="stats-list">
-                  <div *ngIf="selectedItem.stats.healAmount" class="stat-row">
-                    <span class="stat-label">Trị Liệu (Heal)</span>
-                    <span class="stat-val">+{{ selectedItem.stats.healAmount }} HP</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.buffEffect" class="stat-row">
-                    <span class="stat-label">Tăng ích (Buff)</span>
-                    <span class="stat-val">{{ selectedItem.stats.buffEffect }}</span>
-                  </div>
-                  <div *ngIf="selectedItem.stats.duration" class="stat-row">
-                    <span class="stat-label">Thời gian</span>
-                    <span class="stat-val">{{ selectedItem.stats.duration }} lượt</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- MATERIAL STATS / DESCRIPTION -->
-              <div *ngIf="selectedItem.category === 'materials' || selectedItem.category === 'skill_books' || selectedItem.category === 'hero_fragments'">
-                <div class="stat-group-title">Mô Tả Công Dụng</div>
-                <div class="stats-list">
-                  <div class="stat-row">
-                    <span class="stat-label">Cách dùng:</span>
-                    <span class="stat-val text-white" style="font-weight: 500;">{{ selectedItem.stats.usageDesc || 'Sử dụng trực tiếp trong giao diện tương ứng.' }}</span>
+                <div class="stats-list" *ngIf="!selectedItem.rolledAttributes || selectedItem.rolledAttributes.length === 0">
+                  <div *ngFor="let attribute of selectedItem.attributes" class="stat-row">
+                    <span class="stat-label">{{ attribute.attributeName }}</span>
+                    <span class="stat-val">{{ formatAttributeValue(getAttributeValue(selectedItem, attribute.attributeCode, attribute.value), attribute.isPercentage) }}</span>
                   </div>
                 </div>
               </div>
@@ -296,107 +228,38 @@
             
             <!-- Context sensitive buttons -->
 
-            <!-- EQUIPMENT ACTIONS: Equip/Unequip, Sell, Lock, Upgrade, Enhance -->
+            <!-- Only actions backed by server APIs are exposed here. -->
             <div *ngIf="isEquipment(selectedItem)" class="d-flex flex-column gap-2">
-              <button 
-                class="btn btn-detail-action btn-primary-action"
-                (click)="equipOrUnequip(selectedItem)">
-                <i class="bi" [class.bi-shield-fill-minus]="selectedItem.equipped" [class.bi-shield-fill-plus]="!selectedItem.equipped"></i>
-                {{ selectedItem.equipped ? 'Tháo Trang Bị' : 'Mặc Trang Bị' }}
+              <button class="btn btn-detail-action btn-primary-action"
+                [disabled]="selectedItem.isEquipped || selectedItem.isLocked"
+                (click)="enhanceEquipment(selectedItem)">
+                <i class="bi bi-hammer"></i> Cường Hóa (+{{ selectedItem.enhancement }})
               </button>
 
               <div class="double-btn-row">
                 <button 
                   class="btn btn-detail-action btn-secondary-action"
-                  [disabled]="selectedItem.equipped || selectedItem.locked"
-                  (click)="enhanceEquipment(selectedItem)">
-                  <i class="bi bi-hammer"></i> Cường Hóa (+{{ selectedItem.enhancement }})
-                </button>
-                <button 
-                  class="btn btn-detail-action btn-secondary-action"
-                  [disabled]="selectedItem.equipped || selectedItem.locked"
-                  (click)="upgradeEquipment(selectedItem)">
-                  <i class="bi bi-arrow-up-circle-fill"></i> Tăng Sao
-                </button>
-              </div>
-
-              <div class="double-btn-row">
-                <button 
-                  class="btn btn-detail-action btn-secondary-action"
+                  [disabled]="lockingItemId === selectedItem.id"
                   (click)="toggleLockItem(selectedItem)">
-                  <i class="bi" [class.bi-lock-fill]="selectedItem.locked" [class.bi-unlock-fill]="!selectedItem.locked"></i>
-                  {{ selectedItem.locked ? 'Mở Khóa' : 'Khóa Đồ' }}
+                  <span *ngIf="lockingItemId === selectedItem.id" class="spinner-border spinner-border-sm me-1"></span>
+                  <i *ngIf="lockingItemId !== selectedItem.id" class="bi" [class.bi-lock-fill]="selectedItem.isLocked" [class.bi-unlock-fill]="!selectedItem.isLocked"></i>
+                  {{ selectedItem.isLocked ? 'Mở Khóa' : 'Khóa Đồ' }}
                 </button>
                 <button 
                   class="btn btn-detail-action btn-danger-action"
-                  [disabled]="selectedItem.equipped || selectedItem.locked"
+                  [disabled]="selectedItem.isEquipped || selectedItem.isLocked || isSellingSingleItem"
                   (click)="sellItem(selectedItem)">
-                  <i class="bi bi-coin"></i> Bán
+                  <span *ngIf="isSellingSingleItem" class="spinner-border spinner-border-sm me-1"></span>
+                  <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> Bán
                 </button>
               </div>
             </div>
-
-            <!-- CONSUMABLE ACTIONS: Use, Discard -->
-            <div *ngIf="selectedItem.category === 'consumables'" class="d-flex flex-column gap-2">
-              <button 
-                class="btn btn-detail-action btn-primary-action"
-                (click)="useItem(selectedItem)">
-                <i class="bi bi-magic"></i> Sử Dụng
-              </button>
-              <button 
-                class="btn btn-detail-action btn-danger-action"
-                [disabled]="selectedItem.locked"
-                (click)="sellItem(selectedItem)">
-                <i class="bi bi-trash-fill"></i> Bỏ đi
-              </button>
-            </div>
-
-            <!-- MATERIAL ACTIONS: Use (Combine/Refine), Discard -->
-            <div *ngIf="selectedItem.category === 'materials' || selectedItem.category === 'skill_books'" class="d-flex flex-column gap-2">
-              <button 
-                class="btn btn-detail-action btn-primary-action"
-                (click)="useItem(selectedItem)">
-                <i class="bi bi-arrow-up-circle-fill"></i> Sử Dụng (Dùng Đá)
-              </button>
-              <div class="double-btn-row">
-                <button 
-                  class="btn btn-detail-action btn-secondary-action"
-                  (click)="combineItem(selectedItem)">
-                  <i class="bi bi-boxes"></i> Ghép đá
-                </button>
-                <button 
-                  class="btn btn-detail-action btn-danger-action"
-                  [disabled]="selectedItem.locked"
-                  (click)="sellItem(selectedItem)">
-                  <i class="bi bi-trash-fill"></i> Hủy bỏ
-                </button>
-              </div>
-            </div>
-
-            <!-- HERO FRAGMENTS ACTIONS: Use (Summon), Discard -->
-            <div *ngIf="selectedItem.category === 'hero_fragments'" class="d-flex flex-column gap-2">
-              <button 
-                class="btn btn-detail-action btn-primary-action"
-                [disabled]="selectedItem.count < 10"
-                (click)="summonHeroFromFragments(selectedItem)">
-                <i class="bi bi-person-plus-fill"></i> Triệu Hồi (Cần 10 Mảnh)
-              </button>
-              <button 
-                class="btn btn-detail-action btn-danger-action"
-                [disabled]="selectedItem.locked"
-                (click)="sellItem(selectedItem)">
-                <i class="bi bi-trash-fill"></i> Phân Rã
-              </button>
-            </div>
-
-            <!-- QUEST ITEMS ACTIONS: Use -->
-            <div *ngIf="selectedItem.category === 'quests'" class="d-flex flex-column gap-2">
-              <button 
-                class="btn btn-detail-action btn-secondary-action"
-                [disabled]="true">
-                <i class="bi bi-compass"></i> Sử dụng ở Nhiệm Vụ
-              </button>
-            </div>
+            <button *ngIf="!isEquipment(selectedItem)" class="btn btn-detail-action btn-danger-action"
+              [disabled]="selectedItem.isLocked || selectedItem.isEquipped || isSellingSingleItem"
+              (click)="sellItem(selectedItem)">
+              <span *ngIf="isSellingSingleItem" class="spinner-border spinner-border-sm me-1"></span>
+              <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> Bán
+            </button>
 
           </div>
         </div>
@@ -425,9 +288,11 @@
         <button 
           class="btn btn-sm btn-outline-warning ms-1 px-1 py-0 d-flex align-items-center justify-content-center" 
           style="font-size: 0.75rem; height: 22px; width: 22px; border-radius: 4px;"
+          [disabled]="isExpandingCapacity"
           (click)="expandCapacityAction(10)" 
-          title="Mở rộng +10 ô chứa (Tốn 200 Kim Cương)">
-          <i class="bi bi-plus-lg"></i>
+          title="Mở rộng thêm 10 ô chứa">
+          <span *ngIf="isExpandingCapacity" class="spinner-border spinner-border-sm"></span>
+          <i *ngIf="!isExpandingCapacity" class="bi bi-plus-lg"></i>
         </button>
       </div>
 
@@ -449,20 +314,12 @@
       <button class="btn btn-quick-action" (click)="sortItems('rarity')">
         Sắp xếp: Phẩm chất
       </button>
-      <button class="btn btn-quick-action" (click)="sortItems('power')">
-        Sắp xếp: Chiến lực
-      </button>
       <button class="btn btn-quick-action" (click)="sortItems('type')">
         Sắp xếp: Chủng loại
       </button>
-      <button class="btn btn-quick-action-primary" (click)="autoEquipBestItems()">
-        <i class="bi bi-shield-plus me-1"></i> Mặc Nhanh Nhất
-      </button>
-      <button class="btn btn-quick-action" (click)="batchSellItems()">
-        Bán Nhanh Đồ Thường
-      </button>
-      <button class="btn btn-quick-action" (click)="batchUseConsumables()">
-        Dùng Nhanh Thuốc HP
+      <button class="btn btn-quick-action" [disabled]="isBatchSelling" (click)="batchSellItems()">
+        <span *ngIf="isBatchSelling" class="spinner-border spinner-border-sm me-1"></span>
+        Bán nhanh phẩm chất thấp nhất
       </button>
     </div>
 

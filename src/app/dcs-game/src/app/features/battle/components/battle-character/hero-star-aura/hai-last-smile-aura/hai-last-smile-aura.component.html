@@ -1,0 +1,62 @@
+<div
+  class="aura-root star-{{ starLevel }}"
+  [style.--aura-primary]="primaryColor || '#06b6d4'"
+  [style.--aura-secondary]="secondaryColor || '#ef4444'"
+  [style.--aura-intensity]="intensity"
+  *ngIf="starLevel >= 2">
+
+  <!-- Core Layer (2 Stars): Thin teal-black ground ring & glowing dagger runes -->
+  <div class="aura-core">
+    <div class="shadow-ground-ring"></div>
+    <div class="dagger-runes">
+      <span class="rune rn1">🗡️</span>
+      <span class="rune rn2">🗡️</span>
+    </div>
+  </div>
+
+  <!-- Tier 3 Layer (3 Stars): Digital circuitry traces + cyan sparkles + shadow wisp -->
+  <div class="tier-3-layer" *ngIf="starLevel >= 3">
+    <div class="circuit-ring"></div>
+    <div class="shadow-wisp w1"></div>
+    <div class="shadow-wisp w2"></div>
+    <div class="cyan-sparkles">
+      <span class="spk spk1">✦</span>
+      <span class="spk spk2">✦</span>
+      <span class="spk spk3">✦</span>
+    </div>
+  </div>
+
+  <!-- Tier 4 Layer (4 Stars): Orbiting shadow blades + dark pulse ring -->
+  <div class="tier-4-layer" *ngIf="starLevel >= 4">
+    <div class="dark-pulse-ring"></div>
+    <div class="orbiting-blades-track">
+      <div class="orbit-blade ob1">
+        <span class="blade-edge"></span>
+      </div>
+      <div class="orbit-blade ob2">
+        <span class="blade-edge"></span>
+      </div>
+      <div class="orbit-blade ob3">
+        <span class="blade-edge"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tier 5 Layer (5 Stars): Cyber rune circle + rotating blades + vertical cyan beams + crimson bleed particles -->
+  <div class="tier-5-layer" *ngIf="starLevel >= 5">
+    <div class="cyber-rune-circle"></div>
+    <div class="vertical-beams">
+      <span class="beam bm1"></span>
+      <span class="beam bm2"></span>
+      <span class="beam bm3"></span>
+    </div>
+    <div class="bleed-particles">
+      <span class="bleed-dot bd1"></span>
+      <span class="bleed-dot bd2"></span>
+      <span class="bleed-dot bd3"></span>
+      <span class="bleed-dot bd4"></span>
+    </div>
+    <div class="phantom-laugh-symbol">😈</div>
+  </div>
+
+</div>

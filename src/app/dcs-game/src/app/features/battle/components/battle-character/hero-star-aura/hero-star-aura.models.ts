@@ -10,7 +10,8 @@ export type StarAuraVisualKey =
   | 'pm-hoi-ha-spectral-grooming'
   | 'qa-ky-tinh-vicious-debt'
   | 'kiet-noel-dark-blizzard'
-  | 'hoang-nguyen-heavy-iron';
+  | 'hoang-nguyen-heavy-iron'
+  | 'hai-last-smile-aura';
 
 export interface HeroAuraInputs {
   starLevel: number;

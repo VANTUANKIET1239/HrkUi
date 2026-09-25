@@ -3,5 +3,5 @@
   <div *ngIf="!isLoading && loadError" class="battle-state-message battle-state-error">
     {{ loadError }}
   </div>
-  <app-battle-scene *ngIf="!isLoading && !loadError"></app-battle-scene>
+  <app-battle-scene *ngIf="!isLoading && !loadError" [replayBattle]="session.current()?.battle"></app-battle-scene>
 </div>

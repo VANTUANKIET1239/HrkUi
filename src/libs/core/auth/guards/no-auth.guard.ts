@@ -1,6 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenManagerService } from '../services/token-manager';
+import { getAppAuthConfig, getAppAuthConfigForRoute } from '../config/app-auth.config';
 
 /**
  * noAuthGuard: Prevents logged-in users from visiting auth pages (Login/Register).
@@ -15,11 +16,16 @@ export const noAuthGuard: CanActivateFn = async (route, state) => {
     return true;
   }
 
-  const audience = route.data?.['audience'] || (state.url.includes('dcs-game') ? 'game-api' : 'auth-api');
+  const returnUrl = route.queryParamMap.get('returnUrl') ?? '';
+  const inferredConfig = getAppAuthConfigForRoute(returnUrl);
+  const config = getAppAuthConfig(
+    route.queryParamMap.get('app') ?? route.data?.['appCode'] ?? inferredConfig.appCode
+  );
+  const audience = route.data?.['audience'] || config.audience;
   const isAuthenticated = await tokenManager.checkAuthSession(audience);
 
   if (isAuthenticated) {
-    return router.createUrlTree(['/dcs-game/home']);
+    return router.createUrlTree([config.defaultRoute]);
   }
 
   return true;

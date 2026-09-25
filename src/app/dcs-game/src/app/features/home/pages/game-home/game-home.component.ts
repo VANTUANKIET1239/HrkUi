@@ -5,16 +5,24 @@ import { HeroManagementComponent } from '../../components/hero-management/hero-m
 import { FormationManagementComponent } from '../../components/formation-management/formation-management.component';
 import { InventoryComponent } from '../../components/inventory/inventory.component';
 import { ForgeComponent } from '../../components/forge/forge.component';
+import { LibraryComponent } from '../../components/library/library.component';
+import { PlayerLevelBadgeComponent } from '../../components/player-level-badge/player-level-badge.component';
+import { AvatarSelectorComponent } from '../../components/avatar-selector/avatar-selector.component';
+import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
+import { PlayerProfileDto } from '../../../../core/models/player.model';
 
 interface PlayerInfo {
   name: string;
   level: number;
+  exp: number;
+  maxExp: number;
   vip: number;
   power: number;
   stamina: number;
   maxStamina: number;
   gold: string;
   diamond: string;
+  avatarUrl: string;
 }
 
 interface TeamMember {
@@ -44,11 +52,12 @@ import { PlayerService } from '../../../../core/services/player.service';
 import { GameHomeInitializationService, GameHomeInitialData } from '../../services/game-home-initialization.service';
 import { GameFeatureConfigService } from '../../../../core/services/game-feature-config.service';
 import { GameFeatureConfig } from '../../../../core/models/game-feature-config.model';
+import { DungeonApiService } from '../../../../core/services/dungeon-api.service';
 
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent],
+  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent, EquipmentTooltipComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
@@ -57,15 +66,22 @@ export class GameHomeComponent implements OnInit {
   isFormationManagementOpen = false;
   isInventoryOpen = false;
   isForgeOpen = false;
+  isLibraryOpen = false;
+  isAvatarSelectorOpen = false;
+  playerProfile?: PlayerProfileDto;
+  private rawGold = 0;
   playerInfo: PlayerInfo = {
-    name: 'Runy997_8T6y',
-    level: 120,
-    vip: 10,
-    power: 4493,
-    stamina: 4104,
-    maxStamina: 200,
-    gold: '59 Vạn',
-    diamond: '9973 Vạn'
+    name: 'Người chơi',
+    level: 1,
+    exp: 0,
+    maxExp: 1000,
+    vip: 0,
+    power: 0,
+    stamina: 0,
+    maxStamina: 100,
+    gold: '0',
+    diamond: '0',
+    avatarUrl: ''
   };
 
   mainTeam: TeamMember[] = [
@@ -112,7 +128,8 @@ export class GameHomeComponent implements OnInit {
     private hrkApiService: HrkApiService,
     private playerService: PlayerService,
     private gameHomeInitService: GameHomeInitializationService,
-    private gameFeatureConfigService: GameFeatureConfigService
+    private gameFeatureConfigService: GameFeatureConfigService,
+    private dungeonApiService: DungeonApiService
   ) { }
 
   ngOnInit(): void {
@@ -125,6 +142,12 @@ export class GameHomeComponent implements OnInit {
       });
     }
     this.loadFeatureConfigs();
+    this.dungeonApiService.stamina().subscribe(response => {
+      if (response.success && response.data) {
+        this.playerInfo.stamina = response.data.current;
+        this.playerInfo.maxStamina = response.data.max;
+      }
+    });
   }
 
   private loadFeatureConfigs(): void {
@@ -148,16 +171,28 @@ export class GameHomeComponent implements OnInit {
 
   private applyHomeData(data: GameHomeInitialData): void {
     if (data.profile) {
+      this.playerProfile = data.profile;
+      this.playerInfo.avatarUrl = this.playerService.resolveAvatarUrl(data.profile);
       if (data.profile.playerName) {
         this.playerInfo.name = data.profile.playerName;
       }
       if (data.profile.level) {
         this.playerInfo.level = data.profile.level;
       }
+      this.playerInfo.exp = data.profile.exp ?? 0;
+      this.playerInfo.maxExp = Math.max(1, data.profile.maxExp ?? 1000);
+      if (data.profile.power !== undefined && data.profile.power !== null) {
+        this.playerInfo.power = data.profile.power;
+      }
+    }
+
+    if (data.formationPower !== undefined && data.formationPower !== null) {
+      this.playerInfo.power = data.formationPower;
     }
 
     if (data.wallet) {
       if (data.wallet.gold !== undefined && data.wallet.gold !== null) {
+        this.rawGold = data.wallet.gold;
         this.playerInfo.gold = this.formatCurrency(data.wallet.gold);
       }
       if (data.wallet.diamonds !== undefined && data.wallet.diamonds !== null) {
@@ -166,11 +201,72 @@ export class GameHomeComponent implements OnInit {
     }
   }
 
+  onAvatarChanged(profile: PlayerProfileDto): void {
+    this.playerProfile = profile;
+    this.playerInfo.avatarUrl = this.playerService.resolveAvatarUrl(profile);
+    this.isAvatarSelectorOpen = false;
+  }
+
+  refreshPower(): void {
+    this.playerService.getGameInfo('none').subscribe({
+      next: (res) => {
+        if (res?.success && res.data) {
+          const power = res.data.formationPower ?? res.data.profile?.power ?? 0;
+          this.playerInfo.power = power;
+          if (res.data.profile) {
+            this.playerProfile = res.data.profile;
+            this.playerInfo.avatarUrl = this.playerService.resolveAvatarUrl(res.data.profile);
+            if (res.data.profile.playerName) this.playerInfo.name = res.data.profile.playerName;
+            if (res.data.profile.level) this.playerInfo.level = res.data.profile.level;
+            this.playerInfo.exp = res.data.profile.exp ?? 0;
+            this.playerInfo.maxExp = Math.max(1, res.data.profile.maxExp ?? 1000);
+          }
+          if (res.data.wallet) {
+            if (res.data.wallet.gold !== undefined && res.data.wallet.gold !== null) {
+              this.rawGold = res.data.wallet.gold;
+              this.playerInfo.gold = this.formatCurrency(res.data.wallet.gold);
+            }
+            if (res.data.wallet.diamonds !== undefined && res.data.wallet.diamonds !== null) {
+              this.playerInfo.diamond = this.formatCurrency(res.data.wallet.diamonds);
+            }
+          }
+        }
+      },
+      error: (err) => console.warn('Could not refresh player combat power.', err)
+    });
+  }
+
+  onHeroManagementClosed(): void {
+    this.isHeroManagementOpen = false;
+    this.refreshPower();
+  }
+
+  onFormationManagementClosed(): void {
+    this.isFormationManagementOpen = false;
+    this.refreshPower();
+  }
+
+  onInventoryClosed(): void {
+    this.isInventoryOpen = false;
+    this.refreshPower();
+  }
+
+  onForgeClosed(): void {
+    this.isForgeOpen = false;
+    this.refreshPower();
+  }
+
+  onForgeItemUpdated(): void {
+    this.refreshPower();
+    this.refreshWallet();
+  }
+
   refreshWallet(): void {
     this.playerService.getWallet('none').subscribe({
       next: (res) => {
         if (res && res.success && res.data) {
           if (res.data.gold !== undefined && res.data.gold !== null) {
+            this.rawGold = res.data.gold;
             this.playerInfo.gold = this.formatCurrency(res.data.gold);
           }
           if (res.data.diamonds !== undefined && res.data.diamonds !== null) {
@@ -197,8 +293,15 @@ export class GameHomeComponent implements OnInit {
   }
 
   buyStamina(): void {
-    this.playerInfo.stamina += 50;
-    alert('Mua Thể Lực thành công! (+50 Thể Lực)');
+    this.dungeonApiService.purchaseStamina().subscribe({
+      next: response => {
+        if (!response.success || !response.data) return;
+        this.playerInfo.stamina = response.data.current;
+        this.playerInfo.maxStamina = response.data.max;
+        this.refreshWallet();
+      },
+      error: error => alert(error?.error?.message ?? 'Không thể mua thể lực.')
+    });
   }
 
   buyGold(): void {
@@ -227,7 +330,10 @@ export class GameHomeComponent implements OnInit {
       case 'FORMATION_MANAGEMENT': this.isFormationManagementOpen = true; return;
       case 'INVENTORY': this.isInventoryOpen = true; return;
       case 'FORGE': this.isForgeOpen = true; return;
-      case 'BATTLE': this.router.navigate(['/dcs-game/battle']); return;
+      case 'LIBRARY': this.isLibraryOpen = true; return;
+      case 'BATTLE': this.router.navigate(['/dcs-game/campaign']); return;
+      case 'DEMO_BATTLE': this.router.navigate(['/dcs-game/battle/demo']); return;
+      case 'CAMPAIGN': this.router.navigate(['/dcs-game/campaign']); return;
       case 'LOGOUT': this.openLogoutConfirm(); return;
     }
     if (feature.name === 'Đăng Xuất' || feature.name === 'Trở Về') {
@@ -247,10 +353,6 @@ export class GameHomeComponent implements OnInit {
     }
   }
 
-  onForgeItemUpdated(): void {
-    this.refreshWallet();
-  }
-
   logout(): void {
     this.isLoggingOut = true;
     this.logoutError = '';
@@ -260,20 +362,24 @@ export class GameHomeComponent implements OnInit {
         this.isLoggingOut = false;
         this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
-        this.router.navigate(['/dcs-game/auth']);
+        this.router.navigate(['/login'], {
+          queryParams: { app: 'dcs-game', returnUrl: '/dcs-game/home' }
+        });
       },
       error: (err) => {
         console.warn('Logout API error or expired session, clearing local tokens anyway.', err);
         this.isLoggingOut = false;
         this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
-        this.router.navigate(['/dcs-game/auth']);
+        this.router.navigate(['/login'], {
+          queryParams: { app: 'dcs-game', returnUrl: '/dcs-game/home' }
+        });
       }
     });
   }
 
   getNumericGold(): number {
-    return 590000;
+    return this.rawGold;
   }
 
   goToBattle(): void {
@@ -281,6 +387,6 @@ export class GameHomeComponent implements OnInit {
       this.onFeatureClick(this.focusFeature);
       return;
     }
-    this.router.navigate(['/dcs-game/battle']);
+    this.router.navigate(['/dcs-game/campaign']);
   }
 }

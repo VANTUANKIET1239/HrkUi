@@ -1,0 +1,50 @@
+<div class="roll-details-container" [class.compact]="compact" *ngIf="attributes && attributes.length > 0">
+  <div *ngFor="let attr of attributes" class="roll-attribute-row">
+    <!-- Main Info Row -->
+    <div class="attr-header-row">
+      <div class="attr-name-col">
+        <i class="bi bi-caret-right-fill indicator-icon"></i>
+        <span class="attr-name">{{ getAttributeName(attr) }}</span>
+      </div>
+
+      <!-- Values Column -->
+      <div class="attr-values-col">
+        <ng-container *ngIf="showEnhancement && (attr.enhancementValue || 0) > 0; else singleVal">
+          <span class="val-base" title="Chỉ số gốc đã roll">{{ formatValue(attr.baseRolledValue, isPercent(attr)) }}</span>
+          <span class="val-enhancement" title="Tăng thêm từ cường hóa">+{{ formatValue(attr.enhancementValue || 0, isPercent(attr)) }}</span>
+          <span class="val-equals">=</span>
+          <span class="val-total" title="Tổng hiện tại">{{ formatValue(attr.currentValue, isPercent(attr)) }}</span>
+        </ng-container>
+        <ng-template #singleVal>
+          <span class="val-main">+{{ formatValue(attr.currentValue, isPercent(attr)) }}</span>
+        </ng-template>
+      </div>
+
+      <!-- Quality Tag -->
+      <div class="attr-quality-col">
+        <span class="roll-percent-badge" [ngClass]="getQualityClass(getQualityPercent(attr))">
+          {{ getQualityPercent(attr) }}%
+        </span>
+      </div>
+
+      <!-- Range Box -->
+      <div class="attr-range-col" title="Khoảng có thể roll">
+        <span class="range-bracket">[</span>
+        <span class="range-num">{{ formatValue(getMinRange(attr), isPercent(attr)) }}</span>
+        <span class="range-dash">–</span>
+        <span class="range-num">{{ formatValue(getMaxRange(attr), isPercent(attr)) }}</span>
+        <span class="range-bracket">]</span>
+      </div>
+    </div>
+
+    <!-- Quality Progress Bar -->
+    <div class="quality-bar-track">
+      <div
+        class="quality-bar-fill"
+        [ngClass]="getQualityClass(getQualityPercent(attr))"
+        [style.width.%]="getQualityPercent(attr)"
+        [style.background-color]="getQualityColor(getQualityPercent(attr))"
+      ></div>
+    </div>
+  </div>
+</div>

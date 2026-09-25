@@ -1,0 +1,31 @@
+<div *ngIf="isOpen" class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" aria-labelledby="skip-modal-title">
+  <div class="skip-modal-card">
+    <div class="modal-glow-edge"></div>
+
+    <!-- Header / Icon -->
+    <div class="modal-icon-badge">
+      <i class="bi bi-skip-forward-circle-fill"></i>
+    </div>
+
+    <!-- Content -->
+    <h2 id="skip-modal-title" class="modal-title">Bỏ qua trận đấu</h2>
+    <p class="modal-message">
+      Bạn có chắc muốn bỏ qua phần trình diễn và xem ngay kết quả trận đấu?
+    </p>
+    <p class="modal-subtext">
+      Toàn bộ sát thương, kỹ năng và kết quả thắng/thua vẫn được tính toán chính xác theo dữ liệu máy chủ.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="modal-actions">
+      <button type="button" class="btn btn-cancel" (click)="cancel()" [disabled]="isConfirming">
+        <i class="bi bi-eye-fill"></i>
+        <span>Tiếp tục xem</span>
+      </button>
+      <button type="button" class="btn btn-confirm" (click)="confirm()" [disabled]="isConfirming">
+        <i class="bi bi-skip-forward-fill"></i>
+        <span>Bỏ qua</span>
+      </button>
+    </div>
+  </div>
+</div>

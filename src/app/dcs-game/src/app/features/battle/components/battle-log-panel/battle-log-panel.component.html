@@ -1,16 +1,15 @@
 <div class="log-panel-container">
   <div class="log-header">
     <span class="pulse-dot"></span>
-    NARRATIVE COMBAT LOG
+    DIỄN BIẾN TRẬN ĐẤU
   </div>
   <div class="log-body" #logBody>
     <div *ngIf="logs.length === 0" class="log-empty">
       Chưa có nhật ký chiến đấu. Nhấn "Bắt đầu" để khởi tranh!
     </div>
-    <div 
-      *ngFor="let log of logs" 
-      class="log-row" 
-      [innerHTML]="parseLog(log)">
+    <div *ngFor="let log of logs.slice(-5)" class="log-row" [ngClass]="'log-' + getLogType(log)">
+      <i class="bi log-icon" [ngClass]="getLogIcon(log)"></i>
+      <span class="log-message" [innerHTML]="parseLog(log)"></span>
     </div>
   </div>
 </div>

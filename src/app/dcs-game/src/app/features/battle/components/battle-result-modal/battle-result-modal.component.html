@@ -1,43 +1,108 @@
 <div class="modal-backdrop">
-  <div 
-    class="modal-container"
-    [ngClass]="{ 'is-victory': isVictory, 'is-defeat': !isVictory }">
-    
-    <!-- Header Text -->
-    <div class="result-title">
-      {{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}
+  <div class="modal-container" [ngClass]="{'is-victory': isVictory, 'is-defeat': !isVictory}">
+
+    <div class="result-title">{{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}</div>
+
+    <!-- 3-Star Reveal Display (for Victory) -->
+    <div class="stars-reveal-section" *ngIf="isVictory">
+      <div class="stars-row">
+        <i *ngFor="let s of [1, 2, 3]; let i = index"
+           class="bi bi-star-fill star-icon"
+           [class.active]="i < displayedStars"></i>
+      </div>
+      <div class="star-record-badge" *ngIf="dungeonResult?.isNewStarRecord">
+        <i class="bi bi-award-fill me-1"></i>KỶ LỤC SAO MỚI!
+      </div>
     </div>
-    
-    <!-- Subheader with decorative line -->
+
     <div class="divider-line"></div>
 
-    <!-- Combat Stats Summary -->
+    <!-- Combat Stats Panel -->
     <div class="stats-panel">
       <div class="stat-row">
-        <span class="stat-label">Số Lượt Chống Chọi:</span>
-        <span class="stat-value">{{ totalTurns }} Lượt</span>
+        <span class="stat-label">Số lượt:</span>
+        <span class="stat-value">{{ totalTurns }}</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Đội Hình Sống Sót:</span>
-        <span class="stat-value">{{ aliveCount }} / {{ totalCount }} Anh Hùng</span>
+        <span class="stat-label">Đội hình sống sót:</span>
+        <span class="stat-value">{{ aliveCount }}/{{ totalCount }}</span>
       </div>
       <div class="stat-row">
-        <span class="stat-label">Tổng Sinh Lực Còn Lại:</span>
-        <span class="stat-value">{{ totalRemainingHp }} HP</span>
+        <span class="stat-label">Sinh lực còn lại:</span>
+        <span class="stat-value">{{ totalRemainingHp | number }} HP <b class="text-success" *ngIf="dungeonResult">({{ remainingHpPercent }}%)</b></span>
       </div>
     </div>
 
-    <!-- Decorative message -->
+    <!-- Dropped Equipment Card (Boss Stage Drop) -->
+    <div class="dropped-equipment-card"
+         *ngIf="dungeonResult?.droppedEquipment as equip"
+         [ngClass]="(equip.rarityCode || '').toLowerCase()"
+         (mouseenter)="onDroppedEquipHover($event)"
+         (mouseleave)="onDroppedEquipLeave()">
+      <div class="card-glow"></div>
+      
+      <div class="card-top-row">
+        <div class="card-icon-box">
+          <img *ngIf="equip.imagePath" [src]="equip.imagePath" [alt]="equip.name" class="equip-img" />
+          <i *ngIf="!equip.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
+        </div>
+        <div class="card-info">
+          <div class="d-flex align-items-center justify-content-between">
+            <span class="card-tag"><i class="bi bi-gift-fill me-1"></i>TRANG BỊ MỚI RƠI!</span>
+            <span class="card-cp" *ngIf="equip.combatPower">CP +{{ equip.combatPower }}</span>
+          </div>
+          <h4 class="card-name">{{ equip.name }}</h4>
+          <div class="card-sub-meta">
+            <span class="card-rarity" [style.color]="equip.rarityColorHex">{{ equip.rarityName }}</span>
+            <span class="card-growth" *ngIf="equip.enhancementGrowthPercent">Tăng trưởng: +{{ equip.enhancementGrowthPercent }}%/cấp</span>
+            <span class="card-quality" *ngIf="equip.overallRollPercent">Chất lượng: {{ equip.overallRollPercent }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment Roll Details Table -->
+      <div class="card-roll-details" *ngIf="equip.rolledAttributes && equip.rolledAttributes.length > 0">
+        <app-equipment-roll-details [attributes]="equip.rolledAttributes" [showEnhancement]="false" [compact]="true"></app-equipment-roll-details>
+      </div>
+
+      <div class="card-hint">
+        <i class="bi bi-info-circle me-1"></i>Rê chuột để so sánh và xem chi tiết
+      </div>
+    </div>
+
+    <!-- Bag Full Warning -->
+    <div class="bag-full-warning" *ngIf="dungeonResult?.isBagFull">
+      <i class="bi bi-exclamation-triangle-fill me-1"></i>
+      <span>Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.</span>
+    </div>
+
+    <!-- Campaign Rewards -->
+    <section class="campaign-rewards" *ngIf="dungeonResult">
+      <h3>Phần Thưởng Vượt Ải</h3>
+      <div class="rewards-pills">
+        <span>🪙 +{{ dungeonResult.goldGained | number }} Vàng</span>
+        <span>👤 +{{ dungeonResult.playerExpGained }} EXP</span>
+        <span>⚡ -{{ dungeonResult.staminaSpent }} Thể lực</span>
+        <span class="first-clear" *ngIf="dungeonResult.isFirstClear">🎁 Thưởng Vượt Lần Đầu</span>
+      </div>
+
+      <div class="heroes-exp-list">
+        <article *ngFor="let hero of dungeonResult.heroes">
+          <b>{{ hero.heroName }}</b>
+          <span class="exp-val">+{{ hero.expGained }} EXP</span>
+          <small class="lvl-diff">Lv.{{ hero.oldLevel }} → Lv.{{ hero.newLevel }}</small>
+        </article>
+      </div>
+    </section>
+
     <div class="outcome-message">
-      {{ isVictory 
-        ? 'Tuyệt vời! Đội hình DCS Coder đã quét sạch bug và chinh phục deadline ngoạn mục!' 
-        : 'Rất tiếc! Sếp căng thẳng và lượng Bug vô tận đã áp đảo đội hình, hãy tối ưu hóa code và thử lại!' 
-      }}
+      {{ isVictory ? 'Đội hình đã vượt qua thử thách và mở khóa hành trình tiếp theo!' : 'Hãy củng cố đội hình, nâng cấp trang bị và thử lại.' }}
     </div>
 
-    <!-- Call to Action -->
-    <button class="action-btn" (click)="onReplay.emit()">
-      {{ isVictory ? 'ĐẤU LẠI (REPLAY)' : 'THỬ LẠI' }}
-    </button>
+    <div class="result-actions">
+      <button class="action-btn" (click)="onReplay.emit()">XEM LẠI</button>
+      <button class="action-btn exit" (click)="onExit.emit()">THOÁT</button>
+    </div>
+
   </div>
 </div>

@@ -15,6 +15,7 @@ import { SkillPositionSnippingComponent } from './skill-position-snipping/skill-
 import { SkillAllInComponent } from './skill-all-in/skill-all-in.component';
 import { SkillWinterBlessingsComponent } from './skill-winter-blessings/skill-winter-blessings.component';
 import { SkillDeadliftDiaChanComponent } from './skill-deadlift-dia-chan/skill-deadlift-dia-chan.component';
+import { SkillHaiLastLaughComponent } from './skill-hai-last-laugh/skill-hai-last-laugh.component';
 
 @Component({
   selector: 'app-skill',
@@ -34,7 +35,8 @@ import { SkillDeadliftDiaChanComponent } from './skill-deadlift-dia-chan/skill-d
     SkillPositionSnippingComponent,
     SkillAllInComponent,
     SkillWinterBlessingsComponent,
-    SkillDeadliftDiaChanComponent
+    SkillDeadliftDiaChanComponent,
+    SkillHaiLastLaughComponent
   ],
   templateUrl: './skill.component.html',
   styleUrl: './skill.component.scss'
@@ -45,6 +47,10 @@ export class SkillComponent {
   @Input() skillColor = '#ffffff';
   @Input() activeSkillId: string | null = null;
   @Input({ required: true }) character!: Hero;
+  @Input() phase: string = 'idle';
+  @Input() visualSpeed = 1;
+  @Input() castSequence?: number | null = null;
+  @Input() isEmpowered = false;
 
   get isTeamRight(): boolean {
     return this.character.team === 'right';

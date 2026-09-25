@@ -1,0 +1,347 @@
+.stage-node-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  user-select: none;
+}
+
+/* Current Stage Indicator */
+.current-indicator {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 5;
+  animation: indicatorBounce 1s ease-in-out infinite alternate;
+
+  .indicator-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #1a0b02;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+    border: 1px solid #fef08a;
+  }
+
+  .indicator-arrow {
+    color: #fef08a;
+    font-size: 16px;
+    line-height: 10px;
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.9));
+  }
+}
+
+@keyframes indicatorBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Pulse Rings for Available Stage */
+.pulse-ring {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pulse-ring-1 {
+  border: 2px solid rgba(245, 158, 11, 0.8);
+  animation: pulseRing 2.2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+.pulse-ring-2 {
+  border: 2px solid rgba(56, 189, 248, 0.6);
+  animation: pulseRing 2.2s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+  animation-delay: 1.1s;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* Medallion Seal Button */
+.node-seal {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: radial-gradient(circle at 35% 30%, #334155, #0f172a 80%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.3, 1.5, 0.6, 1), box-shadow 0.25s;
+  z-index: 2;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.18);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), 0 0 20px rgba(245, 158, 11, 0.6);
+
+    + .node-label {
+      transform: translateY(2px);
+    }
+
+    ~ .node-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -10px);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.seal-rim {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border: 2px dashed rgba(212, 164, 79, 0.4);
+  pointer-events: none;
+}
+
+.seal-core {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #1e293b, #020617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stage-num {
+  font-size: 20px;
+  font-weight: 900;
+  color: #f8fafc;
+  font-family: 'Cinzel', Georgia, serif;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.lock-glyph {
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+/* State: AVAILABLE */
+.state-available {
+  .node-seal {
+    background: radial-gradient(circle at 35% 30%, #fbbf24, #b45309 85%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 24px rgba(245, 158, 11, 0.8);
+
+    .seal-rim {
+      border-color: rgba(254, 240, 138, 0.8);
+      animation: rotateRim 12s linear infinite;
+    }
+
+    .seal-core {
+      background: radial-gradient(circle at 40% 35%, #78350f, #2e1065);
+      border-color: #fde047;
+    }
+
+    .stage-num {
+      color: #fef08a;
+      text-shadow: 0 0 10px rgba(253, 224, 71, 0.8);
+    }
+  }
+}
+
+@keyframes rotateRim {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* State: CLEARED */
+.state-cleared {
+  .node-seal {
+    background: radial-gradient(circle at 35% 30%, #10b981, #064e3b 85%);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 14px rgba(16, 185, 129, 0.5);
+
+    .seal-rim {
+      border-color: rgba(110, 231, 183, 0.6);
+    }
+
+    .seal-core {
+      background: radial-gradient(circle at 40% 35%, #064e3b, #022c22);
+      border-color: #34d399;
+    }
+
+    .stage-num {
+      color: #a7f3d0;
+    }
+  }
+
+  .cleared-stamp {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #059669;
+    border: 2px solid #ecfdf5;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* State: LOCKED */
+.state-locked {
+  opacity: 0.55;
+  filter: grayscale(0.85);
+
+  .node-seal {
+    background: #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  .node-label {
+    opacity: 0.6;
+  }
+}
+
+/* Label Below Medallion */
+.node-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+  pointer-events: none;
+  transition: transform 0.2s;
+
+  .label-number {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f59e0b;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  }
+
+  .label-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+    white-space: nowrap;
+    max-width: 110px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  }
+}
+
+/* Tooltip */
+.node-tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(212, 164, 79, 0.5);
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #f1f5f9;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 0);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  z-index: 20;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(15, 23, 42, 0.95);
+  }
+
+  .tooltip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 3px;
+
+    strong {
+      color: #ffd76f;
+    }
+
+    .tooltip-stamina {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+  }
+
+  .tooltip-power {
+    color: #94a3b8;
+    font-size: 11px;
+
+    b {
+      color: #f59e0b;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .current-indicator,
+  .pulse-ring-1,
+  .pulse-ring-2,
+  .seal-rim {
+    animation: none !important;
+  }
+}
+
+.stage-stars {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 2px;
+
+  .star-glyph {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.2);
+
+    &.active {
+      color: #fbbf24;
+      text-shadow: 0 0 6px rgba(251, 191, 36, 0.8);
+    }
+  }
+}
+

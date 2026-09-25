@@ -1,0 +1,54 @@
+<div class="battle-controls-bar" role="toolbar" aria-label="Thanh điều khiển trận đấu">
+  <!-- 1. Play / Pause Button -->
+  <button 
+    type="button" 
+    class="ctrl-btn play-pause-btn" 
+    [class.is-paused]="!isPlaying" 
+    [disabled]="isFinished"
+    (click)="onTogglePlay.emit()" 
+    [title]="isPlaying ? 'Tạm dừng trận đấu' : 'Tiếp tục trận đấu'">
+    <i class="bi" [ngClass]="isPlaying ? 'bi-pause-fill' : 'bi-play-fill'"></i>
+    <span class="btn-label">{{ isPlaying ? 'Tạm dừng' : 'Tiếp tục' }}</span>
+  </button>
+
+  <div class="divider"></div>
+
+  <!-- 2. Speed Selector: x1, x2, x4 -->
+  <div class="speed-group" role="group" aria-label="Tốc độ trận đấu">
+    <button 
+      *ngFor="let s of [1, 2, 4]" 
+      type="button" 
+      class="speed-btn" 
+      [class.active]="speed === s"
+      (click)="selectSpeed(s)"
+      [attr.aria-pressed]="speed === s">
+      x{{ s }}
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 3. Skip Battle Button -->
+  <button 
+    type="button" 
+    class="ctrl-btn skip-btn" 
+    [disabled]="isFinished"
+    (click)="onSkip.emit()" 
+    title="Bỏ qua phần diễn hoạt để xem ngay kết quả">
+    <i class="bi bi-skip-forward-fill"></i>
+    <span class="btn-label">Bỏ qua</span>
+  </button>
+
+  <div class="divider"></div>
+
+  <!-- 4. Toggle Battle Log -->
+  <button 
+    type="button" 
+    class="ctrl-btn log-toggle-btn" 
+    [class.active]="isLogOpen"
+    (click)="onToggleLog.emit()" 
+    title="Bật/Tắt khung nhật ký chiến đấu">
+    <i class="bi bi-journal-text"></i>
+    <span class="btn-label">Nhật ký</span>
+  </button>
+</div>

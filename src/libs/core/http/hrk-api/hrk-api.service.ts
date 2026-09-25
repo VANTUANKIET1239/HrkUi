@@ -43,6 +43,10 @@ export class HrkApiService {
 
   constructor(private http: HttpClient) { }
 
+  ResolveUrl(url: string): string {
+    return url.startsWith('http') ? url : `${this.baseUrl}${url}`;
+  }
+
   CallApi<T>(
     method: WithoutBodyHttpMethod,
     url: string,
@@ -60,15 +64,16 @@ export class HrkApiService {
     optionsOrBody?: CallOptions | unknown,
     options?: CallOptions
   ): Observable<T> {
-    const fullUrl = url.startsWith('http') ? url : `${this.baseUrl}${url}`;
+    const fullUrl = this.ResolveUrl(url);
     const currentOptions: CallOptions =
       ((!this.isWithBodyMethod(method)
         ? optionsOrBody
         : options) as CallOptions) ?? {};
     const body = this.isWithBodyMethod(method) ? optionsOrBody : null;
 
+    const baseHeaders = body instanceof FormData ? new HttpHeaders() : this.defaultHeaders;
     const mergedHeaders = this.mergeHeaders(
-      this.defaultHeaders,
+      baseHeaders,
       currentOptions.headers
     );
     const normalizedParams = this.normalizeParams(currentOptions.params);

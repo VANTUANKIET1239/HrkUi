@@ -390,11 +390,16 @@ $color-common: #9ca3af; // Common = Gray
   aspect-ratio: 1;
   border-radius: 10px;
   background: radial-gradient(circle, #2a221a 0%, #0f0b08 100%);
-  border: 2px solid rgba($gold-border, 0.6);
+  border: 2px solid var(--rarity-color, rgba($gold-border, 0.6));
   position: relative;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.2);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+
+  &:hover {
+    border-color: var(--rarity-color, $gold-border);
+    box-shadow: 0 0 12px var(--rarity-color, rgba($gold-border, 0.6));
+  }
 
   .slot-inner {
     width: 100%;
@@ -524,15 +529,22 @@ $color-common: #9ca3af; // Common = Gray
     position: absolute;
     top: 2px;
     left: 2px;
+    right: 2px;
     background: #27ae60;
     border: 1px solid #2ecc71;
     color: #fff;
     font-size: 7px;
     font-weight: 800;
-    padding: 0 4px;
+    line-height: 1.35;
+    padding: 1px 4px;
     border-radius: 3px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     text-shadow: 0 0 2px #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    z-index: 3;
   }
 
   &:hover {
@@ -620,13 +632,13 @@ $color-common: #9ca3af; // Common = Gray
     width: 72px;
     height: 72px;
     border-radius: 12px;
-    border: 2.5px solid $gold-border;
+    border: 2.5px solid var(--rarity-color, $gold-border);
     background: radial-gradient(circle, #3e3226 0%, #15100c 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 15px var(--rarity-color, rgba($gold-border, 0.4));
     font-size: 34px;
     color: #dfbf8f;
     overflow: hidden;

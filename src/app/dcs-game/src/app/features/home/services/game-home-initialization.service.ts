@@ -8,6 +8,10 @@ import { LoadingService } from '../../../../../../../libs/core/loading/loading.s
 export interface GameHomeInitialData {
   profile: PlayerProfileDto | null;
   wallet: PlayerWalletDto | null;
+  formationPower?: number;
+  selectedFormationId?: number | null;
+  selectedFormationCode?: string | null;
+  selectedFormationName?: string | null;
 }
 
 @Injectable({
@@ -27,8 +31,15 @@ export class GameHomeInitializationService {
   loadHomeData(): Observable<GameHomeInitialData> {
     this.loadingService.show(true);
     return this.playerService.getGameInfo('global').pipe(
-      map(res => ({ profile: res?.success ? res.data?.profile ?? null : null, wallet: res?.success ? res.data?.wallet ?? null : null })),
-      catchError(() => of({ profile: null, wallet: null })),
+      map(res => ({
+        profile: res?.success ? res.data?.profile ?? null : null,
+        wallet: res?.success ? res.data?.wallet ?? null : null,
+        formationPower: res?.success ? (res.data?.formationPower ?? res.data?.profile?.power ?? 0) : 0,
+        selectedFormationId: res?.success ? res.data?.selectedFormationId : null,
+        selectedFormationCode: res?.success ? res.data?.selectedFormationCode : null,
+        selectedFormationName: res?.success ? res.data?.selectedFormationName : null
+      })),
+      catchError(() => of({ profile: null, wallet: null, formationPower: 0 })),
       delay(2000),
       finalize(() => {
         this.loadingService.hide();

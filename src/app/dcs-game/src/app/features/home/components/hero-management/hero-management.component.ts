@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, finalize } from 'rxjs';
 import { Hero } from '../../../../core/models/hero.model';
 import { BattleCharacterComponent } from '../../../battle/components/battle-character/battle-character.component';
 import { PlayerHeroService } from '../../../../core/services/player-hero.service';
@@ -18,6 +18,7 @@ import {
 import { InventoryService } from '../../../../core/services/inventory.service';
 import { PlayerService } from '../../../../core/services/player.service';
 import { InventoryItemDto, HeroEquipmentDto } from '../../../../core/models/inventory.model';
+import { EquipmentTooltipService } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.service';
 
 export interface HeroStats {
   hp: number;
@@ -122,6 +123,8 @@ export class HeroManagementComponent implements OnInit {
   inventoryEquipments: InventoryItemDto[] = [];
   selectedInventoryTab = 'all';
   isLoadingInventory = false;
+  equippingItemId: number | null = null;
+  unequippingSlotKey: string | null = null;
   isLoadingHeroDetail = false;
   isProcessingEquipment = false;
   isUpgradingHero = false;
@@ -381,7 +384,8 @@ export class HeroManagementComponent implements OnInit {
   constructor(
     private readonly playerHeroService: PlayerHeroService,
     private readonly inventoryService: InventoryService,
-    private readonly playerService: PlayerService
+    private readonly playerService: PlayerService,
+    private readonly tooltipService: EquipmentTooltipService
   ) {}
 
   ngOnInit(): void {
@@ -717,13 +721,19 @@ export class HeroManagementComponent implements OnInit {
 
   // Equip Gear from Inventory (Real API Transaction)
   equipGearFromInventory(item: InventoryItemDto): void {
-    if (this.isProcessingEquipment) return;
+    if (this.isProcessingEquipment || this.equippingItemId !== null) return;
     if (!this.selectedHero) return;
 
     this.isProcessingEquipment = true;
-    this.playerHeroService.equip(this.selectedHero.id, item.id).subscribe({
-      next: res => {
+    this.equippingItemId = item.id;
+
+    this.playerHeroService.equip(this.selectedHero.id, item.id).pipe(
+      finalize(() => {
         this.isProcessingEquipment = false;
+        this.equippingItemId = null;
+      })
+    ).subscribe({
+      next: res => {
         if (res?.success && res.data) {
           const mappedHero = this.mapApiHero(res.data);
           const index = this.heroes.findIndex(h => h.id === mappedHero.id);
@@ -739,7 +749,6 @@ export class HeroManagementComponent implements OnInit {
         }
       },
       error: err => {
-        this.isProcessingEquipment = false;
         this.triggerToast(err?.message || 'Lỗi khi mặc trang bị.', 'warning');
       }
     });
@@ -776,10 +785,15 @@ export class HeroManagementComponent implements OnInit {
     const slotCode = slotCodeMapping[this.selectedSlotForAction.slot];
     const itemName = this.selectedSlotForAction.item.name;
     this.isProcessingEquipment = true;
+    this.unequippingSlotKey = slotCode;
 
-    this.playerHeroService.unequip(this.selectedHero.id, slotCode).subscribe({
-      next: res => {
+    this.playerHeroService.unequip(this.selectedHero.id, slotCode).pipe(
+      finalize(() => {
         this.isProcessingEquipment = false;
+        this.unequippingSlotKey = null;
+      })
+    ).subscribe({
+      next: res => {
         this.showSlotActionModal = false;
         this.selectedSlotForAction = null;
 
@@ -797,10 +811,41 @@ export class HeroManagementComponent implements OnInit {
         }
       },
       error: err => {
-        this.isProcessingEquipment = false;
         this.triggerToast(err?.message || 'Lỗi khi tháo trang bị.', 'warning');
       }
     });
+  }
+
+  getEquippedItemForCategory(categoryCode: string): InventoryItemDto | null {
+    if (!this.equipmentSlots) return null;
+    const cat = (categoryCode || '').toLowerCase();
+    const map: Record<string, EquipmentSlot> = {
+      weapon: 'Weapon', weapons: 'Weapon',
+      armor: 'Armor',
+      helmet: 'Helmet', helmets: 'Helmet',
+      boots: 'Boots', boot: 'Boots',
+      ring: 'Ring', rings: 'Ring',
+      artifact: 'Artifact', artifacts: 'Artifact'
+    };
+    const slotType = map[cat];
+    if (!slotType) return null;
+    const found = this.equipmentSlots.find(s => s.slot === slotType);
+    return found?.item || null;
+  }
+
+  onSlotMouseEnter(event: MouseEvent, slot: HeroEquipmentSlot): void {
+    if (slot.item) {
+      this.tooltipService.show(event, slot.item);
+    }
+  }
+
+  onSlotMouseLeave(): void {
+    this.tooltipService.hide();
+  }
+
+  onInventoryEquipMouseEnter(event: MouseEvent, item: InventoryItemDto): void {
+    const currentlyEquipped = this.getEquippedItemForCategory(item.categoryCode);
+    this.tooltipService.show(event, item, currentlyEquipped);
   }
 
   // Tooltip Interaction for Mobile Click/Tap & Accessibility

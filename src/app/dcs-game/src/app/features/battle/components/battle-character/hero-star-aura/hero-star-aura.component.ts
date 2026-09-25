@@ -14,6 +14,7 @@ import { PmHoiHaAuraComponent } from './pm-hoi-ha-aura/pm-hoi-ha-aura.component'
 import { QaKyTinhAuraComponent } from './qa-ky-tinh-aura/qa-ky-tinh-aura.component';
 import { KietNoelAuraComponent } from './kiet-noel-aura/kiet-noel-aura.component';
 import { HoangNguyenAuraComponent } from './hoang-nguyen-aura/hoang-nguyen-aura.component';
+import { HaiLastSmileAuraComponent } from './hai-last-smile-aura/hai-last-smile-aura.component';
 import { PeRedLightningComponent } from './legacy-five-star/pe-red-lightning/pe-red-lightning.component';
 import { PeObsidianNebulaComponent } from './legacy-five-star/pe-obsidian-nebula/pe-obsidian-nebula.component';
 import { PeScorchedEarthComponent } from './legacy-five-star/pe-scorched-earth/pe-scorched-earth.component';
@@ -37,6 +38,7 @@ import { PeHeavyIronAuraComponent } from './legacy-five-star/pe-heavy-iron-aura/
     QaKyTinhAuraComponent,
     KietNoelAuraComponent,
     HoangNguyenAuraComponent,
+    HaiLastSmileAuraComponent,
     PeRedLightningComponent,
     PeObsidianNebulaComponent,
     PeScorchedEarthComponent,

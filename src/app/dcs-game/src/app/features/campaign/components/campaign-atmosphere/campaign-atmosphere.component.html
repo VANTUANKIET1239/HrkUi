@@ -1,0 +1,24 @@
+<div class="atmosphere-container" aria-hidden="true">
+  <!-- Drifting fog overlays -->
+  <div class="fog-layer fog-layer-1"></div>
+  <div class="fog-layer fog-layer-2"></div>
+
+  <!-- Ambient magical glow blobs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Floating magical dust motes -->
+  <div class="particles-field">
+    <span
+      *ngFor="let p of particles"
+      class="particle"
+      [style.left]="p.left"
+      [style.top]="p.top"
+      [style.width.px]="p.size"
+      [style.height.px]="p.size"
+      [style.animationDelay]="p.delay"
+      [style.animationDuration]="p.duration"
+    ></span>
+  </div>
+</div>

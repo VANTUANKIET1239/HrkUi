@@ -83,7 +83,7 @@ export const INITIAL_HEROES: Hero[] = [
     position: 3,
     team: 'left',
     statusEffects: ['Shield'],
-    skills: ['NORMAL_ATTACK', 'SLASH', 'SWORD_DANCE', 'RICARDO_MILOS'],
+    skills: ['CHUAN_MEN_BASIC', 'RICARDO_MILOS'],
     level: 2,
     stars: 3,
     auraTier: 1,
@@ -971,6 +971,29 @@ export const SKILL_LIST: Record<string, Skill> = {
       }
     ]
   },
+  CHUAN_MEN_BASIC: {
+    id: 'CHUAN_MEN_BASIC',
+    name: 'Đấm Chuẩn Men',
+    skillTypeCode: 'NORMAL',
+    energyCost: 0,
+    cost: 0,
+    costType: 'MP',
+    category: 'basic',
+    color: '#ff0033',
+    type: 'basic',
+    description: 'Chuẩn Men tấn công một mục tiêu, gây 110% ATK sát thương vật lý.',
+    damageMultiplier: 1.1,
+    targetType: 'single',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.1, flatValue: 0 }]
+      }
+    ]
+  },
   RICARDO_MILOS: {
     id: 'RICARDO_MILOS',
     name: 'Ricardo Milos!',
@@ -1266,6 +1289,75 @@ export const SKILL_LIST: Record<string, Skill> = {
         targetTypeCode: 'SELF',
         baseValue: 30,
         durationTurns: 2
+      }
+    ]
+  },
+  HAI_BUG_SLASH: {
+    id: 'HAI_BUG_SLASH',
+    name: 'Dao Rạch Bug',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'ON_ATTACK',
+    energyCost: 0,
+    cost: 0,
+    costType: 'NONE',
+    category: 'basic',
+    color: '#06b6d4',
+    type: 'physical',
+    description: 'Tấn công vật lý gây 100% công. Nếu gây sát thương, 30% cơ hội gắn hiệu ứng Chảy Máu trong 2 lượt.',
+    damageMultiplier: 1.0,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Sát thương vật lý',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 1.0, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'BLEED',
+        effectTypeName: 'Chảy Máu',
+        targetTypeCode: 'ENEMY_SINGLE',
+        durationTurns: 2,
+        chancePercent: 30
+      }
+    ]
+  },
+  HAI_LAST_LAUGH: {
+    id: 'HAI_LAST_LAUGH',
+    name: 'Cười Đi, Sắp Hết Lượt Rồi',
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#ef4444',
+    type: 'physical',
+    description: 'Nhắm vào kẻ địch có % máu thấp nhất. Gắn Hoảng Loạn trong 1 lượt. Kích nổ toàn bộ Chảy Máu sẵn có gây 130% sát thương còn lại. Tấn công 3 nhát liên tiếp (80%, 90%, 130%), mỗi nhát có 30% gây Chảy Máu. Nếu hạ gục mục tiêu, hồi 25% thanh hành động và nhận 40% giảm sát thương.',
+    damageMultiplier: 3.0,
+    targetType: 'lowest_hp_percent',
+    phase1Duration: 1400,
+    phase2Duration: 1600,
+    effects: [
+      {
+        effectTypeCode: 'PANIC',
+        effectTypeName: 'Hoảng Loạn',
+        targetTypeCode: 'LOWEST_HP_PERCENT',
+        durationTurns: 1
+      },
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Ám Sát 3 Nhát',
+        targetTypeCode: 'LOWEST_HP_PERCENT',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 3.0, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'BLEED',
+        effectTypeName: 'Chảy Máu',
+        targetTypeCode: 'LOWEST_HP_PERCENT',
+        durationTurns: 2,
+        chancePercent: 30
       }
     ]
   }

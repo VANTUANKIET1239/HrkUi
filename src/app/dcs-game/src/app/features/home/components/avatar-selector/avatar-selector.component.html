@@ -1,0 +1,40 @@
+<div class="avatar-modal-backdrop" (click)="close.emit()">
+  <section class="avatar-modal" (click)="$event.stopPropagation()">
+    <header>
+      <div><span>TÙY CHỈNH HỒ SƠ</span><h2>ẢNH ĐẠI DIỆN</h2></div>
+      <button type="button" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <nav>
+      <button type="button" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'"><i class="bi bi-grid-fill"></i> Kho ảnh</button>
+      <button type="button" [class.active]="tab === 'upload'" (click)="tab = 'upload'"><i class="bi bi-cloud-arrow-up-fill"></i> Tải ảnh lên</button>
+    </nav>
+
+    <div class="modal-content" *ngIf="tab === 'gallery'">
+      <div *ngIf="loading" class="state"><span class="spinner-border text-warning"></span>Đang tải kho ảnh...</div>
+      <div class="avatar-grid" *ngIf="!loading">
+        <button *ngFor="let avatar of avatars" type="button" [class.selected]="selectedId === avatar.id" (click)="chooseTemplate(avatar.id)">
+          <img [src]="avatar.imagePath" [alt]="avatar.name" />
+          <span>{{ avatar.name }}</span><i *ngIf="selectedId === avatar.id" class="bi bi-check-circle-fill"></i>
+        </button>
+      </div>
+      <button class="primary-action" type="button" [disabled]="!selectedId || saving" (click)="saveTemplate()">
+        <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ saving ? 'Đang lưu...' : 'Sử dụng ảnh đã chọn' }}
+      </button>
+    </div>
+
+    <div class="modal-content upload-content" *ngIf="tab === 'upload'">
+      <div class="preview-ring"><img *ngIf="previewUrl || currentAvatarUrl" [src]="previewUrl || currentAvatarUrl" alt="Xem trước" /><i *ngIf="!previewUrl && !currentAvatarUrl" class="bi bi-person-fill"></i></div>
+      <label class="drop-zone">
+        <i class="bi bi-image-fill"></i><strong>Chọn ảnh từ thiết bị</strong>
+        <span>JPEG, PNG hoặc WebP · tối đa 1 MB · tối đa 1024×1024</span>
+        <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
+      </label>
+      <div class="upload-actions">
+        <button *ngIf="profile.avatarType === 'CUSTOM'" class="remove-action" type="button" [disabled]="saving" (click)="removeCustom()"><i class="bi bi-trash3"></i> Xóa ảnh cá nhân</button>
+        <button class="primary-action" type="button" [disabled]="!selectedFile || saving" (click)="upload()"><span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ saving ? 'Đang tải...' : 'Tải lên và sử dụng' }}</button>
+      </div>
+    </div>
+    <div *ngIf="error" class="error-message"><i class="bi bi-exclamation-triangle-fill"></i>{{ error }}</div>
+  </section>
+</div>

@@ -1,35 +1,95 @@
-<div class="ricardo-milos-fx" [ngClass]="{ 'team-right': isTeamRight }">
-  <!-- Crimson Spotlights (Phase 2) -->
-  <div class="crimson-spotlights">
-    <div class="spotlight spot-left"></div>
-    <div class="spotlight spot-right"></div>
-  </div>
+<!-- Hidden Eager Preload for Skill Visual Assets -->
+<div class="ricardo-asset-preload" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; opacity: 0; pointer-events: none;">
+  <img src="/assets/images/dcs-game/skills/ricardo-fist.jpg" alt="" loading="eager" fetchpriority="high" />
+</div>
 
-  <!-- Dancing Meme GIF Overlay (Phase 2) -->
-  <div class="ricardo-gif-container">
-    <img src="/assets/images/dcs-game/ricardo-milos.gif" class="ricardo-gif" alt="Ricardo Dancing" />
-  </div>
+<div class="ricardo-milos-fx" [ngClass]="{ 'team-right': isTeamRight, 'is-empowered': empowered }">
+  <!-- ================= NORMAL ULTIMATE ================= -->
+  <ng-container *ngIf="!empowered">
+    <!-- Crimson Spotlights (Phase 2) -->
+    <div class="crimson-spotlights">
+      <div class="spotlight spot-left"></div>
+      <div class="spotlight spot-right"></div>
+    </div>
 
-  <!-- Red Energy Aura Waves (Phase 2) -->
-  <div class="energy-waves">
-    <div class="wave wave1"></div>
-    <div class="wave wave2"></div>
-    <div class="wave wave3"></div>
-  </div>
+    <!-- Dancing Meme GIF Overlay (Phase 2) -->
+    <div class="ricardo-gif-container">
+      <img src="/assets/images/dcs-game/ricardo-milos.gif" class="ricardo-gif" alt="Ricardo Dancing" />
+    </div>
 
-  <!-- Sparkles & Rose Petals (Phase 2) -->
-  <div class="love-sparkles">
-    <span class="petal p1">🌸</span>
-    <span class="petal p2">🌹</span>
-    <span class="petal p3">🌸</span>
-    <span class="petal p4">🌹</span>
-    <span class="sparkle sp1">✦</span>
-    <span class="sparkle sp2">✦</span>
-  </div>
+    <!-- Red Energy Aura Waves (Phase 2) -->
+    <div class="energy-waves">
+      <div class="wave wave1"></div>
+      <div class="wave wave2"></div>
+      <div class="wave wave3"></div>
+    </div>
 
-  <!-- Shockwave Explosion (Phase 3) -->
-  <div class="crimson-shockwave"></div>
+    <!-- Sparkles & Rose Petals (Phase 2) -->
+    <div class="love-sparkles">
+      <span class="petal p1">🌸</span>
+      <span class="petal p2">🌹</span>
+      <span class="petal p3">🌸</span>
+      <span class="petal p4">🌹</span>
+      <span class="sparkle sp1">✦</span>
+      <span class="sparkle sp2">✦</span>
+    </div>
 
-  <!-- Ground Burning Mark (Phase 3) -->
-  <div class="burning-ground-mark"></div>
+    <!-- Shockwave Explosion (Phase 3) -->
+    <div class="crimson-shockwave"></div>
+
+    <!-- Ground Burning Mark (Phase 3) -->
+    <div class="burning-ground-mark"></div>
+  </ng-container>
+
+  <!-- ================= EMPOWERED ULTIMATE: THIÊN GIÁNG NAM THẦN ================= -->
+  <ng-container *ngIf="empowered">
+    <!-- Giai đoạn 1: Kích hoạt - Aura đỏ tím và 6 stack hội tụ -->
+    <div class="empowered-activation">
+      <div class="rage-burst-aura"></div>
+      <div class="orbiting-stacks">
+        <span class="orbit-orb orb-1"></span>
+        <span class="orbit-orb orb-2"></span>
+        <span class="orbit-orb orb-3"></span>
+        <span class="orbit-orb orb-4"></span>
+        <span class="orbit-orb orb-5"></span>
+        <span class="orbit-orb orb-6"></span>
+      </div>
+    </div>
+
+    <!-- Giai đoạn 2: Bay lên - Afterimages & ground shadow -->
+    <div class="empowered-leap-fx">
+      <div class="afterimage-stream">
+        <span class="afterimage ai-1"></span>
+        <span class="afterimage ai-2"></span>
+        <span class="afterimage ai-3"></span>
+      </div>
+      <div class="ground-shadow"></div>
+    </div>
+
+    <!-- Giai đoạn 3: Nắm đấm thần thoại giáng xuống từ trời cao (Real Graphic Asset) -->
+    <div class="ricardo-real-fist-wrapper">
+      <img src="/assets/images/dcs-game/skills/ricardo-fist.jpg" class="ricardo-real-fist-img" alt="Thiên Giáng Thần Quyền" loading="eager" fetchpriority="high" />
+      <div class="fist-flame-shock-glow"></div>
+    </div>
+
+    <!-- Giai đoạn 4: Sóng xung kích & Lõi va chạm quang năng -->
+    <div class="ricardo-impact">
+      <div class="impact-core"></div>
+      <div class="shockwave shockwave-1"></div>
+      <div class="shockwave shockwave-2"></div>
+    </div>
+
+    <!-- Giai đoạn 6: Đá văng tung tóe (Dynamic Debris Pieces) -->
+    <div class="debris">
+      <span
+        class="debris-piece"
+        *ngFor="let piece of debrisPieces"
+        [style.--x]="piece.x"
+        [style.--y]="piece.y"
+        [style.--r]="piece.rotation"
+        [style.--delay]="piece.delay"
+        [style.--size]="piece.size">
+      </span>
+    </div>
+  </ng-container>
 </div>

@@ -1,0 +1,395 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="formation-modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="header-title-box">
+        <h3 id="modal-title" class="title-text">
+          <i class="bi bi-shield-shaded me-2 text-warning"></i>CHUẨN BỊ XUẤT CHIẾN
+        </h3>
+        <span class="stage-badge">{{ stage.name }} (Màn {{ stage.stageNumber }})</span>
+      </div>
+
+      <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" title="Đóng">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Inventory / Stamina Warning Bar -->
+    <div *ngIf="isBagFull" class="warning-banner bag-warning">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <span>Hành trang đã đầy! Bạn vẫn có thể đánh nhưng sẽ không nhận được trang bị rơi.</span>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+
+      <!-- Left Column: Formation Template Selector & Stat Bonus -->
+      <div class="formation-sidebar">
+        <div class="sidebar-section-title">
+          <i class="bi bi-grid-3x3-gap-fill me-1"></i>Trận Pháp
+        </div>
+
+        <!-- Formation Cards Selector -->
+        <div class="formation-select-list">
+          <button
+            *ngFor="let f of formations"
+            type="button"
+            class="formation-chip"
+            [class.active]="selectedFormationCode === f.code"
+            (click)="onSelectFormation(f.code)"
+            [disabled]="isStarting"
+          >
+            <div class="chip-name">{{ f.name }}</div>
+            <div class="chip-lv">Cấp {{ f.level }}</div>
+          </button>
+        </div>
+
+        <!-- Formation Bonus Card -->
+        <div class="formation-bonus-card" *ngIf="formationDetail">
+          <div class="bonus-header">
+            <span class="bonus-label">Hiệu Quả Trận Pháp</span>
+            <span class="bonus-level-tag">Lv.{{ formationDetail.level }}</span>
+          </div>
+
+          <div class="bonus-stats">
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.hpPercent">
+              <span class="b-name">Máu:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.hpPercent }}%</span>
+            </div>
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.atkPercent">
+              <span class="b-name">Công:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.atkPercent }}%</span>
+            </div>
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.defPercent">
+              <span class="b-name">Thủ:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.defPercent }}%</span>
+            </div>
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.spdPercent">
+              <span class="b-name">Tốc độ:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.spdPercent }}%</span>
+            </div>
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.magicDamagePercent">
+              <span class="b-name">Công phép:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.magicDamagePercent }}%</span>
+            </div>
+            <div class="bonus-stat-item" *ngIf="formationDetail.currentBonus.magicResistancePercent">
+              <span class="b-name">Kháng phép:</span>
+              <span class="b-val">+{{ formationDetail.currentBonus.magicResistancePercent }}%</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="btn-save-default"
+            (click)="onSaveAsDefault()"
+            [disabled]="isSavingDefault || isStarting"
+            title="Lưu đội hình này làm mặc định trong trang Trận hình"
+          >
+            <i class="bi" [class.bi-bookmark-check]="!isSavingDefault" [class.bi-arrow-repeat]="isSavingDefault" [class.spin]="isSavingDefault"></i>
+            <span>{{ isSavingDefault ? 'Đang lưu...' : 'Lưu làm mặc định' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Tactical Board & Hero Pool -->
+      <div class="board-column">
+
+        <!-- Board Header -->
+        <div class="board-header">
+          <div class="board-subtitle">
+            <span>Đội Hình Xuất Chiến ({{ deployedCount }}/5)</span>
+            <span *ngIf="selectedPoolHero" class="hint-pulse">Đang chọn tướng: Click vào ô để xếp</span>
+            <span *ngIf="selectedSlotIndex !== null" class="hint-pulse">Click ô khác để hoán đổi vị trí</span>
+          </div>
+
+          <div class="preview-spinner" *ngIf="isPreviewLoading">
+            <i class="bi bi-arrow-repeat spin text-warning"></i>
+            <span>Tính toán...</span>
+          </div>
+        </div>
+
+        <!-- Tactical Slots Board (Frontline vs Backline) -->
+        <div class="tactical-board">
+          <!-- Backline: Slots 2, 4 -->
+          <div class="row-label">Hàng Sau</div>
+          <div class="slots-row backline-row">
+            <!-- Slot 2 (index 1) -->
+            <div
+              class="tactical-slot"
+              [class.has-hero]="slots[1] !== null"
+              [class.selected]="selectedSlotIndex === 1"
+              (click)="onSlotClick(1)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSlot($event, 1)"
+            >
+              <span class="slot-number-badge">2</span>
+              <ng-container *ngIf="slots[1] as hero; else emptySlot2">
+                <div
+                  class="hero-card-in-slot"
+                  draggable="true"
+                  (dragstart)="onDragStartFromGrid($event, 1)"
+                >
+                  <img [src]="hero.avatar" [alt]="hero.name" class="slot-hero-avatar" />
+                  <div class="slot-hero-info">
+                    <span class="slot-hero-name">{{ hero.name }}</span>
+                    <span class="slot-hero-power"><i class="bi bi-lightning-charge-fill"></i> {{ hero.power | number }}</span>
+                  </div>
+                  <button type="button" class="btn-remove-slot-hero" (click)="removeHeroFromSlot(1, $event)" title="Bỏ tướng">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #emptySlot2>
+                <div class="empty-slot-placeholder">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Trống</span>
+                </div>
+              </ng-template>
+            </div>
+
+            <!-- Slot 4 (index 3) -->
+            <div
+              class="tactical-slot"
+              [class.has-hero]="slots[3] !== null"
+              [class.selected]="selectedSlotIndex === 3"
+              (click)="onSlotClick(3)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSlot($event, 3)"
+            >
+              <span class="slot-number-badge">4</span>
+              <ng-container *ngIf="slots[3] as hero; else emptySlot4">
+                <div
+                  class="hero-card-in-slot"
+                  draggable="true"
+                  (dragstart)="onDragStartFromGrid($event, 3)"
+                >
+                  <img [src]="hero.avatar" [alt]="hero.name" class="slot-hero-avatar" />
+                  <div class="slot-hero-info">
+                    <span class="slot-hero-name">{{ hero.name }}</span>
+                    <span class="slot-hero-power"><i class="bi bi-lightning-charge-fill"></i> {{ hero.power | number }}</span>
+                  </div>
+                  <button type="button" class="btn-remove-slot-hero" (click)="removeHeroFromSlot(3, $event)" title="Bỏ tướng">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #emptySlot4>
+                <div class="empty-slot-placeholder">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Trống</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+
+          <!-- Frontline: Slots 1, 3, 5 -->
+          <div class="row-label">Hàng Trước</div>
+          <div class="slots-row frontline-row">
+            <!-- Slot 1 (index 0) -->
+            <div
+              class="tactical-slot"
+              [class.has-hero]="slots[0] !== null"
+              [class.selected]="selectedSlotIndex === 0"
+              (click)="onSlotClick(0)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSlot($event, 0)"
+            >
+              <span class="slot-number-badge">1</span>
+              <ng-container *ngIf="slots[0] as hero; else emptySlot1">
+                <div
+                  class="hero-card-in-slot"
+                  draggable="true"
+                  (dragstart)="onDragStartFromGrid($event, 0)"
+                >
+                  <img [src]="hero.avatar" [alt]="hero.name" class="slot-hero-avatar" />
+                  <div class="slot-hero-info">
+                    <span class="slot-hero-name">{{ hero.name }}</span>
+                    <span class="slot-hero-power"><i class="bi bi-lightning-charge-fill"></i> {{ hero.power | number }}</span>
+                  </div>
+                  <button type="button" class="btn-remove-slot-hero" (click)="removeHeroFromSlot(0, $event)" title="Bỏ tướng">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #emptySlot1>
+                <div class="empty-slot-placeholder">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Trống</span>
+                </div>
+              </ng-template>
+            </div>
+
+            <!-- Slot 3 (index 2) -->
+            <div
+              class="tactical-slot"
+              [class.has-hero]="slots[2] !== null"
+              [class.selected]="selectedSlotIndex === 2"
+              (click)="onSlotClick(2)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSlot($event, 2)"
+            >
+              <span class="slot-number-badge">3</span>
+              <ng-container *ngIf="slots[2] as hero; else emptySlot3">
+                <div
+                  class="hero-card-in-slot"
+                  draggable="true"
+                  (dragstart)="onDragStartFromGrid($event, 2)"
+                >
+                  <img [src]="hero.avatar" [alt]="hero.name" class="slot-hero-avatar" />
+                  <div class="slot-hero-info">
+                    <span class="slot-hero-name">{{ hero.name }}</span>
+                    <span class="slot-hero-power"><i class="bi bi-lightning-charge-fill"></i> {{ hero.power | number }}</span>
+                  </div>
+                  <button type="button" class="btn-remove-slot-hero" (click)="removeHeroFromSlot(2, $event)" title="Bỏ tướng">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #emptySlot3>
+                <div class="empty-slot-placeholder">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Trống</span>
+                </div>
+              </ng-template>
+            </div>
+
+            <!-- Slot 5 (index 4) -->
+            <div
+              class="tactical-slot"
+              [class.has-hero]="slots[4] !== null"
+              [class.selected]="selectedSlotIndex === 4"
+              (click)="onSlotClick(4)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDropOnSlot($event, 4)"
+            >
+              <span class="slot-number-badge">5</span>
+              <ng-container *ngIf="slots[4] as hero; else emptySlot5">
+                <div
+                  class="hero-card-in-slot"
+                  draggable="true"
+                  (dragstart)="onDragStartFromGrid($event, 4)"
+                >
+                  <img [src]="hero.avatar" [alt]="hero.name" class="slot-hero-avatar" />
+                  <div class="slot-hero-info">
+                    <span class="slot-hero-name">{{ hero.name }}</span>
+                    <span class="slot-hero-power"><i class="bi bi-lightning-charge-fill"></i> {{ hero.power | number }}</span>
+                  </div>
+                  <button type="button" class="btn-remove-slot-hero" (click)="removeHeroFromSlot(4, $event)" title="Bỏ tướng">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #emptySlot5>
+                <div class="empty-slot-placeholder">
+                  <i class="bi bi-plus-lg"></i>
+                  <span>Trống</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Available Heroes Pool -->
+        <div class="pool-section">
+          <div class="pool-header">
+            <span class="pool-title">Danh Sách Tướng Khả Dụng ({{ heroes.length }})</span>
+            <div class="search-box">
+              <i class="bi bi-search"></i>
+              <input
+                type="text"
+                [(ngModel)]="searchHeroQuery"
+                placeholder="Tìm tên, phái, hệ..."
+                class="search-input"
+              />
+            </div>
+          </div>
+
+          <div class="hero-pool-list">
+            <div
+              *ngFor="let h of filteredHeroes"
+              class="pool-hero-item"
+              [class.in-formation]="isHeroInFormation(h.id)"
+              [class.selected]="selectedPoolHero?.id === h.id"
+              (click)="onPoolHeroClick(h)"
+              draggable="true"
+              (dragstart)="onDragStartFromPool($event, h)"
+              [title]="h.name + ' - Cấp ' + h.level"
+            >
+              <img [src]="h.avatar" [alt]="h.name" class="pool-avatar" />
+              <div class="pool-hero-meta">
+                <span class="p-name">{{ h.name }}</span>
+                <span class="p-power">{{ h.power | number }}</span>
+              </div>
+              <div *ngIf="isHeroInFormation(h.id)" class="deployed-badge">
+                Ô {{ getSlotOfHero(h.id) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Power Comparison & Action Footer -->
+    <div class="modal-footer">
+      <div class="power-summary-container">
+        <!-- Player Total Combat Power -->
+        <div class="power-col player-cp">
+          <span class="p-label">Lực chiến đội:</span>
+          <span class="p-val text-warning">
+            <i class="bi bi-lightning-charge-fill me-1"></i>{{ totalPlayerPower | number }}
+          </span>
+        </div>
+
+        <!-- Enemy Power -->
+        <div class="power-col enemy-cp">
+          <span class="p-label">Địch:</span>
+          <span class="p-val text-danger">{{ stage.enemyPower | number }}</span>
+        </div>
+
+        <!-- Recommended Power -->
+        <div class="power-col rec-cp">
+          <span class="p-label">Đề nghị:</span>
+          <span class="p-val text-info">{{ stage.recommendedPower | number }}</span>
+        </div>
+
+        <!-- Power Status Indicator Badge -->
+        <div class="power-status-badge" [ngClass]="powerStatus.class">
+          <span>{{ powerStatus.icon }} {{ powerStatus.label }}</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          type="button"
+          class="btn-cancel"
+          (click)="close.emit()"
+          [disabled]="isStarting"
+        >
+          Hủy
+        </button>
+
+        <button
+          type="button"
+          id="btn-start-dungeon-battle"
+          class="btn-start-battle"
+          (click)="onStartBattle()"
+          [disabled]="isStarting || deployedCount === 0 || staminaCurrent < stage.staminaCost"
+        >
+          <i class="bi" [class.bi-sword]="!isStarting" [class.bi-arrow-repeat]="isStarting" [class.spin]="isStarting"></i>
+          <span>{{ isStarting ? 'Đang vào trận...' : 'Bắt Đầu Chiến' }}</span>
+          <span class="stamina-tag" *ngIf="!isStarting">({{ stage.staminaCost }} ⚡)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- In-Modal Toast Feedback -->
+    <div *ngIf="showToast" class="modal-toast" [ngClass]="toastType">
+      <i class="bi me-2" [class.bi-check-circle-fill]="toastType==='success'" [class.bi-exclamation-triangle-fill]="toastType==='warning'" [class.bi-info-circle-fill]="toastType==='info'"></i>
+      <span>{{ toastMessage }}</span>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="session-modal-backdrop" *ngIf="sessionExpiredService.isOpen()">
+  <div class="session-modal-card" role="dialog" aria-modal="true" aria-labelledby="session-expired-title">
+    <div class="modal-icon-container">
+      <div class="icon-pulse"></div>
+      <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+
+    <h2 id="session-expired-title" class="modal-title">Phiên đăng nhập đã hết hạn</h2>
+
+    <p class="modal-message">
+      Phiên làm việc của bạn đã kết thúc.<br />
+      Vui lòng đăng nhập lại để tiếp tục.
+    </p>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        id="btn-confirm-relogin"
+        class="btn-relogin"
+        (click)="onConfirmLogin()"
+      >
+        <span class="btn-text">Đăng nhập lại</span>
+        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

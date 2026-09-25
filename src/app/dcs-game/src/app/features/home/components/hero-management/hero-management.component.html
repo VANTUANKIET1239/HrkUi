@@ -192,6 +192,8 @@
                [class.epic]="slot.item?.rarityName === 'Epic' || slot.item?.rarityCode === 'EPIC'"
                [class.legendary]="slot.item?.rarityName === 'Legendary' || slot.item?.rarityCode === 'LEGENDARY'"
                [class.rare]="slot.item?.rarityName === 'Rare' || slot.item?.rarityCode === 'RARE'"
+               (mouseenter)="onSlotMouseEnter($event, slot)"
+               (mouseleave)="onSlotMouseLeave()"
                (click)="onSlotClick(slot)"
                (dragover)="onEquipmentDragOver($event)"
                (drop)="onEquipmentDrop($event, idx)">
@@ -470,9 +472,12 @@
             [class.rare]="item.rarityName === 'Rare' || item.rarityCode === 'RARE'"
             [class.disabled]="isProcessingEquipment"
             draggable="true"
+            (mouseenter)="onInventoryEquipMouseEnter($event, item)"
+            (mouseleave)="onSlotMouseLeave()"
             (dragstart)="onInventoryDragStart($event, item, idx)"
             (click)="equipGearFromInventory(item)">
             <div class="item-icon-bg">
+              <span *ngIf="equippingItemId === item.id" class="spinner-border spinner-border-sm text-warning equip-spinner position-absolute"></span>
               <img *ngIf="item.imagePath; else invIconFallback" [src]="item.imagePath" class="inv-item-img" [alt]="item.name" />
               <ng-template #invIconFallback>
                 <i class="bi {{ item.icon }} item-icon"></i>

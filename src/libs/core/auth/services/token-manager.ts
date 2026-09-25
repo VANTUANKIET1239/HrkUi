@@ -15,6 +15,7 @@ export class TokenManagerService {
   private readonly SESSION_HINT_KEY = 'hrk_has_session';
   private cache = new Map<string, CacheEntry>();            // audience -> token (In-Memory only, XSS safe)
   private inflight = new Map<string, Promise<string>>();    // audience -> ongoing refresh
+  private refreshQueue: Promise<void> = Promise.resolve(); // serialize refresh-token rotation across audiences
   private SKEW_SEC = 60;
 
   /** Session marker to prevent unnecessary 400/401 refresh-token calls when unauthenticated */
@@ -55,6 +56,10 @@ export class TokenManagerService {
       )
     );
 
+    if (!res.success || !res.data?.accessToken) {
+      throw new Error(res.message || 'Refresh token is invalid or expired.');
+    }
+
     const accessToken = res.data.accessToken;
     this.cache.set(audience, { token: accessToken, exp: this.parseExp(accessToken) });
     this.setSessionHint();
@@ -65,7 +70,11 @@ export class TokenManagerService {
   private async refreshOnce(audience: string): Promise<string> {
     let p = this.inflight.get(audience);
     if (!p) {
-      p = this.requestNewAT(audience).finally(() => this.inflight.delete(audience));
+      const previous = this.refreshQueue.catch(() => undefined);
+      p = previous
+        .then(() => this.requestNewAT(audience))
+        .finally(() => this.inflight.delete(audience));
+      this.refreshQueue = p.then(() => undefined, () => undefined);
       this.inflight.set(audience, p);
     }
     return p;
@@ -88,6 +97,7 @@ export class TokenManagerService {
   forceDeleteAllCache(): void {
     this.cache.clear();
     this.inflight.clear();
+    this.refreshQueue = Promise.resolve();
     this.clearSessionHint();
     // Clean up any legacy localStorage tokens if present from older versions
     Object.keys(localStorage).forEach(key => {

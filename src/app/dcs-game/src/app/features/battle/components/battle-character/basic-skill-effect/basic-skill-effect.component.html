@@ -69,6 +69,13 @@
     [isTeamRight]="isTeamRight">
   </app-hoang-nguyen-basic>
 
+  <!-- 11. Tao là nhất / Hải Nụ Cười Cuối -->
+  <app-hai-last-smile-basic
+    *ngSwitchCase="'hai-last-smile'"
+    [phase]="phase"
+    [isTeamRight]="isTeamRight">
+  </app-hai-last-smile-basic>
+
   <!-- Generic Fallback for Unknown Heroes -->
   <div *ngSwitchDefault class="generic-basic-effect" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
     <div class="generic-strike-flash"></div>

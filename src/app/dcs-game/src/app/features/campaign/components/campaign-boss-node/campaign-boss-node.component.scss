@@ -1,0 +1,464 @@
+.boss-node-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 15;
+  user-select: none;
+}
+
+/* Current Stage Indicator */
+.current-indicator {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 5;
+  animation: indicatorBounce 1s ease-in-out infinite alternate;
+
+  .indicator-badge {
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.9);
+    border: 1px solid #fecaca;
+    white-space: nowrap;
+  }
+
+  .indicator-arrow {
+    color: #fca5a5;
+    font-size: 16px;
+    line-height: 10px;
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.9));
+  }
+}
+
+@keyframes indicatorBounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Aura Ring & Flame Halo */
+.boss-aura-ring {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.boss-flame-halo {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(14px);
+  opacity: 0.6;
+}
+
+/* Crest Button Container */
+.boss-crest {
+  position: relative;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s cubic-bezier(0.3, 1.4, 0.5, 1), filter 0.3s;
+  z-index: 2;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.15) translateY(-4px);
+
+    .boss-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -12px);
+    }
+
+    .boss-portrait {
+      transform: scale(1.08);
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(1.04);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* Portrait Container */
+.portrait-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px 18px 10px 10px;
+  background: #090d16;
+  border: 2px solid rgba(212, 164, 79, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boss-portrait {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.portrait-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(4, 7, 13, 0.85) 100%);
+  pointer-events: none;
+}
+
+/* Stage Stamp */
+.stage-stamp {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px solid #e2e8f0;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  z-index: 4;
+}
+
+/* Cleared Victory Stamp */
+.cleared-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #047857);
+  border: 2px solid #ecfdf5;
+  color: #fef08a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.7);
+  z-index: 4;
+}
+
+/* Boss Ribbon */
+.boss-ribbon {
+  position: absolute;
+  bottom: -10px;
+  padding: 3px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  z-index: 4;
+  white-space: nowrap;
+
+  .ribbon-text {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* Boss Meta Below */
+.boss-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 14px;
+  pointer-events: none;
+
+  .boss-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #f59e0b;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  }
+
+  .boss-enemy-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f8fafc;
+    white-space: nowrap;
+    max-width: 130px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  }
+
+  .boss-stars {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 3px;
+
+    .star-glyph {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.2);
+
+      &.active {
+        color: #fbbf24;
+        text-shadow: 0 0 8px rgba(251, 191, 36, 0.9);
+      }
+    }
+  }
+}
+
+/* ---------------- TIER SPECIFICS ---------------- */
+
+/* MINI BOSS (Stage 5) */
+.tier-mini-boss {
+  .portrait-container {
+    width: 86px;
+    height: 104px;
+    border-color: #c084fc;
+  }
+
+  .boss-aura-ring {
+    width: 100px;
+    height: 100px;
+    border: 2px dashed rgba(192, 132, 252, 0.5);
+    animation: rotateAura 20s linear infinite;
+  }
+
+  .boss-flame-halo {
+    width: 105px;
+    height: 105px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
+  }
+
+  .boss-ribbon {
+    background: linear-gradient(135deg, #9333ea, #6b21a8);
+    border: 1px solid #d8b4fe;
+    color: #f5d0fe;
+  }
+}
+
+/* BOSS (Stage 10) */
+.tier-boss {
+  .portrait-container {
+    width: 102px;
+    height: 122px;
+    border-color: #ef4444;
+    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.35), 0 0 15px rgba(0, 0, 0, 0.8);
+  }
+
+  .boss-aura-ring {
+    width: 122px;
+    height: 122px;
+    border: 2px dashed rgba(239, 68, 68, 0.7);
+    animation: rotateAura 15s linear infinite;
+  }
+
+  .boss-flame-halo {
+    width: 130px;
+    height: 130px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.6), transparent 70%);
+  }
+
+  .boss-ribbon {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    border: 1px solid #fca5a5;
+    color: #fff;
+  }
+
+  .stage-stamp {
+    background: linear-gradient(135deg, #991b1b, #450a0a);
+    border-color: #f87171;
+  }
+}
+
+/* GRAND BOSS (Stage 15 - The Peak) */
+.tier-grand-boss {
+  .portrait-container {
+    width: 124px;
+    height: 148px;
+    border: 3px solid #fbbf24;
+    border-radius: 24px 24px 14px 14px;
+    box-shadow: 0 16px 50px rgba(245, 158, 11, 0.45), 0 0 25px rgba(0, 0, 0, 0.9);
+  }
+
+  .boss-aura-ring {
+    width: 154px;
+    height: 154px;
+    border: 2px dashed rgba(251, 191, 36, 0.8);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+    animation: rotateAura 12s linear infinite;
+  }
+
+  .boss-flame-halo {
+    width: 165px;
+    height: 165px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.7), rgba(239, 68, 68, 0.4) 60%, transparent 80%);
+  }
+
+  .boss-ribbon {
+    background: linear-gradient(135deg, #f59e0b, #b45309);
+    border: 2px solid #fef08a;
+    color: #1a0b02;
+    padding: 4px 18px;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.8);
+
+    .ribbon-text {
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+  }
+
+  .stage-stamp {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #f59e0b, #78350f);
+    border-color: #fef08a;
+    font-size: 15px;
+  }
+
+  .boss-enemy-name {
+    font-size: 15px;
+    color: #fef08a;
+  }
+}
+
+@keyframes rotateAura {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* State: AVAILABLE */
+.state-available {
+  .portrait-container {
+    animation: bossPulse 2.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes bossPulse {
+  0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85); }
+  100% { box-shadow: 0 14px 45px rgba(245, 158, 11, 0.55), 0 0 20px rgba(239, 68, 68, 0.4); }
+}
+
+/* State: LOCKED */
+.state-locked {
+  opacity: 0.5;
+  filter: grayscale(0.9);
+
+  .boss-crest {
+    box-shadow: none;
+  }
+
+  .boss-ribbon {
+    background: #334155;
+    border-color: #64748b;
+    color: #94a3b8;
+  }
+}
+
+/* Tooltip */
+.boss-tooltip {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #f1f5f9;
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 0);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  z-index: 20;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(15, 23, 42, 0.96);
+  }
+
+  .tooltip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 4px;
+
+    .tooltip-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: #f59e0b;
+      letter-spacing: 1px;
+    }
+
+    .tooltip-stamina {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+  }
+
+  .tooltip-name {
+    display: block;
+    color: #ffd76f;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .tooltip-power {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+
+    b {
+      color: #f87171;
+    }
+
+    span:last-child b {
+      color: #fbbf24;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .current-indicator,
+  .boss-aura-ring,
+  .portrait-container {
+    animation: none !important;
+  }
+}

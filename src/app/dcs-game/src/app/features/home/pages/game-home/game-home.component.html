@@ -5,12 +5,16 @@
     <!-- A. Player Profile (Top-Left UI) -->
     <div class="player-profile d-flex align-items-center">
       <div class="avatar-container position-relative">
-        <div class="avatar-frame">
+        <div class="avatar-frame editable-avatar" role="button" tabindex="0" title="Đổi ảnh đại diện"
+          (click)="isAvatarSelectorOpen = true" (keydown.enter)="isAvatarSelectorOpen = true">
           <!-- Stylized Avatar (using SVG or clean letters/icon since we want it visual) -->
-          <div class="avatar-img-placeholder d-flex align-items-center justify-content-center">
+          <img *ngIf="playerInfo.avatarUrl" class="player-avatar-image" [src]="playerInfo.avatarUrl"
+            (error)="playerInfo.avatarUrl = ''" alt="Ảnh đại diện" />
+          <div *ngIf="!playerInfo.avatarUrl" class="avatar-img-placeholder d-flex align-items-center justify-content-center">
             <i class="bi bi-person-circle text-warning fs-1"></i>
           </div>
-          <span class="level-badge">{{ playerInfo.level }}</span>
+          <span class="avatar-edit-hint"><i class="bi bi-pencil-fill"></i></span>
+          <app-player-level-badge [level]="playerInfo.level"></app-player-level-badge>
         </div>
         <!-- <div class="vip-badge">VIP {{ playerInfo.vipLevel }}</div> -->
       </div>
@@ -20,6 +24,10 @@
         <div class="player-power d-flex align-items-center">
           <span class="label">C.Lực</span>
           <span class="value">{{ playerInfo.power }}</span>
+        </div>
+        <div class="player-exp" title="Kinh nghiệm người chơi">
+          <div class="player-exp-fill" [style.width.%]="playerInfo.exp / playerInfo.maxExp * 100"></div>
+          <span>EXP {{playerInfo.exp | number}} / {{playerInfo.maxExp | number}}</span>
         </div>
         <div class="player-actions d-flex mt-1">
           <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">Nạp</button>
@@ -185,17 +193,24 @@
   </div>
 
   <!-- Hero Management Popup/Modal -->
-  <app-hero-management *ngIf="isHeroManagementOpen" (close)="isHeroManagementOpen = false"></app-hero-management>
+  <app-hero-management *ngIf="isHeroManagementOpen" (close)="onHeroManagementClosed()"></app-hero-management>
 
   <!-- Formation Management Popup/Modal -->
   <app-formation-management *ngIf="isFormationManagementOpen"
-    (close)="isFormationManagementOpen = false"></app-formation-management>
+    (close)="onFormationManagementClosed()"></app-formation-management>
 
   <!-- Inventory (Hành Trang) Popup/Modal -->
-  <app-inventory *ngIf="isInventoryOpen" (close)="isInventoryOpen = false"></app-inventory>
+  <app-inventory *ngIf="isInventoryOpen" (close)="onInventoryClosed()"></app-inventory>
 
   <!-- Forge (Lò Rèn) Popup/Modal -->
-  <app-forge *ngIf="isForgeOpen" [currentGold]="getNumericGold()" (close)="isForgeOpen = false" (itemUpdated)="onForgeItemUpdated()"></app-forge>
+  <app-forge *ngIf="isForgeOpen" [currentGold]="getNumericGold()" (close)="onForgeClosed()" (itemUpdated)="onForgeItemUpdated()"></app-forge>
+
+  <!-- Catalog Library -->
+  <app-library *ngIf="isLibraryOpen" (close)="isLibraryOpen = false"></app-library>
+
+  <app-avatar-selector *ngIf="isAvatarSelectorOpen && playerProfile" [profile]="playerProfile"
+    [currentAvatarUrl]="playerInfo.avatarUrl" (close)="isAvatarSelectorOpen = false"
+    (avatarChanged)="onAvatarChanged($event)"></app-avatar-selector>
 
   <!-- Logout Confirmation Modal -->
   <div class="logout-modal-backdrop" *ngIf="isLogoutConfirmOpen" (click)="closeLogoutConfirm()">
@@ -229,4 +244,7 @@
       </div>
     </div>
   </div>
+
+  <!-- Universal Equipment Tooltip Host -->
+  <app-equipment-tooltip></app-equipment-tooltip>
 </div>

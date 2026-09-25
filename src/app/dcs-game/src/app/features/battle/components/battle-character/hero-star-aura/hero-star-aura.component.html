@@ -99,6 +99,16 @@
     [secondaryColor]="secondaryColor">
   </app-hoang-nguyen-aura>
 
+  <!-- Hero 11: Tao là nhất / Hải Nụ Cười Cuối -->
+  <app-hai-last-smile-aura
+    *ngIf="visualKey === 'hai-last-smile-aura'"
+    [starLevel]="effectiveStarLevel"
+    [intensity]="intensity"
+    [particleLevel]="particleLevel"
+    [primaryColor]="primaryColor"
+    [secondaryColor]="secondaryColor">
+  </app-hai-last-smile-aura>
+
   <!-- Five-star legacy visuals are reused verbatim so their DOM, CSS and timing stay unchanged. -->
   <app-pe-red-lightning
     *ngIf="effectiveStarLevel === 5 && (visualKey === 'kiet-red-lightning' || visualKey === 'chuan-men-crimson-rhythm')">

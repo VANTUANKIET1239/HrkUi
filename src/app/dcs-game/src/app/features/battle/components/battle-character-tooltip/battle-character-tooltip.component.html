@@ -1,0 +1,130 @@
+<div class="character-tooltip-card" 
+  [class.place-right]="computedPlacement === 'right'" 
+  [class.place-left]="computedPlacement === 'left'"
+  [class.row-top]="isTopRow"
+  [class.row-bottom]="isBottomRow"
+  role="tooltip">
+
+  <!-- Card Top Accent -->
+  <div class="tooltip-header">
+    <img [src]="hero.avatar" class="mini-avatar" [alt]="hero.name" />
+    <div class="header-info">
+      <div class="name-row">
+        <span class="hero-name">{{ hero.name }}</span>
+        <span class="hero-level">Lv.{{ hero.level || 1 }}</span>
+      </div>
+      <div class="hero-stars" *ngIf="starsCount > 0">
+        <span *ngFor="let _ of starsArray" class="star-icon">⭐</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Combat Gauges: HP & Mana -->
+  <div class="tooltip-gauges">
+    <!-- HP Gauge -->
+    <div class="gauge-row hp-gauge">
+      <div class="gauge-label">
+        <span class="label-text">HP</span>
+        <span class="value-text">{{ hero.hp | number }} / {{ hero.maxHp | number }} ({{ hpPercent }}%)</span>
+      </div>
+      <div class="gauge-track">
+        <div class="gauge-fill hp-fill" [style.width.%]="hpPercent"></div>
+      </div>
+    </div>
+
+    <!-- Mana Gauge -->
+    <div class="gauge-row mana-gauge">
+      <div class="gauge-label">
+        <span class="label-text">Năng lượng</span>
+        <span class="value-text">{{ hero.mana | number }} / {{ hero.maxMana | number }} ({{ manaPercent }}%)</span>
+      </div>
+      <div class="gauge-track">
+        <div class="gauge-fill mana-fill" [style.width.%]="manaPercent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4-Stat Grid: ATK, DEF, SPD, POWER -->
+  <div class="stats-grid">
+    <div class="stat-pill atk">
+      <i class="bi bi-shield-shaded stat-icon atk-icon"></i>
+      <span class="stat-title">Công:</span>
+      <span class="stat-num">{{ hero.attack | number }}</span>
+    </div>
+    <div class="stat-pill def">
+      <i class="bi bi-shield-fill stat-icon def-icon"></i>
+      <span class="stat-title">Thủ:</span>
+      <span class="stat-num">{{ hero.defense | number }}</span>
+    </div>
+    <div class="stat-pill spd">
+      <i class="bi bi-lightning-charge stat-icon spd-icon"></i>
+      <span class="stat-title">Tốc độ:</span>
+      <span class="stat-num">{{ hero.speed | number }}</span>
+    </div>
+    <div class="stat-pill power">
+      <i class="bi bi-trophy-fill stat-icon power-icon"></i>
+      <span class="stat-title">Lực chiến:</span>
+      <span class="stat-num">{{ (hero.power || 0) | number }}</span>
+    </div>
+  </div>
+
+  <!-- Buffs & Debuffs Section -->
+  <div class="status-section" *ngIf="buffs.length > 0 || debuffs.length > 0 || otherStatuses.length > 0">
+    <div class="section-title">
+      <i class="bi bi-stars"></i>
+      <span>Hiệu ứng trạng thái ({{ (hero.battleStatuses || []).length }})</span>
+    </div>
+
+    <!-- Buffs List (Blue / Gold) -->
+    <div class="status-group buffs" *ngIf="buffs.length > 0">
+      <div *ngFor="let buff of buffs" class="status-item buff-item">
+        <div class="item-header">
+          <img *ngIf="buff.iconPath" [src]="buff.iconPath" class="status-icon-img" [alt]="buff.name" />
+          <span class="status-name">{{ buff.name }}</span>
+          <span class="status-turns" *ngIf="buff.remainingTurns > 0">Còn {{ buff.remainingTurns }} lượt</span>
+        </div>
+        <div class="status-desc" *ngIf="buff.description">{{ buff.description }}</div>
+        <div class="status-modifiers" *ngIf="buff.modifiers && buff.modifiers.length > 0">
+          <span *ngFor="let mod of buff.modifiers" class="mod-badge buff-mod">
+            {{ formatModifier(mod) }}
+          </span>
+        </div>
+        <div class="status-shield" *ngIf="buff.code === 'SHIELD'">
+          <span class="shield-badge">🛡️ Lượng khiên: {{ buff.value | number }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debuffs List (Red / Purple) -->
+    <div class="status-group debuffs" *ngIf="debuffs.length > 0">
+      <div *ngFor="let debuff of debuffs" class="status-item debuff-item">
+        <div class="item-header">
+          <img *ngIf="debuff.iconPath" [src]="debuff.iconPath" class="status-icon-img" [alt]="debuff.name" />
+          <span class="status-name">{{ debuff.name }}</span>
+          <span class="status-turns" *ngIf="debuff.remainingTurns > 0">Còn {{ debuff.remainingTurns }} lượt</span>
+        </div>
+        <div class="status-desc" *ngIf="debuff.description">{{ debuff.description }}</div>
+        <div class="status-modifiers" *ngIf="debuff.modifiers && debuff.modifiers.length > 0">
+          <span *ngFor="let mod of debuff.modifiers" class="mod-badge debuff-mod">
+            {{ formatModifier(mod) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Statuses -->
+    <div class="status-group others" *ngIf="otherStatuses.length > 0">
+      <div *ngFor="let item of otherStatuses" class="status-item other-item">
+        <div class="item-header">
+          <img *ngIf="item.iconPath" [src]="item.iconPath" class="status-icon-img" [alt]="item.name" />
+          <span class="status-name">{{ item.name }}</span>
+          <span class="status-turns" *ngIf="item.remainingTurns > 0">Còn {{ item.remainingTurns }} lượt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-status" *ngIf="!hero.battleStatuses || hero.battleStatuses.length === 0">
+    <span class="no-status-text">Không có hiệu ứng đặc biệt</span>
+  </div>
+</div>

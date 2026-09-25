@@ -1,0 +1,68 @@
+<main class="campaign-list-shell">
+  <!-- Atmospheric Fog & Particles -->
+  <app-campaign-atmosphere></app-campaign-atmosphere>
+
+  <!-- Sticky Fantasy Top Header -->
+  <header class="campaign-header">
+    <div class="header-left">
+      <button type="button" class="btn-back" (click)="back()">
+        <span class="back-arrow">←</span>
+        <span class="back-text">Sảnh Chính</span>
+      </button>
+      <div class="title-block">
+        <span class="eyebrow">CHẾ ĐỘ CHÍNH TUYẾN</span>
+        <h1 class="header-title">BẢN ĐỒ CHIẾN DỊCH</h1>
+        <p class="header-subtitle">Vượt từng khu vực phó bản để mở lối tới những miền đất thần bí mới</p>
+      </div>
+    </div>
+
+    <!-- Stamina Crystal Widget -->
+    <div class="stamina-widget" *ngIf="stamina">
+      <div class="stamina-pill">
+        <span class="stamina-icon">⚡</span>
+        <div class="stamina-counts">
+          <span class="stamina-label">THỂ LỰC</span>
+          <span class="stamina-values"><b>{{ stamina.current }}</b>/{{ stamina.max }}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn-buy-stamina"
+        (click)="buy()"
+        [disabled]="purchasing || stamina.purchaseCount >= 10"
+        [title]="stamina.purchaseCount >= 10 ? 'Đã dùng hết 10 lần mua hôm nay' : 'Mua thêm ' + stamina.purchaseAmount + ' thể lực'"
+      >
+        <span class="spinner-border spinner-border-sm" *ngIf="purchasing" role="status" aria-hidden="true"></span>
+        <span *ngIf="!purchasing">
+          {{ stamina.purchaseCount >= 10 ? 'Hết lượt mua' : '+ ' + stamina.nextPurchaseCost + ' 💎' }}
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading & Error States -->
+  <div class="state-container" *ngIf="loading">
+    <div class="state-spinner">
+      <span class="spinner-border text-warning" role="status"></span>
+      <span>Đang mở bản đồ chiến dịch...</span>
+    </div>
+  </div>
+
+  <div class="state-container state-error" *ngIf="!loading && error">
+    <div class="error-box">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error }}</span>
+      <button type="button" class="btn-retry" (click)="fetchMaps()">Thử lại</button>
+    </div>
+  </div>
+
+  <!-- Chapters Grid -->
+  <section class="maps-grid" *ngIf="!loading && !error">
+    <div *ngFor="let map of maps" class="map-grid-item">
+      <app-campaign-map-card
+        [map]="map"
+        (selectMap)="open($event)"
+      ></app-campaign-map-card>
+    </div>
+  </section>
+</main>

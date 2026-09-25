@@ -16,7 +16,8 @@ describe('HeroStarAura System', () => {
         [7, 'pm-hoi-ha-spectral-grooming'],
         [8, 'qa-ky-tinh-vicious-debt'],
         [9, 'kiet-noel-dark-blizzard'],
-        [10, 'hoang-nguyen-heavy-iron']
+        [10, 'hoang-nguyen-heavy-iron'],
+        [11, 'hai-last-smile-aura']
       ];
 
       for (const [id, expectedKey] of expectedMappings) {
@@ -179,6 +180,17 @@ describe('HeroStarAura System', () => {
       expect(component.particleLevel).toBe(4);
       expect(component.primaryColor).toBe('#00ffff');
       expect(component.secondaryColor).toBe('#10b981');
+    });
+
+    it('should resolve hai-last-smile-aura for hero 11 and render app-hai-last-smile-aura', () => {
+      component.heroTemplateId = 11;
+      component.stars = 5;
+      component.ngOnChanges({});
+      fixture.detectChanges();
+
+      expect(component.visualKey).toBe('hai-last-smile-aura');
+      expect(component.hasActiveAura).toBeTrue();
+      expect(fixture.nativeElement.querySelector('app-hai-last-smile-aura')).not.toBeNull();
     });
   });
 });

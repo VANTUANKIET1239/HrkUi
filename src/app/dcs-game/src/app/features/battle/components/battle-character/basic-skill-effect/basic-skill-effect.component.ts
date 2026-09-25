@@ -12,6 +12,7 @@ import { PmHoiHaBasicComponent } from './pm-hoi-ha-basic/pm-hoi-ha-basic.compone
 import { QaKyTinhBasicComponent } from './qa-ky-tinh-basic/qa-ky-tinh-basic.component';
 import { KietNoelHealComponent } from './kiet-noel-heal/kiet-noel-heal.component';
 import { HoangNguyenBasicComponent } from './hoang-nguyen-basic/hoang-nguyen-basic.component';
+import { HaiLastSmileBasicComponent } from './hai-last-smile-basic/hai-last-smile-basic.component';
 
 @Component({
   selector: 'app-basic-skill-effect',
@@ -27,7 +28,8 @@ import { HoangNguyenBasicComponent } from './hoang-nguyen-basic/hoang-nguyen-bas
     PmHoiHaBasicComponent,
     QaKyTinhBasicComponent,
     KietNoelHealComponent,
-    HoangNguyenBasicComponent
+    HoangNguyenBasicComponent,
+    HaiLastSmileBasicComponent
   ],
   templateUrl: './basic-skill-effect.component.html',
   styleUrl: './basic-skill-effect.component.scss'

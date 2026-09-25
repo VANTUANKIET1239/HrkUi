@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HrkApiService } from '../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { ApiMethod } from '../../../../../../libs/shared/common/constants/ApiMethod.constants';
 import { ApiEndpoints } from '../../../../../../libs/shared/common/constants/api-endpoints';
-import { BaseResponse, PlayerGameInfoDto, PlayerProfileDto, PlayerWalletDto } from '../models/player.model';
+import { BaseResponse, PlayerAvatarTemplateDto, PlayerGameInfoDto, PlayerProfileDto, PlayerWalletDto } from '../models/player.model';
 import { LoadingMode, withLoading } from '../../../../../../libs/core/loading/loading.tokens';
 
 @Injectable({
@@ -46,5 +46,38 @@ export class PlayerService {
         context: withLoading(loadingMode)
       }
     );
+  }
+
+  getAvatars(): Observable<BaseResponse<PlayerAvatarTemplateDto[]>> {
+    return this.hrkApiService.CallApi<BaseResponse<PlayerAvatarTemplateDto[]>>(
+      ApiMethod.GET, this.playerApi.Avatars, { withCredentials: true }
+    );
+  }
+
+  selectAvatar(avatarTemplateId: number): Observable<BaseResponse<PlayerProfileDto>> {
+    return this.hrkApiService.CallApi<BaseResponse<PlayerProfileDto>>(
+      ApiMethod.PUT, this.playerApi.SelectAvatar, { avatarTemplateId }, { withCredentials: true }
+    );
+  }
+
+  uploadCustomAvatar(file: File): Observable<BaseResponse<PlayerProfileDto>> {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    return this.hrkApiService.CallApi<BaseResponse<PlayerProfileDto>>(
+      ApiMethod.PUT, this.playerApi.CustomAvatar, form, { withCredentials: true }
+    );
+  }
+
+  deleteCustomAvatar(): Observable<BaseResponse<PlayerProfileDto>> {
+    return this.hrkApiService.CallApi<BaseResponse<PlayerProfileDto>>(
+      ApiMethod.DELETE, this.playerApi.CustomAvatar, { withCredentials: true }
+    );
+  }
+
+  resolveAvatarUrl(profile: PlayerProfileDto): string {
+    if (profile.avatarType === 'CUSTOM') {
+      return `${this.hrkApiService.ResolveUrl(this.playerApi.CustomAvatarImage(profile.id))}?v=${profile.avatarVersion || Date.now()}`;
+    }
+    return profile.avatarUrl || '';
   }
 }

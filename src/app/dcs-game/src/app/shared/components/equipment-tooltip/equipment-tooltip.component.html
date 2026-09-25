@@ -1,0 +1,170 @@
+<div *ngIf="isVisible() && activeItem() as item"
+     class="equipment-tooltip-wrapper"
+     [class.floating]="isFloating"
+     [ngStyle]="isFloating ? calculatedPosition : null">
+
+  <div class="equipment-tooltip-card font-title"
+       [ngClass]="rarityClass"
+       [style.--rarity-color]="rarityColor"
+       #tooltipCard
+       (click)="$event.stopPropagation()">
+
+    <!-- Card Header -->
+    <div class="tooltip-header">
+      <div class="item-visual-slot" [ngClass]="rarityClass">
+        <img *ngIf="item.imagePath"
+             [src]="item.imagePath"
+             [alt]="item.name"
+             class="item-img" />
+        <i *ngIf="!item.imagePath" class="bi {{ item.icon || 'bi-shield-shaded' }} item-fallback-icon"></i>
+        
+        <span *ngIf="(item.enhancement || 0) > 0" class="enhancement-badge">
+          +{{ item.enhancement }}
+        </span>
+      </div>
+
+      <div class="item-meta">
+        <div class="item-title-row">
+          <h4 class="item-name" [ngClass]="rarityClass">{{ item.name }}</h4>
+          <button *ngIf="isPinned()" class="btn-close-pinned" (click)="close()" title="Đóng">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <div class="badges-row">
+          <span class="rarity-tag" [ngClass]="rarityClass">{{ rarityDisplayName }}</span>
+          <span class="category-tag">{{ categoryDisplayName }}</span>
+          <span class="level-tag">Cấp {{ item.levelReq || 1 }}</span>
+        </div>
+
+        <!-- Star Rating -->
+        <div class="stars-row" *ngIf="(item.stars || 0) > 0">
+          <i *ngFor="let s of starSlots; let i = index"
+             class="bi bi-star-fill star-icon"
+             [class.active]="i < (item.stars || 0)"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Power Comparison Summary -->
+    <div *ngIf="powerDiff" class="power-diff-banner" [class.positive]="powerDiff.isPositive" [class.negative]="!powerDiff.isPositive">
+      <span class="diff-label">
+        <i class="bi" [class.bi-graph-up-arrow]="powerDiff.isPositive" [class.bi-graph-down-arrow]="!powerDiff.isPositive"></i>
+        So sánh lực chiến:
+      </span>
+      <span class="diff-value">{{ powerDiff.text }} CP</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Main Stat Breakdown & Comparison -->
+    <div class="stats-section">
+      <div class="section-title">
+        <span><i class="bi bi-activity me-1"></i>Thuộc Tính Trang Bị</span>
+        <span *ngIf="activeComparedItem()" class="compare-mode-tag">So với đang trang bị</span>
+      </div>
+
+      <div class="stats-list">
+        <div *ngFor="let row of statRows" class="stat-item-block">
+          <div class="stat-row">
+            <div class="stat-label">
+              <i class="bi {{ row.icon }} stat-icon"></i>
+              <span>{{ row.label }}</span>
+            </div>
+
+            <div class="stat-values">
+              <span class="stat-current" [class.dim]="!row.hasValue">
+                +{{ row.value }}{{ row.isPercent ? '%' : '' }}
+              </span>
+
+              <!-- Comparison Diff -->
+              <span *ngIf="row.diff !== undefined"
+                    class="stat-diff"
+                    [class.positive]="row.diff > 0"
+                    [class.negative]="row.diff < 0"
+                    [class.neutral]="row.diff === 0">
+                <i *ngIf="row.diff > 0" class="bi bi-caret-up-fill"></i>
+                <i *ngIf="row.diff < 0" class="bi bi-caret-down-fill"></i>
+                {{ row.diffFormatted }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Rolled Instance Details -->
+          <div *ngIf="row.baseRolledValue !== undefined && row.baseRolledValue !== null" class="stat-roll-details">
+            <div class="roll-meta-line">
+              <span class="roll-sub-label">Chỉ số gốc: <strong>{{ row.baseRolledValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
+              <span *ngIf="row.comparedBaseRolledValue !== undefined && row.comparedBaseRolledValue !== null && row.comparedBaseRolledValue !== row.baseRolledValue"
+                    class="roll-compare-tag"
+                    [class.text-success]="row.baseRolledValue > row.comparedBaseRolledValue"
+                    [class.text-danger]="row.baseRolledValue < row.comparedBaseRolledValue">
+                ({{ row.baseRolledValue > row.comparedBaseRolledValue ? '+' : '' }}{{ (row.baseRolledValue - row.comparedBaseRolledValue).toFixed(0) }})
+              </span>
+            </div>
+            <div *ngIf="row.rollMinValue !== undefined && row.rollMaxValue !== undefined && row.rollMinValue !== null && row.rollMaxValue !== null" class="roll-meta-line">
+              <span class="roll-sub-label">Khoảng có thể roll: <strong>{{ row.rollMinValue }}–{{ row.rollMaxValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
+            </div>
+            <div *ngIf="row.rollQualityPercent !== undefined && row.rollQualityPercent !== null" class="roll-meta-line">
+              <span class="roll-sub-label">Chất lượng roll:</span>
+              <span class="roll-quality-badge" [class.high]="row.rollQualityPercent >= 75" [class.med]="row.rollQualityPercent >= 40 && row.rollQualityPercent < 75" [class.low]="row.rollQualityPercent < 40">
+                {{ row.rollQualityPercent }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="statRows.length === 0" class="empty-stats">
+          Không có thuộc tính cơ bản
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhancement Growth Rate -->
+    <div *ngIf="growthPercent !== null" class="growth-section">
+      <div class="growth-row">
+        <div class="growth-label">
+          <i class="bi bi-graph-up-arrow me-1 text-warning"></i>
+          <span>Tăng trưởng cường hóa:</span>
+        </div>
+        <div class="growth-values">
+          <span class="growth-current">+{{ growthPercent }}% / cấp</span>
+          <span *ngIf="comparedGrowthPercent !== null && comparedGrowthPercent !== growthPercent"
+                class="stat-diff"
+                [class.positive]="growthPercent > comparedGrowthPercent"
+                [class.negative]="growthPercent < comparedGrowthPercent">
+            {{ growthPercent > comparedGrowthPercent ? '+' : '' }}{{ (growthPercent - comparedGrowthPercent).toFixed(1) }}%
+          </span>
+        </div>
+      </div>
+      <div *ngIf="growthRange" class="growth-range-sub">
+        Khoảng tăng trưởng {{ rarityDisplayName }}: {{ growthRange.min }}%–{{ growthRange.max }}%
+      </div>
+    </div>
+
+    <!-- Equipped By Hero Status -->
+    <div *ngIf="item.equippedHeroName || item.isEquipped" class="equipped-status-banner">
+      <i class="bi bi-person-fill-check me-1"></i>
+      <span>Đang trang bị cho: <strong>{{ item.equippedHeroName || 'Anh Hùng' }}</strong></span>
+    </div>
+
+    <!-- Lore / Description -->
+    <div *ngIf="item.description || item.desc" class="description-section">
+      <p class="desc-text">{{ item.description || item.desc }}</p>
+    </div>
+
+    <!-- Footer Actions / Price -->
+    <div class="tooltip-footer">
+      <div class="price-tag" *ngIf="item.sellPrice">
+        <i class="bi bi-coin text-gold me-1"></i>
+        <span>Giá bán: {{ item.sellPrice | number }}</span>
+      </div>
+      <div class="count-tag" *ngIf="item.count && item.count > 1">
+        <span>Số lượng: {{ item.count }}</span>
+      </div>
+      <div *ngIf="isPinned()" class="pinned-hint">
+        <small class="text-secondary"><i class="bi bi-pin-angle-fill me-1"></i>Đã ghim (Esc để đóng)</small>
+      </div>
+    </div>
+
+  </div>
+</div>

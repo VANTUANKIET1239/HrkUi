@@ -1,0 +1,64 @@
+<div
+  class="stage-node-wrapper"
+  [style.left.%]="xPercent"
+  [style.top.%]="yPercent"
+  [class.state-available]="stage.state === 'AVAILABLE'"
+  [class.state-cleared]="stage.state === 'CLEARED'"
+  [class.state-locked]="stage.state === 'LOCKED'"
+  [id]="'stage-node-' + stage.stageNumber"
+>
+  <!-- Downward Indicator for Current Stage -->
+  <div class="current-indicator" *ngIf="stage.state === 'AVAILABLE'">
+    <span class="indicator-badge">HIỆN TẠI</span>
+    <span class="indicator-arrow">▼</span>
+  </div>
+
+  <!-- Pulsing Wave Ring for Current Stage -->
+  <div class="pulse-ring pulse-ring-1" *ngIf="stage.state === 'AVAILABLE'"></div>
+  <div class="pulse-ring pulse-ring-2" *ngIf="stage.state === 'AVAILABLE'"></div>
+
+  <!-- Node Button Medallion -->
+  <button
+    type="button"
+    class="node-seal"
+    [disabled]="stage.state === 'LOCKED'"
+    (click)="onNodeClick()"
+    [attr.aria-label]="'Ải ' + stage.stageNumber + ': ' + stage.name"
+  >
+    <!-- Outer Runic Ring -->
+    <span class="seal-rim"></span>
+
+    <!-- Inner Core & Number -->
+    <span class="seal-core">
+      <span class="stage-num" *ngIf="stage.state !== 'LOCKED'">{{ stage.stageNumber }}</span>
+      <span class="lock-glyph" *ngIf="stage.state === 'LOCKED'">🔒</span>
+    </span>
+
+    <!-- Status Stamp Badge -->
+    <span class="cleared-stamp" *ngIf="stage.state === 'CLEARED'">
+      <i class="bi bi-check-lg"></i>
+    </span>
+  </button>
+
+  <!-- Stage Label Below Medallion -->
+  <div class="node-label">
+    <span class="label-number">Ải {{ stage.stageNumber }}</span>
+    <span class="label-name">{{ stage.name }}</span>
+    <div class="stage-stars" *ngIf="stage.bestStars !== undefined && stage.bestStars > 0">
+      <i *ngFor="let s of [1, 2, 3]; let i = index"
+         class="bi bi-star-fill star-glyph"
+         [class.active]="i < stage.bestStars"></i>
+    </div>
+  </div>
+
+  <!-- Hover / Focus Tooltip -->
+  <div class="node-tooltip">
+    <div class="tooltip-header">
+      <strong>{{ stage.name }}</strong>
+      <span class="tooltip-stamina">⚡ {{ stage.staminaCost }}</span>
+    </div>
+    <div class="tooltip-power">
+      <span>Đề nghị: <b>{{ stage.recommendedPower | number }}</b></span>
+    </div>
+  </div>
+</div>

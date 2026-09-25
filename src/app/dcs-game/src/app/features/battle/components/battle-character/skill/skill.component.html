@@ -19,7 +19,7 @@
 
   <!-- Ultimate: Berserker Overload Visuals -->
   <app-skill-ultimate 
-    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP' && activeSkillId !== 'DARK_KNOWLEDGE_SHIELD_CONVERSION' && activeSkillId !== 'TACTICAL_AIR_STRIKE' && activeSkillId !== 'DOI_NGOI_DAU_DOC' && activeSkillId !== 'FATAL_ALL_IN_DIRECTIVE'"
+    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP' && activeSkillId !== 'DARK_KNOWLEDGE_SHIELD_CONVERSION' && activeSkillId !== 'TACTICAL_AIR_STRIKE' && activeSkillId !== 'DOI_NGOI_DAU_DOC' && activeSkillId !== 'FATAL_ALL_IN_DIRECTIVE' && activeSkillId !== 'HAI_LAST_LAUGH'"
     [characterAvatar]="character.avatar"
     [isTeamRight]="isTeamRight">
   </app-skill-ultimate>
@@ -33,10 +33,15 @@
     [isTeamRight]="isTeamRight">
   </app-skill-vax-a-million-sanitization>
 
-  <!-- Skill: Ricardo Milos! (Humorous Crimson Red Dance) -->
+  <!-- Skill: Ricardo Milos! (Humorous Crimson Red Dance / Empowered Celestial Descent) -->
   <app-skill-ricardo-milos
     *ngIf="activeSkillId === 'RICARDO_MILOS'"
-    [isTeamRight]="isTeamRight">
+    [style.--visual-speed]="visualSpeed"
+    [isTeamRight]="isTeamRight"
+    [empowered]="isEmpowered"
+    [phase]="phase"
+    [visualSpeed]="visualSpeed"
+    [castSequence]="castSequence">
   </app-skill-ricardo-milos>
 
   <!-- Skill: Random Knowledge Drop (Giant Textbook Drop) -->
@@ -78,4 +83,11 @@
     *ngIf="activeSkillId === 'DEADLIFT_DIA_CHAN'"
     [isTeamRight]="isTeamRight">
   </app-skill-deadlift-dia-chan>
+
+  <!-- Skill: Cười Đi, Sắp Hết Lượt Rồi (Hai Last Laugh) -->
+  <app-skill-hai-last-laugh
+    *ngIf="activeSkillId === 'HAI_LAST_LAUGH'"
+    [isTeamRight]="isTeamRight"
+    [character]="character">
+  </app-skill-hai-last-laugh>
 </ng-container>

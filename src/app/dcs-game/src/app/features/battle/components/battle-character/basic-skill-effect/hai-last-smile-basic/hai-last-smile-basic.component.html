@@ -1,0 +1,39 @@
+<div class="hai-last-smile-basic-wrapper" [class.team-right]="isTeamRight">
+  <!-- CAST PHASE (Caster dashes with dagger gleam) -->
+  <ng-container *ngIf="phase === 'cast'">
+    <div class="shadow-dash-phantom">
+      <div class="phantom-silhouette"></div>
+      <div class="dagger-gleam"></div>
+      <div class="cyber-speed-lines">
+        <span class="ln ln1"></span>
+        <span class="ln ln2"></span>
+        <span class="ln ln3"></span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- IMPACT PHASE (Target receives Bug Slash and glitch/bleed particles) -->
+  <ng-container *ngIf="phase === 'impact'">
+    <div class="bug-slash-impact">
+      <!-- Diagonal Cyber Dagger Slash -->
+      <div class="slash-blade-line blade-1"></div>
+      <div class="slash-blade-line blade-2"></div>
+      <div class="slash-core-flare"></div>
+
+      <!-- Bug error glitch tags -->
+      <div class="bug-glitch-particles">
+        <span class="glitch-bit gb1">bug_404</span>
+        <span class="glitch-bit gb2">0xDEAD</span>
+        <span class="glitch-bit gb3">NULL</span>
+      </div>
+
+      <!-- Crimson bleed sparks -->
+      <div class="bleed-sparks">
+        <span class="spk spk1"></span>
+        <span class="spk spk2"></span>
+        <span class="spk spk3"></span>
+        <span class="spk spk4"></span>
+      </div>
+    </div>
+  </ng-container>
+</div>

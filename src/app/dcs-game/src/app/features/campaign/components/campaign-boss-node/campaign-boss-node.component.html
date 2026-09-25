@@ -1,0 +1,86 @@
+<div
+  class="boss-node-wrapper"
+  [style.left.%]="xPercent"
+  [style.top.%]="yPercent"
+  [class.tier-grand-boss]="bossTier === 'GRAND_BOSS'"
+  [class.tier-boss]="bossTier === 'BOSS'"
+  [class.tier-mini-boss]="bossTier === 'MINI_BOSS'"
+  [class.state-available]="stage.state === 'AVAILABLE'"
+  [class.state-cleared]="stage.state === 'CLEARED'"
+  [class.state-locked]="stage.state === 'LOCKED'"
+  [id]="'stage-node-' + stage.stageNumber"
+>
+  <!-- Downward Pointer for Current Boss -->
+  <div class="current-indicator" *ngIf="stage.state === 'AVAILABLE'">
+    <span class="indicator-badge">⚔️ KHIÊU CHIẾN</span>
+    <span class="indicator-arrow">▼</span>
+  </div>
+
+  <!-- Ambient Aura Rays & Rings for Boss -->
+  <div class="boss-aura-ring" *ngIf="stage.state !== 'LOCKED'"></div>
+  <div class="boss-flame-halo" *ngIf="stage.state === 'AVAILABLE'"></div>
+
+  <!-- Interactive Boss Crest Card -->
+  <button
+    type="button"
+    class="boss-crest"
+    [disabled]="stage.state === 'LOCKED'"
+    (click)="onBossClick()"
+    [attr.aria-label]="bossTierLabel + ' Ải ' + stage.stageNumber + ': ' + stage.name"
+  >
+    <!-- Background Frame Glow -->
+    <div class="crest-frame-glow"></div>
+
+    <!-- Outer Decorative Heraldic Border -->
+    <div class="crest-frame">
+      <span class="ornament orn-top"></span>
+      <span class="ornament orn-bottom"></span>
+    </div>
+
+    <!-- Portrait Area -->
+    <div class="portrait-container">
+      <img [src]="bossImage" [alt]="bossName" class="boss-portrait" loading="lazy" />
+      <div class="portrait-shade"></div>
+    </div>
+
+    <!-- Stage Number Seal on Bottom Corner -->
+    <span class="stage-stamp">
+      <span class="stamp-num" *ngIf="stage.state !== 'LOCKED'">{{ stage.stageNumber }}</span>
+      <span class="stamp-lock" *ngIf="stage.state === 'LOCKED'">🔒</span>
+    </span>
+
+    <!-- Cleared Victory Stamp -->
+    <span class="cleared-badge" *ngIf="stage.state === 'CLEARED'">
+      <i class="bi bi-trophy-fill"></i>
+    </span>
+
+    <!-- Boss Type Label Ribbon -->
+    <div class="boss-ribbon">
+      <span class="ribbon-text">{{ bossTierLabel }}</span>
+    </div>
+  </button>
+
+  <!-- Name & Level Label Below -->
+  <div class="boss-meta">
+    <span class="boss-title">{{ stage.name }}</span>
+    <span class="boss-enemy-name">{{ bossName }}</span>
+    <div class="boss-stars" *ngIf="stage.bestStars !== undefined && stage.bestStars > 0">
+      <i *ngFor="let s of [1, 2, 3]; let i = index"
+         class="bi bi-star-fill star-glyph"
+         [class.active]="i < stage.bestStars"></i>
+    </div>
+  </div>
+
+  <!-- Hover Tooltip -->
+  <div class="boss-tooltip">
+    <div class="tooltip-header">
+      <span class="tooltip-tag">{{ bossTierLabel }}</span>
+      <span class="tooltip-stamina">⚡ {{ stage.staminaCost }}</span>
+    </div>
+    <strong class="tooltip-name">{{ stage.name }}</strong>
+    <div class="tooltip-power">
+      <span>Lực chiến đối thủ: <b>{{ stage.enemyPower | number }}</b></span>
+      <span>Đề nghị: <b>{{ stage.recommendedPower | number }}</b></span>
+    </div>
+  </div>
+</div>

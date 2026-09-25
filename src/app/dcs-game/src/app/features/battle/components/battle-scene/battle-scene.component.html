@@ -1,208 +1,138 @@
-<div class="battle-container">
+<div class="battle-container"
+  [class.battle-paused]="battleEngine.status() === 'paused'"
+  [style.--battle-speed]="battleEngine.speed()"
+  [style.--visual-speed]="battleEngine.currentVisualSpeed()">
 
-  <!-- Header UI -->
-  <div class="header-ui">
-    <div class="header-left">
-      <div class="leader-avatar-frame">
-        <img [src]="getLeaderAvatar()" class="leader-avatar" alt="Leader" />
-      </div>
-      <div class="team-info">
-        <div class="team-name">Đội ngũ Coder</div>
-        <div class="power-score">Chiến lực: {{ getPowerScore() | number }}</div>
-      </div>
-    </div>
+  <!-- 1. Fantasy RPG Header UI -->
+  <app-battle-header
+    [leaderAvatar]="getLeaderAvatar()"
+    [powerScore]="getPowerScore()"
+    [currentTurn]="battleEngine.currentTurn()"
+    (onReplay)="replay()"
+    (onExit)="exitBattle()">
+  </app-battle-header>
 
-    <!-- Center: Wood/Scroll Current Turn Frame -->
-    <div class="header-center">
-      <div class="turn-wood-frame">
-        <span class="wood-text">Lượt {{ battleEngine.currentTurn() }}</span>
-      </div>
-    </div>
+  <!-- 2. Non-blocking Skill Casting Notification Banner (Top Center) -->
+  <app-battle-notification
+    [skillName]="battleEngine.currentSkillName()"
+    [skillColor]="battleEngine.currentSkillColor()"
+    [actorName]="getActorName()"
+    [skillCategory]="battleEngine.currentSkillCategory()">
+  </app-battle-notification>
 
-    <!-- Right: Start / Pause, Reset Controls -->
-    <div class="header-right">
-      <button *ngIf="battleEngine.status() === 'idle' || battleEngine.status() === 'paused'" class="game-btn play-btn"
-        (click)="battleEngine.startBattle()">
-        ▶ Bắt Đầu
-      </button>
+  <!-- 3. Primary Battlefield Area (Majority of Screen) -->
+  <main class="battlefield" [class.screen-shake]="isScreenShaking()" role="region" aria-label="Chiến trường">
 
-      <button *ngIf="battleEngine.status() === 'playing'" class="game-btn pause-btn"
-        (click)="battleEngine.pauseBattle()">
-        ⏸ Tạm Dừng
-      </button>
+    <!-- Global Skill VFX Host (Z-index 30, pointer-events: none) -->
+    <app-battle-skill-vfx-host
+      [skillId]="battleEngine.currentVisualSkillId()"
+      [actorActive]="battleEngine.visualActorId() !== null"
+      [impactActive]="battleEngine.activeTargetIds().length > 0"
+      [actorTeamRight]="battleEngine.isActorTeamRight()"
+      [isEmpowered]="battleEngine.isVisualEmpowered()"
+      [visualSpeed]="battleEngine.currentVisualSpeed()">
+    </app-battle-skill-vfx-host>
 
-      <button class="game-btn reset-btn" (click)="battleEngine.resetBattle()">
-        🔄 Thiết Lập
-      </button>
-    </div>
-  </div>
-
-  <!-- Skill Casting Banner (Dynamic Overlay) -->
-  <div *ngIf="battleEngine.currentSkillName()" class="skill-cast-banner"
-    [style.--skill-color]="battleEngine.currentSkillColor()">
-    <div class="skill-glow" [style.background]="battleEngine.currentSkillColor()"></div>
-    <div class="skill-text">
-      ⭐ {{ getActorName() }} THI TRIỂN [ {{ battleEngine.currentSkillName() }} ] ⭐
-    </div>
-  </div>
-
-  <!-- Battlefield Grid (3D perspective sa-ban) -->
-  <div class="battlefield" [class.screen-shake]="isScreenShaking()">
-
-    <!-- Battlefield-wide energy shockwave -->
-    <div class="aoe-field-shockwave"
-      [class.active]="battleEngine.currentSkillId() === 'HEAVENLY_JUDGMENT' && battleEngine.activeTargetIds().length > 0">
-    </div>
-
-    <!-- Dark Knowledge Scene VFX -->
-    <div class="dark-knowledge-scene-fx" *ngIf="battleEngine.currentSkillId() === 'DARK_KNOWLEDGE_SHIELD_CONVERSION'">
-      <!-- Sky Rift -->
-      <div class="sky-rift-slit" [class.active]="battleEngine.activeActorId() !== null"></div>
-      
-      <!-- Massive Falling Dark Book (Crashing in the center of enemy formation) -->
-      <div class="falling-dark-book-container" [class.active]="battleEngine.activeActorId() !== null">
-        <img src="/assets/images/dcs-game/sach-bongtoi.png" class="falling-dark-book" alt="Dark Knowledge" />
-      </div>
-
-      <!-- Center explosion ground cracks and particles -->
-      <div class="center-explosion" [class.active]="battleEngine.activeTargetIds().length > 0">
-        <div class="exp-shockwave"></div>
-        <div class="exp-mist"></div>
-        <div class="exp-pages">
-          <span class="ep-page ep1"></span>
-          <span class="ep-page ep2"></span>
-          <span class="ep-page ep3"></span>
-          <span class="ep-page ep4"></span>
-          <span class="ep-page ep5"></span>
-          <span class="ep-page ep6"></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Deadlift Dia Chan – Scene-level Golden Lightning Strike VFX -->
-    <div class="deadlift-scene-lightning" 
-      *ngIf="battleEngine.currentSkillId() === 'DEADLIFT_DIA_CHAN' && battleEngine.activeTargetIds().length > 0"
-      [class.caster-right]="battleEngine.isActorTeamRight()"
-      [class.caster-left]="!battleEngine.isActorTeamRight()">
-      <!-- Background battlefield golden flash -->
-      <div class="deadlift-field-flash"></div>
-
-      <!-- Lightning bolt 1 → targets row position 1 (top enemy front) -->
-      <div class="deadlift-lightning-bolt dlb1">
-        <div class="bolt-core"></div>
-        <div class="bolt-glow"></div>
-        <div class="bolt-branch bb-a"></div>
-        <div class="bolt-branch bb-b"></div>
-        <div class="bolt-impact"></div>
-      </div>
-
-      <!-- Lightning bolt 2 → targets row position 3 (middle enemy front) -->
-      <div class="deadlift-lightning-bolt dlb2">
-        <div class="bolt-core"></div>
-        <div class="bolt-glow"></div>
-        <div class="bolt-branch bb-a"></div>
-        <div class="bolt-branch bb-b"></div>
-        <div class="bolt-impact"></div>
-      </div>
-
-      <!-- Lightning bolt 3 → targets row position 5 (bottom enemy front) -->
-      <div class="deadlift-lightning-bolt dlb3">
-        <div class="bolt-core"></div>
-        <div class="bolt-glow"></div>
-        <div class="bolt-branch bb-a"></div>
-        <div class="bolt-branch bb-b"></div>
-        <div class="bolt-impact"></div>
-      </div>
-
-      <!-- Central burst on caster side (origin flash) -->
-      <div class="deadlift-origin-burst"></div>
-    </div>
-
+    <!-- 3D Sa-Ban Battlefield Grid -->
     <div class="battlefield-grid">
-      <!-- Left Team (Heroes) -->
-      <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}">
-        <app-battle-character [character]="hero" [isCharging]="battleEngine.activeActorId() === hero.id"
-          [isHit]="battleEngine.isTargetHit(hero.id)" [skillColor]="battleEngine.currentSkillColor()"
-          [damageEvent]="battleEngine.damageEvents()[hero.id] || null" [activeSkillId]="battleEngine.currentSkillId()"
-          [activeSkillCategory]="battleEngine.currentSkillCategory()" [activeActor]="battleEngine.activeActor()">
+      <!-- Player Team (Left: Blue/Gold theme) -->
+      <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}" [attr.data-team]="'left'">
+        <app-battle-character 
+          [character]="hero" 
+          [isCharging]="battleEngine.visualActorId() === hero.id"
+          [isHit]="battleEngine.isTargetHit(hero.id)" 
+          [skillColor]="battleEngine.currentSkillColor()"
+          [damageEvent]="battleEngine.damageEvents()[hero.id] || null" 
+          [activeSkillId]="battleEngine.currentVisualSkillId()"
+          [activeSkillCategory]="battleEngine.currentSkillCategory()" 
+          [activeActor]="battleEngine.activeActor()"
+          [phase]="battleEngine.visualPhase()"
+          [visualSpeed]="battleEngine.currentVisualSpeed()"
+          [castSequence]="battleEngine.visualCastSequence()"
+          [isEmpowered]="battleEngine.isVisualEmpowered()">
         </app-battle-character>
       </div>
 
-      <!-- Center VS line/Divider -->
+      <!-- Central VS Field Divider -->
       <div class="battlefield-divider">
         <div class="vs-label">VS</div>
       </div>
 
-      <!-- Right Team (Enemies) -->
-      <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}">
-        <app-battle-character [character]="enemy" [isCharging]="battleEngine.activeActorId() === enemy.id"
-          [isHit]="battleEngine.isTargetHit(enemy.id)" [skillColor]="battleEngine.currentSkillColor()"
-          [damageEvent]="battleEngine.damageEvents()[enemy.id] || null" [activeSkillId]="battleEngine.currentSkillId()"
-          [activeSkillCategory]="battleEngine.currentSkillCategory()" [activeActor]="battleEngine.activeActor()">
+      <!-- Opponent Team (Right: Red/Purple theme) -->
+      <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}" [attr.data-team]="'right'">
+        <app-battle-character 
+          [character]="enemy" 
+          [isCharging]="battleEngine.visualActorId() === enemy.id"
+          [isHit]="battleEngine.isTargetHit(enemy.id)" 
+          [skillColor]="battleEngine.currentSkillColor()"
+          [damageEvent]="battleEngine.damageEvents()[enemy.id] || null" 
+          [activeSkillId]="battleEngine.currentVisualSkillId()"
+          [activeSkillCategory]="battleEngine.currentSkillCategory()" 
+          [activeActor]="battleEngine.activeActor()"
+          [phase]="battleEngine.visualPhase()"
+          [visualSpeed]="battleEngine.currentVisualSpeed()"
+          [castSequence]="battleEngine.visualCastSequence()"
+          [isEmpowered]="battleEngine.isVisualEmpowered()">
         </app-battle-character>
       </div>
     </div>
-  </div>
+  </main>
 
-  <!-- Bottom Section: Actions, Environment, Queue -->
-  <div class="bottom-ui-wrapper">
-    <div class="bottom-control-bar">
-      <!-- Left side: Speed, Auto, Defense -->
-      <div class="control-left">
-        <div class="speed-selector">
-          <button *ngFor="let s of [1, 2, 4]" class="speed-tab" [ngClass]="{ active: battleEngine.speed() === s }"
-            (click)="battleEngine.setSpeed(s)">
-            x{{ s }}
-          </button>
-        </div>
-        <button class="circle-btn auto-btn" [ngClass]="{ active: battleEngine.status() === 'playing' }">Auto</button>
-        <button class="circle-btn defense-btn" (click)="battleEngine.pauseBattle()">Phòng Ngự</button>
-      </div>
-
-      <!-- Center: Environmental condition (e.g. "Đồng bằng: công +10% phòng +10%") -->
-      <!-- <div class="control-center">
-        <div class="env-condition-badge">
-          🌍 Địa hình: <span class="env-highlight">Đồng Bằng</span> (công +10%, phòng +10%)
-        </div>
-      </div> -->
-
-      <!-- Right side: Skill slot of the active character -->
-      <div class="control-right">
-        <div class="skill-deck">
-          <div *ngFor="let skill of getActiveActorSkills(); let idx = index" class="skill-slot"
-            [style.--skill-border-color]="skill.color">
-            <span class="skill-name">{{ skill.name }}</span>
-            <span class="skill-cost">{{ skill.cost }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Action Timeline / Turn Queue -->
-    <div class="action-timeline">
-      <div class="timeline-header-text">LƯỢT TIẾP THEO</div>
-      <div class="timeline-line"></div>
+  <!-- 4. Bottom Controls & Action Turn Queue -->
+  <footer class="bottom-ui-wrapper">
+    <!-- Turn Queue Strip -->
+    <div class="action-timeline" *ngIf="battleEngine.turnQueue().length > 0">
+      <div class="timeline-header-text">LƯỢT KẾ TIẾP</div>
       <div class="timeline-queue">
-        <div *ngFor="let queueHero of battleEngine.turnQueue(); let first = first" class="queue-item-frame"
-          [ngClass]="{ 'active-highlight': first }">
+        <div *ngFor="let queueHero of battleEngine.turnQueue(); let first = first" 
+          class="queue-item-frame"
+          [ngClass]="{ 'active-highlight': first, 'team-left': queueHero.team === 'left', 'team-right': queueHero.team === 'right' }"
+          [title]="queueHero.name">
           <img [src]="queueHero.avatar" class="queue-avatar" [alt]="queueHero.name" />
           <div class="queue-border-color" [ngClass]="queueHero.team"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Bottom Log Panel Narrative overlay -->
-  <!-- <div class="narrative-panel-container">
-    <app-battle-log-panel 
-      [logs]="battleEngine.narrativeLogs()">
-    </app-battle-log-panel>
-  </div> -->
+    <!-- Compact Floating Control Bar -->
+    <div class="controls-container">
+      <app-battle-controls
+        [status]="battleEngine.status()"
+        [speed]="battleEngine.speed()"
+        [isLogOpen]="isLogOpen()"
+        (onTogglePlay)="togglePlay()"
+        (onSpeedChange)="onSpeedChange($event)"
+        (onSkip)="openSkipModal()"
+        (onToggleLog)="toggleLog()">
+      </app-battle-controls>
+    </div>
+  </footer>
 
-  <!-- Victory/Defeat Results Modal -->
-  <app-battle-result-modal *ngIf="battleEngine.status() === 'finished'" [isVictory]="isPlayerVictory()"
-    [totalTurns]="battleEngine.currentTurn()" [aliveCount]="getAliveCount('left')"
-    [totalRemainingHp]="getTotalHp('left')" (onReplay)="battleEngine.resetBattle(); battleEngine.startBattle()">
+  <!-- 5. Floating Collapsible Battle Log Panel (Z-index 80) -->
+  <aside class="narrative-panel-container" *ngIf="isLogOpen() && battleEngine.narrativeLogs().length">
+    <app-battle-log-panel [logs]="battleEngine.narrativeLogs()"></app-battle-log-panel>
+  </aside>
+
+  <!-- 6. Skip Battle Confirmation Modal (Z-index 500) -->
+  <app-battle-skip-confirm-modal
+    [isOpen]="isSkipModalOpen()"
+    (onConfirm)="confirmSkip()"
+    (onCancel)="closeSkipModal()">
+  </app-battle-skip-confirm-modal>
+
+  <!-- 7. Victory / Defeat Results Modal (Z-index 1000) -->
+  <app-battle-result-modal 
+    *ngIf="battleEngine.status() === 'finished'" 
+    [isVictory]="isPlayerVictory()"
+    [totalTurns]="battleEngine.currentTurn()" 
+    [aliveCount]="getAliveCount('left')"
+    [totalRemainingHp]="getTotalHp('left')" 
+    [dungeonResult]="dungeonSession.current()?.result"
+    (onReplay)="replay()" 
+    (onExit)="exitBattle()">
   </app-battle-result-modal>
+
+  <!-- Universal Equipment Tooltip Host -->
+  <app-equipment-tooltip></app-equipment-tooltip>
 
 </div>

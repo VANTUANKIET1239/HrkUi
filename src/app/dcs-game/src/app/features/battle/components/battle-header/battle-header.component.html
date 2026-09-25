@@ -1,0 +1,44 @@
+<header class="battle-header-bar" role="banner">
+  <!-- Left: Team Info & Leader Avatar -->
+  <div class="header-team-section">
+    <div class="leader-avatar-ring">
+      <img *ngIf="leaderAvatar" [src]="leaderAvatar" class="leader-avatar" [alt]="teamName" />
+      <div *ngIf="!leaderAvatar" class="avatar-placeholder">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div class="ring-glow"></div>
+    </div>
+    <div class="team-meta">
+      <h1 class="team-name">{{ teamName }}</h1>
+      <div class="power-rating" title="Tổng lực chiến đội hình">
+        <i class="bi bi-lightning-charge-fill power-icon"></i>
+        <span class="power-label">Chiến lực:</span>
+        <span class="power-value">{{ powerScore | number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center: Turn Crest -->
+  <div class="header-turn-section">
+    <div class="turn-crest">
+      <div class="crest-wings left"></div>
+      <div class="crest-core">
+        <span class="turn-label">LƯỢT</span>
+        <span class="turn-number">{{ currentTurn }}</span>
+      </div>
+      <div class="crest-wings right"></div>
+    </div>
+  </div>
+
+  <!-- Right: Replay & Exit Buttons -->
+  <div class="header-actions-section">
+    <button type="button" class="header-action-btn replay-btn" (click)="onReplay.emit()" title="Phát lại trận đấu">
+      <i class="bi bi-arrow-clockwise"></i>
+      <span class="btn-text">Chơi lại</span>
+    </button>
+    <button type="button" class="header-action-btn exit-btn" (click)="onExit.emit()" title="Rút lui khỏi trận đấu">
+      <i class="bi bi-box-arrow-right"></i>
+      <span class="btn-text">Rút lui</span>
+    </button>
+  </div>
+</header>

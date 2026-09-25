@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Hero } from '../../../../core/models/hero.model';
+import { BattleStatusEffectViewModel, Hero } from '../../../../core/models/hero.model';
 import { HpBarComponent } from '../../../../shared/components/hp-bar/hp-bar.component';
 import { ManaBarComponent } from '../../../../shared/components/mana-bar/mana-bar.component';
 import { DamageTextEvent } from '../../../../core/services/battle-engine.service';
@@ -11,6 +11,7 @@ import { getSpriteFlipState } from '../../utils/battle-facing.util';
 
 import { BasicSkillEffectComponent } from './basic-skill-effect/basic-skill-effect.component';
 import { HeroStarAuraComponent } from './hero-star-aura/hero-star-aura.component';
+import { BattleCharacterTooltipComponent } from '../battle-character-tooltip/battle-character-tooltip.component';
 
 @Component({
   selector: 'app-battle-character',
@@ -22,7 +23,8 @@ import { HeroStarAuraComponent } from './hero-star-aura/hero-star-aura.component
     SkillComponent,
     PassiveEffectComponent,
     BasicSkillEffectComponent,
-    HeroStarAuraComponent
+    HeroStarAuraComponent,
+    BattleCharacterTooltipComponent
   ],
   templateUrl: './battle-character.component.html',
   styleUrl: './battle-character.component.scss'
@@ -37,10 +39,40 @@ export class BattleCharacterComponent {
   @Input() activeSkillCategory: 'basic' | 'ultimate' = 'basic';
   @Input() displayMode: 'battle' | 'formation' = 'battle';
   @Input() activeActor: Hero | null | undefined = null;
+  @Input() phase: string = 'idle';
+  @Input() visualSpeed = 1;
+  @Input() castSequence?: number | null = null;
+  @Input() isEmpowered = false;
+
+  showTooltip = false;
+
+  onMouseEnter(): void {
+    this.showTooltip = true;
+  }
+
+  onMouseLeave(): void {
+    this.showTooltip = false;
+  }
+
+  onFocus(): void {
+    this.showTooltip = true;
+  }
+
+  onBlur(): void {
+    this.showTooltip = false;
+  }
 
   isBasicSkill(skillId: string | null): boolean {
     if (!skillId) return false;
-    return skillId === 'NORMAL_ATTACK' || skillId === 'BASIC_RANDOM_HEAL' || this.activeSkillCategory === 'basic';
+    return skillId === 'NORMAL_ATTACK' || skillId === 'CHUAN_MEN_BASIC' || skillId === 'BASIC_RANDOM_HEAL' || this.activeSkillCategory === 'basic';
+  }
+
+  isEmpoweredRicardo(): boolean {
+    return this.activeSkillId === 'RICARDO_MILOS' && this.isCharging && this.isEmpowered;
+  }
+
+  isStatusFullyStacked(status: BattleStatusEffectViewModel): boolean {
+    return status.maxStacks != null && status.maxStacks > 0 && status.stacks >= status.maxStacks;
   }
 
   getSkillCategory(): 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly' | null {
@@ -76,8 +108,12 @@ export class BattleCharacterComponent {
   shouldFlipSprite(): boolean {
     return getSpriteFlipState(this.character.team, this.character.defaultFacing);
   }
+
+  isTaoLaNhat(): boolean {
+    return this.character.heroTemplateId === 11 ||
+      (this.character.avatar?.includes('tao-la-nhat') ?? false) ||
+      (this.character.name?.toLowerCase().includes('tao là nhất') ?? false);
+  }
 }
 
 export { getSpriteFlipState } from '../../utils/battle-facing.util';
-
-

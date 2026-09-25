@@ -34,8 +34,13 @@ export class BattleLogPanelComponent implements AfterViewChecked, OnChanges {
   }
 
   parseLog(log: string): string {
-    // Escape standard characters then replace markdown bold elements
-    let parsed = log;
+    // Logs can contain lightweight **highlight** markers, but never raw HTML.
+    let parsed = log
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
     
     // Replace **Text** with highlight styling
     // 1st: Actor / Target highlighted in red/pink
@@ -57,5 +62,24 @@ export class BattleLogPanelComponent implements AfterViewChecked, OnChanges {
     parsed = parsed.replace('💥 CHÍ MẠNG', '<span class="crit-highlight">💥 CHÍ MẠNG</span>');
 
     return parsed;
+  }
+
+  getLogType(log: string): string {
+    const value = log.toLocaleLowerCase('vi');
+    if (value.includes('chí mạng') || value.includes('crit')) return 'critical';
+    if (value.includes('hồi') || value.includes('heal') || value.includes('tái tạo')) return 'heal';
+    if (value.includes('gục ngã') || value.includes('tử trận')) return 'death';
+    if (value.includes('buff') || value.includes('khiên') || value.includes('tăng')) return 'buff';
+    if (value.includes('debuff') || value.includes('giảm') || value.includes('choáng')) return 'debuff';
+    if (value.includes('sát thương') || value.includes('damage') || value.includes('tấn công')) return 'damage';
+    return 'system';
+  }
+
+  getLogIcon(log: string): string {
+    const icons: Record<string, string> = {
+      critical: 'bi-lightning-charge-fill', heal: 'bi-heart-pulse-fill', death: 'bi-skull-fill',
+      buff: 'bi-shield-fill-plus', debuff: 'bi-shield-fill-x', damage: 'bi-crosshair', system: 'bi-stars'
+    };
+    return icons[this.getLogType(log)];
   }
 }

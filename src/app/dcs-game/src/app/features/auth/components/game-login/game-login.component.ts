@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { NavigationService } from '../../../../../../../../libs/core/services/navigation.service';
 import { ApiMethod } from '../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
@@ -12,6 +12,7 @@ import { HrkIconComponent } from '../../../../../../../../libs/shared/ui/control
 
 import { TokenManagerService } from '../../../../../../../../libs/core/auth/services/token-manager';
 import { LoadingService } from '../../../../../../../../libs/core/loading/loading.service';
+import { getAppAuthConfig, isSafeInternalReturnUrl } from '../../../../../../../../libs/core/auth/config/app-auth.config';
 
 @Component({
   selector: 'app-game-login',
@@ -47,7 +48,8 @@ export class GameLoginComponent {
     private hrkApiService: HrkApiService,
     private navigationService: NavigationService,
     private tokenManager: TokenManagerService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private route: ActivatedRoute
   ) {
     this.initLoginForm();
   }
@@ -74,6 +76,13 @@ export class GameLoginComponent {
       this.dataForm.markAllAsTouched();
       return;
     }
+
+    const appConfig = getAppAuthConfig(this.route.snapshot.queryParamMap.get('app'));
+    const requestedReturnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    const returnUrl = isSafeInternalReturnUrl(requestedReturnUrl)
+      ? requestedReturnUrl
+      : appConfig.defaultRoute;
+
     this.loading.set(true);
 
     this.hrkApiService.CallApi(
@@ -84,19 +93,19 @@ export class GameLoginComponent {
         password: this.dataForm.value.password,
         rememberMe: this.dataForm.value.remember,
         role: this.selectedRole,
-        audience: 'game-api'
+        audience: appConfig.audience
       },
       { withCredentials: true }
     ).subscribe({
       next: async (res: any) => {
         if (res.success && res.data) {
           if (res.data.accessToken) {
-            this.tokenManager.setAccessToken('game-api', res.data.accessToken);
+            this.tokenManager.setAccessToken(appConfig.audience, res.data.accessToken);
           }
           // Activate global loading immediately to prevent button or screen flicker
           this.loadingService.show(true);
           try {
-            await this.navigationService.goTo('/dcs-game/home');
+            await this.navigationService.goTo(returnUrl);
           } catch (navErr) {
             console.error('Navigation error after login:', navErr);
             this.loading.set(false);

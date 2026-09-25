@@ -1,0 +1,266 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #f8fafc;
+  background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0c1220 50%, #050812 100%);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.campaign-list-shell {
+  position: relative;
+  min-height: 100vh;
+  padding: 30px clamp(16px, 4.5vw, 60px) 60px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Header */
+.campaign-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(212, 164, 79, 0.2);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(212, 164, 79, 0.4);
+  color: #fef08a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+
+  .back-arrow {
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #f59e0b;
+    color: #fff;
+    transform: translateX(-3px);
+
+    .back-arrow {
+      transform: translateX(-3px);
+    }
+  }
+}
+
+.title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #f59e0b;
+  text-transform: uppercase;
+}
+
+.header-title {
+  margin: 0;
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 900;
+  color: #fffbeb;
+  font-family: 'Cinzel', Georgia, serif;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  letter-spacing: 1px;
+}
+
+.header-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* Stamina Crystal Widget */
+.stamina-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stamina-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 8px 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+
+  .stamina-icon {
+    font-size: 20px;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8));
+    animation: pulseIcon 2s infinite ease-in-out;
+  }
+
+  .stamina-counts {
+    display: flex;
+    flex-direction: column;
+
+    .stamina-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #38bdf8;
+    }
+
+    .stamina-values {
+      font-size: 14px;
+      color: #e0f2fe;
+
+      b {
+        color: #38bdf8;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+@keyframes pulseIcon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 12px #38bdf8); }
+}
+
+.btn-buy-stamina {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.35));
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  color: #a7f3d0;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.45), rgba(5, 150, 105, 0.55));
+    border-color: #34d399;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* States */
+.state-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+}
+
+.state-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  color: #fef08a;
+}
+
+.error-box {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 16px;
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #fca5a5;
+
+  i {
+    font-size: 32px;
+    color: #ef4444;
+  }
+
+  .btn-retry {
+    padding: 8px 20px;
+    border-radius: 10px;
+    background: #ef4444;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+}
+
+/* Grid of Maps */
+.maps-grid {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.map-grid-item {
+  height: 460px;
+}
+
+/* Responsive */
+@media (max-width: 840px) {
+  .campaign-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .stamina-widget {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .maps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-grid-item {
+    height: 420px;
+  }
+}

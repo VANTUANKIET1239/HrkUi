@@ -1,0 +1,267 @@
+<main
+  class="stage-shell"
+  [style.background-image]="map ? 'radial-gradient(circle at 50% 30%, rgba(10, 16, 28, 0.75) 0%, rgba(4, 7, 14, 0.95) 90%), url(' + (map.backgroundPath || map.imagePath) + ')' : ''"
+>
+  <!-- Floating Atmosphere Effects -->
+  <app-campaign-atmosphere></app-campaign-atmosphere>
+
+  <!-- Sticky Fantasy Navigation Header -->
+  <header class="stage-header">
+    <div class="header-left">
+      <button type="button" class="btn-back" (click)="back()">
+        <span class="arrow">←</span>
+        <span class="text">Bản Đồ</span>
+      </button>
+
+      <div class="map-meta" *ngIf="map">
+        <div class="title-row">
+          <h1 class="map-title">{{ map.name }}</h1>
+          <span class="progress-badge">{{ map.clearedStages }}/{{ map.totalStages }} Màn Hoàn Thành</span>
+        </div>
+        <p class="map-desc">{{ map.description || 'Chinh phục từng ải trên con đường phiêu lưu uốn lượn.' }}</p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Quick Focus Button -->
+      <button
+        type="button"
+        class="btn-focus-current"
+        (click)="focusCurrentStage()"
+        title="Cuộn nhanh tới ải đang khiêu chiến"
+      >
+        <span class="focus-icon">🎯</span>
+        <span class="focus-text">Tới Ải Hiện Tại</span>
+      </button>
+
+      <!-- Stamina Pill -->
+      <div class="stamina-badge" *ngIf="stamina">
+        <span class="stamina-icon">⚡</span>
+        <span class="stamina-text"><b>{{ stamina.current }}</b>/{{ stamina.max }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Map Star Milestone Bar (15, 30, 45 Stars) -->
+  <div class="map-milestone-bar" *ngIf="map && !loading">
+    <div class="milestone-summary">
+      <div class="stars-counter">
+        <i class="bi bi-star-fill text-gold star-icon"></i>
+        <span class="counter-text">Tổng Sao Bản Đồ: <strong>{{ map.totalStars || 0 }}</strong>/45</span>
+      </div>
+      <span class="milestone-hint">Đạt đủ sao để mở rương báu phó bản chứa Vàng, Kim Cương & Trang Bị!</span>
+      <div *ngIf="chestError" class="chest-error-inline">
+        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ chestError }}
+      </div>
+    </div>
+
+    <div class="milestone-track-container">
+      <div class="milestone-progress-track">
+        <div class="milestone-progress-fill" [style.width.%]="getProgressPercent()"></div>
+      </div>
+
+      <!-- 3 Chest Milestone Nodes -->
+      <div class="chests-row" *ngIf="map.starChests">
+        <div *ngFor="let chest of map.starChests"
+             class="chest-milestone-node"
+             [style.left.%]="(chest.requiredStars / 45) * 100"
+             [class.claimed]="chest.state === 'CLAIMED'"
+             [class.claimable]="chest.state === 'CLAIMABLE'"
+             [class.locked]="chest.state === 'LOCKED'"
+             (click)="onChestClick(chest)">
+
+          <div class="chest-icon-wrapper" [class.pulse-glow]="chest.state === 'CLAIMABLE'">
+            <i *ngIf="chest.state === 'CLAIMED'" class="bi bi-box2-heart-fill chest-icon claimed-icon"></i>
+            <i *ngIf="chest.state === 'CLAIMABLE'" class="bi bi-gift-fill chest-icon claimable-icon"></i>
+            <i *ngIf="chest.state === 'LOCKED'" class="bi bi-lock-fill chest-icon locked-icon"></i>
+            <span *ngIf="claimingChestId === chest.id" class="spinner-border spinner-border-sm chest-spinner"></span>
+          </div>
+
+          <div class="chest-info-pill">
+            <span class="req-stars"><i class="bi bi-star-fill text-gold me-1"></i>{{ chest.requiredStars }}</span>
+            <span *ngIf="chest.state === 'CLAIMABLE'" class="status-btn claim-now">Nhận</span>
+            <span *ngIf="chest.state === 'CLAIMED'" class="status-btn claimed-lbl">Đã nhận</span>
+            <span *ngIf="chest.state === 'LOCKED'" class="status-btn locked-lbl">Khóa</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading & Error States -->
+  <div class="state-panel" *ngIf="loading">
+    <span class="spinner-border text-warning" role="status"></span>
+    <span class="state-text">Đang tải bản đồ hành trình phó bản...</span>
+  </div>
+
+  <div class="state-panel error-panel" *ngIf="!loading && error">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>{{ error }}</span>
+    <button type="button" class="btn-retry" (click)="loadMap(map?.id || 1)">Thử Lại</button>
+  </div>
+
+  <!-- S-Curve Road & Stages Canvas -->
+  <section class="journey-viewport" *ngIf="map && !loading && !error" #journeyContainer>
+    <div class="journey-track-wrapper">
+      <app-campaign-road
+        [stages]="map.stages"
+        [currentStageNumber]="currentStageNumber"
+      >
+        <!-- 15 Stage Nodes projected on S-Curve -->
+        <ng-container *ngFor="let stage of map.stages">
+          <!-- Boss Node (Stages 5, 10, 15) -->
+          <app-campaign-boss-node
+            *ngIf="isBossStage(stage)"
+            [stage]="stage"
+            [xPercent]="getStageCoord(stage.stageNumber).xPercent"
+            [yPercent]="getStageCoord(stage.stageNumber).yPercent"
+            (selectStage)="choose($event)"
+          ></app-campaign-boss-node>
+
+          <!-- Normal Stage Node (Stages 1-4, 6-9, 11-14) -->
+          <app-campaign-stage-node
+            *ngIf="!isBossStage(stage)"
+            [stage]="stage"
+            [xPercent]="getStageCoord(stage.stageNumber).xPercent"
+            [yPercent]="getStageCoord(stage.stageNumber).yPercent"
+            (selectStage)="choose($event)"
+          ></app-campaign-stage-node>
+        </ng-container>
+      </app-campaign-road>
+    </div>
+  </section>
+
+  <!-- Stage Detail Modal Dialog -->
+  <app-campaign-stage-detail-modal
+    *ngIf="selected"
+    [stage]="selected"
+    [staminaCurrent]="stamina?.current || 0"
+    [isStarting]="starting"
+    [errorMessage]="modalError"
+    (close)="closeModal()"
+    (startBattle)="fight($event)"
+  ></app-campaign-stage-detail-modal>
+
+  <!-- Pre-Battle Formation Setup Modal -->
+  <app-battle-formation-setup-modal
+    *ngIf="formationSetupStage"
+    [stage]="formationSetupStage"
+    [staminaCurrent]="stamina?.current || 0"
+    [isStarting]="starting"
+    (close)="formationSetupStage = undefined"
+    (startBattle)="startBattleWithDraft($event)"
+  ></app-battle-formation-setup-modal>
+
+  <!-- Chest Preview Modal -->
+  <div class="modal-backdrop-chest" *ngIf="previewChest" (click)="closePreviewChest()">
+    <div class="chest-dialog-card" (click)="$event.stopPropagation()">
+      <div class="chest-dialog-header">
+        <h3 class="dialog-title">
+          <i class="bi bi-gift-fill text-gold me-2"></i>RƯƠNG BÁU {{ previewChest.requiredStars }} SAO
+        </h3>
+        <button class="btn-close-dialog" (click)="closePreviewChest()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="chest-dialog-body">
+        <div class="status-summary">
+          <span class="status-badge" [class.claimed]="previewChest.state === 'CLAIMED'" [class.claimable]="previewChest.state === 'CLAIMABLE'" [class.locked]="previewChest.state === 'LOCKED'">
+            {{ previewChest.state === 'CLAIMED' ? 'ĐÃ NHẬN' : (previewChest.state === 'CLAIMABLE' ? 'ĐÃ ĐẠT - CÓ THỂ NHẬN' : 'CHƯA ĐẠT (' + (map?.totalStars || 0) + '/' + previewChest.requiredStars + ' Sao)') }}
+          </span>
+        </div>
+
+        <p class="dialog-desc">{{ previewChest.description || 'Hoàn thành các ải để đạt mốc sao và nhận quà giá trị.' }}</p>
+
+        <div class="rewards-preview-grid">
+          <div class="reward-item-box" *ngIf="previewChest.goldReward > 0">
+            <span class="box-icon">🪙</span>
+            <span class="box-val">+{{ previewChest.goldReward | number }}</span>
+            <span class="box-lbl">Vàng</span>
+          </div>
+
+          <div class="reward-item-box" *ngIf="previewChest.diamondReward > 0">
+            <span class="box-icon">💎</span>
+            <span class="box-val">+{{ previewChest.diamondReward | number }}</span>
+            <span class="box-lbl">Kim Cương</span>
+          </div>
+
+          <div class="reward-item-box" *ngIf="previewChest.upgradeMaterialsReward > 0">
+            <span class="box-icon">🔮</span>
+            <span class="box-val">+{{ previewChest.upgradeMaterialsReward | number }}</span>
+            <span class="box-lbl">Đá Cường Hóa</span>
+          </div>
+
+          <div class="reward-item-box item-guaranteed" *ngIf="previewChest.guaranteedItem">
+            <img *ngIf="previewChest.guaranteedItem.imagePath" [src]="previewChest.guaranteedItem.imagePath" class="box-img" [alt]="previewChest.guaranteedItem.name" />
+            <span class="box-val">{{ previewChest.guaranteedItem.name }}</span>
+            <span class="box-lbl text-gold">Trang Bị Đảm Bảo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chest-dialog-footer">
+        <button class="btn-dialog-close" (click)="closePreviewChest()">Đóng</button>
+        <button *ngIf="previewChest.state === 'CLAIMABLE'"
+                class="btn-dialog-claim"
+                [disabled]="claimingChestId !== null"
+                (click)="onChestClick(previewChest)">
+          <span *ngIf="claimingChestId !== null" class="spinner-border spinner-border-sm me-1"></span>
+          <span>Nhận Thưởng</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Claimed Reward Celebration Modal -->
+  <div class="modal-backdrop-chest" *ngIf="claimedReward" (click)="closeClaimedReward()">
+    <div class="chest-dialog-card celebration-card" (click)="$event.stopPropagation()">
+      <div class="celebration-rays"></div>
+      <div class="chest-dialog-header">
+        <h3 class="dialog-title text-gold">
+          <i class="bi bi-stars text-warning me-2"></i>NHẬN THƯỞNG RƯƠNG BÁU THÀNH CÔNG!
+        </h3>
+        <button class="btn-close-dialog" (click)="closeClaimedReward()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <div class="chest-dialog-body text-center">
+        <div class="chest-open-animation mb-3">
+          <i class="bi bi-box2-heart-fill fs-1 text-gold"></i>
+        </div>
+        <p class="celebration-subtitle">Bạn đã nhận được tất cả phần thưởng mốc {{ claimedReward.requiredStars }} Sao:</p>
+
+        <div class="rewards-preview-grid">
+          <div class="reward-item-box" *ngIf="claimedReward.goldGained > 0">
+            <span class="box-icon">🪙</span>
+            <span class="box-val text-success">+{{ claimedReward.goldGained | number }}</span>
+            <span class="box-lbl">Vàng</span>
+          </div>
+
+          <div class="reward-item-box" *ngIf="claimedReward.diamondsGained > 0">
+            <span class="box-icon">💎</span>
+            <span class="box-val text-info">+{{ claimedReward.diamondsGained | number }}</span>
+            <span class="box-lbl">Kim Cương</span>
+          </div>
+
+          <div class="reward-item-box" *ngIf="claimedReward.upgradeMaterialsGained > 0">
+            <span class="box-icon">🔮</span>
+            <span class="box-val text-warning">+{{ claimedReward.upgradeMaterialsGained | number }}</span>
+            <span class="box-lbl">Đá Cường Hóa</span>
+          </div>
+
+          <div class="reward-item-box item-guaranteed epic" *ngIf="claimedReward.droppedEquipment">
+            <img *ngIf="claimedReward.droppedEquipment.imagePath" [src]="claimedReward.droppedEquipment.imagePath" class="box-img" [alt]="claimedReward.droppedEquipment.name" />
+            <span class="box-val text-warning">{{ claimedReward.droppedEquipment.name }}</span>
+            <span class="box-lbl text-gold">Trang Bị Nhận Được</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chest-dialog-footer justify-content-center">
+        <button class="btn-dialog-claim px-5" (click)="closeClaimedReward()">Tuyệt Vời</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Equipment Tooltip Host -->
+  <app-equipment-tooltip></app-equipment-tooltip>
+</main>
+

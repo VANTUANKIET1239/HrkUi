@@ -69,7 +69,7 @@ export interface Skill {
   imagePath?: string | null;
   icon?: string;
   skillTypeCode?: SkillTypeCode;
-  triggerCode?: SkillTriggerCode;
+  triggerCode?: SkillTriggerCode | string;
   energyCost?: number;
   displayOrder?: number;
   effects?: SkillEffect[];

@@ -1,0 +1,105 @@
+<article
+  class="map-card"
+  [class.state-available]="map.state === 'AVAILABLE'"
+  [class.state-completed]="map.state === 'COMPLETED'"
+  [class.state-not-reached]="map.state === 'NOT_REACHED'"
+  [class.state-level-locked]="map.state === 'LEVEL_LOCKED'"
+  [class.clickable]="isClickable"
+  (click)="onCardClick()"
+  tabindex="0"
+  [attr.role]="isClickable ? 'button' : undefined"
+  [attr.aria-label]="map.name + ' - ' + map.state"
+>
+  <!-- Background Art with Aspect Ratio / Cover -->
+  <div class="card-bg-wrapper">
+    <img [src]="map.imagePath || map.backgroundPath" [alt]="map.name" class="card-bg-img" loading="lazy" />
+    <div class="card-vignette"></div>
+    <div class="card-gradient"></div>
+    <div class="card-ambient-light"></div>
+  </div>
+
+  <!-- Fantasy Ornate Frame -->
+  <div class="card-frame">
+    <span class="corner corner-tl"></span>
+    <span class="corner corner-tr"></span>
+    <span class="corner corner-bl"></span>
+    <span class="corner corner-br"></span>
+  </div>
+
+  <!-- State Overlays for Locked Modes -->
+  <!-- Level Locked -->
+  <div class="lock-overlay" *ngIf="map.state === 'LEVEL_LOCKED'">
+    <div class="lock-seal">
+      <span class="lock-icon">🔒</span>
+      <span class="lock-title">PHONG ẤN CẤP ĐỘ</span>
+      <span class="lock-requirement">Yêu cầu cấp {{ map.requiredPlayerLevel }}</span>
+    </div>
+  </div>
+
+  <!-- Not Reached (Mystic Fog) -->
+  <div class="fog-overlay" *ngIf="map.state === 'NOT_REACHED'">
+    <div class="fog-seal">
+      <span class="fog-icon">🌫️</span>
+      <span class="fog-title">CHƯA KHAI MỞ</span>
+      <span class="fog-hint">Vượt chương trước để mở lối</span>
+    </div>
+  </div>
+
+  <!-- Card Content -->
+  <div class="card-body">
+    <!-- Top Status Badge -->
+    <div class="card-top">
+      <div class="status-badge" *ngIf="map.state === 'AVAILABLE'">
+        <span class="pulse-dot"></span>
+        <span class="badge-text">CÓ THỂ THÁM HIỂM</span>
+      </div>
+      <div class="status-badge completed" *ngIf="map.state === 'COMPLETED'">
+        <span class="badge-icon">👑</span>
+        <span class="badge-text">HOÀN THÀNH</span>
+      </div>
+      <div class="status-badge locked" *ngIf="map.state === 'LEVEL_LOCKED'">
+        <span class="badge-icon">🔒</span>
+        <span class="badge-text">KHÓA CẤP {{ map.requiredPlayerLevel }}</span>
+      </div>
+      <div class="status-badge unreached" *ngIf="map.state === 'NOT_REACHED'">
+        <span class="badge-icon">⏳</span>
+        <span class="badge-text">CHƯA TỚI</span>
+      </div>
+
+      <div class="stage-counter" [class.complete]="map.clearedStages === map.totalStages">
+        <i class="bi bi-geo-alt-fill"></i>
+        <span>{{ map.clearedStages }}/{{ map.totalStages }} Màn</span>
+      </div>
+    </div>
+
+    <!-- Middle/Bottom Info -->
+    <div class="card-info">
+      <span class="chapter-code">{{ map.code }}</span>
+      <h2 class="chapter-title">{{ map.name }}</h2>
+      <p class="chapter-desc">{{ map.description || 'Chinh phục các ải và đánh bại thủ lĩnh trấn giữ.' }}</p>
+
+      <!-- Progress Track -->
+      <div class="progress-bar-container">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="progressPercent">
+            <span class="progress-glow"></span>
+          </div>
+        </div>
+        <div class="progress-meta">
+          <span class="progress-label">Tiến trình</span>
+          <span class="progress-val">{{ progressPercent }}%</span>
+        </div>
+      </div>
+
+      <!-- Action Footer -->
+      <div class="card-actions" *ngIf="isClickable">
+        <button type="button" class="btn-explore" [class.btn-replay]="map.state === 'COMPLETED'">
+          <span class="btn-shimmer"></span>
+          <span class="btn-icon">{{ map.state === 'COMPLETED' ? '🔄' : '⚔️' }}</span>
+          <span class="btn-text">{{ map.state === 'COMPLETED' ? 'Vào Lại' : 'Khám Phá' }}</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</article>
