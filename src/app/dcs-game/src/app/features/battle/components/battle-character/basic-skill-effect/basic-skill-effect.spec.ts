@@ -179,4 +179,158 @@ describe('Basic Skill Effect System Tests', () => {
       expect(getFacingMultiplier(true)).toBe(-1);
     });
   });
+
+  describe('7. Six Rare Heroes Resolution Tests', () => {
+    const rareSkills: [string, BasicEffectCode][] = [
+      ['TRONG_CHUA_NO_BASIC', 'trong-chua-no'],
+      ['QUANG_VINH_THCS_BASIC', 'quang-vinh-thcs'],
+      ['NGUYEN_XAM_LON_BASIC', 'nguyen-xam-lon'],
+      ['TIEN_DUNG_XUAN_BASIC', 'tien-dung-xuan'],
+      ['VAN_TRONG_DIEN_VANG_BASIC', 'van-trong-dien-vang'],
+      ['TUONG_LONG_CAP_3_BASIC', 'tuong-long-cap-3']
+    ];
+
+    rareSkills.forEach(([skillId, expectedCode]) => {
+      it(`should resolve skill '${skillId}' directly to '${expectedCode}'`, () => {
+        expect(resolveBasicEffectCode(null, skillId)).toBe(expectedCode);
+      });
+    });
+
+    const rareHeroCodes: [string, BasicEffectCode][] = [
+      ['trong-chua-no', 'trong-chua-no'],
+      ['quang-vinh-thcs', 'quang-vinh-thcs'],
+      ['nguyen-xam-lon', 'nguyen-xam-lon'],
+      ['tien-dung-xuan', 'tien-dung-xuan'],
+      ['van-trong-dien-vang', 'van-trong-dien-vang'],
+      ['tuong-long-cap-3', 'tuong-long-cap-3']
+    ];
+
+    rareHeroCodes.forEach(([heroCode, expectedCode]) => {
+      it(`should resolve heroCode '${heroCode}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 50,
+          heroCode,
+          name: 'Hero',
+          avatar: '',
+          hp: 1000,
+          maxHp: 1000,
+          mana: 0,
+          maxMana: 100,
+          attack: 100,
+          defense: 50,
+          speed: 100,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+
+    const rareAvatars: [string, BasicEffectCode][] = [
+      ['/assets/images/dcs-game/trong-chua-no.png', 'trong-chua-no'],
+      ['/assets/images/dcs-game/quang-vinh-thcs.png', 'quang-vinh-thcs'],
+      ['/assets/images/dcs-game/nguyen-xam-lon.png', 'nguyen-xam-lon'],
+      ['/assets/images/dcs-game/tien-dung-xuan.png', 'tien-dung-xuan'],
+      ['/assets/images/dcs-game/van-trong-dien-vang.png', 'van-trong-dien-vang'],
+      ['/assets/images/dcs-game/tuong-long-cap-3.png', 'tuong-long-cap-3']
+    ];
+
+    rareAvatars.forEach(([avatar, expectedCode]) => {
+      it(`should resolve avatar '${avatar}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 51,
+          name: 'Hero',
+          avatar,
+          hp: 1000,
+          maxHp: 1000,
+          mana: 0,
+          maxMana: 100,
+          attack: 100,
+          defense: 50,
+          speed: 100,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+  });
+
+  describe('8. Five Epic Heroes Resolution Tests', () => {
+    const epicSkills: [string, BasicEffectCode][] = [
+      ['KIET_BAC_SI_BASIC', 'kiet-bac-si'],
+      ['TRUONG_KIET_CHU_MO_BASIC', 'truong-kiet-chu-mo'],
+      ['TIEN_DUNG_TONG_DAI_BASIC', 'tien-dung-tong-dai'],
+      ['QUOC_NHAN_GIA_DIEN_BASIC', 'quoc-nhan-gia-dien'],
+      ['CAU_VANG_MAT_LANH_BASIC', 'cau-vang-mat-lanh']
+    ];
+
+    epicSkills.forEach(([skillId, expectedCode]) => {
+      it(`should resolve skill '${skillId}' directly to '${expectedCode}'`, () => {
+        expect(resolveBasicEffectCode(null, skillId)).toBe(expectedCode);
+      });
+    });
+
+    const epicHeroCodes: [string, BasicEffectCode][] = [
+      ['kiet-bac-si', 'kiet-bac-si'],
+      ['truong-kiet-chu-mo', 'truong-kiet-chu-mo'],
+      ['tien-dung-tong-dai', 'tien-dung-tong-dai'],
+      ['quoc-nhan-gia-dien', 'quoc-nhan-gia-dien'],
+      ['cau-vang-mat-lanh', 'cau-vang-mat-lanh']
+    ];
+
+    epicHeroCodes.forEach(([heroCode, expectedCode]) => {
+      it(`should resolve heroCode '${heroCode}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 60,
+          heroCode,
+          name: 'Hero',
+          avatar: '',
+          hp: 1200,
+          maxHp: 1200,
+          mana: 0,
+          maxMana: 100,
+          attack: 150,
+          defense: 80,
+          speed: 100,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+
+    const epicAvatars: [string, BasicEffectCode][] = [
+      ['/assets/images/dcs-game/kiet-bac-si.png', 'kiet-bac-si'],
+      ['/assets/images/dcs-game/kiet-bac-si-epic.png', 'kiet-bac-si'],
+      ['/assets/images/dcs-game/truong-kiet-chu-mo.png', 'truong-kiet-chu-mo'],
+      ['/assets/images/dcs-game/truong-kiet-chu-mo-epic.png', 'truong-kiet-chu-mo'],
+      ['/assets/images/dcs-game/tien-dung-call-video.png', 'tien-dung-tong-dai'],
+      ['/assets/images/dcs-game/tien-dung-tong-dai-epic.png', 'tien-dung-tong-dai'],
+      ['/assets/images/dcs-game/quoc-nhan-fake.png', 'quoc-nhan-gia-dien'],
+      ['/assets/images/dcs-game/quoc-nhan-gia-dien-epic.png', 'quoc-nhan-gia-dien'],
+      ['/assets/images/dcs-game/meme-cho-hai-huoc.jpg', 'cau-vang-mat-lanh'],
+      ['/assets/images/dcs-game/cau-vang-mat-lanh-epic.png', 'cau-vang-mat-lanh']
+    ];
+
+    epicAvatars.forEach(([avatar, expectedCode]) => {
+      it(`should resolve avatar '${avatar}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 61,
+          name: 'Hero',
+          avatar,
+          hp: 1200,
+          maxHp: 1200,
+          mana: 0,
+          maxMana: 100,
+          attack: 150,
+          defense: 80,
+          speed: 100,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+  });
 });

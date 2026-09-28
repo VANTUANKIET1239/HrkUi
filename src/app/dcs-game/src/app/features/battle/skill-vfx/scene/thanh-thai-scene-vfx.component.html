@@ -1,0 +1,169 @@
+<div class="thanh-thai-scene-vfx-root"
+     [class.empowered]="empowered"
+     [style.--visual-speed]="visualSpeed">
+
+  <!-- 1. Ambient Crimson Vignette (Non-blocking edge atmosphere, never full screen black) -->
+  <div class="crimson-vignette" [class.active]="actorActive || impactActive"></div>
+
+  <!-- 2. SVG Chain Lightning Overlay (Spans entire battlefield) -->
+  <svg class="lightning-svg-canvas" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Normal outer crimson blur filter -->
+      <filter id="crimson-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="8" result="blur1" />
+        <feGaussianBlur stdDeviation="16" result="blur2" />
+        <feMerge>
+          <feMergeNode in="blur2" />
+          <feMergeNode in="blur1" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <!-- Intense Full Aura outer blur filter -->
+      <filter id="intense-crimson-filter" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="14" result="blurWide" />
+        <feGaussianBlur stdDeviation="6" result="blurMid" />
+        <feMerge>
+          <feMergeNode in="blurWide" />
+          <feMergeNode in="blurMid" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- Render Active Lightning Branches -->
+    <g class="branch-group"
+       *ngFor="let branch of activeBranches; let bi = index"
+       [class.is-empowered]="empowered"
+       [attr.data-hit]="branch.hitIndex">
+
+      <!-- Layer 1: Wide Crimson Outer Glow -->
+      <path class="lightning-glow"
+            [attr.d]="branch.mainD"
+            [attr.filter]="empowered ? 'url(#intense-crimson-filter)' : 'url(#crimson-glow-filter)'">
+      </path>
+
+      <!-- Layer 2: Main Vivid Crimson Lightning Bolt -->
+      <path class="lightning-main"
+            [attr.d]="branch.mainD">
+      </path>
+
+      <!-- Layer 3: Blinding White / Light Core -->
+      <path class="lightning-core"
+            [attr.d]="branch.mainD">
+      </path>
+
+      <!-- Layer 4: Rapid Jitter Variant Path (Flickers for buzzing electric energy) -->
+      <path class="lightning-jitter"
+            [class.flicker-on]="flickerToggle"
+            [attr.d]="branch.jitterD">
+      </path>
+
+      <!-- Secondary Fork Branches -->
+      <path *ngFor="let fork of branch.forks"
+            class="lightning-fork"
+            [attr.d]="fork">
+      </path>
+    </g>
+  </svg>
+
+  <!-- 3. Charge Phase at Actor Position -->
+  <div class="charge-phase-anchor"
+       *ngIf="isCharging && sourcePoint"
+       [style.left.px]="sourcePoint.x"
+       [style.top.px]="sourcePoint.y">
+
+    <!-- Foot energy convergence & bloom -->
+    <div class="foot-aura-bloom"></div>
+
+    <!-- Massive Energy Gathering Sphere -->
+    <div class="energy-charge-sphere">
+      <div class="charge-core-flash"></div>
+      <div class="charge-ring ring-outer"></div>
+      <div class="charge-ring ring-mid"></div>
+      <div class="charge-ring ring-inner"></div>
+
+      <!-- Converging electrical arcs -->
+      <div class="converging-arc arc-1"></div>
+      <div class="converging-arc arc-2"></div>
+      <div class="converging-arc arc-3"></div>
+      <div class="converging-arc arc-4"></div>
+
+      <!-- Ascending energy sparks -->
+      <div class="sparks-container">
+        <span class="spark spk-1"></span>
+        <span class="spark spk-2"></span>
+        <span class="spark spk-3"></span>
+        <span class="spark spk-4"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Target Hit Impacts -->
+  <ng-container *ngFor="let impact of activeImpacts">
+    <div class="target-impact-anchor"
+         [class.is-rebound]="impact.isRebound"
+         [class.is-detonation]="impact.hasDetonation"
+         [style.left.px]="impact.point.x"
+         [style.top.px]="impact.point.y">
+
+      <!-- White-Crimson Impact Flash & Expanding Shockwave -->
+      <div class="impact-flash-radial"></div>
+      <div class="impact-shockwave-ring"></div>
+
+      <!-- Vertical Lightning Pillar striking down from sky -->
+      <div class="vertical-strike-pillar"></div>
+
+      <!-- Electric Coil wrapping around target body -->
+      <div class="target-electric-coil">
+        <span class="coil-arc ca-1"></span>
+        <span class="coil-arc ca-2"></span>
+        <span class="coil-arc ca-3"></span>
+      </div>
+
+      <!-- Impact Sparks Flying Outward -->
+      <div class="impact-debris-sparks">
+        <span class="impact-spk ispk-1"></span>
+        <span class="impact-spk ispk-2"></span>
+        <span class="impact-spk ispk-3"></span>
+        <span class="impact-spk ispk-4"></span>
+      </div>
+
+      <!-- Chain Order Roman Numeral Badge (I, II, III, IV) -->
+      <div class="chain-order-badge">
+        <span class="order-text">{{ impact.romanNumeral }}</span>
+      </div>
+
+      <!-- Detonation Shockwave & Fragments (When Loss of Confidence detonates) -->
+      <div class="detonation-blast-fx" *ngIf="impact.hasDetonation">
+        <div class="detonation-implosion-ring"></div>
+        <div class="detonation-black-burst"></div>
+        <div class="detonation-crimson-shockwave"></div>
+        <div class="detonation-shard shard-1"></div>
+        <div class="detonation-shard shard-2"></div>
+        <div class="detonation-shard shard-3"></div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- 5. Full Aura Final Colossal Shockwave across Enemy Side -->
+  <div class="final-battlefield-shockwave"
+       *ngIf="showFinalShockwave && finalShockwavePoint && empowered"
+       [style.left.px]="finalShockwavePoint.x"
+       [style.top.px]="finalShockwavePoint.y">
+    <div class="colossal-wave wave-1"></div>
+    <div class="colossal-wave wave-2"></div>
+    <div class="colossal-cracks-rune"></div>
+  </div>
+
+  <!-- 6. Floating Status / Detonation Notification Banners -->
+  <div *ngFor="let banner of statusBanners"
+       class="status-float-banner"
+       [class.banner-detonate]="banner.type === 'detonate'"
+       [class.banner-gain]="banner.type === 'gain'"
+       [style.left.px]="banner.x"
+       [style.top.px]="banner.y">
+    <div class="banner-emblem"></div>
+    <span class="banner-text">{{ banner.text }}</span>
+  </div>
+</div>

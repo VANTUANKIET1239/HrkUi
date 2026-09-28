@@ -1,0 +1,193 @@
+<div
+  class="siba-scene-vfx-root"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [class.is-basic]="isBasicSkill"
+  [class.is-empowered]="isEmpoweredSkill"
+  [class.speed-x4]="visualSpeed >= 3.5"
+  [style.--visual-speed]="visualSpeed"
+>
+  <!-- Ambient Sacred Celestial Glow (Localized, never full screen black) -->
+  <div class="sacred-ambient-bloom" [class.active]="visualPhase !== 'idle'"></div>
+
+  <!-- ==============================================================
+       1. SIBA CASTER AURAS (Halo & Wings Projection)
+       ============================================================== -->
+  @if (visualPhase !== 'idle' && actorPos) {
+    <div
+      class="caster-aura-anchor"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <!-- Siba's Head Halo -->
+      <div class="caster-halo-slot">
+        <app-siba-halo
+          [variant]="isEmpoweredSkill ? 'caster' : 'normal'"
+          [visualSpeed]="visualSpeed"
+          [active]="true"
+        />
+      </div>
+
+      <!-- Siba's Angel Wings Ethereal Projection -->
+      <div
+        class="caster-wings-projection"
+        [class.unfurled]="visualPhase !== 'recovery'"
+        [class.empowered]="isEmpoweredSkill"
+      >
+        <app-siba-blessing-wings
+          [phase]="isEmpoweredSkill ? (visualPhase === 'empowered_cast' ? 'embrace' : 'burst') : 'burst'"
+          [variant]="'divine'"
+          [isMini]="false"
+          [isTeamRight]="actorTeamRight"
+          [visualSpeed]="visualSpeed"
+        />
+      </div>
+
+      <!-- Blessing points converging to Siba (Empowered Phase 1) -->
+      @if (isEmpoweredSkill && visualPhase === 'empowered_cast') {
+        <div class="blessing-convergence-stream">
+          <span class="blessing-orb b1">✦</span>
+          <span class="blessing-orb b2">✦</span>
+          <span class="blessing-orb b3">✦</span>
+          <span class="blessing-orb b4">✦</span>
+          <span class="blessing-orb b5">✦</span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ==============================================================
+       2. GRAND CELESTIAL RUNE ARRAY (Overhead Ally Formation)
+       ============================================================== -->
+  @if (!isBasicSkill && (visualPhase === 'cast' || visualPhase === 'empowered_cast' || visualPhase === 'alignment' || visualPhase === 'grand_beam' || visualPhase === 'descent')) {
+    <div
+      class="overhead-grand-rune-array"
+      [class.empowered]="isEmpoweredSkill"
+      [style.left.px]="allyFormationCenterX"
+      [style.top.px]="allyFormationTopY"
+    >
+      <div class="grand-rune-core">
+        <svg class="grand-rune-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="grand-rune-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <circle cx="100" cy="100" r="90" class="grand-ring-1" filter="url(#grand-rune-glow)" />
+          <circle cx="100" cy="100" r="78" class="grand-ring-2" stroke-dasharray="10 6" />
+          <circle cx="100" cy="100" r="62" class="grand-ring-3" />
+          <!-- 8-Pointed Star of Providence -->
+          <polygon points="100,20 118,72 170,72 128,102 144,154 100,122 56,154 72,102 30,72 82,72" class="grand-star-1" />
+          <polygon points="100,20 118,72 170,72 128,102 144,154 100,122 56,154 72,102 30,72 82,72" class="grand-star-2" transform="rotate(45 100 100)" />
+          <circle cx="100" cy="100" r="14" class="grand-core-orb" />
+        </svg>
+      </div>
+      <div class="grand-rune-bloom"></div>
+    </div>
+  }
+
+  <!-- ==============================================================
+       3. TARGET NODES & ALLY VISUAL LAYERS
+       ============================================================== -->
+  @for (target of targetNodes; track target.id) {
+    <!-- Dynamic Target Group Anchor -->
+    <div
+      class="target-vfx-node"
+      [style.left.px]="target.x"
+      [style.top.px]="target.y"
+    >
+      <!-- A. Divine Celestial Beam Column -->
+      @if (shouldShowBeam(target)) {
+        <app-siba-celestial-beam
+          [variant]="isBasicSkill ? 'basic' : (isEmpoweredSkill ? 'empowered' : 'normal')"
+          [phase]="beamPhase"
+          [beamHeight]="target.beamHeight"
+          [visualSpeed]="visualSpeed"
+          [showRune]="isBasicSkill"
+          [showGroundRing]="true"
+        />
+      }
+
+      <!-- B. Halo Above Ally Head -->
+      @if (shouldShowHalo(target)) {
+        <div class="target-head-halo-slot" [style.top.px]="target.headOffsetY">
+          <app-siba-halo
+            [variant]="isBasicSkill ? 'basic' : (isEmpoweredSkill ? 'empowered' : 'normal')"
+            [visualSpeed]="visualSpeed"
+            [active]="true"
+          />
+        </div>
+      }
+
+      <!-- C. Angelic Blessing Wings (Empowered Cocoon & Ascension) -->
+      @if (isEmpoweredSkill && shouldShowWings(target)) {
+        <div class="target-wings-slot" [style.top.px]="target.centerOffsetY">
+          <app-siba-blessing-wings
+            [phase]="wingPhase"
+            [variant]="'divine'"
+            [isMini]="false"
+            [isTeamRight]="actorTeamRight"
+            [visualSpeed]="visualSpeed"
+          />
+        </div>
+      }
+
+      <!-- D. Mini-Wings & Buff Presentation for Cổ Vũ (Basic & Empowered Refresh) -->
+      @if (shouldShowEncouragementWings(target)) {
+        <div class="target-mini-wings-slot" [style.top.px]="target.headOffsetY - 15">
+          <app-siba-blessing-wings
+            [phase]="'burst'"
+            [variant]="target.isFrontRow ? 'defense' : 'offense'"
+            [isMini]="true"
+            [isTeamRight]="actorTeamRight"
+            [visualSpeed]="visualSpeed"
+          />
+          <!-- Variant Banner Indicator -->
+          <div class="encouragement-tag" [class.defense]="target.isFrontRow" [class.offense]="!target.isFrontRow">
+            {{ target.isFrontRow ? '🛡️ CỔ VŨ THỦ' : '⚔️ CỔ VŨ CÔNG' }}
+          </div>
+        </div>
+      }
+
+      <!-- E. Dispel Particles (For targets with actual debuff removal) -->
+      @if (target.hasDispel && shouldShowDispel(target)) {
+        <div class="target-dispel-slot">
+          <app-siba-dispel-particles
+            [active]="true"
+            [visualSpeed]="visualSpeed"
+          />
+        </div>
+      }
+
+      <!-- F. Celestial Protection Buff Badges (Normal & Empowered) -->
+      @if (shouldShowBadges(target)) {
+        <div class="celestial-protection-badges" [style.top.px]="target.headOffsetY - 42">
+          <span class="badge spd-badge">⚡ SPD +20%</span>
+          <span class="badge res-badge">🛡️ RES +20%</span>
+        </div>
+      }
+
+      <!-- G. Energy Particles Flow (+10 Basic, +15 Empowered) -->
+      @if (shouldShowEnergyFlow(target)) {
+        <div class="energy-stream-container" [style.top.px]="target.centerOffsetY">
+          <div class="energy-orb-stream"></div>
+          <div class="energy-amount-badge">
+            {{ isBasicSkill ? '+10 NĂNG LƯỢNG' : '+15 NĂNG LƯỢNG' }}
+          </div>
+        </div>
+      }
+
+      <!-- H. Basic Light Mote Arc back to Siba (Ân Phúc Resource) -->
+      @if (isBasicSkill && visualPhase === 'blessing') {
+        <div class="blessing-arc-particle" [style.--tx.px]="actorPos.x - target.x" [style.--ty.px]="actorPos.y - target.y">
+          <span class="arc-feather">🪶</span>
+          <span class="arc-tail"></span>
+        </div>
+      }
+    </div>
+  }
+</div>

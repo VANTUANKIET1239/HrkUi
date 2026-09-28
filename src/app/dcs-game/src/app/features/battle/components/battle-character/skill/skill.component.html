@@ -4,7 +4,7 @@
 
   <!-- Skill 1: Basic Skill Visuals (Cast Phase) -->
   <app-basic-skill-effect 
-    *ngIf="(skillCategory === 'basic' || activeSkillId === 'NORMAL_ATTACK' || activeSkillId === 'BASIC_RANDOM_HEAL') && activeSkillId !== 'VAX_A_MILLION_SANITZATION'"
+    *ngIf="(skillCategory === 'basic' || activeSkillId === 'NORMAL_ATTACK' || activeSkillId === 'BASIC_RANDOM_HEAL') && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'PRIME_SHIELD_WARRANTY'"
     [character]="character"
     [activeSkillId]="activeSkillId"
     [phase]="'cast'"
@@ -19,7 +19,7 @@
 
   <!-- Ultimate: Berserker Overload Visuals -->
   <app-skill-ultimate 
-    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP' && activeSkillId !== 'DARK_KNOWLEDGE_SHIELD_CONVERSION' && activeSkillId !== 'TACTICAL_AIR_STRIKE' && activeSkillId !== 'DOI_NGOI_DAU_DOC' && activeSkillId !== 'FATAL_ALL_IN_DIRECTIVE' && activeSkillId !== 'HAI_LAST_LAUGH'"
+    *ngIf="skillCategory === 'ultimate' && activeSkillId !== 'VAX_A_MILLION_SANITZATION' && activeSkillId !== 'RICARDO_MILOS' && activeSkillId !== 'RANDOM_KNOWLEDGE_DROP' && activeSkillId !== 'DARK_KNOWLEDGE_SHIELD_CONVERSION' && activeSkillId !== 'TACTICAL_AIR_STRIKE' && activeSkillId !== 'DOI_NGOI_DAU_DOC' && activeSkillId !== 'FATAL_ALL_IN_DIRECTIVE' && activeSkillId !== 'HAI_LAST_LAUGH' && activeSkillId !== 'THANH_THAI_CRIMSON_BROOM_LIGHTNING' && activeSkillId !== 'PRIME_FORTRESS_CHARGE'"
     [characterAvatar]="character.avatar"
     [isTeamRight]="isTeamRight">
   </app-skill-ultimate>
@@ -88,6 +88,31 @@
   <app-skill-hai-last-laugh
     *ngIf="activeSkillId === 'HAI_LAST_LAUGH'"
     [isTeamRight]="isTeamRight"
+    [phase]="phase"
+    [visualSpeed]="visualSpeed"
+    [castSequence]="castSequence"
     [character]="character">
   </app-skill-hai-last-laugh>
+
+  <!-- Skill: Thanh Thái Aura (Quét Cho Có & Lôi Chổi Xích Hồng) -->
+  <app-skill-thanh-thai-aura
+    *ngIf="activeSkillId === 'THANH_THAI_DISRESPECTFUL_SWEEP' || activeSkillId === 'THANH_THAI_CRIMSON_BROOM_LIGHTNING'"
+    [isTeamRight]="isTeamRight"
+    [phase]="phase"
+    [visualSpeed]="visualSpeed"
+    [castSequence]="castSequence"
+    [activeSkillId]="activeSkillId"
+    [character]="character">
+  </app-skill-thanh-thai-aura>
+
+  <!-- Skill: Nghĩa Phục Prime (Khiên Này Có Bảo Hành & Thành Trì Prime) -->
+  <app-skill-nghia-phuc-prime
+    *ngIf="activeSkillId === 'PRIME_SHIELD_WARRANTY' || activeSkillId === 'PRIME_FORTRESS_CHARGE' || character.heroCode === 'NGHIA_PHUC_PRIME'"
+    [isTeamRight]="isTeamRight"
+    [phase]="phase"
+    [visualSpeed]="visualSpeed"
+    [castSequence]="castSequence"
+    [activeSkillId]="activeSkillId"
+    [character]="character">
+  </app-skill-nghia-phuc-prime>
 </ng-container>

@@ -71,3 +71,379 @@
   0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
   100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
 }
+
+.rare-basic-effect,
+.epic-basic-effect {
+  position: absolute;
+  inset: 0;
+  --facing: 1;
+
+  &.team-right {
+    --facing: -1;
+  }
+
+  /* 1. Trọng Chưa Nổ: Cyan-Orange fast slash */
+  &.basic-trong-chua-no {
+    .dagger-slash-trail {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 75px;
+      height: 6px;
+      border-radius: 4px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #00f0ff 50%,
+        #ff6600 90%,
+        #ffffff 100%
+      );
+      box-shadow: 0 0 10px #00f0ff, 0 0 14px #ff6600;
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .dagger-hit-flash {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #00f0ff 60%, transparent 100%);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+  }
+
+  /* 2. Quang Vinh THCS: Cream & brick-red shield bash */
+  &.basic-quang-vinh-thcs {
+    .shield-bash-arc {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      width: 55px;
+      height: 55px;
+      border: 4px solid #cc3322;
+      border-top-color: #ffeedd;
+      border-right-color: #ffeedd;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(calc(45deg * var(--facing)));
+      box-shadow: 0 0 12px rgba(204, 51, 34, 0.6);
+      animation: generic-flash 0.4s ease-out forwards;
+    }
+    .shield-bash-flash {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #ffeedd 50%, transparent 100%);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 3. Nguyên Xàm Lớn: Crimson & navy boss strike */
+  &.basic-nguyen-xam-lon {
+    .boss-strike-burst {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 70px;
+      height: 14px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #112244 40%,
+        #e60026 80%,
+        #ffffff 100%
+      );
+      border-radius: 6px;
+      box-shadow: 0 0 14px #e60026;
+      animation: generic-slash 0.38s ease-out forwards;
+    }
+    .boss-strike-flash {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #e60026 60%, transparent 100%);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 4. Tiến Dũng Xuân: Ink calligraphy & apricot petal */
+  &.basic-tien-dung-xuan {
+    .ink-glyph-arc {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 60px;
+      height: 8px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #111111 40%,
+        #ffcc00 85%,
+        #ffffff 100%
+      );
+      border-radius: 4px;
+      box-shadow: 0 0 10px #ffcc00;
+      animation: generic-slash 0.4s ease-out forwards;
+    }
+    .apricot-petal {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      border-radius: 50% 0 50% 50%;
+      background: radial-gradient(circle, #fff, #ffdd44 70%, #ff8800 100%);
+      animation: generic-flash 0.45s ease-out forwards;
+    }
+  }
+
+  /* 5. Văn Trọng Điện Vàng: Electric sparks & lightning branches */
+  &.basic-van-trong-dien-vang {
+    .electric-spark-bolt {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 70px;
+      height: 6px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #ffea00 50%,
+        #ffffff 100%
+      );
+      box-shadow: 0 0 12px #ffea00, 0 0 18px #ff9900;
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .electric-spark-burst {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #ffea00 50%, transparent 100%);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+  }
+
+  /* 6. Tường Long Cấp 3: Emerald & white supply card beam */
+  &.basic-tuong-long-cap-3 {
+    .supply-card-arc {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 65px;
+      height: 8px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #22c55e 50%,
+        #ffffff 100%
+      );
+      border-radius: 4px;
+      box-shadow: 0 0 12px #22c55e;
+      animation: generic-slash 0.38s ease-out forwards;
+    }
+    .supply-card-sparkle {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #86efac 60%, transparent 100%);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 7. Kiệt Bác Sĩ: Cyan vital pulse & ECG scan line */
+  &.basic-kiet-bac-si {
+    .vital-scan-beam {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #00f0ff 40%,
+        #ffffff 80%,
+        transparent 100%
+      );
+      box-shadow: 0 0 10px #00f0ff, 0 0 18px rgba(0, 240, 255, 0.6);
+      animation: generic-slash 0.38s ease-out forwards;
+    }
+    .vital-pulse-ring {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 36px;
+      height: 36px;
+      border: 3px solid #00f0ff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: generic-impact-flash 0.4s ease-out forwards;
+    }
+  }
+
+  /* 8. Trường Kiệt Chu Mỏ: Magenta-violet sonic arc wave */
+  &.basic-truong-kiet-chu-mo {
+    .sonic-arc-wave {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 70px;
+      height: 28px;
+      border: 3px solid #ff007f;
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      box-shadow: 0 0 14px #ff007f, 0 0 20px #8b00ff;
+      transform: translate(-50%, -50%) rotate(calc(45deg * var(--facing)));
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .sonic-wave-ring {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #ff007f 60%, transparent 100%);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+  }
+
+  /* 9. Tiến Dũng Tổng Đài: Holographic cyan data packet & tile pulse */
+  &.basic-tien-dung-tong-dai {
+    .holo-data-packet {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 65px;
+      height: 6px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #00f0ff 40%,
+        #ff9900 80%,
+        #ffffff 100%
+      );
+      box-shadow: 0 0 10px #00f0ff, 0 0 14px #ff9900;
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .holo-tile-pulse {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #00f0ff;
+      background: rgba(0, 240, 255, 0.15);
+      transform: translate(-50%, -50%) rotate(45deg);
+      box-shadow: 0 0 12px #00f0ff;
+      animation: generic-impact-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 10. Quốc Nhân Giả Diện: Midnight smoke & electric-white slash streak */
+  &.basic-quoc-nhan-gia-dien {
+    .phantom-smoke-trail {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 75px;
+      height: 10px;
+      background: linear-gradient(
+        calc(90deg * var(--facing)),
+        transparent 0%,
+        #0f172a 30%,
+        #38bdf8 80%,
+        #ffffff 100%
+      );
+      border-radius: 4px;
+      box-shadow: 0 0 14px #38bdf8;
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .phantom-slash-streak {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #0284c7 60%, transparent 100%);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+  }
+
+  /* 11. Cậu Vàng Mặt Lạnh: Jade bell ripple & paw glow seal */
+  &.basic-cau-vang-mat-lanh {
+    .jade-bell-ripple {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border: 3px solid #10b981;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.7);
+      animation: generic-impact-flash 0.4s ease-out forwards;
+    }
+    .paw-glow-seal {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff, #10b981 50%, transparent 100%);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 12. Siba Thiên Thần: Gentle glowing angel feathers & celestial halo spark */
+  &.basic-siba-thien-than {
+    .angel-feather-projectile {
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      font-size: 24px;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 0 10px #fde047) drop-shadow(0 0 18px #eab308);
+      animation: generic-flash 0.45s ease-out forwards;
+    }
+    .angel-halo-spark {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      border: 2.5px solid #fff;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.8), inset 0 0 10px rgba(254, 240, 138, 0.6);
+      animation: generic-impact-flash 0.4s ease-out forwards;
+    }
+    .angel-heal-burst {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 0%, #fde047 50%, transparent 100%);
+      animation: generic-flash 0.4s ease-out forwards;
+    }
+  }
+}
+

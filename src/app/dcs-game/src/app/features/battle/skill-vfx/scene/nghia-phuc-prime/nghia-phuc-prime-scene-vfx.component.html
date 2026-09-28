@@ -1,0 +1,167 @@
+<div class="prime-scene-vfx-root"
+  [class.phase-idle]="visualPhase === 'idle'"
+  [class.phase-prep]="visualPhase === 'prep'"
+  [class.phase-assemble]="visualPhase === 'assemble'"
+  [class.phase-charge]="visualPhase === 'charge'"
+  [class.phase-impact]="visualPhase === 'impact'"
+  [class.phase-broken-morale]="visualPhase === 'broken_morale'"
+  [class.phase-return]="visualPhase === 'return'"
+  [class.phase-dome]="visualPhase === 'dome'"
+  [class.facing-right]="facing === 1"
+  [class.facing-left]="facing === -1"
+  [style.--visual-speed]="visualSpeed">
+
+  <!-- ==============================================================
+       1. FORTRESS ASSEMBLY & CHARGING ENTITY
+       ============================================================== -->
+  <div class="fortress-mover" *ngIf="visualPhase === 'assemble' || visualPhase === 'charge' || visualPhase === 'impact' || visualPhase === 'broken_morale'">
+    <div class="fortress-wrapper">
+      <!-- Ground Assembly Rune beneath fortress -->
+      <div class="fortress-rune" *ngIf="visualPhase === 'assemble'"></div>
+
+      <!-- Hexagonal Assembling Fragments (Fly in during assemble) -->
+      <div class="assemble-fragments" *ngIf="visualPhase === 'assemble'">
+        <span class="frag f1"></span>
+        <span class="frag f2"></span>
+        <span class="frag f3"></span>
+        <span class="frag f4"></span>
+        <span class="frag f5"></span>
+        <span class="frag f6"></span>
+      </div>
+
+      <!-- Conical Frontal Pressure Wave (During charge) -->
+      <div class="pressure-wave-cone" *ngIf="visualPhase === 'charge'"></div>
+
+      <!-- 4 Afterimages behind the fortress during charge -->
+      <div class="afterimages" *ngIf="visualPhase === 'charge'">
+        <img class="fortress-ghost g1" src="/assets/images/dcs-game/skills/nghia-phuc-prime-fortress.png" alt="" />
+        <img class="fortress-ghost g2" src="/assets/images/dcs-game/skills/nghia-phuc-prime-fortress.png" alt="" />
+        <img class="fortress-ghost g3" src="/assets/images/dcs-game/skills/nghia-phuc-prime-fortress.png" alt="" />
+        <img class="fortress-ghost g4" src="/assets/images/dcs-game/skills/nghia-phuc-prime-fortress.png" alt="" />
+      </div>
+
+      <!-- Main Fortress Sprite Asset -->
+      <img
+        class="prime-fortress"
+        src="/assets/images/dcs-game/skills/nghia-phuc-prime-fortress.png"
+        alt="Nghĩa Phục Prime Fortress"
+      />
+
+      <!-- Electric Arcs & Seam Glow on the Bulwark -->
+      <div class="fortress-electric-glow"></div>
+      <div class="fortress-seam-arcs">
+        <span class="arc a1"></span>
+        <span class="arc a2"></span>
+        <span class="arc a3"></span>
+      </div>
+
+      <!-- Speed Lines during charge -->
+      <div class="charge-speedlines" *ngIf="visualPhase === 'charge'">
+        <span class="line l1"></span>
+        <span class="line l2"></span>
+        <span class="line l3"></span>
+        <span class="line l4"></span>
+      </div>
+
+      <!-- Ground Energy Dust beneath charging fortress -->
+      <div class="ground-dust" *ngIf="visualPhase === 'charge'">
+        <span class="dust d1"></span>
+        <span class="dust d2"></span>
+        <span class="dust d3"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       2. IMPACT AT ENEMY TEAM CENTER
+       ============================================================== -->
+  <div class="impact-center-container" *ngIf="showImpactShockwave || showGroundCracks">
+    <!-- Local Flash (no dark whole screen overlay) -->
+    <div class="local-impact-flash" *ngIf="showImpactShockwave"></div>
+
+    <!-- Shockwaves radiating outward -->
+    <div class="impact-shockwave sw1" *ngIf="showImpactShockwave"></div>
+    <div class="impact-shockwave sw2" *ngIf="showImpactShockwave"></div>
+
+    <!-- Air distortion refraction ring -->
+    <div class="distortion-ring" *ngIf="showImpactShockwave"></div>
+
+    <!-- Ground Cracks with glowing electric seams -->
+    <div class="ground-cracks-cyan" *ngIf="showGroundCracks">
+      <div class="crack-core"></div>
+      <div class="crack-radiant-glow"></div>
+    </div>
+
+    <!-- Flying stone and metal fragments -->
+    <div class="flying-debris" *ngIf="showImpactShockwave">
+      <span class="debris deb1"></span>
+      <span class="debris deb2"></span>
+      <span class="debris deb3"></span>
+      <span class="debris deb4"></span>
+      <span class="debris deb5"></span>
+      <span class="debris deb6"></span>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       3. BROKEN MORALE (VỠ TRẬN) OVERHEAD TARGET MARKERS
+       ============================================================== -->
+  <div class="broken-morale-layer" *ngIf="showBrokenMoraleMarkers">
+    <div
+      *ngFor="let target of brokenMoraleTargets"
+      class="broken-morale-marker"
+      [style.left.px]="target.x"
+      [style.top.px]="target.y"
+    >
+      <div class="cracked-shield-icon">
+        <div class="shield-half left-half"></div>
+        <div class="shield-half right-half"></div>
+        <div class="crack-lightning"></div>
+      </div>
+      <div class="rupture-energy-ring"></div>
+      <div class="broken-morale-text">Sát thương gây ra -15%</div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       4. RETURNING SHIELDS TO INDIVIDUAL ALLIES
+       ============================================================== -->
+  <div class="returning-shields-layer" *ngIf="showReturningShields">
+    <div
+      *ngFor="let s of returnShields"
+      class="shield-projectile"
+      [style.--start-x.px]="s.startX"
+      [style.--start-y.px]="s.startY"
+      [style.--target-x.px]="s.targetX"
+      [style.--target-y.px]="s.targetY"
+    >
+      <div class="hex-plate"></div>
+      <div class="projectile-tail"></div>
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       5. ALLY HEXAGONAL SHIELDS & TEAM DOME
+       ============================================================== -->
+  <div class="team-dome-layer" *ngIf="showTeamDome">
+    <!-- Radiant Cyan Dome Canopy centered over ally team -->
+    <div class="team-dome-canopy">
+      <div class="dome-ring outer-ring"></div>
+      <div class="dome-ring inner-ring"></div>
+      <div class="dome-hex-grid"></div>
+      <div class="dome-crest"></div>
+      <div class="dome-ambient-bloom"></div>
+    </div>
+
+    <!-- Hexagonal barrier anchors for each ally -->
+    <div
+      *ngFor="let s of returnShields"
+      class="ally-hex-barrier"
+      [style.left.px]="s.targetX"
+      [style.top.px]="s.targetY"
+    >
+      <div class="hex-shield-cell"></div>
+      <div class="hex-lock-flash"></div>
+    </div>
+  </div>
+</div>

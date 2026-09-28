@@ -1,3 +1,5 @@
+import { BattleResourceViewModel } from './battle.model';
+
 export interface Hero {
   id: number;
   heroTemplateId?: number;
@@ -24,6 +26,7 @@ export interface Hero {
   stars?: number;
   auraTier?: number;
   starAura?: HeroStarAuraConfig | null;
+  resources?: Record<string, BattleResourceViewModel>;
 }
 
 export interface HeroStarAuraConfig {
@@ -60,4 +63,19 @@ export interface BattleStatusEffectViewModel {
   maxStacks?: number | null;
   modifiers: BattleStatusModifierViewModel[];
   sourceSkillId?: string | null;
+}
+
+export interface BattlePresentationEffect {
+  code: string;
+  name: string;
+  icon: string;
+  color: string;
+  description?: string;
+  valueLines: string[];
+  stacks?: number;
+  tier?: number;
+  isPermanent?: boolean;
+  remainingTurns?: number;
+  category?: 'BUFF' | 'DEBUFF' | 'CONTROL' | 'SPECIAL';
+  sourceType: 'STATUS' | 'RESOURCE' | 'PASSIVE';
 }

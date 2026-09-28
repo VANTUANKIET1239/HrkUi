@@ -1,0 +1,655 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 35;
+  overflow: hidden;
+}
+
+.prime-scene-vfx-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --speed: calc(1 / var(--visual-speed, 1));
+}
+
+/* ==========================================================================
+   1. Fortress Mover & Entity
+   ========================================================================== */
+.fortress-mover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+
+  .phase-assemble & {
+    transform: translate3d(var(--caster-x, 200px), var(--caster-y, 300px), 0) scaleX(var(--facing, 1));
+    animation: fortressAssemble calc(0.4s * var(--speed)) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .phase-charge & {
+    transform: translate3d(var(--caster-x, 200px), var(--caster-y, 300px), 0) scaleX(var(--facing, 1));
+    animation: fortressCharge calc(0.55s * var(--speed)) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .phase-impact &, .phase-broken-morale & {
+    transform: translate3d(var(--enemy-center-x, 600px), var(--enemy-center-y, 300px), 0) scaleX(var(--facing, 1));
+  }
+
+  .phase-broken-morale & {
+    opacity: 0.85;
+    animation: fortressDissolve calc(0.3s * var(--speed)) ease-out forwards;
+  }
+}
+
+.fortress-wrapper {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prime-fortress {
+  width: 230px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px #00e5ff) drop-shadow(0 0 45px #0077ff);
+  z-index: 5;
+}
+
+/* Assembly Hexagonal Fragments */
+.assemble-fragments {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+
+  .frag {
+    position: absolute;
+    width: 28px;
+    height: 32px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.8), rgba(0, 119, 255, 0.5));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: 0 0 12px #00f0ff;
+
+    &.f1 { top: -20px; left: -30px; animation: fragAssemble1 calc(0.38s * var(--speed)) ease-out forwards; }
+    &.f2 { top: -25px; right: -20px; animation: fragAssemble2 calc(0.35s * var(--speed)) ease-out forwards; }
+    &.f3 { bottom: -20px; left: -25px; animation: fragAssemble3 calc(0.4s * var(--speed)) ease-out forwards; }
+    &.f4 { bottom: -15px; right: -30px; animation: fragAssemble4 calc(0.36s * var(--speed)) ease-out forwards; }
+    &.f5 { top: 50%; left: -45px; animation: fragAssemble5 calc(0.32s * var(--speed)) ease-out forwards; }
+    &.f6 { top: 50%; right: -45px; animation: fragAssemble6 calc(0.34s * var(--speed)) ease-out forwards; }
+  }
+}
+
+/* Circular Assembly Rune */
+.fortress-rune {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotateX(65deg);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 3px dashed #00f0ff;
+  box-shadow: 0 0 35px #0077ff, inset 0 0 25px #00e5ff;
+  animation: runeSpin calc(4s * var(--speed)) linear infinite;
+  z-index: 1;
+}
+
+/* Conical Frontal Pressure Wave */
+.pressure-wave-cone {
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  transform: translateY(-50%);
+  width: 140px;
+  height: 240px;
+  background: radial-gradient(ellipse at left, rgba(255, 255, 255, 0.8) 0%, rgba(0, 229, 255, 0.4) 40%, transparent 80%);
+  clip-path: polygon(0% 45%, 100% 0%, 100% 100%, 0% 55%);
+  filter: blur(4px);
+  z-index: 4;
+}
+
+/* 4 Afterimages behind the fortress */
+.afterimages {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  .fortress-ghost {
+    position: absolute;
+    width: 230px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px #00e5ff);
+
+    &.g1 { transform: translate(-30px, 0); opacity: 0.55; }
+    &.g2 { transform: translate(-60px, 0); opacity: 0.38; }
+    &.g3 { transform: translate(-90px, 0); opacity: 0.22; }
+    &.g4 { transform: translate(-120px, 0); opacity: 0.12; }
+  }
+}
+
+/* Electric Arcs on Seams */
+.fortress-seam-arcs {
+  position: absolute;
+  inset: 15%;
+  z-index: 6;
+
+  .arc {
+    position: absolute;
+    width: 45px;
+    height: 2px;
+    background: #ffffff;
+    box-shadow: 0 0 10px #00f0ff, 0 0 18px #0077ff;
+    opacity: 0.8;
+
+    &.a1 { top: 25%; left: 30%; transform: rotate(20deg); animation: arcFlicker calc(0.18s * var(--speed)) infinite alternate; }
+    &.a2 { bottom: 30%; right: 25%; transform: rotate(-35deg); animation: arcFlicker calc(0.22s * var(--speed)) infinite alternate 0.05s; }
+    &.a3 { top: 55%; left: 45%; transform: rotate(10deg); animation: arcFlicker calc(0.15s * var(--speed)) infinite alternate 0.1s; }
+  }
+}
+
+/* Speed Lines */
+.charge-speedlines {
+  position: absolute;
+  top: 10%;
+  left: -80px;
+  width: 100px;
+  height: 80%;
+  z-index: 3;
+
+  .line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #ffffff 50%, #00e5ff 100%);
+    box-shadow: 0 0 8px #00f0ff;
+
+    &.l1 { top: 15%; width: 90px; left: 0; animation: speedlinePass calc(0.2s * var(--speed)) linear infinite; }
+    &.l2 { top: 40%; width: 110px; left: -20px; animation: speedlinePass calc(0.24s * var(--speed)) linear infinite 0.04s; }
+    &.l3 { top: 65%; width: 85px; left: -10px; animation: speedlinePass calc(0.18s * var(--speed)) linear infinite 0.08s; }
+    &.l4 { top: 85%; width: 100px; left: -30px; animation: speedlinePass calc(0.22s * var(--speed)) linear infinite 0.12s; }
+  }
+}
+
+/* Ground Dust */
+.ground-dust {
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  width: 140px;
+  height: 40px;
+  z-index: 3;
+
+  .dust {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.45) 0%, transparent 70%);
+
+    &.d1 { bottom: 5px; left: 10px; width: 45px; height: 25px; animation: dustPuff calc(0.28s * var(--speed)) ease-out infinite; }
+    &.d2 { bottom: 8px; left: 50px; width: 55px; height: 30px; animation: dustPuff calc(0.32s * var(--speed)) ease-out infinite 0.06s; }
+    &.d3 { bottom: 2px; left: 90px; width: 40px; height: 20px; animation: dustPuff calc(0.25s * var(--speed)) ease-out infinite 0.12s; }
+  }
+}
+
+/* ==========================================================================
+   2. Impact at Enemy Team Center
+   ========================================================================== */
+.impact-center-container {
+  position: absolute;
+  top: var(--enemy-center-y, 300px);
+  left: var(--enemy-center-x, 600px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.local-impact-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(0, 240, 255, 0.75) 40%, rgba(0, 119, 255, 0.25) 70%, transparent 100%);
+  filter: blur(8px);
+  animation: impactFlashAnim calc(0.35s * var(--speed)) ease-out forwards;
+}
+
+.impact-shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  box-shadow: 0 0 25px #00f0ff, inset 0 0 20px #0077ff;
+
+  &.sw1 {
+    width: 180px;
+    height: 180px;
+    animation: shockwaveExpand1 calc(0.45s * var(--speed)) cubic-bezier(0.1, 0.85, 0.25, 1) forwards;
+  }
+  &.sw2 {
+    width: 240px;
+    height: 240px;
+    border-color: #00e5ff;
+    animation: shockwaveExpand2 calc(0.55s * var(--speed)) cubic-bezier(0.1, 0.85, 0.25, 1) forwards 0.08s;
+  }
+}
+
+.distortion-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 8px solid rgba(255, 255, 255, 0.4);
+  filter: blur(6px);
+  animation: distortionWave calc(0.4s * var(--speed)) ease-out forwards;
+}
+
+/* Ground Cracks */
+.ground-cracks-cyan {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(60deg);
+  width: 320px;
+  height: 320px;
+
+  .crack-core {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.6) 0%, transparent 65%);
+    box-shadow: 0 0 35px #0077ff;
+  }
+
+  .crack-radiant-glow {
+    position: absolute;
+    inset: 15%;
+    border: 3px dashed #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #00e5ff;
+    animation: runeSpin calc(8s * var(--speed)) linear infinite;
+  }
+}
+
+/* Flying Debris */
+.flying-debris {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  .debris {
+    position: absolute;
+    background: #d8f5ff;
+    box-shadow: 0 0 10px #00f0ff;
+
+    &.deb1 { width: 9px; height: 12px; clip-path: polygon(50% 0, 100% 100%, 0 70%); animation: debFly1 calc(0.4s * var(--speed)) ease-out forwards; }
+    &.deb2 { width: 8px; height: 10px; clip-path: polygon(0 0, 100% 30%, 50% 100%); animation: debFly2 calc(0.42s * var(--speed)) ease-out forwards; }
+    &.deb3 { width: 12px; height: 8px; clip-path: polygon(20% 0, 100% 50%, 0 100%); animation: debFly3 calc(0.38s * var(--speed)) ease-out forwards; }
+    &.deb4 { width: 7px; height: 11px; clip-path: polygon(50% 0, 100% 70%, 0 100%); animation: debFly4 calc(0.44s * var(--speed)) ease-out forwards; }
+    &.deb5 { width: 10px; height: 10px; clip-path: polygon(0 50%, 50% 0, 100% 100%); animation: debFly5 calc(0.36s * var(--speed)) ease-out forwards; }
+    &.deb6 { width: 8px; height: 7px; clip-path: polygon(50% 0, 100% 100%, 0 50%); animation: debFly6 calc(0.4s * var(--speed)) ease-out forwards; }
+  }
+}
+
+/* ==========================================================================
+   3. Broken Morale (Vỡ Trận)
+   ========================================================================== */
+.broken-morale-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 28;
+}
+
+.broken-morale-marker {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: brokenMoraleDrop calc(0.35s * var(--speed)) cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+
+  .cracked-shield-icon {
+    position: relative;
+    width: 38px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .shield-half {
+      position: absolute;
+      width: 17px;
+      height: 38px;
+      background: linear-gradient(180deg, #64748b 0%, #334155 100%);
+      box-shadow: 0 0 10px rgba(100, 116, 139, 0.8);
+
+      &.left-half {
+        left: 1px;
+        clip-path: polygon(0 0, 100% 20%, 80% 60%, 100% 100%, 0 85%);
+        transform: rotate(-4deg);
+      }
+      &.right-half {
+        right: 1px;
+        clip-path: polygon(20% 20%, 100% 0, 100% 85%, 0 100%, 20% 60%);
+        transform: rotate(4deg);
+      }
+    }
+
+    .crack-lightning {
+      position: absolute;
+      width: 3px;
+      height: 34px;
+      background: #00f0ff;
+      box-shadow: 0 0 8px #00e5ff;
+      transform: rotate(6deg);
+    }
+  }
+
+  .rupture-energy-ring {
+    position: absolute;
+    top: 15px;
+    width: 55px;
+    height: 55px;
+    border: 2px dashed #94a3b8;
+    border-radius: 50%;
+    animation: ringRupture calc(0.4s * var(--speed)) ease-out forwards;
+  }
+
+  .broken-morale-text {
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #e2e8f0;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid #64748b;
+    border-radius: 4px;
+    padding: 2px 7px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 8px rgba(100, 116, 139, 0.6);
+    white-space: nowrap;
+    text-shadow: 0 1px 2px #000;
+  }
+}
+
+/* ==========================================================================
+   4. Returning Shields to Allies
+   ========================================================================== */
+.returning-shields-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+
+  .shield-projectile {
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: shieldTravelToAlly calc(0.4s * var(--speed)) cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+
+    .hex-plate {
+      width: 34px;
+      height: 40px;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      box-shadow: 0 0 16px #00f0ff, inset 0 0 8px #ffffff;
+      transform: translate(-50%, -50%);
+    }
+
+    .projectile-tail {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent 0%, #00e5ff 100%);
+      transform: translate(-100%, -50%);
+      filter: blur(2px);
+    }
+  }
+}
+
+/* ==========================================================================
+   5. Team Dome Canopy
+   ========================================================================== */
+.team-dome-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 26;
+}
+
+.team-dome-canopy {
+  position: absolute;
+  top: var(--ally-center-y, 300px);
+  left: var(--ally-center-x, 200px);
+  transform: translate(-50%, -65%);
+  width: 480px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: domeOpen calc(0.45s * var(--speed)) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  .dome-ring {
+    position: absolute;
+    border-radius: 50% 50% 10% 10% / 100% 100% 0% 0%;
+
+    &.outer-ring {
+      inset: 0;
+      border: 3px solid rgba(0, 240, 255, 0.85);
+      box-shadow: 0 0 30px #00d2ff, inset 0 0 35px rgba(0, 119, 255, 0.5);
+    }
+    &.inner-ring {
+      inset: 20px;
+      border: 2px dashed rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  .dome-hex-grid {
+    position: absolute;
+    inset: 10px;
+    border-radius: 50% 50% 0 0;
+    background: radial-gradient(ellipse at top, rgba(0, 229, 255, 0.25) 0%, rgba(0, 119, 255, 0.08) 60%, transparent 80%);
+  }
+
+  .dome-ambient-bloom {
+    position: absolute;
+    inset: -30px;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.2) 0%, transparent 75%);
+    filter: blur(12px);
+  }
+}
+
+.ally-hex-barrier {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: hexBarrierPop calc(0.35s * var(--speed)) ease-out forwards;
+
+  .hex-shield-cell {
+    position: absolute;
+    inset: 0;
+    border: 2px solid #00f0ff;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.2) 0%, transparent 75%);
+    box-shadow: 0 0 16px #0077ff, inset 0 0 10px rgba(0, 240, 255, 0.5);
+  }
+
+  .hex-lock-flash {
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff 0%, rgba(0, 240, 255, 0.6) 40%, transparent 75%);
+    opacity: 0;
+    animation: hexLockFlash calc(0.3s * var(--speed)) ease-out forwards;
+  }
+}
+
+/* ==========================================================================
+   Keyframe Animations
+   ========================================================================== */
+@keyframes fortressAssemble {
+  0% {
+    transform: translate3d(var(--caster-x, 200px), var(--caster-y, 300px), 0) scaleX(var(--facing, 1)) scale(0.65);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--caster-x, 200px), var(--caster-y, 300px), 0) scaleX(var(--facing, 1)) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fortressCharge {
+  0% {
+    transform: translate3d(var(--caster-x, 200px), var(--caster-y, 300px), 0) scaleX(var(--facing, 1));
+  }
+  100% {
+    transform: translate3d(var(--enemy-center-x, 600px), var(--enemy-center-y, 300px), 0) scaleX(var(--facing, 1));
+  }
+}
+
+@keyframes fortressDissolve {
+  0% { opacity: 0.85; transform: translate3d(var(--enemy-center-x, 600px), var(--enemy-center-y, 300px), 0) scaleX(var(--facing, 1)) scale(1); }
+  100% { opacity: 0; transform: translate3d(var(--enemy-center-x, 600px), var(--enemy-center-y, 300px), 0) scaleX(var(--facing, 1)) scale(0.9); }
+}
+
+@keyframes fragAssemble1 {
+  0% { transform: translate(-60px, -40px) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fragAssemble2 {
+  0% { transform: translate(60px, -40px) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fragAssemble3 {
+  0% { transform: translate(-50px, 50px) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fragAssemble4 {
+  0% { transform: translate(50px, 50px) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fragAssemble5 {
+  0% { transform: translate(-70px, 0) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fragAssemble6 {
+  0% { transform: translate(70px, 0) scale(0.4); opacity: 0; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+@keyframes runeSpin {
+  from { transform: translateX(-50%) rotateX(65deg) rotate(0deg); }
+  to { transform: translateX(-50%) rotateX(65deg) rotate(360deg); }
+}
+
+@keyframes arcFlicker {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+@keyframes speedlinePass {
+  0% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120px); opacity: 0; }
+}
+
+@keyframes dustPuff {
+  0% { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(1.6) translate(-25px, -10px); opacity: 0; }
+}
+
+@keyframes impactFlashAnim {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+
+@keyframes shockwaveExpand1 {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  70% { opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+@keyframes shockwaveExpand2 {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+  70% { opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+}
+
+@keyframes distortionWave {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(1.7); opacity: 0; }
+}
+
+@keyframes debFly1 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-80px, -70px) rotate(140deg); opacity: 0; } }
+@keyframes debFly2 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(90px, -60px) rotate(-180deg); opacity: 0; } }
+@keyframes debFly3 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-100px, 40px) rotate(90deg); opacity: 0; } }
+@keyframes debFly4 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(110px, 50px) rotate(-120deg); opacity: 0; } }
+@keyframes debFly5 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-40px, -110px) rotate(200deg); opacity: 0; } }
+@keyframes debFly6 { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(50px, -100px) rotate(-160deg); opacity: 0; } }
+
+@keyframes brokenMoraleDrop {
+  0% { transform: translate(-50%, -160%) scale(0.4); opacity: 0; }
+  100% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+}
+
+@keyframes ringRupture {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+@keyframes shieldTravelToAlly {
+  0% {
+    transform: translate3d(var(--start-x, 0), var(--start-y, 0), 0) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--target-x, 0), var(--target-y, 0), 0) scale(0.85);
+    opacity: 1;
+  }
+}
+
+@keyframes domeOpen {
+  0% { transform: translate(-50%, -65%) scale(0.3); opacity: 0; }
+  60% { transform: translate(-50%, -65%) scale(1.04); opacity: 1; }
+  100% { transform: translate(-50%, -65%) scale(1); opacity: 1; }
+}
+
+@keyframes hexBarrierPop {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes hexLockFlash {
+  0% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .fortress-rune, .afterimages, .charge-speedlines, .flying-debris {
+    display: none !important;
+  }
+  .fortress-mover {
+    transition: transform 0.3s ease-out;
+    animation: none !important;
+  }
+}

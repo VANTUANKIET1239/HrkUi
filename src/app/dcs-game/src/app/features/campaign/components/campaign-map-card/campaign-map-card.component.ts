@@ -23,6 +23,13 @@ export class CampaignMapCardComponent {
     return Math.min(100, Math.round((this.map.clearedStages / this.map.totalStages) * 100));
   }
 
+  onImgError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    if (target && !target.src.includes('lobby_bg.png')) {
+      target.src = '/assets/images/dcs-game/lobby_bg.png';
+    }
+  }
+
   onCardClick(): void {
     if (this.isClickable) {
       this.selectMap.emit(this.map);

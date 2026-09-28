@@ -1,0 +1,281 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.hai-scene-vfx-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------------- */
+/* 2. PHANTOM DASH LAYER & SPEED LINES                                       */
+/* ------------------------------------------------------------------------- */
+.phantom-dash-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dash-origin-flash {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(0, 240, 255, 0.7) 45%, transparent 75%);
+  animation: flash-vanish 0.16s ease-out forwards;
+}
+
+@keyframes flash-vanish {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+
+.dash-vector-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dash-laser-line {
+  stroke: rgba(0, 240, 255, 0.5);
+  stroke-width: 6;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px #00f0ff);
+  stroke-dasharray: 40 10;
+  animation: dash-laser-run 0.2s linear infinite;
+}
+
+.dash-core-line {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px #ffffff);
+}
+
+@keyframes dash-laser-run {
+  0% { stroke-dashoffset: 50; }
+  100% { stroke-dashoffset: 0; }
+}
+
+.dash-speed-lines {
+  position: absolute;
+  width: 260px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.s-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f0ff, #ffffff, #00f0ff, transparent);
+  box-shadow: 0 0 8px #00f0ff;
+  animation: speed-line-anim 0.18s ease-out forwards;
+}
+
+.sl1 { transform: scaleX(0.8); }
+.sl2 { transform: scaleX(1.1); }
+.sl3 { transform: scaleX(0.9); }
+
+@keyframes speed-line-anim {
+  0% { opacity: 0; transform: scaleX(0.2); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: scaleX(1.3); }
+}
+
+.phantom-afterimage {
+  position: absolute;
+  width: 44px;
+  height: 68px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.8) 0%, rgba(2, 132, 199, 0.4) 60%, transparent 80%);
+  border-radius: 12px;
+  filter: blur(2px) drop-shadow(0 0 12px #00f0ff);
+  animation: afterimage-fade 0.22s ease-out forwards;
+}
+
+.ai-1 { opacity: 0.75; }
+.ai-2 { opacity: 0.55; animation-delay: 0.04s; }
+.ai-3 { opacity: 0.35; animation-delay: 0.08s; }
+
+@keyframes afterimage-fade {
+  0% { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+}
+
+/* ------------------------------------------------------------------------- */
+/* 3. PHANTOM STRIKER AT TARGET                                              */
+/* ------------------------------------------------------------------------- */
+.phantom-striker-wrapper {
+  position: absolute;
+  width: 60px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+  z-index: 26;
+  pointer-events: none;
+  animation: striker-appear 0.12s ease-out forwards;
+}
+
+.phantom-striker-wrapper.facing-left {
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+@keyframes striker-appear {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.striker-silhouette {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.25) 0%, rgba(2, 6, 23, 0.95) 80%);
+  border-radius: 14px 14px 4px 4px;
+  border: 1.5px solid rgba(0, 240, 255, 0.7);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+/* Eye flare */
+.striker-eye-flare {
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  width: 12px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 2px;
+  box-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+}
+
+/* Twin Daggers */
+.striker-dagger {
+  position: absolute;
+  width: 4px;
+  height: 28px;
+  background: linear-gradient(180deg, #ffffff, #00f0ff);
+  box-shadow: 0 0 8px #00f0ff;
+  border-radius: 2px;
+}
+
+.d-left {
+  bottom: 8px;
+  left: 6px;
+  transform: rotate(35deg);
+}
+
+.d-right {
+  bottom: 12px;
+  right: 4px;
+  transform: rotate(-45deg);
+}
+
+/* Dynamic Pose Modifications based on slash stage */
+.phantom-striker-wrapper[data-slash='hit1'] .striker-silhouette {
+  transform: rotate(15deg) translateY(-8px);
+  filter: brightness(1.4) drop-shadow(0 0 20px #00f0ff);
+}
+
+.phantom-striker-wrapper[data-slash='hit2'] .striker-silhouette {
+  transform: rotate(-18deg) translateY(-14px) scale(1.1);
+  filter: brightness(1.6) drop-shadow(0 0 25px #38bdf8);
+}
+
+.phantom-striker-wrapper[data-slash='hit3'] .striker-silhouette {
+  transform: rotate(0deg) translateY(-28px) scale(1.25);
+  filter: brightness(2) drop-shadow(0 0 35px #ffffff);
+}
+
+.phantom-striker-wrapper[data-slash='lingering3'] .striker-silhouette {
+  transform: rotate(0deg) translateY(-10px) scale(1.05);
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------------------- */
+/* 7. RETURN TO ORIGIN DASH                                                  */
+/* ------------------------------------------------------------------------- */
+.return-dash-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dissolve-sparks {
+  position: absolute;
+  width: 60px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+}
+
+.dsp {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 8px #00f0ff;
+  animation: spark-float-up 0.32s ease-out forwards;
+}
+
+.ds1 { top: 80%; left: 20%; animation-delay: 0s; }
+.ds2 { top: 60%; left: 50%; animation-delay: 0.03s; }
+.ds3 { top: 70%; left: 80%; animation-delay: 0.05s; }
+.ds4 { top: 40%; left: 30%; animation-delay: 0.08s; }
+.ds5 { top: 30%; left: 70%; animation-delay: 0.1s; }
+.ds6 { top: 15%; left: 45%; animation-delay: 0.12s; }
+
+@keyframes spark-float-up {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.2); opacity: 0; }
+}
+
+.return-vector-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.return-shadow-line {
+  stroke: rgba(0, 240, 255, 0.6);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 20 15;
+  filter: drop-shadow(0 0 10px #00f0ff);
+  animation: return-dash-line 0.25s linear infinite;
+}
+
+@keyframes return-dash-line {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 35; }
+}
+
+.reappear-flash {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(0, 240, 255, 0.8) 45%, transparent 75%);
+  animation: flash-vanish 0.2s 0.08s ease-out forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .s-line, .dash-laser-line, .return-shadow-line, .dsp {
+    animation: none !important;
+  }
+}

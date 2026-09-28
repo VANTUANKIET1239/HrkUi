@@ -1,0 +1,133 @@
+<div class="thanh-thai-aura-container"
+     [class.tier-0]="effectiveTier === 0"
+     [class.tier-1]="effectiveTier === 1"
+     [class.tier-2]="effectiveTier === 2"
+     [class.tier-3]="effectiveTier === 3"
+     [class.tier-4]="effectiveTier >= 4"
+     [class.is-full-aura]="effectiveTier >= 4 || isFullAura"
+     [class.activation-burst]="activationBurst"
+     [class.facing-left]="facing === 'left'"
+     [class.facing-right]="facing === 'right'"
+     [class.team-right]="team === 'right'"
+     [style.--visual-speed]="visualSpeed">
+
+  <!-- ==============================================================
+       LAYER 1: BACK AURA (z-index: 2 - Rendered Behind Character Sprite)
+       ============================================================== -->
+  <div class="aura-layer-back">
+
+    <!-- Activation Burst Shockwave (Triggers upon entering 100 Bá Khí / Tier 4) -->
+    <div class="full-aura-activation-burst" *ngIf="activationBurst">
+      <div class="burst-ring"></div>
+      <div class="burst-shockwave"></div>
+      <div class="burst-flash"></div>
+    </div>
+
+    <!-- Lightning Flash Backdrop (Tier 3-4: Short ambient red flash behind character) -->
+    <div class="lightning-flash-backdrop" *ngIf="effectiveTier >= 3"></div>
+
+    <!-- Body Silhouette Rim Glow (Tiers 1-4: Thin red rim glow around silhouette) -->
+    <div class="body-silhouette-glow" *ngIf="effectiveTier >= 1"></div>
+
+    <!-- Ground Aura System (Feet Area) -->
+    <div class="ground-aura-system">
+      <!-- Ground Energy Mist & Pool -->
+      <div class="ground-energy-pool" [class.active-mist]="effectiveTier >= 1"></div>
+
+      <!-- Perspective 3D Disk -->
+      <div class="ground-disk-perspective" *ngIf="effectiveTier >= 1">
+        <!-- Shockwave Pulse Ring (Tier 4 / Full Aura) -->
+        <div class="ground-shockwave-ring" *ngIf="effectiveTier >= 4"></div>
+
+        <!-- Outer Rotating Rune / Fragmented Energy Ring (Tier 2+) -->
+        <svg class="ground-outer-ring" *ngIf="effectiveTier >= 2" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="72" class="outer-track" />
+          <circle cx="80" cy="80" r="64" class="outer-runes" />
+        </svg>
+
+        <!-- Inner Rotating Electric Ring (Tier 1+) -->
+        <svg class="ground-inner-ring" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" class="inner-glow" />
+          <circle cx="60" cy="60" r="42" class="inner-core" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Back Lightning Branches (Spine, Flank, Crown Arc) -->
+    <svg class="lightning-svg lightning-back-svg" viewBox="0 0 210 280" *ngIf="effectiveTier >= 1">
+      <!-- Bolt 1: Back Spinal Arc (Tier 1+) -->
+      <g class="bolt bolt-1">
+        <polyline class="stroke-outer" points="115,265 125,235 110,205 132,175 118,145 136,115 122,85" />
+        <polyline class="stroke-core" points="115,265 125,235 110,205 132,175 118,145 136,115 122,85" />
+      </g>
+
+      <!-- Bolt 2: Back Left Flank Arc (Tier 2+) -->
+      <g class="bolt bolt-2" *ngIf="effectiveTier >= 2">
+        <polyline class="stroke-outer" points="60,255 45,225 65,195 50,165 72,135 58,105" />
+        <polyline class="stroke-core" points="60,255 45,225 65,195 50,165 72,135 58,105" />
+      </g>
+
+      <!-- Bolt 7: Crown / Overhead Arc (Tier 4) -->
+      <g class="bolt bolt-7" *ngIf="effectiveTier >= 4">
+        <polyline class="stroke-outer" points="75,70 92,42 118,58 140,32 158,52" />
+        <polyline class="stroke-core" points="75,70 92,42 118,58 140,32 158,52" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- ==============================================================
+       LAYER 2: PARTICLES FIELD (z-index: 6 - Rendered In Front of Character Sprite)
+       ============================================================== -->
+  <div class="aura-particles-field" *ngIf="effectiveTier >= 1">
+    <span *ngFor="let p of visibleParticles; trackBy: trackParticleById"
+          class="aura-particle"
+          [class.is-dust]="p.type === 'dust'"
+          [class.is-spark]="p.type === 'spark'"
+          [style.--p-x]="p.x"
+          [style.--p-bottom]="p.y"
+          [style.--p-size.px]="p.size"
+          [style.--p-duration]="p.duration"
+          [style.--p-delay]="p.delay"
+          [style.--p-opacity]="p.opacity"
+          [style.--p-drift-x]="p.driftX"
+          [style.--p-color]="p.color">
+    </span>
+  </div>
+
+  <!-- ==============================================================
+       LAYER 3: FRONT AURA (z-index: 7 - Rendered In Front of Character Sprite)
+       ============================================================== -->
+  <div class="aura-layer-front" *ngIf="effectiveTier >= 1">
+    <svg class="lightning-svg lightning-front-svg" viewBox="0 0 210 280">
+      <!-- Bolt 5: Front Left Ground Surge (Tier 1+) -->
+      <g class="bolt bolt-5">
+        <polyline class="stroke-outer" points="50,270 65,248 52,226 72,204 58,185" />
+        <polyline class="stroke-core" points="50,270 65,248 52,226 72,204 58,185" />
+      </g>
+
+      <!-- Bolt 3: Front Torso Diagonal Cross Arc (Tier 2+) -->
+      <g class="bolt bolt-3" *ngIf="effectiveTier >= 2">
+        <polyline class="stroke-outer" points="70,215 95,192 82,168 120,146 106,120 140,96" />
+        <polyline class="stroke-core" points="70,215 95,192 82,168 120,146 106,120 140,96" />
+      </g>
+
+      <!-- Bolt 4: Front Right Forward Discharge with Fork (Tier 3+) -->
+      <g class="bolt bolt-4" *ngIf="effectiveTier >= 3">
+        <polyline class="stroke-outer" points="135,245 152,216 138,188 165,162 150,136 172,110" />
+        <polyline class="stroke-core" points="135,245 152,216 138,188 165,162 150,136 172,110" />
+        <!-- Fork branch -->
+        <polyline class="stroke-outer stroke-fork" points="138,188 124,172 116,154" />
+        <polyline class="stroke-core stroke-fork" points="138,188 124,172 116,154" />
+      </g>
+
+      <!-- Bolt 6: Front Apex Wrath Thunderbolt with Sky Fork (Tier 4) -->
+      <g class="bolt bolt-6" *ngIf="effectiveTier >= 4">
+        <polyline class="stroke-outer apex-outer" points="105,15 120,46 98,80 126,115 106,150 130,182 112,218" />
+        <polyline class="stroke-core apex-core" points="105,15 120,46 98,80 126,115 106,150 130,182 112,218" />
+        <!-- Sky Fork branch -->
+        <polyline class="stroke-outer apex-fork-outer" points="98,80 82,98 74,120" />
+        <polyline class="stroke-core apex-fork-core" points="98,80 82,98 74,120" />
+      </g>
+    </svg>
+  </div>
+</div>

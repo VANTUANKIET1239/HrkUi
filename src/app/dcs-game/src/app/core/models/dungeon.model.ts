@@ -146,11 +146,14 @@ export interface DungeonStamina {
 export interface HeroExpResult {
   playerHeroId: number;
   heroName: string;
+  avatar?: string;
   expGained: number;
   oldLevel: number;
   newLevel: number;
   oldExp: number;
   newExp: number;
+  oldMaxExp?: number;
+  newMaxExp?: number;
 }
 
 export interface DungeonResult {

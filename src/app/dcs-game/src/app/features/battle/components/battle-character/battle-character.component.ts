@@ -1,6 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BattleStatusEffectViewModel, Hero } from '../../../../core/models/hero.model';
+import { BattlePresentationEffect, BattleStatusEffectViewModel, Hero } from '../../../../core/models/hero.model';
+import { BattleResourceViewModel } from '../../../../core/models/battle.model';
+import { BattleStatusPresenter } from '../../presentation/battle-status.presenter';
 import { HpBarComponent } from '../../../../shared/components/hp-bar/hp-bar.component';
 import { ManaBarComponent } from '../../../../shared/components/mana-bar/mana-bar.component';
 import { DamageTextEvent } from '../../../../core/services/battle-engine.service';
@@ -12,6 +14,7 @@ import { getSpriteFlipState } from '../../utils/battle-facing.util';
 import { BasicSkillEffectComponent } from './basic-skill-effect/basic-skill-effect.component';
 import { HeroStarAuraComponent } from './hero-star-aura/hero-star-aura.component';
 import { BattleCharacterTooltipComponent } from '../battle-character-tooltip/battle-character-tooltip.component';
+import { AuraResourceComponent } from './aura-resource/aura-resource.component';
 
 @Component({
   selector: 'app-battle-character',
@@ -24,7 +27,8 @@ import { BattleCharacterTooltipComponent } from '../battle-character-tooltip/bat
     PassiveEffectComponent,
     BasicSkillEffectComponent,
     HeroStarAuraComponent,
-    BattleCharacterTooltipComponent
+    BattleCharacterTooltipComponent,
+    AuraResourceComponent
   ],
   templateUrl: './battle-character.component.html',
   styleUrl: './battle-character.component.scss'
@@ -37,14 +41,21 @@ export class BattleCharacterComponent {
   @Input() damageEvent: DamageTextEvent | null = null;
   @Input() activeSkillId: string | null = null;
   @Input() activeSkillCategory: 'basic' | 'ultimate' = 'basic';
-  @Input() displayMode: 'battle' | 'formation' = 'battle';
+  @Input() displayMode: 'battle' | 'formation' | 'management' | 'library' = 'battle';
   @Input() activeActor: Hero | null | undefined = null;
   @Input() phase: string = 'idle';
   @Input() visualSpeed = 1;
   @Input() castSequence?: number | null = null;
   @Input() isEmpowered = false;
 
+  private readonly statusPresenter = inject(BattleStatusPresenter);
+
   showTooltip = false;
+
+  get presentationEffects(): BattlePresentationEffect[] {
+    if (!this.character) return [];
+    return this.statusPresenter.getPresentationEffects(this.character);
+  }
 
   onMouseEnter(): void {
     this.showTooltip = true;
@@ -71,8 +82,12 @@ export class BattleCharacterComponent {
     return this.activeSkillId === 'RICARDO_MILOS' && this.isCharging && this.isEmpowered;
   }
 
-  isStatusFullyStacked(status: BattleStatusEffectViewModel): boolean {
-    return status.maxStacks != null && status.maxStacks > 0 && status.stacks >= status.maxStacks;
+  isStatusFullyStacked(status: BattlePresentationEffect | BattleStatusEffectViewModel): boolean {
+    if (status.code === 'RICARDO') {
+      return (status.stacks ?? 0) >= 6;
+    }
+    const max = (status as any).maxStacks;
+    return max != null && max > 0 && (status.stacks ?? 0) >= max;
   }
 
   getSkillCategory(): 'basic' | 'rage' | 'thunder' | 'ultimate' | 'heavenly' | null {
@@ -113,6 +128,33 @@ export class BattleCharacterComponent {
     return this.character.heroTemplateId === 11 ||
       (this.character.avatar?.includes('tao-la-nhat') ?? false) ||
       (this.character.name?.toLowerCase().includes('tao là nhất') ?? false);
+  }
+
+  getAuraResource(): BattleResourceViewModel | null {
+    if (this.character?.resources?.['AURA']) {
+      return this.character.resources['AURA'];
+    }
+    if (this.character?.heroCode === 'THANH_THAI_AURA') {
+      return {
+        resourceCode: 'AURA',
+        currentValue: 0,
+        maxValue: 100,
+        tier: 0,
+        isFull: false
+      };
+    }
+    return null;
+  }
+
+  getAuraPercentage(): number {
+    const aura = this.getAuraResource();
+    if (!aura) return 0;
+    return Math.min(100, Math.max(0, (aura.currentValue / (aura.maxValue || 100)) * 100));
+  }
+
+  formatAuraBonus(value: number | undefined): string {
+    const safeValue = Math.max(0, value ?? 0);
+    return Number.isInteger(safeValue) ? safeValue.toFixed(0) : safeValue.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
   }
 }
 

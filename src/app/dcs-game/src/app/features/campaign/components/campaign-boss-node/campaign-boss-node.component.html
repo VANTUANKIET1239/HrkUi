@@ -39,7 +39,7 @@
 
     <!-- Portrait Area -->
     <div class="portrait-container">
-      <img [src]="bossImage" [alt]="bossName" class="boss-portrait" loading="lazy" />
+      <img [src]="bossImage" (error)="onImgError($event)" [alt]="bossName" class="boss-portrait" loading="lazy" />
       <div class="portrait-shade"></div>
     </div>
 

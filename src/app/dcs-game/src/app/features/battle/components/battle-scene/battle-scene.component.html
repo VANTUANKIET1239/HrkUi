@@ -27,16 +27,21 @@
     <app-battle-skill-vfx-host
       [skillId]="battleEngine.currentVisualSkillId()"
       [actorActive]="battleEngine.visualActorId() !== null"
-      [impactActive]="battleEngine.activeTargetIds().length > 0"
+      [impactActive]="battleEngine.activeTargetIds().length > 0 || battleEngine.activeTargetId() !== null"
       [actorTeamRight]="battleEngine.isActorTeamRight()"
       [isEmpowered]="battleEngine.isVisualEmpowered()"
-      [visualSpeed]="battleEngine.currentVisualSpeed()">
+      [targetCount]="battleEngine.activeTargetIds().length > 0 ? battleEngine.activeTargetIds().length : (battleEngine.activeTargetId() !== null ? 1 : 0)"
+      [visualSpeed]="battleEngine.currentVisualSpeed()"
+      [castSequence]="battleEngine.visualCastSequence()"
+      [actorId]="battleEngine.visualActorId() ?? battleEngine.activeActorId()"
+      [activeTargetIds]="battleEngine.activeTargetIds().length > 0 ? battleEngine.activeTargetIds() : (battleEngine.activeTargetId() !== null ? [battleEngine.activeTargetId()!] : [])"
+      [castEvents]="battleEngine.getCastEvents()">
     </app-battle-skill-vfx-host>
 
     <!-- 3D Sa-Ban Battlefield Grid -->
     <div class="battlefield-grid">
       <!-- Player Team (Left: Blue/Gold theme) -->
-      <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}" [attr.data-team]="'left'">
+      <div *ngFor="let hero of getLeftTeam()" class="grid-cell pos-left-{{ hero.position }}" [attr.data-team]="'left'" [attr.data-hero-id]="hero.id">
         <app-battle-character 
           [character]="hero" 
           [isCharging]="battleEngine.visualActorId() === hero.id"
@@ -59,7 +64,7 @@
       </div>
 
       <!-- Opponent Team (Right: Red/Purple theme) -->
-      <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}" [attr.data-team]="'right'">
+      <div *ngFor="let enemy of getRightTeam()" class="grid-cell pos-right-{{ enemy.position }}" [attr.data-team]="'right'" [attr.data-hero-id]="enemy.id">
         <app-battle-character 
           [character]="enemy" 
           [isCharging]="battleEngine.visualActorId() === enemy.id"

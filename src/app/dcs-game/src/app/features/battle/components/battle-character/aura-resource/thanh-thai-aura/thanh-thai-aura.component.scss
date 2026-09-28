@@ -1,0 +1,636 @@
+:host {
+  display: contents;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Aura Container
+   Deliberately avoids transform and integer z-index on the container itself
+   so children can sandwich directly around .character-sprite (z-index: 5)
+   inside the parent .sprite-area stacking context:
+     - .aura-layer-back (z-index: 2) -> Behind Character Sprite
+     - .character-sprite (z-index: 5) -> In The Middle
+     - .aura-particles-field (z-index: 6) -> In Front of Character Sprite
+     - .aura-layer-front (z-index: 7) -> In Front of Character Sprite
+     - Battle UI / Status / HP / Tooltip (z-index: 20-150) -> Top Layer
+   ========================================================================== */
+.thanh-thai-aura-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  margin-left: -105px;
+  width: 210px;
+  height: 280px;
+  pointer-events: none;
+
+  /* Theme Color Palette */
+  --c-lightning-core: #fff1f2;
+  --c-lightning-red: #ff334f;
+  --c-lightning-crimson: #b80024;
+  --c-lightning-dark: #5c0014;
+  --c-energy-shadow: rgba(30, 0, 8, 0.7);
+  --c-dust-bright: #ff8a95;
+  --c-dust-dark: #681322;
+
+  /* Battle Speed Clamping (Prevents excessive strobe / high speed epilepsy) */
+  --clamped-ambient: clamp(1, var(--visual-speed, 1) * 0.4 + 0.6, 1.55);
+  --ambient-speed: calc(1 / var(--clamped-ambient));
+
+  --clamped-lightning: clamp(1, var(--visual-speed, 1) * 0.45 + 0.55, 1.7);
+  --lightning-speed: calc(1 / var(--clamped-lightning));
+
+  /* Character Facing Direction Horizontal Reflection for Lightning Branches */
+  &.facing-left {
+    .lightning-back-svg,
+    .lightning-front-svg {
+      transform: scaleX(-1);
+      transform-origin: 50% 50%;
+    }
+  }
+}
+
+/* ==========================================================================
+   LAYER 1: BACK AURA (z-index: 2 - Rendered Behind Character Sprite)
+   ========================================================================== */
+.aura-layer-back {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* --- Full Aura Activation Burst Shockwave (100 Bá Khí Entry) --- */
+.full-aura-activation-burst {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  margin-left: -130px;
+  margin-top: -130px;
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 3;
+
+  .burst-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid var(--c-lightning-red);
+    box-shadow: 0 0 35px var(--c-lightning-red), inset 0 0 25px var(--c-lightning-crimson);
+    animation: burstRingExpand calc(0.9s * var(--ambient-speed)) cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+  }
+
+  .burst-shockwave {
+    position: absolute;
+    inset: -25px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 51, 79, 0.45) 0%, rgba(184, 0, 36, 0.2) 45%, transparent 75%);
+    animation: burstShockwaveFade calc(0.9s * var(--ambient-speed)) ease-out forwards;
+  }
+
+  .burst-flash {
+    position: absolute;
+    inset: -120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 241, 242, 0.6) 0%, rgba(255, 51, 79, 0.35) 35%, transparent 70%);
+    animation: burstFlashFade calc(0.55s * var(--ambient-speed)) ease-out forwards;
+  }
+}
+
+@keyframes burstRingExpand {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes burstShockwaveFade {
+  0% { transform: scale(0.4); opacity: 0.95; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes burstFlashFade {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+/* --- Lightning Flash Backdrop (Tier 3-4: Short ambient flash behind character) --- */
+.lightning-flash-backdrop {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  margin-left: -100px;
+  width: 200px;
+  height: 230px;
+  border-radius: 48%;
+  background: radial-gradient(ellipse at center, rgba(255, 51, 79, 0.45) 0%, rgba(184, 0, 36, 0.25) 45%, transparent 72%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  animation: flashBurst calc(3.1s * var(--lightning-speed)) steps(1, start) infinite 1.1s;
+}
+
+@keyframes flashBurst {
+  0%, 50% { opacity: 0; }
+  51% { opacity: 0.55; }
+  53% { opacity: 0.25; }
+  55% { opacity: 0.65; }
+  58% { opacity: 0.15; }
+  59% { opacity: 0.5; }
+  63% { opacity: 0.2; }
+  65%, 100% { opacity: 0; }
+}
+
+/* --- Body Silhouette Rim Glow (Tiers 1-4) --- */
+.body-silhouette-glow {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  margin-left: -70px;
+  width: 140px;
+  height: 215px;
+  border-radius: 46%;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, rgba(184, 0, 36, 0.25) 0%, rgba(92, 0, 20, 0.12) 45%, transparent 70%);
+  filter: blur(8px);
+  opacity: 0.5;
+  animation: bodyGlowPulse calc(2.4s * var(--ambient-speed)) ease-in-out infinite alternate;
+}
+
+@keyframes bodyGlowPulse {
+  0% { transform: scale(0.96); opacity: 0.5; }
+  100% { transform: scale(1.05); opacity: 0.85; }
+}
+
+/* ==========================================================================
+   Ground Aura System (Under Feet, Perspective Ellipses)
+   ========================================================================== */
+.ground-aura-system {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  margin-left: -85px;
+  width: 170px;
+  height: 52px;
+  pointer-events: none;
+  z-index: 2;
+
+  .ground-energy-pool {
+    position: absolute;
+    inset: 4px 10px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(184, 0, 36, 0.45) 0%, rgba(92, 0, 20, 0.25) 50%, transparent 75%);
+    filter: blur(6px);
+    opacity: 0.3;
+    animation: poolBreathe calc(2.2s * var(--ambient-speed)) ease-in-out infinite alternate;
+
+    &.active-mist {
+      opacity: 0.7;
+    }
+  }
+
+  .ground-disk-perspective {
+    position: absolute;
+    inset: 0;
+    transform: rotateX(56deg);
+    transform-style: preserve-3d;
+  }
+
+  .ground-outer-ring {
+    position: absolute;
+    top: -54px;
+    left: 5px;
+    width: 160px;
+    height: 160px;
+    overflow: visible;
+    animation: groundSpinCCW calc(7.5s * var(--ambient-speed)) linear infinite;
+
+    .outer-track {
+      fill: none;
+      stroke: var(--c-lightning-red);
+      stroke-width: 1.8px;
+      stroke-dasharray: 14 8 26 6 8 10;
+      filter: drop-shadow(0 0 3px var(--c-lightning-crimson));
+    }
+
+    .outer-runes {
+      fill: none;
+      stroke: rgba(255, 241, 242, 0.7);
+      stroke-width: 1.1px;
+      stroke-dasharray: 4 18 8 12;
+    }
+  }
+
+  .ground-inner-ring {
+    position: absolute;
+    top: -34px;
+    left: 25px;
+    width: 120px;
+    height: 120px;
+    overflow: visible;
+    animation: groundSpinCW calc(4.8s * var(--ambient-speed)) linear infinite;
+
+    .inner-glow {
+      fill: none;
+      stroke: var(--c-lightning-red);
+      stroke-width: 2.2px;
+      stroke-dasharray: 24 8 36 9;
+      filter: drop-shadow(0 0 4px var(--c-lightning-crimson));
+    }
+
+    .inner-core {
+      fill: none;
+      stroke: var(--c-lightning-core);
+      stroke-width: 1.1px;
+    }
+  }
+
+  .ground-shockwave-ring {
+    position: absolute;
+    top: -54px;
+    left: 5px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 2px solid var(--c-lightning-core);
+    box-shadow: 0 0 16px var(--c-lightning-red), inset 0 0 10px var(--c-lightning-crimson);
+    animation: groundShockwavePulse calc(2.2s * var(--ambient-speed)) ease-out infinite;
+  }
+}
+
+@keyframes poolBreathe {
+  0% { transform: scaleX(0.92) scaleY(0.92); opacity: 0.5; }
+  100% { transform: scaleX(1.1) scaleY(1.08); opacity: 0.9; }
+}
+
+@keyframes groundSpinCW {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes groundSpinCCW {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes groundShockwavePulse {
+  0% { transform: scale(0.65); opacity: 0.95; }
+  70% { opacity: 0.6; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+/* ==========================================================================
+   SVG Lightning Branches (Sharp Dual-Stroke Jagged Geometry)
+   ========================================================================== */
+.lightning-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+
+  .stroke-outer {
+    fill: none;
+    stroke: var(--c-lightning-red);
+    stroke-width: 3.2px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 3px var(--c-lightning-crimson)) drop-shadow(0 0 6px rgba(255, 51, 79, 0.7));
+  }
+
+  .stroke-core {
+    fill: none;
+    stroke: var(--c-lightning-core);
+    stroke-width: 1.1px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .stroke-fork {
+    stroke-dasharray: 40;
+    animation: forkFlicker calc(1.6s * var(--lightning-speed)) steps(1, start) infinite;
+  }
+
+  /* Apex Strike Bolt 6 in Tier 4 */
+  .apex-outer {
+    stroke-width: 4.8px;
+    stroke: var(--c-lightning-red);
+    filter: drop-shadow(0 0 5px var(--c-lightning-red)) drop-shadow(0 0 12px rgba(255, 241, 242, 0.9));
+  }
+
+  .apex-core {
+    stroke-width: 1.9px;
+    stroke: #ffffff;
+  }
+
+  .apex-fork-outer {
+    stroke-width: 3.6px;
+    stroke: var(--c-lightning-red);
+    filter: drop-shadow(0 0 4px var(--c-lightning-crimson));
+  }
+
+  .apex-fork-core {
+    stroke-width: 1.2px;
+    stroke: var(--c-lightning-core);
+  }
+
+  /* Bolt Element State */
+  .bolt {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  /* --- Individual Bolt Timing & Rhythm Keyframes --- */
+  .bolt-1 {
+    animation: boltStrike1 calc(2.7s * var(--lightning-speed)) steps(1, start) infinite 0.25s;
+  }
+
+  .bolt-2 {
+    animation: boltStrike2 calc(2.0s * var(--lightning-speed)) steps(1, start) infinite 0.9s;
+  }
+
+  .bolt-3 {
+    animation: boltStrike3 calc(2.4s * var(--lightning-speed)) steps(1, start) infinite 1.4s;
+  }
+
+  .bolt-4 {
+    animation: boltStrike4 calc(1.6s * var(--lightning-speed)) steps(1, start) infinite 0.4s;
+  }
+
+  .bolt-5 {
+    animation: boltStrike5 calc(1.25s * var(--lightning-speed)) steps(1, start) infinite 0.7s;
+  }
+
+  .bolt-6 {
+    animation: boltStrike6 calc(3.1s * var(--lightning-speed)) steps(1, start) infinite 1.1s;
+  }
+
+  .bolt-7 {
+    animation: boltStrike7 calc(2.2s * var(--lightning-speed)) steps(1, start) infinite 1.8s;
+  }
+}
+
+/* Bolt 1: Spinal Arc (Back) */
+@keyframes boltStrike1 {
+  0%, 15% { opacity: 0; transform: none; }
+  16% { opacity: 1; transform: translate(-1px, 0.5px); }
+  18% { opacity: 0.85; transform: translate(1px, -0.5px); }
+  20% { opacity: 1; transform: translate(0, 0); }
+  22% { opacity: 0.2; }
+  23% { opacity: 0.95; }
+  25% { opacity: 0; }
+  26%, 100% { opacity: 0; }
+}
+
+/* Bolt 2: Left Flank Arc (Back) */
+@keyframes boltStrike2 {
+  0%, 38% { opacity: 0; transform: none; }
+  39% { opacity: 1; transform: translate(1px, 1px); }
+  41% { opacity: 0.7; transform: translate(-1px, -1px); }
+  43% { opacity: 1; }
+  46% { opacity: 0; }
+  47%, 100% { opacity: 0; }
+}
+
+/* Bolt 3: Torso Diagonal Cross Arc (Front) */
+@keyframes boltStrike3 {
+  0%, 22% { opacity: 0; transform: none; }
+  23% { opacity: 1; transform: scale(1.02); }
+  25% { opacity: 0.8; transform: scale(0.99); }
+  27% { opacity: 1; }
+  29% { opacity: 0.3; }
+  30% { opacity: 0.95; }
+  32% { opacity: 0; }
+  33%, 100% { opacity: 0; }
+}
+
+/* Bolt 4: Right Forward Discharge (Front) */
+@keyframes boltStrike4 {
+  0%, 44% { opacity: 0; transform: none; }
+  45% { opacity: 0.95; transform: translate(-0.5px, 1px); }
+  47% { opacity: 0.35; }
+  48% { opacity: 1; transform: translate(0.5px, -0.5px); }
+  51% { opacity: 0; }
+  52%, 100% { opacity: 0; }
+}
+
+/* Bolt 5: Left Ground Surge (Front) */
+@keyframes boltStrike5 {
+  0%, 18% { opacity: 0; transform: none; }
+  19% { opacity: 0.9; transform: translate(0.5px, 0.5px); }
+  21% { opacity: 0.2; }
+  22% { opacity: 1; transform: translate(-0.5px, 0); }
+  25% { opacity: 0; }
+  26%, 100% { opacity: 0; }
+}
+
+/* Bolt 6: Apex Wrath Thunderbolt (Front - Tier 4) */
+@keyframes boltStrike6 {
+  0%, 50% { opacity: 0; transform: none; }
+  51% { opacity: 1; transform: scaleY(1.03) translate(-1px, 0); }
+  53% { opacity: 0.8; transform: scaleY(0.98) translate(1px, 1px); }
+  55% { opacity: 1; transform: scaleY(1.01); }
+  58% { opacity: 0.35; }
+  59% { opacity: 1; }
+  62% { opacity: 0.15; }
+  63% { opacity: 0.9; }
+  65% { opacity: 0; }
+  66%, 100% { opacity: 0; }
+}
+
+/* Bolt 7: Crown / Overhead Arc (Back - Tier 4) */
+@keyframes boltStrike7 {
+  0%, 32% { opacity: 0; transform: none; }
+  33% { opacity: 0.9; transform: rotate(1deg); }
+  36% { opacity: 1; transform: rotate(-1deg); }
+  39% { opacity: 0; }
+  40%, 100% { opacity: 0; }
+}
+
+@keyframes forkFlicker {
+  0%, 46% { opacity: 0; }
+  47%, 50% { opacity: 0.9; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ==========================================================================
+   LAYER 2: PARTICLES FIELD (z-index: 6 - Rendered In Front of Sprite)
+   ========================================================================== */
+.aura-particles-field {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.aura-particle {
+  position: absolute;
+  left: var(--p-x);
+  bottom: var(--p-bottom);
+  width: var(--p-size);
+  height: var(--p-size);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+
+  /* Dark Ash / Dust Particle */
+  &.is-dust {
+    border-radius: 45% 55% 65% 35% / 40% 60% 40% 60%;
+    background: var(--p-color);
+    filter: blur(0.4px);
+    animation: dustRise calc(var(--p-duration) * var(--ambient-speed)) ease-out infinite;
+    animation-delay: var(--p-delay);
+  }
+
+  /* Glowing Ember / Spark Particle */
+  &.is-spark {
+    border-radius: 50%;
+    background: var(--p-color);
+    box-shadow: 0 0 5px var(--p-color), 0 0 9px var(--c-lightning-red);
+    animation: sparkRise calc(var(--p-duration) * var(--ambient-speed)) ease-out infinite;
+    animation-delay: var(--p-delay);
+  }
+}
+
+@keyframes dustRise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: var(--p-opacity);
+  }
+  75% {
+    opacity: calc(var(--p-opacity) * 0.7);
+  }
+  100% {
+    transform: translate3d(var(--p-drift-x), -125px, 0) scale(1.15) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkRise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.4);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--p-opacity);
+    transform: translate3d(calc(var(--p-drift-x) * 0.2), -25px, 0) scale(1.1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(calc(var(--p-drift-x) * 0.6), -75px, 0) scale(1.25);
+    box-shadow: 0 0 8px var(--p-color), 0 0 14px var(--c-lightning-red);
+  }
+  85% {
+    opacity: calc(var(--p-opacity) * 0.5);
+  }
+  100% {
+    transform: translate3d(var(--p-drift-x), -155px, 0) scale(0.35);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   LAYER 3: FRONT AURA (z-index: 7 - Rendered In Front of Sprite)
+   ========================================================================== */
+.aura-layer-front {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   TIER-SPECIFIC ESCALATION AND BALANCING
+   ========================================================================== */
+
+/* Tier 0 (0-24 Bá Khí): Invisible / dormant */
+.tier-0 {
+  .ground-aura-system,
+  .body-silhouette-glow,
+  .lightning-svg {
+    display: none !important;
+  }
+}
+
+/* Tier 1 (25-49 Bá Khí): Subtle single ring, gentle embers, sparse lightning */
+.tier-1 {
+  .body-silhouette-glow {
+    opacity: 0.45;
+  }
+  .ground-aura-system .ground-energy-pool {
+    opacity: 0.5;
+  }
+}
+
+/* Tier 2 (50-74 Bá Khí): Dual rings, rising dust, cross-torso lightning */
+.tier-2 {
+  .body-silhouette-glow {
+    opacity: 0.7;
+    background: radial-gradient(ellipse at center, rgba(255, 51, 79, 0.3) 0%, rgba(184, 0, 36, 0.2) 45%, transparent 70%);
+  }
+  .ground-aura-system .ground-energy-pool {
+    opacity: 0.7;
+    filter: blur(7px);
+  }
+}
+
+/* Tier 3 (75-99 Bá Khí): Expanding aura, swirling dust, fork discharges */
+.tier-3 {
+  .body-silhouette-glow {
+    opacity: 0.88;
+    background: radial-gradient(ellipse at center, rgba(255, 51, 79, 0.42) 0%, rgba(184, 0, 36, 0.25) 50%, transparent 72%);
+    filter: blur(9px);
+  }
+  .ground-aura-system .ground-energy-pool {
+    opacity: 0.85;
+    background: radial-gradient(ellipse at center, rgba(255, 51, 79, 0.55) 0%, rgba(184, 0, 36, 0.35) 45%, transparent 75%);
+  }
+}
+
+/* Tier 4 (100 Bá Khí / Full Aura): Climax state, radiant core, apex thunderbolts */
+.tier-4,
+.is-full-aura {
+  .body-silhouette-glow {
+    opacity: 1;
+    background: radial-gradient(ellipse at center, rgba(255, 241, 242, 0.35) 0%, rgba(255, 51, 79, 0.55) 30%, rgba(184, 0, 36, 0.3) 60%, transparent 78%);
+    filter: blur(10px) drop-shadow(0 0 10px rgba(255, 51, 79, 0.65));
+  }
+
+  .ground-aura-system .ground-energy-pool {
+    opacity: 1;
+    background: radial-gradient(ellipse at center, rgba(255, 241, 242, 0.3) 0%, rgba(255, 51, 79, 0.65) 35%, rgba(92, 0, 20, 0.4) 65%, transparent 80%);
+    filter: blur(8px) drop-shadow(0 0 8px rgba(255, 51, 79, 0.7));
+  }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .ground-outer-ring,
+  .ground-inner-ring,
+  .ground-shockwave-ring,
+  .body-silhouette-glow,
+  .lightning-flash-backdrop,
+  .full-aura-activation-burst,
+  .bolt,
+  .aura-particle {
+    animation: none !important;
+  }
+
+  .ground-outer-ring,
+  .ground-inner-ring {
+    opacity: 0.65 !important;
+  }
+
+  .body-silhouette-glow {
+    opacity: 0.55 !important;
+  }
+
+  .aura-particle.is-spark {
+    opacity: 0.45 !important;
+  }
+}

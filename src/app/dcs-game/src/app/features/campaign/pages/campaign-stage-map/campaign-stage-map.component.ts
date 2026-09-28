@@ -14,6 +14,7 @@ import { BattleFormationSetupModalComponent } from '../../components/battle-form
 import { STAGE_COORDINATES, RoadPoint } from '../../components/campaign-road/campaign-road.models';
 import { BattleFormationDraft } from '../../../../core/models/dungeon.model';
 import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
+import { CampaignThemeService, CampaignTheme } from '../../services/campaign-theme.service';
 
 @Component({
   selector: 'app-campaign-stage-map',
@@ -36,10 +37,14 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
   private readonly router = inject(Router);
   private readonly api = inject(DungeonApiService);
   private readonly session = inject(DungeonSessionService);
+  private readonly themeService = inject(CampaignThemeService);
 
   @ViewChild('journeyContainer') journeyContainer?: ElementRef<HTMLElement>;
 
   map?: DungeonMapDetail;
+  get currentTheme(): CampaignTheme {
+    return this.themeService.resolveTheme(this.map?.code);
+  }
   selected?: DungeonStage;
   formationSetupStage?: DungeonStage;
   stamina?: DungeonStamina;

@@ -6,9 +6,14 @@
     'is-dead': character.hp <= 0,
     'has-tooltip': showTooltip,
     'formation-mode': displayMode === 'formation',
+    'management-mode': displayMode === 'management',
+    'library-mode': displayMode === 'library',
     'hero-tao-la-nhat': isTaoLaNhat(),
     'is-empowered-ricardo': isEmpoweredRicardo()
   }" [attr.active-skill-id]="activeSkillId"
+  [attr.data-character-id]="character.id"
+  [attr.data-combatant-id]="character.id"
+  [attr.data-team]="character.team"
   [style.--visual-speed]="visualSpeed"
   tabindex="0"
   role="region"
@@ -309,34 +314,6 @@
       </div>
     </div>
 
-    <!-- Hai Last Laugh Target Hit Visuals (3 Rapid Shadow Strikes + Bleed Detonation Burst) -->
-    <div class="hai-last-laugh-hit-fx" *ngIf="activeSkillId === 'HAI_LAST_LAUGH'">
-      <!-- 3 Rapid Shadow Strike Slashes -->
-      <div class="shadow-strikes">
-        <div class="shadow-slash ss1"></div>
-        <div class="shadow-slash ss2"></div>
-        <div class="shadow-slash ss3"></div>
-      </div>
-
-      <!-- Detonation Shockwave Ring -->
-      <div class="detonation-shockwave"></div>
-
-      <!-- Crimson Detonation Blood Explosion -->
-      <div class="bleed-detonation-burst">
-        <span class="burst-spk b1"></span>
-        <span class="burst-spk b2"></span>
-        <span class="burst-spk b3"></span>
-        <span class="burst-spk b4"></span>
-        <span class="burst-spk b5"></span>
-        <span class="burst-spk b6"></span>
-      </div>
-
-      <!-- Sinister Laugh Phantom Glitch on victim -->
-      <div class="phantom-laugh-glitch">
-        <div class="glitch-grin">😈</div>
-        <div class="panic-tag">PANIC!</div>
-      </div>
-    </div>
   </ng-container>
 
   <!-- Ellipse shadow under feet -->
@@ -359,6 +336,13 @@
       [hero]="character">
     </app-hero-star-aura>
 
+    <!-- AURA RESOURCE (Thanh Thai Aura & custom hero aura tiers) -->
+    <app-aura-resource
+      *ngIf="displayMode === 'battle' && character.hp > 0"
+      [character]="character"
+      [visualSpeed]="visualSpeed">
+    </app-aura-resource>
+
     <!-- PASSIVE EFFECTS (In-battle status effects: Money, Dark Shield, Mark, Stun, Jackpot, Bao Ke, etc.) -->
     <app-passive-effect *ngIf="displayMode === 'battle' && character.hp > 0" [character]="character"
       [hasMoneyEffect]="hasMoneyEffect()" [hasDarkShield]="hasDarkShieldEffect()" [isHit]="isHit">
@@ -369,40 +353,66 @@
       [class.tao-la-nhat]="isTaoLaNhat()" />
 
     <!-- Status effects/Buff badges overlaying above the head -->
-    <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && character.battleStatuses && character.battleStatuses.length > 0">
-      <div *ngFor="let status of character.battleStatuses | slice:0:5" class="status-icon"
-        [class.is-debuff]="status.category === 'DEBUFF' || status.category === 'CONTROL'"
-        [class.is-ricardo]="status.code === 'RICARDO'"
-        [class.is-ricardo-rage]="status.code === 'RICARDO' && isStatusFullyStacked(status)"
-        [style.--status-color]="status.colorHex" tabindex="0">
-        <img [src]="status.iconPath" [alt]="status.name" />
-        <span class="status-turns" *ngIf="status.remainingTurns > 0">{{ status.remainingTurns }}</span>
-        <span class="status-stacks" *ngIf="status.stacks > 1 || status.code === 'RICARDO'">{{ status.stacks || 1 }}</span>
-        <span class="ricardo-rage-badge" *ngIf="status.code === 'RICARDO' && isStatusFullyStacked(status)">CUỒNG NỘ!</span>
-        <div class="status-tooltip">
-          <strong>{{ status.name }}</strong>
-          <span class="status-description" *ngIf="status.description">{{ status.description }}</span>
-          <span *ngIf="status.code === 'SHIELD'">Khiên còn lại: {{ status.value | number }}</span>
-          <span *ngIf="status.value && status.code !== 'SHIELD' && status.code !== 'RICARDO'">Giá trị: {{ status.value }}%</span>
-          <span *ngFor="let modifier of status.modifiers">
-            {{ modifier.attributeName || modifier.attributeCode }}:
-            {{ modifier.value > 0 ? '+' : '' }}{{ modifier.value }}{{ modifier.valueType === 'PERCENT' ? '%' : '' }}
-          </span>
-          <small *ngIf="status.remainingTurns > 0">Còn lại {{ status.remainingTurns }} lượt</small>
+    <div class="status-badge-overlay" *ngIf="displayMode === 'battle' && presentationEffects.length > 0">
+      <div *ngFor="let effect of presentationEffects | slice:0:6" class="status-icon"
+        [class.is-debuff]="effect.category === 'DEBUFF' || effect.category === 'CONTROL'"
+        [class.is-ricardo]="effect.code === 'RICARDO'"
+        [class.is-ricardo-rage]="effect.code === 'RICARDO' && isStatusFullyStacked(effect)"
+        [class.is-aura-bonus]="effect.code === 'AURA_DAMAGE_BONUS'"
+        [class.aura-tier-1]="effect.code === 'AURA_DAMAGE_BONUS' && effect.tier === 1"
+        [class.aura-tier-2]="effect.code === 'AURA_DAMAGE_BONUS' && effect.tier === 2"
+        [class.aura-tier-3]="effect.code === 'AURA_DAMAGE_BONUS' && effect.tier === 3"
+        [class.aura-tier-4]="effect.code === 'AURA_DAMAGE_BONUS' && effect.tier === 4"
+        [class.is-full-aura]="effect.code === 'AURA_DAMAGE_BONUS' && (effect.tier === 4 || (effect.stacks ?? 0) >= 100)"
+        [style.--status-color]="effect.color" tabindex="0">
+        <img [src]="effect.icon" [alt]="effect.name" />
+        <span class="status-turns" *ngIf="effect.remainingTurns && effect.remainingTurns > 0">{{ effect.remainingTurns }}</span>
+        <span class="status-stacks" *ngIf="effect.sourceType === 'STATUS' && ((effect.stacks ?? 0) > 1 || effect.code === 'RICARDO')">{{ effect.stacks || 1 }}</span>
+        <span class="ricardo-rage-badge" *ngIf="effect.code === 'RICARDO' && isStatusFullyStacked(effect)">CUỒNG NỘ!</span>
+        <span class="full-aura-badge" *ngIf="effect.code === 'AURA_DAMAGE_BONUS' && (effect.tier === 4 || (effect.stacks ?? 0) >= 100)">MAX!</span>
+        <div class="status-tooltip" [class.aura-tooltip]="effect.code === 'AURA_DAMAGE_BONUS'">
+          <strong>{{ effect.name }}</strong>
+          <span class="status-description" *ngIf="effect.description">{{ effect.description }}</span>
+          <span class="status-valueline" *ngFor="let line of effect.valueLines">{{ line }}</span>
+          <small *ngIf="effect.remainingTurns && effect.remainingTurns > 0">Còn lại {{ effect.remainingTurns }} lượt</small>
         </div>
       </div>
-      <span class="status-more" *ngIf="character.battleStatuses && character.battleStatuses.length > 5">
-        +{{ character.battleStatuses.length - 5 }}
+      <span class="status-more" *ngIf="presentationEffects.length > 6">
+        +{{ presentationEffects.length - 6 }}
       </span>
     </div>
   </div>
 
-  <!-- Info Overlay (Name & Health / Mana) -->
+  <!-- Info Overlay (Name & Health / Mana / Bá Khí) -->
   <div class="info-block" *ngIf="displayMode === 'battle'">
     <div class="name-tag">{{ character.name }}</div>
     <div class="bars-container">
       <app-hp-bar [hp]="character.hp" [maxHp]="character.maxHp"></app-hp-bar>
       <app-mana-bar [mana]="character.mana" [maxMana]="character.maxMana"></app-mana-bar>
+
+      <!-- Bá Khí (AURA) Resource Bar -->
+      <div class="aura-bar-container" *ngIf="getAuraResource() as aura"
+           [class.tier-0]="(aura.tier ?? 0) === 0"
+           [class.tier-1]="(aura.tier ?? 0) === 1"
+           [class.tier-2]="(aura.tier ?? 0) === 2"
+           [class.tier-3]="(aura.tier ?? 0) === 3"
+           [class.tier-4]="(aura.tier ?? 0) === 4"
+           [class.is-full]="aura.isFull || (aura.currentValue >= 100)"
+           title="Bá Khí: {{ aura.currentValue }}/{{ aura.maxValue || 100 }}">
+        <div class="aura-bar-track">
+          <div class="aura-bar-fill" [style.width.%]="getAuraPercentage()">
+            <div class="aura-bar-shine"></div>
+          </div>
+          <div class="aura-marker marker-25"></div>
+          <div class="aura-marker marker-50"></div>
+          <div class="aura-marker marker-75"></div>
+        </div>
+        <div class="aura-bar-label">
+          <span class="aura-title" *ngIf="!aura.isFull && aura.currentValue < 100">BÁ KHÍ</span>
+          <span class="aura-full-title" *ngIf="aura.isFull || aura.currentValue >= 100">FULL AURA</span>
+          <span class="aura-value">{{ aura.currentValue }}/{{ aura.maxValue || 100 }}</span>
+        </div>
+      </div>
     </div>
   </div>
 

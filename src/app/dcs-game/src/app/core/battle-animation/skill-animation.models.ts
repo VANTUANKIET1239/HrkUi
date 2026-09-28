@@ -22,6 +22,7 @@ export interface SkillVisualPolicy {
   maxVisualSpeed?: number;
   minimumVisibleDurationMs?: number;
   combatTextMinimumDurationMs?: number;
+  totalDurationMs?: number;
 }
 
 export interface SkillAnimationPhaseMetadata {

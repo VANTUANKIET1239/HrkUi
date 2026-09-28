@@ -1,0 +1,64 @@
+<div class="thanh-thai-skill-root"
+     [class.target-left]="isTeamRight"
+     [class.target-right]="!isTeamRight"
+     [class.basic-sweep]="isBasic"
+     [class.ultimate-lightning]="isUltimate"
+     [class.phase-cast]="isCastPhase"
+     [class.phase-impact]="isImpactPhase"
+     [class.phase-recovery]="isRecoveryPhase"
+     [style.--visual-speed]="visualSpeed">
+
+  <!-- ==========================================
+       BASIC ATTACK: Quét Cho Có
+       ========================================== -->
+  <ng-container *ngIf="isBasic">
+    <!-- Nonchalant casual red-black sweep trail -->
+    <div class="sweep-trail-container" *ngIf="isImpactPhase">
+      <div class="sweep-arc"></div>
+      <div class="sweep-arc-shadow"></div>
+      <div class="sweep-sparks">
+        <span class="spk s1"></span>
+        <span class="spk s2"></span>
+        <span class="spk s3"></span>
+      </div>
+      <div class="sweep-dust">
+        <span class="dust d1"></span>
+        <span class="dust d2"></span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ==========================================
+       ULTIMATE: Lôi Chổi Xích Hồng
+       ========================================== -->
+  <ng-container *ngIf="isUltimate">
+    <!-- Cast charging glow on broom -->
+    <div class="broom-charge-glow" *ngIf="isCastPhase">
+      <div class="charge-pulse"></div>
+      <div class="lightning-tendril lt1"></div>
+      <div class="lightning-tendril lt2"></div>
+    </div>
+
+    <!-- Broom Projectile Flight & Arcs -->
+    <div class="broom-projectile-container" *ngIf="isImpactPhase">
+      <div class="flying-broom-shadow"></div>
+      <div class="flying-broom-core">
+        <div class="broom-head-glow"></div>
+        <div class="broom-lightning-surround"></div>
+      </div>
+
+      <!-- Chain Lightning Arcs emanating from projectile -->
+      <div class="chain-lightning-burst">
+        <div class="chain-bolt cb1"></div>
+        <div class="chain-bolt cb2"></div>
+        <div class="chain-bolt cb3"></div>
+      </div>
+    </div>
+
+    <!-- Broom Return Arc (Recovery phase) -->
+    <div class="broom-return-trail" *ngIf="isRecoveryPhase">
+      <div class="return-ghost"></div>
+      <div class="return-sparks"></div>
+    </div>
+  </ng-container>
+</div>

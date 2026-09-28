@@ -1,9 +1,18 @@
 <main
   class="stage-shell"
+  [attr.data-theme]="currentTheme.themeCode"
+  [style.--theme-primary]="currentTheme.primaryColor"
+  [style.--theme-secondary]="currentTheme.secondaryColor"
+  [style.--theme-glow]="currentTheme.accentGlow"
   [style.background-image]="map ? 'radial-gradient(circle at 50% 30%, rgba(10, 16, 28, 0.75) 0%, rgba(4, 7, 14, 0.95) 90%), url(' + (map.backgroundPath || map.imagePath) + ')' : ''"
 >
   <!-- Floating Atmosphere Effects -->
-  <app-campaign-atmosphere></app-campaign-atmosphere>
+  <app-campaign-atmosphere
+    [particleType]="currentTheme.particleType"
+    [primaryColor]="currentTheme.primaryColor"
+    [secondaryColor]="currentTheme.secondaryColor"
+    [glowColor]="currentTheme.accentGlow"
+  ></app-campaign-atmosphere>
 
   <!-- Sticky Fantasy Navigation Header -->
   <header class="stage-header">
@@ -88,10 +97,19 @@
     </div>
   </div>
 
-  <!-- Loading & Error States -->
-  <div class="state-panel" *ngIf="loading">
-    <span class="spinner-border text-warning" role="status"></span>
-    <span class="state-text">Đang tải bản đồ hành trình phó bản...</span>
+  <!-- Loading Skeleton State -->
+  <div class="map-skeleton-panel" *ngIf="loading">
+    <div class="skeleton-header-shimmer">
+      <div class="skeleton-line skeleton-title"></div>
+      <div class="skeleton-line skeleton-subtitle"></div>
+    </div>
+    <div class="skeleton-track-shimmer">
+      <div class="skeleton-node-circle" *ngFor="let i of [1,2,3,4,5]"></div>
+    </div>
+    <div class="skeleton-loading-text">
+      <span class="spinner-border spinner-border-sm text-warning" role="status"></span>
+      <span>Đang tải hành trình phó bản...</span>
+    </div>
   </div>
 
   <div class="state-panel error-panel" *ngIf="!loading && error">

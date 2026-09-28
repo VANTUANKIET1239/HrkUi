@@ -341,3 +341,229 @@
   from { transform: translateY(40px) scale(0.9); opacity: 0; }
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
+
+/* Campaign Rewards & Hero EXP Bars */
+.campaign-rewards {
+  margin: 12px 0 16px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fbbf24;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4);
+  }
+
+  .rewards-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    span {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e2e8f0;
+
+      &.first-clear {
+        background: rgba(234, 179, 8, 0.2);
+        border-color: #eab308;
+        color: #fef08a;
+      }
+    }
+  }
+
+  .heroes-exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .hero-exp-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(8, 12, 20, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 6px 10px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
+
+    &.flash-level-up {
+      animation: heroLevelUpFlash 0.35s ease-out;
+      border-color: #fbbf24 !important;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.75);
+    }
+  }
+
+  .hero-avatar-wrapper {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+
+    .hero-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: #020617;
+    }
+
+    .hero-level-badge {
+      position: absolute;
+      bottom: -3px;
+      right: -4px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #94a3b8;
+      padding: 0 3px;
+      line-height: 1.2;
+
+      &.badge-leveled {
+        background: #d97706;
+        border-color: #fbbf24;
+        color: #ffffff;
+        text-shadow: 0 0 4px #000;
+      }
+    }
+  }
+
+  .hero-info-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .name-and-diff {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .hero-name-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hero-lvl-diff {
+      font-size: 10px;
+      color: #fbbf24;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hero-exp-gain {
+      font-size: 11px;
+      font-weight: 800;
+      color: #38bdf8;
+      white-space: nowrap;
+    }
+  }
+
+  .hero-exp-track {
+    position: relative;
+    width: 100%;
+    height: 14px;
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .hero-exp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0284c7 0%, #38bdf8 60%, #67e8f9 100%);
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  }
+
+  .hero-exp-shine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent);
+    border-radius: 7px 7px 0 0;
+  }
+
+  .hero-exp-numbers {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 850;
+    color: #ffffff;
+    text-shadow: 0 1px 2px #000, 0 0 4px #000;
+    letter-spacing: 0.3px;
+    pointer-events: none;
+  }
+
+  .hero-levelup-tag {
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #d97706, #fbbf24);
+    color: #111827;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    animation: levelUpTagBounce 0.4s ease-out;
+  }
+}
+
+@keyframes heroLevelUpFlash {
+  0% { background: rgba(251, 191, 36, 0.5); transform: scale(1.02); }
+  100% { background: rgba(8, 12, 20, 0.88); transform: scale(1); }
+}
+
+@keyframes levelUpTagBounce {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-exp-item,
+  .hero-exp-fill,
+  .hero-levelup-tag {
+    animation: none !important;
+    transition: none !important;
+  }
+}

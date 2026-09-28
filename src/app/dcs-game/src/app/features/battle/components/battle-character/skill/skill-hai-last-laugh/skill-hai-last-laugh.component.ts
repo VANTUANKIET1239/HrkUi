@@ -1,4 +1,13 @@
-import { Component, Input, OnInit, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Hero } from '../../../../../../core/models/hero.model';
 
@@ -10,50 +19,91 @@ import { Hero } from '../../../../../../core/models/hero.model';
   styleUrl: './skill-hai-last-laugh.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SkillHaiLastLaughComponent implements OnInit {
+export class SkillHaiLastLaughComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTeamRight = false;
   @Input() character?: Hero | null;
+  @Input() phase: string = 'idle';
+  @Input() visualSpeed = 1;
+  @Input() castSequence?: number | null = null;
 
-  targetOffsetX = 260;
-  targetOffsetY = 0;
-  activePhase: 'all' = 'all';
+  quoteState: 'quote1' | 'quote2' | 'hidden' = 'quote1';
+  isDashingOut = false;
+  isReappearing = false;
 
-  constructor(private elementRef: ElementRef<HTMLElement>) {}
+  private timeouts: any[] = [];
+  private lastExecutedCastSeq: number | null = null;
+
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.calculateTargetVector();
+    this.startPrepSequence();
   }
 
-  get facingDirection(): number {
-    return this.isTeamRight ? -1 : 1;
-  }
-
-  private calculateTargetVector(): void {
-    try {
-      const hostEl = this.elementRef.nativeElement;
-      const casterRect = hostEl.getBoundingClientRect();
-      const opponentSelector = this.isTeamRight
-        ? '.character-sprite-wrapper.team-left:not(.is-dead)'
-        : '.character-sprite-wrapper.team-right:not(.is-dead)';
-
-      const opponents = Array.from(document.querySelectorAll<HTMLElement>(opponentSelector));
-      if (opponents.length > 0) {
-        // Target closest or first alive opponent
-        const targetRect = opponents[0].getBoundingClientRect();
-        const dx = (targetRect.left + targetRect.width / 2) - (casterRect.left + casterRect.width / 2);
-        const dy = (targetRect.top + targetRect.height / 2) - (casterRect.top + casterRect.height / 2);
-
-        // Assign relative offset along facing direction
-        const absX = Math.abs(dx);
-        if (absX > 60 && absX < 800) {
-          this.targetOffsetX = absX;
-          this.targetOffsetY = dy;
-          hostEl.style.setProperty('--dynamic-target-x', `${absX}px`);
-          hostEl.style.setProperty('--dynamic-target-y', `${dy}px`);
-        }
-      }
-    } catch {
-      // Fallback uses default 260px offset
+  ngOnChanges(changes: SimpleChanges): void {
+    const seqChanged = this.castSequence != null && this.castSequence !== this.lastExecutedCastSeq;
+    if (seqChanged || changes['castSequence']) {
+      this.lastExecutedCastSeq = this.castSequence ?? null;
+      this.startPrepSequence();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.clearTimers();
+  }
+
+  private startPrepSequence(): void {
+    this.clearTimers();
+
+    const speed = Math.max(1, this.visualSpeed);
+    const quote1Duration = Math.max(150, Math.round(240 / speed));
+    const quote2Duration = Math.max(250, Math.round(450 / speed));
+    const dashStartTime = Math.max(500, Math.round(800 / speed));
+    const returnTime = Math.max(1500, Math.round(2400 / speed));
+
+    this.quoteState = 'quote1';
+    this.isDashingOut = false;
+    this.isReappearing = false;
+    this.cdr.markForCheck();
+
+    // 1. Quote phase 2: "Vì sắp hết lượt rồi."
+    const t1 = setTimeout(() => {
+      this.quoteState = 'quote2';
+      this.cdr.markForCheck();
+    }, quote1Duration);
+    this.timeouts.push(t1);
+
+    // 2. Hide quote completely before dash/hit 1
+    const t2 = setTimeout(() => {
+      this.quoteState = 'hidden';
+      this.cdr.markForCheck();
+    }, quote1Duration + quote2Duration);
+    this.timeouts.push(t2);
+
+    // 3. Caster dashes out towards target (disappears from origin)
+    const t3 = setTimeout(() => {
+      this.isDashingOut = true;
+      this.cdr.markForCheck();
+    }, dashStartTime);
+    this.timeouts.push(t3);
+
+    // 4. Return phase: Reappear at origin with knife sheathing
+    const t4 = setTimeout(() => {
+      this.isDashingOut = false;
+      this.isReappearing = true;
+      this.cdr.markForCheck();
+    }, returnTime);
+    this.timeouts.push(t4);
+
+    // 5. Settle after reappearance
+    const t5 = setTimeout(() => {
+      this.isReappearing = false;
+      this.cdr.markForCheck();
+    }, returnTime + 450);
+    this.timeouts.push(t5);
+  }
+
+  private clearTimers(): void {
+    this.timeouts.forEach(t => clearTimeout(t));
+    this.timeouts = [];
   }
 }

@@ -1,4 +1,11 @@
-<div class="atmosphere-container" aria-hidden="true">
+<div
+  class="atmosphere-container"
+  [attr.data-particle]="particleType"
+  [style.--particle-color-1]="primaryColor || 'var(--theme-primary, #fef08a)'"
+  [style.--particle-color-2]="secondaryColor || 'var(--theme-secondary, #f59e0b)'"
+  [style.--particle-glow]="glowColor || 'var(--theme-glow, rgba(245, 158, 11, 0.6))'"
+  aria-hidden="true"
+>
   <!-- Drifting fog overlays -->
   <div class="fog-layer fog-layer-1"></div>
   <div class="fog-layer fog-layer-2"></div>
@@ -8,7 +15,7 @@
   <div class="glow-orb orb-2"></div>
   <div class="glow-orb orb-3"></div>
 
-  <!-- Floating magical dust motes -->
+  <!-- Floating particles -->
   <div class="particles-field">
     <span
       *ngFor="let p of particles"

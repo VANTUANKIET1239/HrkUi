@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,6 +10,11 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CampaignAtmosphereComponent {
+  @Input() particleType: 'sparks' | 'dust' | 'rain-neon' | 'sand' | 'celestial-feathers' = 'sparks';
+  @Input() primaryColor?: string;
+  @Input() secondaryColor?: string;
+  @Input() glowColor?: string;
+
   // Pre-configured 12 particles with varied positions, sizes and animation delays
   readonly particles = [
     { left: '8%', top: '15%', size: 4, delay: '0s', duration: '9s' },

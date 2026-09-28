@@ -12,6 +12,7 @@
   }
 }
 
+
 .character-sprite-wrapper {
   position: relative;
   width: 100%;
@@ -72,9 +73,10 @@
 
   &.tao-la-nhat,
   &[src*="tao-la-nhat"],
+  &[src*="thanh-thai-aura"],
   &[src*="transparent"] {
     mix-blend-mode: normal !important;
-    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(6, 182, 212, 0.25)) !important;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(220, 20, 60, 0.3)) !important;
   }
 }
 
@@ -98,17 +100,78 @@
 
   .character-sprite {
     height: auto !important;
-    max-height: 68px !important;
+    max-height: 60px !important;
     width: auto !important;
     max-width: 100% !important;
     object-fit: contain !important;
     object-position: center bottom !important;
     transform: none !important;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
   }
 
   .shadow-ellipse {
     display: none !important;
+  }
+
+  .info-block {
+    display: none !important;
+  }
+}
+
+.character-sprite-wrapper.management-mode {
+  width: 100%;
+  height: 100%;
+  justify-content: flex-end;
+
+  .sprite-area {
+    height: 380px;
+    max-height: 100%;
+    transform: none !important;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .character-sprite {
+    height: 380px !important;
+    max-height: 100% !important;
+    width: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    object-position: center bottom !important;
+    transform: none !important;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 16px rgba(255, 215, 0, 0.15));
+  }
+
+  .shadow-ellipse {
+    bottom: 5px;
+    width: 140px;
+    height: 20px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, transparent 75%);
+  }
+
+  .info-block {
+    display: none !important;
+  }
+}
+
+.character-sprite-wrapper.library-mode {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+
+  .sprite-area {
+    height: 200px;
+    transform: none !important;
+    align-items: center;
+  }
+
+  .character-sprite {
+    height: 180px !important;
+    max-height: 100% !important;
+    width: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    transform: none !important;
   }
 
   .info-block {
@@ -206,6 +269,118 @@
   }
 }
 
+/* Bá Khí (AURA) Resource Bar Styling */
+.aura-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  pointer-events: none;
+  user-select: none;
+  transition: all 0.3s ease;
+
+  .aura-bar-track {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    background: rgba(12, 6, 10, 0.92);
+    border-radius: 3px;
+    border: 1px solid rgba(139, 0, 0, 0.45);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+  }
+
+  .aura-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #40000a 0%, #8b0000 35%, #b22222 70%, #ff1a40 100%);
+    border-radius: 2px;
+    transition: width 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    box-shadow: 0 0 6px rgba(220, 20, 60, 0.6);
+
+    .aura-bar-shine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
+      border-radius: 2px 2px 0 0;
+    }
+  }
+
+  .aura-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    z-index: 2;
+
+    &.marker-25 { left: 25%; }
+    &.marker-50 { left: 50%; }
+    &.marker-75 { left: 75%; }
+  }
+
+  .aura-bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    line-height: 1;
+
+    .aura-title {
+      font-size: 8px;
+      font-weight: 850;
+      color: #ff6b81;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px #000, 0 0 3px rgba(220, 20, 60, 0.8);
+    }
+
+    .aura-full-title {
+      font-size: 8.5px;
+      font-weight: 900;
+      color: #ff1744;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 6px #ff1744, 0 0 10px rgba(255, 23, 68, 0.8);
+      animation: pulseFullAura 1.2s infinite ease-in-out alternate;
+    }
+
+    .aura-value {
+      font-size: 8px;
+      font-weight: 850;
+      color: #f8fafc;
+      text-shadow: 0 1px 2px #000, 0 0 3px #000;
+    }
+  }
+
+  &.tier-2 .aura-bar-track {
+    border-color: rgba(220, 20, 60, 0.6);
+  }
+
+  &.tier-3 .aura-bar-track {
+    border-color: rgba(255, 26, 64, 0.75);
+    box-shadow: 0 0 5px rgba(220, 20, 60, 0.4), inset 0 1px 3px rgba(0, 0, 0, 0.85);
+  }
+
+  &.is-full .aura-bar-track {
+    border-color: #ff1a40 !important;
+    box-shadow: 0 0 8px rgba(255, 26, 64, 0.8), inset 0 0 4px rgba(255, 26, 64, 0.5);
+    animation: fullAuraTrackGlow 1.5s infinite ease-in-out alternate;
+  }
+}
+
+@keyframes pulseFullAura {
+  0% { transform: scale(0.96); filter: brightness(1); }
+  100% { transform: scale(1.05); filter: brightness(1.3); }
+}
+
+@keyframes fullAuraTrackGlow {
+  0% { box-shadow: 0 0 4px rgba(220, 20, 60, 0.5); }
+  100% { box-shadow: 0 0 10px rgba(255, 26, 64, 0.9), 0 0 4px #fff; }
+}
+
 /* Status Badges Overlay above head */
 .status-badge-overlay {
   position: absolute;
@@ -270,6 +445,76 @@
     transform: scale(1.12);
     box-shadow: 0 0 20px #dc2626, 0 0 35px #c026d3, 0 0 45px #fbbf24;
   }
+}
+
+.status-icon.is-aura-bonus {
+  --status-color: #10b981;
+  border-radius: 6px;
+  background: radial-gradient(circle at center, rgba(30, 41, 59, 0.95), #090704);
+  transition: all 0.3s ease;
+
+  &.aura-tier-1 {
+    --status-color: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6), 0 2px 4px #000;
+  }
+
+  &.aura-tier-2 {
+    --status-color: #3b82f6;
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.7), 0 2px 5px #000;
+  }
+
+  &.aura-tier-3 {
+    --status-color: #f97316;
+    border-color: #f97316;
+    box-shadow: 0 0 12px rgba(249, 115, 22, 0.8), 0 0 20px rgba(234, 88, 12, 0.35);
+  }
+
+  &.aura-tier-4,
+  &.is-full-aura {
+    --status-color: #ef4444;
+    border-color: #ef4444;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.9), 0 0 28px rgba(245, 158, 11, 0.6);
+    animation: fullAuraIconPulse 1s infinite alternate ease-in-out;
+  }
+}
+
+@keyframes fullAuraIconPulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 12px #ef4444, 0 0 20px #f59e0b;
+  }
+  100% {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #ef4444, 0 0 32px #f59e0b, 0 0 42px rgba(239, 68, 68, 0.7);
+  }
+}
+
+.full-aura-badge {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+  color: #ffffff;
+  border: 1px solid #fef08a;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
+  text-shadow: 0 1px 2px #000, 0 0 6px #f59e0b;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+  animation: fullAuraBadgePulse 0.9s infinite alternate ease-in-out;
+  z-index: 10;
+}
+
+@keyframes fullAuraBadgePulse {
+  0% { transform: translateX(-50%) scale(0.95); filter: brightness(1); }
+  100% { transform: translateX(-50%) scale(1.05); filter: brightness(1.25); }
 }
 
 .ricardo-rage-badge {
@@ -352,6 +597,27 @@
 .status-tooltip strong { color: var(--status-color); font-size: 13px; }
 .status-tooltip small { color: #c8b98e; }
 .status-description { color: #eee2c4; }
+
+.status-tooltip.aura-tooltip {
+  width: 230px;
+
+  .status-valueline {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    &:first-of-type {
+      color: #fecaca;
+      text-shadow: 0 0 6px rgba(248, 113, 113, 0.4);
+    }
+
+    &:nth-of-type(2) {
+      color: #f0abfc;
+      text-shadow: 0 0 6px rgba(232, 121, 249, 0.4);
+    }
+  }
+}
+
 .status-icon:hover .status-tooltip,
 .status-icon:focus-visible .status-tooltip {
   opacity: 1;
@@ -471,64 +737,38 @@
 }
 
 @keyframes hai-last-laugh-assassin-anim {
-  /* Phase 1: 0% - 14% (0s - 0.4s): Stance prep, sinister crouch */
+  /* Phase 1 (0s - 0.45s): Sinister crouch & power charge */
   0% {
     transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
     filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.5));
   }
-  14% {
-    transform: rotateX(-20deg) translate3d(calc(-20px * var(--facing)), 8px, 0) scale(0.95) skewX(calc(-4deg * var(--facing)));
-    filter: brightness(1.2) drop-shadow(0 0 16px rgba(6, 182, 212, 0.8));
+  16% {
+    transform: rotateX(-20deg) translate3d(calc(-14px * var(--facing)), 6px, 0) scale(0.96) skewX(calc(-4deg * var(--facing)));
+    filter: brightness(1.25) drop-shadow(0 0 16px rgba(0, 240, 255, 0.85));
   }
-  /* Phase 2: 14% - 26% (0.4s - 0.75s): Panic terror pulse & vanish into shadows */
-  22% {
-    transform: rotateX(-20deg) translate3d(calc(-30px * var(--facing)), 12px, 0) scale(0.9) skewX(calc(-8deg * var(--facing)));
-    opacity: 0.85;
-  }
+  /* Phase 2 (0.45s - 0.8s): Tightening crouch before dash */
   26% {
-    transform: rotateX(-20deg) translate3d(calc(60px * var(--facing)), -20px, 40px) scale(1.05);
-    opacity: 0.2;
-    filter: blur(4px) drop-shadow(0 0 25px #06b6d4);
+    transform: rotateX(-20deg) translate3d(calc(-18px * var(--facing)), 10px, 0) scale(0.92) skewX(calc(-6deg * var(--facing)));
+    opacity: 0.95;
+    filter: brightness(1.4) drop-shadow(0 0 20px #00f0ff);
   }
-  /* Phase 3 & 4: 26% - 48% (0.75s - 1.35s): Instant Phantom Dash + Strike 1 (HIT_1 @ 1.05s / 37%) */
-  35% {
-    transform: rotateX(-20deg) translate3d(calc(240px * var(--facing)), -40px, 80px) scale(1.15) rotate(calc(12deg * var(--facing)));
-    opacity: 1;
-    filter: brightness(1.5) drop-shadow(0 0 20px #22d3ee);
+  29% {
+    transform: rotateX(-20deg) translate3d(calc(20px * var(--facing)), -8px, 0) scale(1.05);
+    opacity: 0.15;
+    filter: blur(4px) drop-shadow(0 0 25px #00f0ff);
   }
-  40% {
-    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), -10px, 80px) scale(1.2) rotate(calc(-10deg * var(--facing)));
-    filter: brightness(1.3) drop-shadow(0 0 15px #06b6d4);
+  /* Phase 3 - 6 (0.8s - 2.4s): Origin body is phantom-vanished while scene striker executes hits */
+  30%, 84% {
+    opacity: 0;
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(0.9);
   }
-  /* Phase 5: 48% - 62% (1.35s - 1.75s): Strike 2 (HIT_2 @ 1.4s / 50%) Reverse Spinning Thrust */
-  50% {
-    transform: rotateX(-20deg) translate3d(calc(280px * var(--facing)), -60px, 90px) scale(1.25) rotate(calc(20deg * var(--facing)));
-    filter: brightness(1.6) drop-shadow(0 0 25px #38bdf8);
-  }
-  56% {
-    transform: rotateX(-20deg) translate3d(calc(250px * var(--facing)), 0px, 80px) scale(1.18) rotate(calc(-5deg * var(--facing)));
-  }
-  /* Phase 6: 62% - 76% (1.75s - 2.15s): Strike 3 (HIT_3 @ 1.9s / 68%) Massive Downward X-Execution */
-  65% {
-    transform: rotateX(-20deg) translate3d(calc(270px * var(--facing)), -130px, 120px) scale(1.35) rotate(calc(-15deg * var(--facing)));
-    filter: brightness(1.8) drop-shadow(0 0 35px #a5f3fc);
-  }
-  70% {
-    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), 15px, 60px) scale(1.2) rotate(calc(5deg * var(--facing)));
-    filter: brightness(1.4) drop-shadow(0 0 20px #ef4444);
-  }
-  /* Phase 7: 76% - 88% (2.15s - 2.45s): Assassin Shadow Teleport Back to Origin */
-  78% {
-    transform: rotateX(-20deg) translate3d(calc(260px * var(--facing)), 15px, 60px) scale(1.0);
-    opacity: 0.3;
-    filter: blur(6px);
-  }
+  /* Phase 7 (2.4s - 2.6s): Reappear at origin with knife glint */
   85% {
-    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1.05);
-    opacity: 0.9;
-    filter: brightness(1.3) drop-shadow(0 0 18px #06b6d4);
+    transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1.06);
+    opacity: 0.95;
+    filter: brightness(1.5) drop-shadow(0 0 22px #00f0ff);
   }
-  /* Phase 8: 88% - 100% (2.45s - 2.8s): Sheath daggers & smirking finish */
+  /* Phase 8 (2.6s - 2.8s): Sheath knives into settled combat idle */
   100% {
     transform: rotateX(-20deg) translate3d(0, 0, 0) scale(1);
     opacity: 1;

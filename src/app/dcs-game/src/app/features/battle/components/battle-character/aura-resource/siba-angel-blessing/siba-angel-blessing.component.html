@@ -1,0 +1,31 @@
+<div class="siba-blessing-container" [ngClass]="{
+  'is-full': isFullBlessing || currentBlessing >= 5,
+  'team-left': team === 'left',
+  'team-right': team === 'right'
+}" [style.--visual-speed]="visualSpeed">
+
+  <!-- Radiant Golden Halo Arc -->
+  <div class="halo-ring">
+    <div class="halo-inner-glow"></div>
+  </div>
+
+  <!-- 5 Feather / Light Blessing Points -->
+  <div class="blessing-slots">
+    <div *ngFor="let slot of blessingSlots; let i = index"
+         class="blessing-node node-{{ slot }}"
+         [ngClass]="{
+           'active': slot <= currentBlessing,
+           'just-activated': slot === currentBlessing
+         }">
+      <div class="feather-icon">🪶</div>
+      <div class="node-sparkle"></div>
+      <div class="node-glow"></div>
+    </div>
+  </div>
+
+  <!-- Full Blessing Radiant Flare -->
+  <div class="empowered-burst" *ngIf="isFullBlessing || currentBlessing >= 5">
+    <div class="burst-ring"></div>
+    <div class="burst-rays"></div>
+  </div>
+</div>

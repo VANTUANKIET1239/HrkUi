@@ -1,0 +1,541 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+}
+
+.prime-skill-root {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --speed: calc(1 / var(--visual-speed, 1));
+}
+
+/* ==========================================================================
+   Basic Attack: Shield Energy Charge & Heavy Bash
+   ========================================================================== */
+.shield-charge-fx {
+  position: absolute;
+  top: 25%;
+  left: 30%;
+  width: 90px;
+  height: 90px;
+  pointer-events: none;
+
+  .target-left & {
+    left: auto;
+    right: 30%;
+    transform: scaleX(-1);
+  }
+
+  .charge-arc {
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    border-top: 3px solid #00f0ff;
+    border-right: 3px solid #0077ff;
+    border-bottom: transparent;
+    border-left: transparent;
+    filter: drop-shadow(0 0 10px #00d2ff);
+    animation: primeChargeSpin calc(0.4s * var(--speed)) linear infinite;
+
+    &.arc-2 {
+      inset: 22px;
+      border-top-color: #ffffff;
+      border-right-color: #38bdf8;
+      animation-duration: calc(0.3s * var(--speed));
+      animation-direction: reverse;
+    }
+  }
+
+  .charge-pulse {
+    position: absolute;
+    inset: 20%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.45) 0%, transparent 70%);
+    animation: primePulse calc(0.3s * var(--speed)) ease-in-out infinite alternate;
+  }
+
+  .shield-electric-spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00f0ff;
+
+    &.spk-1 { top: 15%; left: 20%; animation: primeSpark calc(0.25s * var(--speed)) ease-out infinite; }
+    &.spk-2 { bottom: 20%; right: 25%; animation: primeSpark calc(0.3s * var(--speed)) ease-out infinite 0.08s; }
+    &.spk-3 { top: 60%; left: 75%; animation: primeSpark calc(0.2s * var(--speed)) ease-out infinite 0.15s; }
+  }
+}
+
+.shield-bash-fx {
+  position: absolute;
+  top: 20%;
+  left: 45%;
+  width: 140px;
+  height: 110px;
+  pointer-events: none;
+
+  .target-left & {
+    left: auto;
+    right: 45%;
+    transform: scaleX(-1);
+  }
+
+  .bash-trail {
+    position: absolute;
+    top: 20%;
+    left: -20px;
+    width: 110px;
+    height: 70px;
+    background: linear-gradient(90deg, rgba(0, 119, 255, 0) 0%, rgba(0, 229, 255, 0.4) 60%, rgba(255, 255, 255, 0.8) 100%);
+    clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 70%);
+    filter: blur(2px);
+    opacity: 0;
+    animation: primeBashTrail calc(0.35s * var(--speed)) cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  }
+
+  .bash-shockwave {
+    position: absolute;
+    top: 15%;
+    left: 40px;
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(0, 240, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 0 16px #00d2ff, inset 0 0 12px #ffffff;
+    opacity: 0;
+    transform: scale(0.3);
+    animation: primeShockwave calc(0.4s * var(--speed)) cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  }
+
+  .bash-crescent {
+    position: absolute;
+    top: 5%;
+    left: 70px;
+    width: 35px;
+    height: 100px;
+    border-right: 5px solid #ffffff;
+    border-radius: 0 50% 50% 0;
+    filter: drop-shadow(0 0 14px #00e5ff);
+    opacity: 0;
+    animation: primeCrescent calc(0.35s * var(--speed)) ease-out forwards;
+  }
+
+  .bash-debris {
+    position: absolute;
+    top: 35%;
+    left: 65px;
+
+    .shard {
+      position: absolute;
+      width: 5px;
+      height: 7px;
+      background: #c8f5ff;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 80%);
+      box-shadow: 0 0 6px #00e5ff;
+      opacity: 0;
+
+      &.sh1 { animation: debrisFly1 calc(0.35s * var(--speed)) ease-out forwards; }
+      &.sh2 { animation: debrisFly2 calc(0.4s * var(--speed)) ease-out forwards 0.04s; }
+      &.sh3 { animation: debrisFly3 calc(0.38s * var(--speed)) ease-out forwards 0.08s; }
+      &.sh4 { animation: debrisFly4 calc(0.32s * var(--speed)) ease-out forwards 0.02s; }
+    }
+  }
+
+  .bash-lightning {
+    position: absolute;
+    top: 25%;
+    left: 60px;
+
+    .bolt {
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background: #ffffff;
+      box-shadow: 0 0 8px #00f0ff;
+      opacity: 0;
+
+      &.b1 {
+        transform: rotate(25deg);
+        animation: primeBolt calc(0.3s * var(--speed)) ease-out forwards;
+      }
+      &.b2 {
+        transform: rotate(-35deg);
+        animation: primeBolt calc(0.28s * var(--speed)) ease-out forwards 0.05s;
+      }
+    }
+  }
+}
+
+.shield-beam-fx {
+  position: absolute;
+  top: 30%;
+  left: 45%;
+  width: 180px;
+  height: 60px;
+  pointer-events: none;
+
+  .target-left & {
+    left: auto;
+    right: 45%;
+    transform: scaleX(-1);
+  }
+
+  .beam-core {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffffff 0%, #00e5ff 60%, rgba(0, 119, 255, 0.4) 100%);
+    box-shadow: 0 0 12px #00f0ff, 0 0 24px #0077ff;
+    border-radius: 4px;
+    animation: primeBeamGrow calc(0.4s * var(--speed)) ease-out forwards;
+  }
+
+  .beam-head {
+    position: absolute;
+    top: 21px;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 16px #00f0ff;
+    animation: primeBeamHead calc(0.4s * var(--speed)) ease-out forwards;
+  }
+
+  .beam-particles {
+    .bp {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #7dd3fc;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #00f0ff;
+      opacity: 0;
+
+      &.bp1 { top: 15px; animation: beamP1 calc(0.35s * var(--speed)) ease-out forwards 0.05s; }
+      &.bp2 { top: 35px; animation: beamP2 calc(0.38s * var(--speed)) ease-out forwards 0.1s; }
+      &.bp3 { top: 28px; animation: beamP3 calc(0.32s * var(--speed)) ease-out forwards 0.15s; }
+    }
+  }
+}
+
+/* ==========================================================================
+   Kiên Cố Max 4 Stacks Canopy & Rune
+   ========================================================================== */
+.max-fortitude-canopy {
+  position: absolute;
+  inset: -15px -10px -10px -10px;
+  pointer-events: none;
+
+  .fortitude-rune-circle {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(65deg);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px dashed rgba(0, 240, 255, 0.85);
+    box-shadow: 0 0 18px rgba(0, 210, 255, 0.7), inset 0 0 14px rgba(0, 119, 255, 0.5);
+    animation: runeRotate calc(6s * var(--speed)) linear infinite;
+  }
+
+  .fortitude-hex-canopy {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px;
+    height: 130px;
+    border: 2px solid rgba(56, 189, 248, 0.6);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 80%);
+    box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+    animation: hexPulse calc(2s * var(--speed)) ease-in-out infinite alternate;
+  }
+
+  .fortitude-light-pillar {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 140px;
+    background: linear-gradient(180deg, rgba(0, 240, 255, 0) 0%, rgba(0, 240, 255, 0.18) 100%);
+    filter: blur(4px);
+  }
+}
+
+/* ==========================================================================
+   Guardian Status Layer
+   ========================================================================== */
+.guardian-status-layer {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+
+  .guardian-crest {
+    position: relative;
+    width: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .crest-shield {
+      width: 18px;
+      height: 22px;
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      clip-path: polygon(50% 0%, 100% 20%, 100% 70%, 50% 100%, 0% 70%, 0% 20%);
+      box-shadow: 0 0 10px #00f0ff, inset 0 0 4px #ffffff;
+      animation: crestFloat calc(1.8s * var(--speed)) ease-in-out infinite alternate;
+    }
+
+    .crest-wings {
+      position: absolute;
+      inset: -2px -6px;
+      border-top: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      filter: drop-shadow(0 0 6px #00e5ff);
+    }
+  }
+
+  .guardian-shield-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, transparent 70%);
+  }
+}
+
+/* ==========================================================================
+   Pressure Status Layer (1/5 to 5/5)
+   ========================================================================== */
+.pressure-status-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  .pressure-conduits {
+    position: absolute;
+    inset: 15% 25%;
+
+    .conduit {
+      position: absolute;
+      width: 3px;
+      background: #00f0ff;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #00e5ff, 0 0 14px #0077ff;
+
+      &.c1 { top: 20%; left: 30%; height: 25px; transform: rotate(-15deg); }
+      &.c2 { top: 25%; right: 25%; height: 28px; transform: rotate(18deg); }
+      &.c3 { top: 50%; left: 35%; height: 32px; transform: rotate(5deg); }
+      &.c4 { top: 45%; right: 30%; height: 30px; transform: rotate(-10deg); }
+      &.c5 { top: 15%; left: 50%; height: 45px; transform: translateX(-50%); background: #ffffff; box-shadow: 0 0 12px #00f0ff; }
+    }
+  }
+
+  .pressure-ground-rune {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(65deg);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 1.5px solid #00f0ff;
+    box-shadow: 0 0 12px #0077ff, inset 0 0 8px #00f0ff;
+    animation: runeRotate calc(4s * var(--speed)) linear infinite;
+  }
+
+  .pressure-shield-perimeter {
+    position: absolute;
+    inset: 10% 15% 15% 15%;
+    border: 2px solid rgba(0, 240, 255, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 0 14px #00d2ff, inset 0 0 10px rgba(0, 119, 255, 0.4);
+    animation: perimeterGlow calc(1.2s * var(--speed)) ease-in-out infinite alternate;
+  }
+
+  .pressure-overload-fx {
+    position: absolute;
+    inset: -5px;
+
+    .overload-vibration {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      box-shadow: 0 0 25px rgba(0, 229, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.6);
+      animation: primeOverloadShake calc(0.12s * var(--speed)) linear infinite;
+    }
+
+    .overload-lightning {
+      position: absolute;
+      height: 2px;
+      background: #ffffff;
+      box-shadow: 0 0 10px #00f0ff, 0 0 18px #0077ff;
+
+      &.l1 { top: 30%; left: 15%; width: 50px; transform: rotate(35deg); animation: boltFlicker calc(0.2s * var(--speed)) infinite; }
+      &.l2 { bottom: 35%; right: 15%; width: 45px; transform: rotate(-40deg); animation: boltFlicker calc(0.25s * var(--speed)) infinite 0.08s; }
+      &.l3 { top: 60%; left: 40%; width: 40px; transform: rotate(15deg); animation: boltFlicker calc(0.18s * var(--speed)) infinite 0.12s; }
+    }
+
+    .overload-core-glow {
+      position: absolute;
+      inset: 20%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, rgba(0, 229, 255, 0.25) 50%, transparent 80%);
+      filter: blur(6px);
+      animation: coreGlowPulse calc(0.4s * var(--speed)) ease-in-out infinite alternate;
+    }
+  }
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes primeChargeSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes primePulse {
+  from { transform: scale(0.85); opacity: 0.5; }
+  to { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes primeSpark {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(0.4); opacity: 0; }
+}
+
+@keyframes primeBashTrail {
+  0% { opacity: 0; transform: scaleX(0.2); }
+  40% { opacity: 1; transform: scaleX(1.1); }
+  100% { opacity: 0; transform: scaleX(1.3) translateX(25px); }
+}
+
+@keyframes primeShockwave {
+  0% { opacity: 1; transform: scale(0.2); }
+  80% { opacity: 0.8; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1.5); }
+}
+
+@keyframes primeCrescent {
+  0% { opacity: 0; transform: scaleY(0.4) translateX(-10px); }
+  40% { opacity: 1; transform: scaleY(1.1) translateX(5px); }
+  100% { opacity: 0; transform: scaleY(1.3) translateX(15px); }
+}
+
+@keyframes debrisFly1 {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(35px, -25px) rotate(120deg); }
+}
+@keyframes debrisFly2 {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(45px, 15px) rotate(-90deg); }
+}
+@keyframes debrisFly3 {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(25px, -40px) rotate(160deg); }
+}
+@keyframes debrisFly4 {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; transform: translate(40px, 30px) rotate(-130deg); }
+}
+
+@keyframes primeBolt {
+  0% { opacity: 0; transform: scaleX(0.1); }
+  30% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.1) translateY(5px); }
+}
+
+@keyframes primeBeamGrow {
+  0% { width: 0; opacity: 1; }
+  70% { width: 160px; opacity: 1; }
+  100% { width: 180px; opacity: 0; }
+}
+
+@keyframes primeBeamHead {
+  0% { left: 0; opacity: 1; transform: scale(1); }
+  70% { left: 160px; opacity: 1; transform: scale(1.3); }
+  100% { left: 180px; opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes beamP1 {
+  0% { opacity: 0; transform: translate(0, 0); }
+  50% { opacity: 1; transform: translate(60px, -8px); }
+  100% { opacity: 0; transform: translate(120px, -15px); }
+}
+@keyframes beamP2 {
+  0% { opacity: 0; transform: translate(0, 0); }
+  50% { opacity: 1; transform: translate(70px, 10px); }
+  100% { opacity: 0; transform: translate(140px, 18px); }
+}
+@keyframes beamP3 {
+  0% { opacity: 0; transform: translate(0, 0); }
+  50% { opacity: 1; transform: translate(80px, -4px); }
+  100% { opacity: 0; transform: translate(150px, -6px); }
+}
+
+@keyframes runeRotate {
+  from { transform: translateX(-50%) rotateX(65deg) rotate(0deg); }
+  to { transform: translateX(-50%) rotateX(65deg) rotate(360deg); }
+}
+
+@keyframes hexPulse {
+  from { transform: translateX(-50%) scale(0.95); opacity: 0.6; }
+  to { transform: translateX(-50%) scale(1.05); opacity: 1; }
+}
+
+@keyframes crestFloat {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
+}
+
+@keyframes perimeterGlow {
+  from { opacity: 0.5; box-shadow: 0 0 10px #00d2ff; }
+  to { opacity: 1; box-shadow: 0 0 20px #00f0ff, inset 0 0 12px rgba(0, 119, 255, 0.6); }
+}
+
+@keyframes primeOverloadShake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -2px); }
+  100% { transform: translate(1px, 2px); }
+}
+
+@keyframes boltFlicker {
+  0%, 100% { opacity: 0; }
+  20%, 80% { opacity: 1; }
+}
+
+@keyframes coreGlowPulse {
+  from { opacity: 0.4; transform: scale(0.9); }
+  to { opacity: 0.85; transform: scale(1.1); }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .charge-arc, .charge-pulse, .fortitude-rune-circle, .pressure-ground-rune {
+    animation: none !important;
+  }
+  .overload-vibration {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,141 @@
+<div class="hai-scene-vfx-wrapper" [class.team-right]="actorTeamRight">
+
+  <!-- ======================================================== -->
+  <!-- 1. TARGET LOCK RETICLE (450 - 800ms)                      -->
+  <!-- ======================================================== -->
+  <app-hai-target-lock-vfx
+    *ngIf="showTargetLock"
+    [style.left.px]="targetX"
+    [style.top.px]="targetY"
+    [isSnapping]="isLockSnapping">
+  </app-hai-target-lock-vfx>
+
+  <!-- ======================================================== -->
+  <!-- 2. PHANTOM DASH TRAIL & SPEED LINES (800 - 1000ms)        -->
+  <!-- ======================================================== -->
+  <div class="phantom-dash-layer" *ngIf="showDash">
+    <!-- Origin Flash -->
+    <div class="dash-origin-flash" [style.left.px]="casterX" [style.top.px]="casterY"></div>
+
+    <!-- Energy Beam vector connecting Caster to Target -->
+    <svg class="dash-vector-svg">
+      <line
+        [attr.x1]="casterX"
+        [attr.y1]="casterY"
+        [attr.x2]="targetX"
+        [attr.y2]="targetY"
+        class="dash-laser-line" />
+      <line
+        [attr.x1]="casterX"
+        [attr.y1]="casterY"
+        [attr.x2]="targetX"
+        [attr.y2]="targetY"
+        class="dash-core-line" />
+    </svg>
+
+    <!-- Speed Lines parallel to motion -->
+    <div
+      class="dash-speed-lines"
+      [style.left.px]="(casterX + targetX) / 2"
+      [style.top.px]="(casterY + targetY) / 2">
+      <span class="s-line sl1"></span>
+      <span class="s-line sl2"></span>
+      <span class="s-line sl3"></span>
+    </div>
+
+    <!-- 3 Phantom Afterimages along travel vector -->
+    <div
+      class="phantom-afterimage ai-1"
+      [style.left.px]="casterX + travelX * 0.3"
+      [style.top.px]="casterY + travelY * 0.3">
+    </div>
+    <div
+      class="phantom-afterimage ai-2"
+      [style.left.px]="casterX + travelX * 0.6"
+      [style.top.px]="casterY + travelY * 0.6">
+    </div>
+    <div
+      class="phantom-afterimage ai-3"
+      [style.left.px]="casterX + travelX * 0.85"
+      [style.top.px]="casterY + travelY * 0.85">
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. PHANTOM STRIKER AT TARGET (1000 - 2400ms)              -->
+  <!-- ======================================================== -->
+  <div
+    class="phantom-striker-wrapper"
+    *ngIf="showPhantomStriker"
+    [style.left.px]="targetX - 70 * facing"
+    [style.top.px]="targetY"
+    [attr.data-slash]="slashStage"
+    [class.facing-left]="facing === -1">
+    <div class="striker-silhouette">
+      <!-- Cyber Dagger Glow -->
+      <div class="striker-dagger d-left"></div>
+      <div class="striker-dagger d-right"></div>
+      <!-- Cyber Eye Flare -->
+      <div class="striker-eye-flare"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 4. SLASH IMPACT VFX AT TARGET (1000 - 2250ms)             -->
+  <!-- ======================================================== -->
+  <app-hai-slash-impact-vfx
+    [style.left.px]="targetX"
+    [style.top.px]="targetY"
+    [stage]="slashStage"
+    [isCrit]="currentHitCrit"
+    [isReverse]="facing === -1">
+  </app-hai-slash-impact-vfx>
+
+  <!-- ======================================================== -->
+  <!-- 5. BLEED STACK BADGE & TRACE                             -->
+  <!-- ======================================================== -->
+  <app-hai-bleed-stack-vfx
+    [style.left.px]="targetX"
+    [style.top.px]="targetY - 50"
+    [stacks]="bleedStacks"
+    [isStackingUp]="isStackingUp">
+  </app-hai-bleed-stack-vfx>
+
+  <!-- ======================================================== -->
+  <!-- 6. BLEED DETONATION EXPLOSION (2250 - 2550ms if present)  -->
+  <!-- ======================================================== -->
+  <app-hai-bleed-detonation-vfx
+    *ngIf="showBleedDetonation"
+    [style.left.px]="targetX"
+    [style.top.px]="targetY">
+  </app-hai-bleed-detonation-vfx>
+
+  <!-- ======================================================== -->
+  <!-- 7. RETURN TO ORIGIN DASH (2400 - 2800ms)                  -->
+  <!-- ======================================================== -->
+  <div class="return-dash-layer" *ngIf="showReturnDash">
+    <!-- Dispersing Cyan Energy Sparks at target -->
+    <div class="dissolve-sparks" [style.left.px]="targetX - 70 * facing" [style.top.px]="targetY">
+      <span class="dsp ds1"></span>
+      <span class="dsp ds2"></span>
+      <span class="dsp ds3"></span>
+      <span class="dsp ds4"></span>
+      <span class="dsp ds5"></span>
+      <span class="dsp ds6"></span>
+    </div>
+
+    <!-- Return Shadow Trail vector connecting Target to Caster -->
+    <svg class="return-vector-svg">
+      <line
+        [attr.x1]="targetX - 50 * facing"
+        [attr.y1]="targetY"
+        [attr.x2]="casterX"
+        [attr.y2]="casterY"
+        class="return-shadow-line" />
+    </svg>
+
+    <!-- Arrival Reappear Flash at Caster -->
+    <div class="reappear-flash" [style.left.px]="casterX" [style.top.px]="casterY"></div>
+  </div>
+
+</div>

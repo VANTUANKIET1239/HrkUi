@@ -1,0 +1,104 @@
+<div class="prime-skill-root"
+  [class.target-left]="isTeamRight"
+  [class.target-right]="!isTeamRight"
+  [class.charging-shield]="isChargingShield"
+  [class.bashing]="isBashing"
+  [class.sending-beam]="isSendingShieldBeam"
+  [class.max-fortitude]="hasMaxFortitude"
+  [class.has-guardian]="hasGuardian"
+  [attr.data-pressure-stacks]="pressureStacks"
+  [attr.data-fortitude-stacks]="fortitudeStacks"
+  [style.--visual-speed]="visualSpeed">
+
+  <!-- ==========================================
+       BASIC SKILL: KHIÊN NÀY CÓ BẢO HÀNH
+       ========================================== -->
+  <ng-container *ngIf="isBasic">
+    <!-- Phase 1: Shield Energy Lines Charging -->
+    <div class="shield-charge-fx" *ngIf="isChargingShield">
+      <div class="charge-arc arc-1"></div>
+      <div class="charge-arc arc-2"></div>
+      <div class="charge-pulse"></div>
+      <div class="shield-electric-spark spk-1"></div>
+      <div class="shield-electric-spark spk-2"></div>
+      <div class="shield-electric-spark spk-3"></div>
+    </div>
+
+    <!-- Phase 2: Heavy Shield Bash Thrust & Impact -->
+    <div class="shield-bash-fx" *ngIf="isBashing">
+      <div class="bash-trail"></div>
+      <div class="bash-shockwave"></div>
+      <div class="bash-crescent"></div>
+      <div class="bash-debris">
+        <span class="shard sh1"></span>
+        <span class="shard sh2"></span>
+        <span class="shard sh3"></span>
+        <span class="shard sh4"></span>
+      </div>
+      <div class="bash-lightning">
+        <span class="bolt b1"></span>
+        <span class="bolt b2"></span>
+      </div>
+    </div>
+
+    <!-- Phase 3: Energy Beam towards Lowest HP Ally -->
+    <div class="shield-beam-fx" *ngIf="isSendingShieldBeam">
+      <div class="beam-core"></div>
+      <div class="beam-head"></div>
+      <div class="beam-particles">
+        <span class="bp bp1"></span>
+        <span class="bp bp2"></span>
+        <span class="bp bp3"></span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ==========================================
+       KIÊN CỐ (PRIME_FORTITUDE) 4 STACKS BURST
+       ========================================== -->
+  <div class="max-fortitude-canopy" *ngIf="hasMaxFortitude">
+    <div class="fortitude-rune-circle"></div>
+    <div class="fortitude-hex-canopy"></div>
+    <div class="fortitude-light-pillar"></div>
+  </div>
+
+  <!-- ==========================================
+       HỘ VỆ PRIME (PRIME_GUARDIAN) AURA
+       ========================================== -->
+  <div class="guardian-status-layer" *ngIf="hasGuardian">
+    <div class="guardian-crest">
+      <div class="crest-shield"></div>
+      <div class="crest-wings"></div>
+    </div>
+    <div class="guardian-shield-glow"></div>
+  </div>
+
+  <!-- ==========================================
+       ÁP LỰC (PRIME_PRESSURE) 1-5 STACKS
+       ========================================== -->
+  <div class="pressure-status-layer" *ngIf="pressureStacks > 0">
+    <!-- Conduit lines on shield corresponding to stacks -->
+    <div class="pressure-conduits">
+      <div class="conduit c1" *ngIf="pressureStacks >= 1"></div>
+      <div class="conduit c2" *ngIf="pressureStacks >= 2"></div>
+      <div class="conduit c3" *ngIf="pressureStacks >= 3"></div>
+      <div class="conduit c4" *ngIf="pressureStacks >= 4"></div>
+      <div class="conduit c5" *ngIf="pressureStacks >= 5"></div>
+    </div>
+
+    <!-- 3/5: Active ground rune -->
+    <div class="pressure-ground-rune" *ngIf="pressureStacks >= 3"></div>
+
+    <!-- 4/5: Bright perimeter shield edge -->
+    <div class="pressure-shield-perimeter" *ngIf="pressureStacks >= 4"></div>
+
+    <!-- 5/5: Max Stacks Overload: Electric Aura & Hammer Charge -->
+    <div class="pressure-overload-fx" *ngIf="pressureStacks >= 5">
+      <div class="overload-vibration"></div>
+      <div class="overload-lightning l1"></div>
+      <div class="overload-lightning l2"></div>
+      <div class="overload-lightning l3"></div>
+      <div class="overload-core-glow"></div>
+    </div>
+  </div>
+</div>

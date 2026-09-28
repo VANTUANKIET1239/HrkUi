@@ -50,6 +50,9 @@
           <div class="bonus-header">
             <span class="bonus-label">Hiệu Quả Trận Pháp</span>
             <span class="bonus-level-tag">Lv.{{ formationDetail.level }}</span>
+            <span *ngIf="isPreviewLoading" class="preview-mini-spinner ms-1" title="Đang tính toán...">
+              <i class="bi bi-arrow-repeat spin text-warning"></i>
+            </span>
           </div>
 
           <div class="bonus-stats">
@@ -337,8 +340,11 @@
         <!-- Player Total Combat Power -->
         <div class="power-col player-cp">
           <span class="p-label">Lực chiến đội:</span>
-          <span class="p-val text-warning">
+          <span class="p-val text-warning" *ngIf="!isPreviewLoading">
             <i class="bi bi-lightning-charge-fill me-1"></i>{{ totalPlayerPower | number }}
+          </span>
+          <span class="p-val text-warning preview-loading-text" *ngIf="isPreviewLoading">
+            <i class="bi bi-arrow-repeat spin me-1"></i>Đang tính…
           </span>
         </div>
 
@@ -366,7 +372,7 @@
           type="button"
           class="btn-cancel"
           (click)="close.emit()"
-          [disabled]="isStarting"
+          [disabled]="isStarting || isSavingDefault"
         >
           Hủy
         </button>
@@ -376,11 +382,14 @@
           id="btn-start-dungeon-battle"
           class="btn-start-battle"
           (click)="onStartBattle()"
-          [disabled]="isStarting || deployedCount === 0 || staminaCurrent < stage.staminaCost"
+          [disabled]="isStarting || isSavingDefault || isPreviewLoading || deployedCount === 0 || staminaCurrent < stage.staminaCost || (previewData && !previewData.isValid)"
         >
-          <i class="bi" [class.bi-sword]="!isStarting" [class.bi-arrow-repeat]="isStarting" [class.spin]="isStarting"></i>
-          <span>{{ isStarting ? 'Đang vào trận...' : 'Bắt Đầu Chiến' }}</span>
-          <span class="stamina-tag" *ngIf="!isStarting">({{ stage.staminaCost }} ⚡)</span>
+          <i class="bi"
+             [class.bi-sword]="!isStarting && !isSavingDefault && !isPreviewLoading"
+             [class.bi-arrow-repeat]="isStarting || isSavingDefault || isPreviewLoading"
+             [class.spin]="isStarting || isSavingDefault || isPreviewLoading"></i>
+          <span>{{ isSavingDefault ? 'Đang lưu đội hình...' : (isStarting ? 'Đang vào trận...' : (isPreviewLoading ? 'Đang tính lực chiến…' : 'Bắt Đầu Chiến')) }}</span>
+          <span class="stamina-tag" *ngIf="!isStarting && !isSavingDefault">({{ stage.staminaCost }} ⚡)</span>
         </button>
       </div>
     </div>

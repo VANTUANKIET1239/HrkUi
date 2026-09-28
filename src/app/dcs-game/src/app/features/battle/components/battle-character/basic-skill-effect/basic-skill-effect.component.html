@@ -76,6 +76,79 @@
     [isTeamRight]="isTeamRight">
   </app-hai-last-smile-basic>
 
+  <!-- 12. Trọng Chưa Nổ: Cyan-Orange swift slash -->
+  <div *ngSwitchCase="'trong-chua-no'" class="rare-basic-effect basic-trong-chua-no" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="dagger-slash-trail"></div>
+    <div class="dagger-hit-flash"></div>
+  </div>
+
+  <!-- 13. Quang Vinh THCS: Cream & brick-red shield bash -->
+  <div *ngSwitchCase="'quang-vinh-thcs'" class="rare-basic-effect basic-quang-vinh-thcs" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="shield-bash-arc"></div>
+    <div class="shield-bash-flash"></div>
+  </div>
+
+  <!-- 14. Nguyên Xàm Lớn: Crimson & navy boss strike -->
+  <div *ngSwitchCase="'nguyen-xam-lon'" class="rare-basic-effect basic-nguyen-xam-lon" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="boss-strike-burst"></div>
+    <div class="boss-strike-flash"></div>
+  </div>
+
+  <!-- 15. Tiến Dũng Xuân: Ink calligraphy & apricot petal -->
+  <div *ngSwitchCase="'tien-dung-xuan'" class="rare-basic-effect basic-tien-dung-xuan" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="ink-glyph-arc"></div>
+    <div class="apricot-petal"></div>
+  </div>
+
+  <!-- 16. Văn Trọng Điện Vàng: Electric sparks & lightning branches -->
+  <div *ngSwitchCase="'van-trong-dien-vang'" class="rare-basic-effect basic-van-trong-dien-vang" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="electric-spark-bolt"></div>
+    <div class="electric-spark-burst"></div>
+  </div>
+
+  <!-- 17. Tường Long Cấp 3: Emerald & white supply card beam -->
+  <div *ngSwitchCase="'tuong-long-cap-3'" class="rare-basic-effect basic-tuong-long-cap-3" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="supply-card-arc"></div>
+    <div class="supply-card-sparkle"></div>
+  </div>
+
+  <!-- 18. Kiệt Bác Sĩ: Cyan vital pulse & ECG scan line -->
+  <div *ngSwitchCase="'kiet-bac-si'" class="epic-basic-effect basic-kiet-bac-si" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="vital-scan-beam"></div>
+    <div class="vital-pulse-ring"></div>
+  </div>
+
+  <!-- 19. Trường Kiệt Chu Mỏ: Magenta-violet sonic arc wave -->
+  <div *ngSwitchCase="'truong-kiet-chu-mo'" class="epic-basic-effect basic-truong-kiet-chu-mo" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="sonic-arc-wave"></div>
+    <div class="sonic-wave-ring"></div>
+  </div>
+
+  <!-- 20. Tiến Dũng Tổng Đài: Holographic cyan data packet & tile pulse -->
+  <div *ngSwitchCase="'tien-dung-tong-dai'" class="epic-basic-effect basic-tien-dung-tong-dai" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="holo-data-packet"></div>
+    <div class="holo-tile-pulse"></div>
+  </div>
+
+  <!-- 21. Quốc Nhân Giả Diện: Midnight smoke & electric-white slash streak -->
+  <div *ngSwitchCase="'quoc-nhan-gia-dien'" class="epic-basic-effect basic-quoc-nhan-gia-dien" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="phantom-smoke-trail"></div>
+    <div class="phantom-slash-streak"></div>
+  </div>
+
+  <!-- 22. Cậu Vàng Mặt Lạnh: Jade bell ripple & paw glow seal -->
+  <div *ngSwitchCase="'cau-vang-mat-lanh'" class="epic-basic-effect basic-cau-vang-mat-lanh" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="jade-bell-ripple"></div>
+    <div class="paw-glow-seal"></div>
+  </div>
+
+  <!-- 23. Siba Thiên Thần: Gentle glowing angel feathers & celestial halo spark -->
+  <div *ngSwitchCase="'siba-thien-than'" class="mythic-basic-effect basic-siba-thien-than" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="angel-feather-projectile">🪶</div>
+    <div class="angel-halo-spark"></div>
+    <div class="angel-heal-burst"></div>
+  </div>
+
   <!-- Generic Fallback for Unknown Heroes -->
   <div *ngSwitchDefault class="generic-basic-effect" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
     <div class="generic-strike-flash"></div>

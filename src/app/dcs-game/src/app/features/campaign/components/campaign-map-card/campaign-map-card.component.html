@@ -12,7 +12,7 @@
 >
   <!-- Background Art with Aspect Ratio / Cover -->
   <div class="card-bg-wrapper">
-    <img [src]="map.imagePath || map.backgroundPath" [alt]="map.name" class="card-bg-img" loading="lazy" />
+    <img [src]="map.imagePath || map.backgroundPath" (error)="onImgError($event)" [alt]="map.name" class="card-bg-img" loading="lazy" />
     <div class="card-vignette"></div>
     <div class="card-gradient"></div>
     <div class="card-ambient-light"></div>

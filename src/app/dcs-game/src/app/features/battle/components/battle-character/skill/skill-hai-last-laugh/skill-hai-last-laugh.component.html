@@ -1,188 +1,89 @@
-<div class="hai-last-laugh-fx" [ngClass]="{ 'team-right': isTeamRight }">
-  <!-- PHASE 1: Local Dark Assassin Vignette & Shadow Mist -->
-  <div class="local-assassin-vignette"></div>
+<div
+  class="hai-caster-vfx-root"
+  [class.team-right]="isTeamRight"
+  [class.is-dashing]="isDashingOut"
+  [class.is-reappearing]="isReappearing">
 
-  <div class="assassin-surge">
-    <div class="surge-ring s-outer"></div>
-    <div class="surge-ring s-inner"></div>
-    <div class="shadow-mist sm1"></div>
-    <div class="shadow-mist sm2"></div>
-    <div class="shadow-runes"></div>
-  </div>
-
-  <!-- PHASE 1: Sinister Grin Phantom Aura Over Caster -->
-  <div class="sinister-grin-overlay">
-    <div class="grin-eyes">
-      <span class="eye eye-l"></span>
-      <span class="eye eye-r"></span>
-    </div>
-    <div class="grin-mouth">
-      <div class="grin-teeth">
-        <span class="tooth t1"></span>
-        <span class="tooth t2"></span>
-        <span class="tooth t3"></span>
-        <span class="tooth t4"></span>
-        <span class="tooth t5"></span>
-      </div>
-    </div>
-    <div class="grin-glow"></div>
-  </div>
-
-  <!-- PHASE 1 & 2 & 4 & 5 & 6: TARGET STRIKE ZONE (Positioned at target offset) -->
-  <div class="target-strike-zone">
-    <!-- Lock-on reticle -->
-    <div class="target-lockon-reticle">
-      <div class="reticle-circle"></div>
-      <div class="reticle-spikes">
-        <span class="rsp rsp-t"></span>
-        <span class="rsp rsp-b"></span>
-        <span class="rsp rsp-l"></span>
-        <span class="rsp rsp-r"></span>
-      </div>
-      <div class="reticle-cross"></div>
-      <div class="lockon-skull"></div>
-    </div>
-
-    <!-- Phase 2: Amber Panic Horror Shockwave -->
-    <div class="panic-horror-waves">
-      <div class="panic-ring pr1"></div>
-      <div class="panic-ring pr2"></div>
-      <div class="panic-distortion"></div>
-    </div>
-
-    <!-- Phase 2: Bleed Detonation Crimson Burst -->
-    <div class="bleed-detonation-burst">
-      <div class="detonate-flash"></div>
-      <div class="detonate-shards">
-        <span class="shard sh1"></span>
-        <span class="shard sh2"></span>
-        <span class="shard sh3"></span>
-        <span class="shard sh4"></span>
-        <span class="shard sh5"></span>
-        <span class="shard sh6"></span>
-      </div>
-      <div class="blood-shockwave"></div>
-    </div>
-
-    <!-- PHASE 4: STRIKE 1 (HIT_1 @ 1.05s) - GIANT DIAGONAL IMPALING DAGGER -->
-    <div class="strike-hit hit-1">
-      <div class="impaling-dagger dagger-1">
-        <div class="dagger-blade"></div>
-        <div class="dagger-hilt"></div>
-        <div class="dagger-trail"></div>
-        <div class="dagger-tip-flare"></div>
-      </div>
-      <div class="thrust-sonic-cone sc-1"></div>
-      <div class="slash-wave sw-1"></div>
-      <div class="impact-flash if-1"></div>
-      <div class="puncture-wound pw-1"></div>
-      <div class="impact-sparks spk-1">
-        <span class="sp s1"></span>
-        <span class="sp s2"></span>
-        <span class="sp s3"></span>
-        <span class="sp s4"></span>
-        <span class="sp s5"></span>
-      </div>
-      <div class="blood-spurt bs-1">
-        <span class="b-drop bd1"></span>
-        <span class="b-drop bd2"></span>
-        <span class="b-drop bd3"></span>
-      </div>
-    </div>
-
-    <!-- PHASE 5: STRIKE 2 (HIT_2 @ 1.4s) - TWIN GUILLOTINE STABS & BLOOD GEYSER -->
-    <div class="strike-hit hit-2">
-      <div class="impaling-dagger dagger-2-left">
-        <div class="dagger-blade"></div>
-        <div class="dagger-hilt"></div>
-        <div class="dagger-trail"></div>
-      </div>
-      <div class="impaling-dagger dagger-2-right">
-        <div class="dagger-blade"></div>
-        <div class="dagger-hilt"></div>
-        <div class="dagger-trail"></div>
-      </div>
-      <div class="thrust-sonic-cone sc-2"></div>
-      <div class="slash-wave sw-2-a"></div>
-      <div class="slash-wave sw-2-b"></div>
-      <div class="impact-flash if-2"></div>
-      <div class="blood-geyser bg-2">
-        <span class="fountain fn1"></span>
-        <span class="fountain fn2"></span>
-        <span class="fountain fn3"></span>
-      </div>
-      <div class="bleed-splatter bs-2">
-        <span class="drop d1"></span>
-        <span class="drop d2"></span>
-        <span class="drop d3"></span>
-        <span class="drop d4"></span>
-      </div>
-    </div>
-
-    <!-- PHASE 6: STRIKE 3 (HIT_3 @ 1.9s) - COLOSSAL EXECUTION X-PIERCE FINALE & GROUND SHATTER -->
-    <div class="strike-hit hit-3">
-      <!-- Colossal Giant Piercing Blades Plunging Down -->
-      <div class="colossal-execution-blade blade-x1">
-        <div class="great-blade"></div>
-        <div class="great-hilt"></div>
-        <div class="blade-core-glow"></div>
-        <div class="blade-edge-sparks"></div>
-      </div>
-      <div class="colossal-execution-blade blade-x2">
-        <div class="great-blade"></div>
-        <div class="great-hilt"></div>
-        <div class="blade-core-glow"></div>
-        <div class="blade-edge-sparks"></div>
-      </div>
-
-      <!-- Ground Shatter Matrix & Rupture Cracks -->
-      <div class="ground-shatter-matrix">
-        <div class="ground-crack gc1"></div>
-        <div class="ground-crack gc2"></div>
-        <div class="ground-crack gc3"></div>
-        <div class="ground-crack gc4"></div>
-      </div>
-
-      <!-- Mega Shockwaves & Detonation Nova -->
-      <div class="mega-pierce-shockwave"></div>
-      <div class="ground-shockwave-ring"></div>
-      <div class="impact-flash if-3"></div>
-      <div class="execution-crimson-blast"></div>
-      <div class="void-implosion-ring"></div>
-
-      <!-- Violent Blood Fountain & Energy Debris Explosion -->
-      <div class="blood-debris">
-        <span class="deb db1"></span>
-        <span class="deb db2"></span>
-        <span class="deb db3"></span>
-        <span class="deb db4"></span>
-        <span class="deb db5"></span>
-        <span class="deb db6"></span>
-      </div>
+  <!-- ======================================================== -->
+  <!-- 1. TECH RUNE CIRCLE UNDER CASTER'S FEET                  -->
+  <!-- ======================================================== -->
+  <div class="foot-tech-circle" *ngIf="!isDashingOut">
+    <div class="rune-ring ring-1"></div>
+    <div class="rune-ring ring-2"></div>
+    <div class="rune-glyphs">
+      <span class="glyph g1">᚛</span>
+      <span class="glyph g2">ᚚ</span>
+      <span class="glyph g3">ᚐ</span>
+      <span class="glyph g4">ᚑ</span>
     </div>
   </div>
 
-  <!-- PHASE 3: Phantom Dash Trail between Caster and Target -->
-  <div class="phantom-dash-trail">
-    <div class="speed-line sl1"></div>
-    <div class="speed-line sl2"></div>
-    <div class="speed-line sl3"></div>
-    <div class="cyan-afterimage ai1"></div>
-    <div class="cyan-afterimage ai2"></div>
+  <!-- ======================================================== -->
+  <!-- 2. RISING CYAN PARTICLES FROM BELOW                      -->
+  <!-- ======================================================== -->
+  <div class="rising-particles-container" *ngIf="!isDashingOut">
+    <span class="r-particle rp1"></span>
+    <span class="r-particle rp2"></span>
+    <span class="r-particle rp3"></span>
+    <span class="r-particle rp4"></span>
+    <span class="r-particle rp5"></span>
+    <span class="r-particle rp6"></span>
   </div>
 
-  <!-- PHASE 7: Assassin Teleport Return Shadow Trail -->
-  <div class="return-shadow-trail">
-    <div class="return-smoke rsm1"></div>
-    <div class="return-smoke rsm2"></div>
+  <!-- ======================================================== -->
+  <!-- 3. TWIN LATERAL SHADOW AFTERIMAGES (10-18px offset)     -->
+  <!-- ======================================================== -->
+  <div class="lateral-shadows" *ngIf="!isDashingOut">
+    <div class="shadow-ghost ghost-left"></div>
+    <div class="shadow-ghost ghost-right"></div>
   </div>
 
-  <!-- PHASE 8: Sinister Quote Callout: "Haha... Sắp hết lượt rồi! 😈" -->
-  <div class="laugh-quote-bubble">
-    <div class="bubble-arrow"></div>
-    <div class="quote-text">
-      <span class="quote-haha">HAHA...</span>
-      <span class="quote-sub">Sắp hết lượt rồi! 😈</span>
+  <!-- ======================================================== -->
+  <!-- 4. CYBER EYE FLARE & KNIFE ELECTRIC PULSE                -->
+  <!-- ======================================================== -->
+  <div class="caster-charge-details" *ngIf="!isDashingOut">
+    <!-- Cyan Eyes Flare -->
+    <div class="cyan-eye-flare">
+      <span class="eye-spark e-l"></span>
+      <span class="eye-spark e-r"></span>
+    </div>
+
+    <!-- Knife Electric Pulse -->
+    <div class="knife-electric-pulse">
+      <div class="pulse-line"></div>
     </div>
   </div>
+
+  <!-- ======================================================== -->
+  <!-- 5. CRISP CYBER HOLOGRAM SMILE BEHIND HEAD                -->
+  <!-- ======================================================== -->
+  <div class="hologram-smile-wrapper" *ngIf="!isDashingOut">
+    <svg viewBox="0 0 64 36" class="holo-smile-svg">
+      <!-- Cyber Curved Smile Arc -->
+      <path d="M 8,8 Q 32,32 56,8" class="smile-arc-glow" />
+      <path d="M 8,8 Q 32,32 56,8" class="smile-arc-core" />
+      <!-- Sharp Stylized Cyber Teeth -->
+      <path d="M 18,17 L 22,23 L 26,17 M 28,21 L 32,27 L 36,21 M 38,17 L 42,23 L 46,17" class="teeth-stroke" />
+    </svg>
+    <div class="holo-flicker-halo"></div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 6. SHORT HOLOGRAPHIC QUOTE BUBBLE                        -->
+  <!-- ======================================================== -->
+  <div class="quote-callout-bubble" *ngIf="quoteState !== 'hidden' && !isDashingOut">
+    <div class="bubble-frame">
+      <span class="quote-text" *ngIf="quoteState === 'quote1'">“Cười đi…”</span>
+      <span class="quote-text" *ngIf="quoteState === 'quote2'">“Vì sắp hết lượt rồi.”</span>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 7. REAPPEARANCE FLASH & SHEATHING                        -->
+  <!-- ======================================================== -->
+  <div class="reappearance-vfx" *ngIf="isReappearing">
+    <div class="origin-reappear-flare"></div>
+    <div class="sheath-sparkle"></div>
+  </div>
+
 </div>

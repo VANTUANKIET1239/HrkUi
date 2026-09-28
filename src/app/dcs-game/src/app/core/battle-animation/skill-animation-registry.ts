@@ -9,8 +9,9 @@ export const SKILL_VISUAL_POLICIES: Readonly<Record<string, SkillVisualPolicy>> 
   },
   HAI_LAST_LAUGH: {
     speedPolicy: 'CLAMPED',
-    maxVisualSpeed: 1.6,
-    minimumVisibleDurationMs: 1700
+    maxVisualSpeed: 1.5,
+    minimumVisibleDurationMs: 1900,
+    totalDurationMs: 2900
   },
   FATAL_ALL_IN_DIRECTIVE: {
     speedPolicy: 'CLAMPED',
@@ -26,6 +27,23 @@ export const SKILL_VISUAL_POLICIES: Readonly<Record<string, SkillVisualPolicy>> 
     speedPolicy: 'CLAMPED',
     maxVisualSpeed: 1.6,
     minimumVisibleDurationMs: 1800
+  },
+  THANH_THAI_CRIMSON_BROOM_LIGHTNING: {
+    speedPolicy: 'CLAMPED',
+    maxVisualSpeed: 1.6,
+    minimumVisibleDurationMs: 2200
+  },
+  PRIME_SHIELD_WARRANTY: {
+    speedPolicy: 'CLAMPED',
+    maxVisualSpeed: 1.8,
+    minimumVisibleDurationMs: 650,
+    totalDurationMs: 950
+  },
+  PRIME_FORTRESS_CHARGE: {
+    speedPolicy: 'CLAMPED',
+    maxVisualSpeed: 1.5,
+    minimumVisibleDurationMs: 2000,
+    totalDurationMs: 2900
   }
 };
 
@@ -64,7 +82,7 @@ export function resolveSkillConfig(
       ...fallback,
       ...registeredPolicy,
       skillId: skillId || fallback.skillId,
-      totalDurationMs: metadata?.totalDurationMs ?? fallback.totalDurationMs,
+      totalDurationMs: metadata?.totalDurationMs ?? registeredPolicy.totalDurationMs ?? fallback.totalDurationMs,
       animationKey: metadata?.animationKey,
       defaultPlaybackSpeed: metadata?.defaultPlaybackSpeed,
       phases: metadata?.phases

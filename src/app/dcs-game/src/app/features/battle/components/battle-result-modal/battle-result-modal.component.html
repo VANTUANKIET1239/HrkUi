@@ -87,10 +87,38 @@
       </div>
 
       <div class="heroes-exp-list">
-        <article *ngFor="let hero of dungeonResult.heroes">
-          <b>{{ hero.heroName }}</b>
-          <span class="exp-val">+{{ hero.expGained }} EXP</span>
-          <small class="lvl-diff">Lv.{{ hero.oldLevel }} → Lv.{{ hero.newLevel }}</small>
+        <article *ngFor="let h of animatedHeroes" class="hero-exp-item" [class.flash-level-up]="h.isLevelUpFlash">
+          <div class="hero-avatar-wrapper">
+            <img [src]="h.avatar || '/assets/images/dcs-game/heroes/default.png'" [alt]="h.heroName" class="hero-avatar-img" />
+            <span class="hero-level-badge" [class.badge-leveled]="h.showLevelUpBadge">Lv.{{ h.displayedLevel }}</span>
+          </div>
+
+          <div class="hero-info-wrapper">
+            <div class="hero-name-row">
+              <div class="name-and-diff">
+                <span class="hero-name-label">{{ h.heroName }}</span>
+                <span class="hero-lvl-diff" *ngIf="h.targetLevel > h.oldLevel">
+                  Lv.{{ h.oldLevel }} → Lv.{{ h.targetLevel }}
+                </span>
+              </div>
+              <span class="hero-exp-gain">+{{ h.expGained }} EXP</span>
+            </div>
+
+            <!-- EXP Bar Track -->
+            <div class="hero-exp-track">
+              <div class="hero-exp-fill" [style.width.%]="h.expPercent">
+                <div class="hero-exp-shine"></div>
+              </div>
+              <div class="hero-exp-numbers">
+                {{ h.displayedExp | number }} / {{ h.displayedMaxExp | number }}
+              </div>
+            </div>
+          </div>
+
+          <!-- LEVEL UP Golden tag -->
+          <div class="hero-levelup-tag" *ngIf="h.showLevelUpBadge">
+            <i class="bi bi-arrow-up-circle-fill me-1"></i>LEVEL UP
+          </div>
         </article>
       </div>
     </section>

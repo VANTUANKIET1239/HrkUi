@@ -10,6 +10,7 @@ import { HealthEventHandler } from '../../features/battle/replay/handlers/health
 import { LifecycleEventHandler } from '../../features/battle/replay/handlers/lifecycle-event.handler';
 import { StatusEventHandler } from '../../features/battle/replay/handlers/status-event.handler';
 import { BleedEventHandler } from '../../features/battle/replay/handlers/bleed-event.handler';
+import { ResourceEventHandler } from '../../features/battle/replay/handlers/resource-event.handler';
 import { BattleVisualTimelineService } from '../battle-animation/battle-visual-timeline.service';
 import { BattleSpeed } from '../battle-animation/battle-speed.constants';
 import { Skill } from '../models/skill.model';
@@ -19,6 +20,8 @@ export interface DamageTextEvent {
   text: string;
   isCrit: boolean;
   key: number;
+  value: number;
+  groupKey?: string;
 }
 
 type BattlePhase = 'idle' | 'cast' | 'impact' | 'status' | 'recovery';
@@ -33,7 +36,8 @@ export class BattleEngineService {
     new StatusEventHandler(),
     new CombatantEventHandler(),
     new LifecycleEventHandler(),
-    new BleedEventHandler()
+    new BleedEventHandler(),
+    new ResourceEventHandler()
   ]);
 
   readonly status = signal<'idle' | 'playing' | 'paused' | 'finished'>('idle');
@@ -136,7 +140,8 @@ export class BattleEngineService {
         defaultFacing: source.defaultFacing ?? fallback?.defaultFacing ?? 'right',
         stars: Math.max(0, Math.min(5, source.stars ?? fallback?.stars ?? 1)),
         auraTier: source.auraTier,
-        starAura: source.starAura ?? null
+        starAura: source.starAura ?? null,
+        resources: source.resources ?? (source.heroCode === 'THANH_THAI_AURA' ? { AURA: { resourceCode: 'AURA', currentValue: 0, maxValue: 100, tier: 0, isFull: false } } : {})
       };
     };
 
@@ -158,6 +163,12 @@ export class BattleEngineService {
 
   isTargetHit(heroId: number): boolean {
     return this.activeTargetId() === heroId || this.activeTargetIds().includes(heroId);
+  }
+
+  getCastEvents(castSequence?: number | null): BattleEventDto[] {
+    const seq = castSequence ?? this.visualCastSequence();
+    if (seq == null) return [];
+    return this.serverEvents.filter(e => e.castSequence === seq);
   }
 
   setSpeed(newSpeed: number): void {
@@ -378,20 +389,35 @@ export class BattleEngineService {
   private showCombatText(event: BattleEventDto): void {
     if (event.targetId == null) return;
     const key = this.damageEventCounter++;
-    let text = event.eventType === 'HEAL' ? `+${event.value}` : `-${event.value}${event.isCrit ? '!' : ''}`;
+    // HP snapshots are authoritative. This also renders old replay events correctly
+    // when their value contains calculated overkill damage.
+    const hpDelta = event.hpBefore != null && event.hpAfter != null
+      ? Math.abs(event.hpBefore - event.hpAfter)
+      : event.value;
+    const groupKey = event.eventType === 'DAMAGE' && event.actionId && event.executionGroup && event.hitIndex != null
+      ? `${event.actionId}|${event.targetId}|${event.executionGroup}|${event.hitIndex}`
+      : undefined;
+    const previous = this.damageEvents()[event.targetId];
+    const shouldMerge = groupKey != null && previous?.groupKey === groupKey;
+    const displayValue = shouldMerge ? previous.value + hpDelta : hpDelta;
+    const displayCrit = Boolean(event.isCrit || (shouldMerge && previous.isCrit));
+
+    let text = event.eventType === 'HEAL' ? `+${displayValue}` : `-${displayValue}${displayCrit ? '!' : ''}`;
     if (event.eventType === 'BLEED_DAMAGE') {
-      text = `🩸 Chảy Máu -${event.value}`;
+      text = `🩸 Chảy Máu -${hpDelta}`;
     } else if (event.eventType === 'BLEED_DETONATED') {
-      text = `💥 Chảy Máu -${event.value}`;
+      text = `💥 Chảy Máu -${hpDelta}`;
     } else if (event.eventType === 'ACTION_BAR_CHANGED') {
-      text = `⚡ +${event.value} Năng Lượng`;
+      text = (event.value ?? 0) >= 0 ? `⚡ +${event.value} Năng Lượng` : `⚡ ${event.value} Năng Lượng`;
     }
     this.damageEvents.update(items => ({
       ...items,
       [event.targetId!]: {
         text,
-        isCrit: event.isCrit,
-        key
+        isCrit: displayCrit,
+        key,
+        value: displayValue,
+        groupKey
       }
     }));
 

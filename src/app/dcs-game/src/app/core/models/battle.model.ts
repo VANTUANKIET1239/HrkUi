@@ -20,10 +20,29 @@ export type BattleEventType =
   | 'STATUS_STACK_CHANGED' | 'STATUS_REMOVED'
   | 'RICARDO_APPLIED' | 'RICARDO_STACK_CHANGED' | 'RICARDO_RAGE_READY'
   | 'RICARDO_EMPOWERED_CAST' | 'RICARDO_CONSUMED'
+  | 'RESOURCE_CHANGED' | 'AURA_GAINED' | 'AURA_CONSUMED'
+  | 'FULL_AURA_ACTIVATED' | 'FULL_AURA_REMOVED' | 'LOSS_OF_CONFIDENCE_DETONATED'
+  | 'THANH_THAI_EMPOWERED_CAST' | 'SIBA_EMPOWERED_CAST'
   | 'SHIELD_APPLIED' | 'SHIELD_ABSORBED'
   | 'BLEED_DAMAGE' | 'BLEED_DETONATED' | 'ACTION_BAR_CHANGED'
+  | 'PRIME_FORTITUDE_GAINED' | 'PRIME_FORTITUDE_CONSUMED' | 'PRIME_GUARDIAN_APPLIED'
+  | 'PRIME_GUARD_REDIRECTED' | 'PRIME_PRESSURE_CHANGED' | 'PRIME_PRESSURE_RELEASED'
+  | 'PRIME_STAGGER_APPLIED' | 'PRIME_FORTRESS_CHARGE_STARTED' | 'PRIME_FORTRESS_IMPACT'
+  | 'PRIME_FORTRESS_RETURNED'
   | 'TURN_SKIPPED' | 'POSITION_CHANGED' | 'SKILL_COMPLETED'
   | 'DEATH' | 'TURN_END' | 'BATTLE_END';
+
+export interface BattleResourceViewModel {
+  resourceCode: string;
+  currentValue: number;
+  maxValue: number;
+  previousValue?: number;
+  reasonCode?: string;
+  tier?: number;
+  isFull?: boolean;
+  physicalDamageBonusPercent?: number;
+  magicDamageBonusPercent?: number;
+}
 
 export interface BattleEventDto {
   sequence: number;
@@ -51,6 +70,19 @@ export interface BattleEventDto {
   executionGroup?: string | null;
   hitIndex?: number | null;
   statModifiers?: BattleEventStatModifierDto[];
+  resourceCode?: string | null;
+  previousValue?: number | null;
+  currentValue?: number | null;
+  reasonCode?: string | null;
+  actionId?: string | null;
+  statusInstanceId?: string | null;
+  sourceHeroId?: number | null;
+  originalDamage?: number | null;
+  redirectRequested?: number | null;
+  redirectActual?: number | null;
+  allyDamageAfterRedirect?: number | null;
+  guardianHpBefore?: number | null;
+  guardianHpAfter?: number | null;
 }
 
 export interface BattleEventStatModifierDto {

@@ -325,6 +325,40 @@ export const INITIAL_HEROES: Hero[] = [
       primaryColorHex: '#eab308',
       secondaryColorHex: '#64748b'
     }
+  },
+  {
+    id: 11,
+    heroTemplateId: 11,
+    heroCode: 'NGHIA_PHUC_PRIME',
+    name: 'Nghĩa Phục Prime',
+    avatar: '/assets/images/dcs-game/nghia-phuc-prime.png',
+    hp: 1800,
+    maxHp: 1800,
+    mana: 30,
+    maxMana: 100,
+    attack: 95,
+    defense: 220,
+    speed: 85,
+    magicResistance: 160,
+    position: 1,
+    team: 'left',
+    statusEffects: [],
+    skills: ['PRIME_SHIELD_WARRANTY', 'PRIME_FORTRESS_CHARGE'],
+    level: 4,
+    stars: 5,
+    auraTier: 1,
+    defaultFacing: 'right',
+    starAura: {
+      heroTemplateId: 11,
+      starLevel: 5,
+      auraCode: 'PRIME_STAR_5',
+      visualKey: 'prime-fortress-aura',
+      name: 'Thành Trì Prime Vĩnh Cửu',
+      intensity: 2.5,
+      particleLevel: 5,
+      primaryColorHex: '#00e5ff',
+      secondaryColorHex: '#0077ff'
+    }
   }
 ];
 
@@ -1318,7 +1352,8 @@ export const SKILL_LIST: Record<string, Skill> = {
         effectTypeName: 'Chảy Máu',
         targetTypeCode: 'ENEMY_SINGLE',
         durationTurns: 2,
-        chancePercent: 30
+        chancePercent: 50,
+        maxStacks: 2
       }
     ]
   },
@@ -1334,7 +1369,7 @@ export const SKILL_LIST: Record<string, Skill> = {
     color: '#ef4444',
     type: 'physical',
     description: 'Nhắm vào kẻ địch có % máu thấp nhất. Gắn Hoảng Loạn trong 1 lượt. Kích nổ toàn bộ Chảy Máu sẵn có gây 130% sát thương còn lại. Tấn công 3 nhát liên tiếp (80%, 90%, 130%), mỗi nhát có 30% gây Chảy Máu. Nếu hạ gục mục tiêu, hồi 25% thanh hành động và nhận 40% giảm sát thương.',
-    damageMultiplier: 3.0,
+    damageMultiplier: 4.0,
     targetType: 'lowest_hp_percent',
     phase1Duration: 1400,
     phase2Duration: 1600,
@@ -1357,7 +1392,95 @@ export const SKILL_LIST: Record<string, Skill> = {
         effectTypeName: 'Chảy Máu',
         targetTypeCode: 'LOWEST_HP_PERCENT',
         durationTurns: 2,
-        chancePercent: 30
+        chancePercent: 50,
+        maxStacks: 2
+      }
+    ]
+  },
+  PRIME_SHIELD_WARRANTY: {
+    id: 'PRIME_SHIELD_WARRANTY',
+    name: 'Khiên Này Có Bảo Hành',
+    skillTypeCode: 'NORMAL',
+    triggerCode: 'TURN_START',
+    energyCost: 0,
+    cost: 0,
+    costType: 'NONE',
+    category: 'basic',
+    color: '#00e5ff',
+    type: 'basic',
+    description: 'Nghĩa Phục Prime dùng khiên đánh một kẻ địch gây 90% ATK sát thương vật lý. Tạo khiên cho đồng minh có % HP thấp nhất bằng 8% Max HP của Prime trong 2 lượt. Nhận 1 tầng Kiên Cố (+5% DEF, +5% Kháng Phép, tối đa 4 tầng). Đạt 4 tầng tạo khiên 12% Max HP và kích hoạt tiêu thụ.',
+    damageMultiplier: 0.9,
+    targetType: 'single',
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Đập Khiên',
+        targetTypeCode: 'ENEMY_SINGLE',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 0.9, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'SHIELD',
+        effectTypeName: 'Bảo Hành Khiên',
+        targetTypeCode: 'ALLY_LOWEST_HP_PERCENT',
+        durationTurns: 2
+      },
+      {
+        effectTypeCode: 'PRIME_FORTITUDE',
+        effectTypeName: 'Kiên Cố',
+        targetTypeCode: 'SELF',
+        durationTurns: 3,
+        maxStacks: 4
+      }
+    ]
+  },
+  PRIME_FORTRESS_CHARGE: {
+    id: 'PRIME_FORTRESS_CHARGE',
+    name: 'Thành Trì Prime: Không Ai Được Phép Ngã',
+    skillTypeCode: 'ENERGY',
+    triggerCode: 'MANUAL_ENERGY_FULL',
+    energyCost: 100,
+    cost: 100,
+    costType: 'MP',
+    category: 'ultimate',
+    color: '#00f0ff',
+    type: 'ultimate',
+    description: 'Dựng thành trì khổng lồ lao thẳng vào toàn bộ đội hình địch gây 60% ATK sát thương vật lý không crit. Kẻ địch trúng đòn nhận Lung Lay (-15 thanh hành động, -10% SPD trong 1 lượt). Chọn ngẫu nhiên tối đa 3 địch nhận Vỡ Trận (-15% sát thương gây ra trong 2 lượt). Thành trì quay về tạo khiên cho toàn đội (10% Max HP + 120% DEF của Prime, tối đa 25% Max HP mục tiêu) và nhận Hộ Vệ Prime (nhận thay 35% sát thương, tích Áp Lực đến 5 tầng rồi giải phóng hồi máu và phản đòn theo DEF).',
+    damageMultiplier: 0.6,
+    targetType: 'all_enemies',
+    phase1Duration: 1450,
+    phase2Duration: 1450,
+    effects: [
+      {
+        effectTypeCode: 'DAMAGE',
+        effectTypeName: 'Thành Trì Xung Phong',
+        targetTypeCode: 'ENEMY_ALL',
+        damageSchoolCode: 'PHYSICAL',
+        scalings: [{ attributeTypeCode: 'ATK', attributeTypeName: 'Công', coefficient: 0.6, flatValue: 0 }]
+      },
+      {
+        effectTypeCode: 'PRIME_STAGGER',
+        effectTypeName: 'Lung Lay',
+        targetTypeCode: 'ENEMY_ALL',
+        durationTurns: 1
+      },
+      {
+        effectTypeCode: 'PRIME_BROKEN_MORALE',
+        effectTypeName: 'Vỡ Trận',
+        targetTypeCode: 'ENEMY_RANDOM_3',
+        durationTurns: 2
+      },
+      {
+        effectTypeCode: 'SHIELD',
+        effectTypeName: 'Thành Trì Che Chở',
+        targetTypeCode: 'ALLY_ALL',
+        durationTurns: 2
+      },
+      {
+        effectTypeCode: 'PRIME_GUARDIAN',
+        effectTypeName: 'Hộ Vệ Prime',
+        targetTypeCode: 'SELF',
+        durationTurns: 2
       }
     ]
   }

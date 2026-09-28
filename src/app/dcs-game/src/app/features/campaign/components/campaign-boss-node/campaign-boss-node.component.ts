@@ -51,6 +51,13 @@ export class CampaignBossNodeComponent {
     return bossEnemy?.name || this.stage.name;
   }
 
+  onImgError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    if (target && !target.src.includes('monster-5.png')) {
+      target.src = '/assets/images/dcs-game/dungeon/monsters/monster-5.png';
+    }
+  }
+
   onBossClick(): void {
     if (this.isClickable) {
       this.selectStage.emit(this.stage);

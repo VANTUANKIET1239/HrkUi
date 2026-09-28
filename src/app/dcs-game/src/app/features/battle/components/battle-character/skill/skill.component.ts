@@ -16,6 +16,8 @@ import { SkillAllInComponent } from './skill-all-in/skill-all-in.component';
 import { SkillWinterBlessingsComponent } from './skill-winter-blessings/skill-winter-blessings.component';
 import { SkillDeadliftDiaChanComponent } from './skill-deadlift-dia-chan/skill-deadlift-dia-chan.component';
 import { SkillHaiLastLaughComponent } from './skill-hai-last-laugh/skill-hai-last-laugh.component';
+import { SkillThanhThaiAuraComponent } from './skill-thanh-thai-aura/skill-thanh-thai-aura.component';
+import { SkillNghiaPhucPrimeComponent } from './skill-nghia-phuc-prime/skill-nghia-phuc-prime.component';
 
 @Component({
   selector: 'app-skill',
@@ -36,7 +38,9 @@ import { SkillHaiLastLaughComponent } from './skill-hai-last-laugh/skill-hai-las
     SkillAllInComponent,
     SkillWinterBlessingsComponent,
     SkillDeadliftDiaChanComponent,
-    SkillHaiLastLaughComponent
+    SkillHaiLastLaughComponent,
+    SkillThanhThaiAuraComponent,
+    SkillNghiaPhucPrimeComponent
   ],
   templateUrl: './skill.component.html',
   styleUrl: './skill.component.scss'

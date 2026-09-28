@@ -7,12 +7,14 @@ import {
   ChangeDetectorRef,
   HostListener,
   OnDestroy,
+  DestroyRef,
   inject
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap, map, catchError } from 'rxjs/operators';
 import { DungeonStage, BattleFormationDraft, BattleFormationPosition, FormationPreviewResponse } from '../../../../core/models/dungeon.model';
 import { FormationDetailDto, PlayerFormationSummaryDto } from '../../../../core/models/formation.model';
 import { PlayerHeroDto } from '../../../../core/models/player-hero.model';
@@ -41,6 +43,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
   private readonly dungeonApi = inject(DungeonApiService);
   private readonly inventoryService = inject(InventoryService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   // Data states
   formations: PlayerFormationSummaryDto[] = [];
@@ -77,7 +80,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
   searchHeroQuery = '';
 
   private readonly previewSubject = new Subject<BattleFormationDraft>();
-  private previewSub?: Subscription;
+  private previewVersion = 0;
 
   ngOnInit(): void {
     this.setupPreviewDebounce();
@@ -86,18 +89,48 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.previewSub?.unsubscribe();
     if (this.toastTimer) clearTimeout(this.toastTimer);
   }
 
+  private normalizeDraftKey(draft: BattleFormationDraft): string {
+    const posKey = (draft.positions || [])
+      .map(p => `${p.slot}:${p.heroId ?? 0}`)
+      .sort()
+      .join('|');
+    return `${draft.formationCode}#${posKey}`;
+  }
+
   private setupPreviewDebounce(): void {
-    this.previewSub = this.previewSubject
+    this.previewSubject
       .pipe(
-        debounceTime(350),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+        debounceTime(150),
+        distinctUntilChanged((prev, curr) => this.normalizeDraftKey(prev) === this.normalizeDraftKey(curr)),
+        tap(() => {
+          this.previewVersion++;
+          this.isPreviewLoading = true;
+          this.cdr.markForCheck();
+        }),
+        switchMap((draft) => {
+          const currentVersion = this.previewVersion;
+          return this.dungeonApi.previewFormation(this.stage.id, draft).pipe(
+            map(res => ({ res, version: currentVersion })),
+            catchError(err => {
+              console.error('Failed to preview formation:', err);
+              return of({ res: null, version: currentVersion });
+            })
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((draft) => {
-        this.fetchServerPreview(draft);
+      .subscribe(({ res, version }) => {
+        if (version === this.previewVersion) {
+          this.isPreviewLoading = false;
+          if (res?.data) {
+            this.previewData = res.data;
+            this.validationErrors = res.data.validationErrors ?? [];
+          }
+          this.cdr.markForCheck();
+        }
       });
   }
 
@@ -194,25 +227,6 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
 
   private triggerPreview(): void {
     this.previewSubject.next(this.currentDraft);
-  }
-
-  private fetchServerPreview(draft: BattleFormationDraft): void {
-    this.isPreviewLoading = true;
-    this.dungeonApi.previewFormation(this.stage.id, draft).subscribe({
-      next: (res) => {
-        this.isPreviewLoading = false;
-        if (res.data) {
-          this.previewData = res.data;
-          this.validationErrors = res.data.validationErrors ?? [];
-        }
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        this.isPreviewLoading = false;
-        console.error('Failed to preview formation:', err);
-        this.cdr.markForCheck();
-      }
-    });
   }
 
   // --- Hero Placement & Interaction Logic ---
@@ -427,7 +441,12 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
   }
 
   onStartBattle(): void {
-    if (this.isStarting) return;
+    if (this.isStarting || this.isSavingDefault) return;
+
+    if (this.isPreviewLoading) {
+      this.showCustomToast('Đang tính lực chiến đội hình, vui lòng đợi trong giây lát...', 'info');
+      return;
+    }
 
     if (this.deployedCount === 0) {
       this.showCustomToast('Vui lòng chọn ít nhất 1 võ tướng xuất chiến!', 'warning');
@@ -449,7 +468,31 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.startBattle.emit(this.currentDraft);
+    // Step 2 & 3: Save formation positions and set as default before starting dungeon
+    this.isSavingDefault = true;
+    const positions = this.currentDraft.positions.map(p => ({
+      slot: p.slot,
+      heroId: p.heroId
+    }));
+
+    this.formationService.updatePositions(this.selectedFormationCode, positions)
+      .pipe(
+        switchMap(() => this.formationService.selectFormation(this.selectedFormationCode)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: () => {
+          this.isSavingDefault = false;
+          // Step 4: After save success, emit start battle
+          this.startBattle.emit(this.currentDraft);
+        },
+        error: (err) => {
+          this.isSavingDefault = false;
+          console.error('Failed to save default formation before battle:', err);
+          this.showCustomToast('Lưu đội hình mặc định thất bại. Không thể bắt đầu phó bản!', 'warning');
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   onBackdropClick(event: MouseEvent): void {
