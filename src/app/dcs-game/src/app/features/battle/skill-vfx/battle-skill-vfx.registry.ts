@@ -18,6 +18,12 @@ import { TienDungTongDaiSceneVfxComponent } from './scene/epic-heroes/tien-dung-
 import { QuocNhanSceneVfxComponent } from './scene/epic-heroes/quoc-nhan-scene-vfx.component';
 import { CauVangSceneVfxComponent } from './scene/epic-heroes/cau-vang-scene-vfx.component';
 import { SibaSceneVfxComponent } from './scene/siba-thien-than/siba-scene-vfx.component';
+import { KietMaiXeoSceneVfxComponent } from './scene/legendary-heroes/kiet-mai-xeo/kiet-mai-xeo-scene-vfx.component';
+import { TruongKietGraduationSceneVfxComponent } from './scene/legendary-heroes/truong-kiet-graduation/truong-kiet-graduation-scene-vfx.component';
+import { QuocNhanGraduationSceneVfxComponent } from './scene/legendary-heroes/quoc-nhan-graduation/quoc-nhan-graduation-scene-vfx.component';
+import { LongLeCatSceneVfxComponent } from './scene/legendary-heroes/long-le-cat/long-le-cat-scene-vfx.component';
+import { LongLeCatBasicSceneVfxComponent } from './scene/legendary-heroes/long-le-cat/long-le-cat-basic-scene-vfx.component';
+import { QuocNhanRunNowSceneVfxComponent } from './scene/legendary-heroes/quoc-nhan-run-now/quoc-nhan-run-now-scene-vfx.component';
 
 export interface BattleSkillVfxDefinition {
   sceneComponent?: Type<unknown>;
@@ -50,5 +56,11 @@ export const BATTLE_SKILL_VFX_REGISTRY: Readonly<Record<string, BattleSkillVfxDe
   QUOC_NHAN_NIGHT_PHANTOMS: { sceneComponent: QuocNhanSceneVfxComponent, screenShake: true },
   CAU_VANG_CALM_GUARD: { sceneComponent: CauVangSceneVfxComponent },
   SIBA_ANGEL_GENTLE_WING: { sceneComponent: SibaSceneVfxComponent, screenShake: false },
-  SIBA_CELESTIAL_PROTECTION: { sceneComponent: SibaSceneVfxComponent, screenShake: false }
+  SIBA_CELESTIAL_PROTECTION: { sceneComponent: SibaSceneVfxComponent, screenShake: false },
+  KIET_MAI_XEO_ENERGY: { sceneComponent: KietMaiXeoSceneVfxComponent, screenShake: true },
+  TRUONG_KIET_GRADUATION_ENERGY: { sceneComponent: TruongKietGraduationSceneVfxComponent, screenShake: true },
+  QUOC_NHAN_GRADUATION_ENERGY: { sceneComponent: QuocNhanGraduationSceneVfxComponent, screenShake: true },
+  LONG_LE_CAT_COMPANIONS: { sceneComponent: LongLeCatSceneVfxComponent, screenShake: false },
+  LONG_LE_CAT_SCRATCH_BASIC: { sceneComponent: LongLeCatBasicSceneVfxComponent, screenShake: false },
+  QUOC_NHAN_RUN_NOW_ENERGY: { sceneComponent: QuocNhanRunNowSceneVfxComponent, screenShake: true }
 };

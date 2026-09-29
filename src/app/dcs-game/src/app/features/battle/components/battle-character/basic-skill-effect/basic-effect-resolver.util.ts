@@ -24,6 +24,11 @@ export type BasicEffectCode =
   | 'quoc-nhan-gia-dien'
   | 'cau-vang-mat-lanh'
   | 'siba-thien-than'
+  | 'kiet-mai-xeo'
+  | 'truong-kiet-tot-nghiep-cap-3'
+  | 'quoc-nhan-tot-nghiep-cap-3'
+  | 'long-le-con-meo'
+  | 'quoc-nhan-chay-ngay-di'
   | 'generic';
 
 const TEMPLATE_ID_MAP: Record<number, BasicEffectCode> = {
@@ -108,6 +113,16 @@ const CODE_MAP: Record<string, BasicEffectCode> = {
   'siba-thien-than': 'siba-thien-than',
   'siba_thien_than': 'siba-thien-than',
   'siba': 'siba-thien-than',
+  'kiet-mai-xeo': 'kiet-mai-xeo',
+  'kiet_mai_xeo': 'kiet-mai-xeo',
+  'truong-kiet-tot-nghiep-cap-3': 'truong-kiet-tot-nghiep-cap-3',
+  'truong_kiet_tot_nghiep_cap_3': 'truong-kiet-tot-nghiep-cap-3',
+  'quoc-nhan-tot-nghiep-cap-3': 'quoc-nhan-tot-nghiep-cap-3',
+  'quoc_nhan_tot_nghiep_cap_3': 'quoc-nhan-tot-nghiep-cap-3',
+  'long-le-con-meo': 'long-le-con-meo',
+  'long_le_con_meo': 'long-le-con-meo',
+  'quoc-nhan-chay-ngay-di': 'quoc-nhan-chay-ngay-di',
+  'quoc_nhan_chay_ngay_di': 'quoc-nhan-chay-ngay-di',
 };
 
 const AVATAR_FILENAME_MAP: Record<string, BasicEffectCode> = {
@@ -154,6 +169,18 @@ const AVATAR_FILENAME_MAP: Record<string, BasicEffectCode> = {
   'cau-vang-mat-lanh-epic.png': 'cau-vang-mat-lanh',
   'siba-thien-than.png': 'siba-thien-than',
   'siba-thien-than-mythic.png': 'siba-thien-than',
+  'kiet-mai-xeo.jpg': 'kiet-mai-xeo',
+  'kiet-mai-xeo.png': 'kiet-mai-xeo',
+  'kiet-mai-xeo-legendary.png': 'kiet-mai-xeo',
+  'truong-kiet-tot-nghiep-cap-3.png': 'truong-kiet-tot-nghiep-cap-3',
+  'truong-kiet-tot-nghiep-cap-3-legendary.png': 'truong-kiet-tot-nghiep-cap-3',
+  'quoc-nhan-tot-nghiep-cap-3.png': 'quoc-nhan-tot-nghiep-cap-3',
+  'quoc-nhan-tot-nghiep-cap-3-legendary.png': 'quoc-nhan-tot-nghiep-cap-3',
+  'long-le-con-meo.jpg': 'long-le-con-meo',
+  'long-le-con-meo.png': 'long-le-con-meo',
+  'long-le-con-meo-legendary.png': 'long-le-con-meo',
+  'quoc-nhan-chay-ngay-di.png': 'quoc-nhan-chay-ngay-di',
+  'quoc-nhan-chay-ngay-di-legendary.png': 'quoc-nhan-chay-ngay-di',
 };
 
 const NAME_FALLBACK_MAP: Record<string, BasicEffectCode> = {
@@ -189,6 +216,16 @@ const NAME_FALLBACK_MAP: Record<string, BasicEffectCode> = {
   'cau vang mat lanh': 'cau-vang-mat-lanh',
   'siba thiên thần': 'siba-thien-than',
   'siba thien than': 'siba-thien-than',
+  'kiệt mái xéo': 'kiet-mai-xeo',
+  'kiet mai xeo': 'kiet-mai-xeo',
+  'trường kiệt tốt nghiệp cấp 3': 'truong-kiet-tot-nghiep-cap-3',
+  'truong kiet tot nghiep cap 3': 'truong-kiet-tot-nghiep-cap-3',
+  'quốc nhân tốt nghiệp cấp 3': 'quoc-nhan-tot-nghiep-cap-3',
+  'quoc nhan tot nghiep cap 3': 'quoc-nhan-tot-nghiep-cap-3',
+  'long lê con mèo': 'long-le-con-meo',
+  'long le con meo': 'long-le-con-meo',
+  'quốc nhân chạy ngay đi': 'quoc-nhan-chay-ngay-di',
+  'quoc nhan chay ngay di': 'quoc-nhan-chay-ngay-di',
 };
 
 /**
@@ -248,6 +285,21 @@ export function resolveBasicEffectCode(
   }
   if (activeSkillId === 'SIBA_ANGEL_GENTLE_WING') {
     return 'siba-thien-than';
+  }
+  if (activeSkillId === 'KIET_MAI_XEO_BASIC') {
+    return 'kiet-mai-xeo';
+  }
+  if (activeSkillId === 'TRUONG_KIET_GRADUATION_BASIC') {
+    return 'truong-kiet-tot-nghiep-cap-3';
+  }
+  if (activeSkillId === 'QUOC_NHAN_GRADUATION_BASIC') {
+    return 'quoc-nhan-tot-nghiep-cap-3';
+  }
+  if (activeSkillId === 'LONG_LE_CAT_SCRATCH_BASIC') {
+    return 'long-le-con-meo';
+  }
+  if (activeSkillId === 'QUOC_NHAN_RUN_NOW_BASIC') {
+    return 'quoc-nhan-chay-ngay-di';
   }
 
   if (!hero) {

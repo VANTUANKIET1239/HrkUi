@@ -678,3 +678,414 @@
   50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
 }
 
+/* ==========================================================================
+   Legendary: Long Lê Cat Companion (Real sprite asset at ally feet, clamp sized)
+   ========================================================================== */
+.cat-companion-wrapper {
+  position: absolute;
+  bottom: 6px;
+  left: -44px;
+  width: clamp(52px, 6vw, 92px);
+  height: auto;
+  pointer-events: none;
+  z-index: 15;
+  animation: cat-companion-idle 3s ease-in-out infinite alternate;
+
+  .cat-companion-sprite-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));
+    animation: cat-breathe 2.8s ease-in-out infinite alternate;
+  }
+
+  .cat-companion-aura-halo {
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(245, 158, 11, 0.55) 20%, transparent 80%);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    animation: cat-halo-breathe 2.5s ease-in-out infinite alternate;
+  }
+
+  &.team-right {
+    left: auto;
+    right: -44px;
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes cat-companion-idle {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+@keyframes cat-breathe {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02, 0.98); }
+  100% { transform: scale(0.99, 1.01); }
+}
+
+@keyframes cat-halo-breathe {
+  0% { opacity: 0.5; transform: translateX(-50%) scale(0.9); }
+  100% { opacity: 0.9; transform: translateX(-50%) scale(1.1); }
+}
+
+/* ==========================================================================
+   Legendary: Vết Cào (Yellow) & Vết Cào Sâu (Deep Crimson Red)
+   ========================================================================== */
+.cat-scratch-overlay {
+  position: absolute;
+  inset: 12%;
+  pointer-events: none;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.normal-scratch {
+    .cat-scratch-img {
+      width: 72%;
+      height: 72%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.95)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      animation: cat-scratch-pulse 1.8s ease-in-out infinite alternate;
+    }
+
+    .scratch-pulse-halo {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(250, 204, 21, 0.35) 0%, transparent 70%);
+      animation: scratch-halo-glow 1.8s ease-in-out infinite alternate;
+    }
+  }
+
+  &.deep-scratch {
+    .deep-scratch-img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(220, 38, 38, 1)) drop-shadow(0 0 4px #fff);
+      animation: deep-scratch-pulse 1.2s ease-in-out infinite alternate;
+    }
+
+    .deep-scratch-pulse-halo {
+      position: absolute;
+      width: 60%;
+      height: 60%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(220, 38, 38, 0.45) 0%, transparent 70%);
+      animation: deep-halo-glow 1.2s ease-in-out infinite alternate;
+    }
+  }
+}
+
+@keyframes cat-scratch-pulse {
+  0% { transform: scale(0.96); filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.8)); }
+  100% { transform: scale(1.04); filter: drop-shadow(0 0 12px rgba(250, 204, 21, 1)); }
+}
+
+@keyframes scratch-halo-glow {
+  0% { transform: scale(0.85); opacity: 0.3; }
+  100% { transform: scale(1.15); opacity: 0.7; }
+}
+
+@keyframes deep-scratch-pulse {
+  0% { transform: scale(0.95); filter: brightness(1) drop-shadow(0 0 8px #dc2626); }
+  100% { transform: scale(1.06); filter: brightness(1.25) drop-shadow(0 0 16px #ef4444); }
+}
+
+@keyframes deep-halo-glow {
+  0% { transform: scale(0.9); opacity: 0.4; }
+  100% { transform: scale(1.2); opacity: 0.85; }
+}
+
+/* ==========================================================================
+   Legendary: Chạy Ngay Đi (Ground Red Wax Mark & Smoke)
+   ========================================================================== */
+.chay-ngay-di-ground-fx {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 35px;
+  pointer-events: none;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .candle-halo {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(239, 68, 68, 0.5) 0%, rgba(249, 115, 22, 0.25) 50%, transparent 80%);
+    border-radius: 50%;
+    animation: candle-halo-breathe 1.5s ease-in-out infinite alternate;
+  }
+
+  .chay-ngay-di-wax-img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.9));
+    animation: mark-soft-pulse 1.6s ease-in-out infinite alternate;
+  }
+
+  .candle-smoke {
+    position: absolute;
+    top: -14px;
+    width: 20px;
+    height: 30px;
+    background: radial-gradient(ellipse at bottom, rgba(24, 24, 27, 0.75), transparent 70%);
+    filter: blur(2px);
+    animation: smoke-curl-fx 2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes candle-halo-breathe {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes mark-soft-pulse {
+  0% { filter: drop-shadow(0 0 6px #dc2626); }
+  100% { filter: drop-shadow(0 0 14px #ef4444); }
+}
+
+@keyframes smoke-curl-fx {
+  0% { transform: translateY(0) scaleX(0.85); opacity: 0.5; }
+  100% { transform: translateY(-8px) scaleX(1.15); opacity: 0.85; }
+}
+
+/* ==========================================================================
+   Legendary: Silence Status Seal (Floats above head)
+   ========================================================================== */
+.academic-silence-lock-overlay {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  z-index: 30;
+
+  .silence-rune-lock {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid #a855f7;
+    background: rgba(88, 28, 135, 0.85);
+    box-shadow: 0 0 10px #7e22ce;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 3px;
+      right: 3px;
+      height: 2px;
+      background: #fde047;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+  }
+}
+
+/* ==========================================================================
+   Legendary: Damage Reduction Lingering Barrier
+   ========================================================================== */
+.graduation-dr-barrier-overlay {
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  z-index: 10;
+
+  .dr-radiant-shield {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    border: 1.5px solid rgba(251, 191, 36, 0.6);
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 20%, transparent 80%);
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.45);
+    animation: dr-breathe 2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dr-breathe {
+  0% { opacity: 0.6; }
+  100% { opacity: 0.95; }
+}
+
+/* ==========================================================================
+   Legendary: Stack Rows (Phong Ấn, Tín Chỉ, Luận Điểm) - EMOJI-FREE!
+   ========================================================================== */
+.legendary-stack-row {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 35;
+  pointer-events: none;
+
+  /* 1. Phong Ấn Wind Talisman Sigils */
+  &.phong-an-row {
+    .wind-seal-sigil {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(20, 184, 166, 0.35);
+      background: rgba(13, 148, 136, 0.2);
+      transition: all 0.25s ease;
+
+      .sigil-core {
+        width: 4px;
+        height: 4px;
+        margin: 2px auto;
+        border-radius: 50%;
+        background: #14b8a6;
+        opacity: 0.3;
+      }
+
+      &.active {
+        border-color: #22d3ee;
+        background: rgba(20, 184, 166, 0.7);
+        box-shadow: 0 0 8px #14b8a6, 0 0 14px #06b6d4;
+        transform: scale(1.15);
+
+        .sigil-core {
+          opacity: 1;
+          background: #ffffff;
+          box-shadow: 0 0 4px #a5f3fc;
+        }
+
+        &.tier-2 {
+          border-style: double;
+        }
+        &.tier-3 {
+          border-color: #ffffff;
+          box-shadow: 0 0 12px #22d3ee, 0 0 20px #14b8a6;
+        }
+      }
+    }
+  }
+
+  /* 2. Tín Chỉ Danh Dự Honor Badges */
+  &.tin-chi-row {
+    .honor-credit-sigil {
+      position: relative;
+      width: 12px;
+      height: 14px;
+      opacity: 0.35;
+      transition: all 0.25s ease;
+
+      .credit-crest-box {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #d97706, #92400e);
+        border: 1px solid #f59e0b;
+        border-radius: 2px;
+        clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+      }
+
+      &.active {
+        opacity: 1;
+        transform: scale(1.15);
+        .credit-crest-box {
+          background: linear-gradient(135deg, #fffbeb, #fbbf24);
+          border-color: #fef08a;
+          box-shadow: 0 0 8px #f59e0b;
+        }
+      }
+
+      .stamp-gold-flash {
+        position: absolute;
+        inset: -2px;
+        border-radius: 3px;
+        background: rgba(251, 191, 36, 0.8);
+        box-shadow: 0 0 10px #fbbf24;
+        animation: stamp-flash 0.35s ease-out forwards;
+      }
+    }
+  }
+
+  /* 3. Luận Điểm Thesis Point Sigils */
+  &.luan-diem-row {
+    .thesis-point-sigil {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(190, 18, 60, 0.35);
+      background: rgba(136, 19, 55, 0.2);
+      transition: all 0.25s ease;
+
+      .thesis-ring-layer {
+        width: 4px;
+        height: 4px;
+        margin: 2px auto;
+        border-radius: 50%;
+        background: #e11d48;
+        opacity: 0.3;
+      }
+
+      &.active {
+        border-color: #fde047;
+        background: rgba(190, 18, 60, 0.8);
+        box-shadow: 0 0 8px #be123c, 0 0 14px #e11d48;
+        transform: scale(1.15);
+
+        .thesis-ring-layer {
+          opacity: 1;
+          background: #ffffff;
+          box-shadow: 0 0 4px #fef08a;
+        }
+
+        &.tier-2 {
+          box-shadow: 0 0 12px #e11d48;
+        }
+        &.tier-3 {
+          border-color: #fff;
+          box-shadow: 0 0 16px #be123c, 0 0 22px #7e22ce;
+        }
+      }
+    }
+  }
+}
+
+@keyframes stamp-flash {
+  0% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+/* Cracked Magic Barrier (3 Luận Điểm stacks active) */
+.cracked-purple-barrier-overlay {
+  position: absolute;
+  inset: -4px;
+  pointer-events: none;
+  z-index: 18;
+
+  .cracked-hex-grid {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    border: 1.5px dashed rgba(168, 85, 247, 0.7);
+    box-shadow: 0 0 12px rgba(126, 34, 206, 0.5), inset 0 0 8px rgba(168, 85, 247, 0.3);
+    animation: barrier-fissure-glow 1.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes barrier-fissure-glow {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+

@@ -133,6 +133,7 @@
     [aliveCount]="getAliveCount('left')"
     [totalRemainingHp]="getTotalHp('left')" 
     [dungeonResult]="dungeonSession.current()?.result"
+    [heroStatistics]="currentHeroStatistics"
     (onReplay)="replay()" 
     (onExit)="exitBattle()">
   </app-battle-result-modal>

@@ -1,0 +1,91 @@
+<div
+  class="quoc-nhan-run-container"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [style.--speed]="visualSpeed"
+>
+  <!-- Subtle screen dimming vignette during energy skill execution -->
+  <div class="eerie-screen-vignette" [class.active]="phase !== 'idle'"></div>
+
+  <!-- Phase 1: Caster Raises Red Candle with Elongated Flame & Smoky Apparition -->
+  @if (phase === 'raise_candle') {
+    <div
+      class="candle-elevation-node"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="smoky-shadow-apparition"></div>
+      <div class="candle-wrapper">
+        <img
+          [src]="candleAsset"
+          alt="Ritual Red Candle"
+          class="ritual-candle-img"
+          (error)="onAssetError()"
+        />
+        @if (assetFailed) {
+          <div class="candle-svg-fallback">
+            <div class="flame-core"></div>
+            <div class="candle-pillar"></div>
+          </div>
+        }
+        <div class="elongated-crimson-flame"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 2: Crimson Pulse Wave Sweeping Front Row -->
+  @if (phase === 'wave_sweep') {
+    <div
+      class="crimson-wave-sweep-node"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="flame-sweep-arc arc-1"></div>
+      <div class="flame-sweep-arc arc-2"></div>
+      <div class="trailing-black-smoke"></div>
+    </div>
+  }
+
+  <!-- Phase 3: Red Wax Mark Stamped at Each Target's Feet -->
+  @if (phase === 'stamp_mark') {
+    @for (t of targets; track t.id) {
+      <div
+        class="target-wax-stamp-node"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y + 35"
+      >
+        <div class="wax-mark-halo"></div>
+        <img
+          [src]="waxMarkAsset"
+          alt="Chay Ngay Di Wax Mark"
+          class="wax-mark-img"
+          (error)="onAssetError()"
+        />
+        @if (assetFailed) {
+          <div class="wax-mark-svg-fallback">
+            <div class="wax-circle-ring"></div>
+            <div class="wax-inner-sigil"></div>
+          </div>
+        }
+        <div class="curling-black-smoke"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 4: Dissipation -->
+  @if (phase === 'dissipate') {
+    @for (t of targets; track t.id) {
+      <div
+        class="wax-dissipate-node"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y + 35"
+      >
+        <div class="ash-dissolve-particles">
+          <span class="ember-ash a1"></span>
+          <span class="ember-ash a2"></span>
+          <span class="ember-ash a3"></span>
+        </div>
+      </div>
+    }
+  }
+</div>

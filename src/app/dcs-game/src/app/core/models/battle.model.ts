@@ -92,6 +92,19 @@ export interface BattleEventStatModifierDto {
   value: number;
 }
 
+export interface BattleHeroStatisticsDto {
+  combatantId: number;
+  sourceHeroId: number;
+  team: number;
+  heroName: string;
+  avatar?: string | null;
+  physicalDamageDealt: number;
+  magicDamageDealt: number;
+  healingDone: number;
+  physicalDamageTaken: number;
+  magicDamageTaken: number;
+}
+
 export interface StartBattleResultDto {
   battleId: string;
   randomSeed: number;
@@ -99,4 +112,5 @@ export interface StartBattleResultDto {
   winner: 'LEFT' | 'RIGHT' | 'DRAW';
   initialState: BattleInitialStateDto;
   events: BattleEventDto[];
+  heroStatistics?: BattleHeroStatisticsDto[];
 }

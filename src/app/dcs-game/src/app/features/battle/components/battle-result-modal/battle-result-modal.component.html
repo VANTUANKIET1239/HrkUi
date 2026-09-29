@@ -1,135 +1,322 @@
 <div class="modal-backdrop">
   <div class="modal-container" [ngClass]="{'is-victory': isVictory, 'is-defeat': !isVictory}">
 
-    <div class="result-title">{{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}</div>
+    <!-- 1. Result Title Header -->
+    <div class="modal-header-section">
+      <div class="result-title">{{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}</div>
 
-    <!-- 3-Star Reveal Display (for Victory) -->
-    <div class="stars-reveal-section" *ngIf="isVictory">
-      <div class="stars-row">
-        <i *ngFor="let s of [1, 2, 3]; let i = index"
-           class="bi bi-star-fill star-icon"
-           [class.active]="i < displayedStars"></i>
-      </div>
-      <div class="star-record-badge" *ngIf="dungeonResult?.isNewStarRecord">
-        <i class="bi bi-award-fill me-1"></i>KỶ LỤC SAO MỚI!
-      </div>
-    </div>
-
-    <div class="divider-line"></div>
-
-    <!-- Combat Stats Panel -->
-    <div class="stats-panel">
-      <div class="stat-row">
-        <span class="stat-label">Số lượt:</span>
-        <span class="stat-value">{{ totalTurns }}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Đội hình sống sót:</span>
-        <span class="stat-value">{{ aliveCount }}/{{ totalCount }}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Sinh lực còn lại:</span>
-        <span class="stat-value">{{ totalRemainingHp | number }} HP <b class="text-success" *ngIf="dungeonResult">({{ remainingHpPercent }}%)</b></span>
-      </div>
-    </div>
-
-    <!-- Dropped Equipment Card (Boss Stage Drop) -->
-    <div class="dropped-equipment-card"
-         *ngIf="dungeonResult?.droppedEquipment as equip"
-         [ngClass]="(equip.rarityCode || '').toLowerCase()"
-         (mouseenter)="onDroppedEquipHover($event)"
-         (mouseleave)="onDroppedEquipLeave()">
-      <div class="card-glow"></div>
-      
-      <div class="card-top-row">
-        <div class="card-icon-box">
-          <img *ngIf="equip.imagePath" [src]="equip.imagePath" [alt]="equip.name" class="equip-img" />
-          <i *ngIf="!equip.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
+      <!-- 3-Star Reveal Display (for Victory) -->
+      <div class="stars-reveal-section" *ngIf="isVictory">
+        <div class="stars-row">
+          <i *ngFor="let s of [1, 2, 3]; let i = index"
+             class="bi bi-star-fill star-icon"
+             [class.active]="i < displayedStars"></i>
         </div>
-        <div class="card-info">
-          <div class="d-flex align-items-center justify-content-between">
-            <span class="card-tag"><i class="bi bi-gift-fill me-1"></i>TRANG BỊ MỚI RƠI!</span>
-            <span class="card-cp" *ngIf="equip.combatPower">CP +{{ equip.combatPower }}</span>
-          </div>
-          <h4 class="card-name">{{ equip.name }}</h4>
-          <div class="card-sub-meta">
-            <span class="card-rarity" [style.color]="equip.rarityColorHex">{{ equip.rarityName }}</span>
-            <span class="card-growth" *ngIf="equip.enhancementGrowthPercent">Tăng trưởng: +{{ equip.enhancementGrowthPercent }}%/cấp</span>
-            <span class="card-quality" *ngIf="equip.overallRollPercent">Chất lượng: {{ equip.overallRollPercent }}%</span>
-          </div>
+        <div class="star-record-badge" *ngIf="dungeonResult?.isNewStarRecord">
+          <i class="bi bi-award-fill me-1"></i>KỶ LỤC SAO MỚI!
         </div>
       </div>
 
-      <!-- Equipment Roll Details Table -->
-      <div class="card-roll-details" *ngIf="equip.rolledAttributes && equip.rolledAttributes.length > 0">
-        <app-equipment-roll-details [attributes]="equip.rolledAttributes" [showEnhancement]="false" [compact]="true"></app-equipment-roll-details>
-      </div>
-
-      <div class="card-hint">
-        <i class="bi bi-info-circle me-1"></i>Rê chuột để so sánh và xem chi tiết
+      <!-- 2. Combat Overview Summary Panel -->
+      <div class="stats-overview-panel">
+        <div class="stat-pill">
+          <span class="stat-label"><i class="bi bi-hourglass-split me-1 text-warning"></i>Số lượt:</span>
+          <span class="stat-value">{{ totalTurns }}</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label"><i class="bi bi-people-fill me-1 text-info"></i>Đội hình sống sót:</span>
+          <span class="stat-value">{{ aliveCount }}/{{ totalCount }}</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label"><i class="bi bi-heart-pulse-fill me-1 text-danger"></i>Sinh lực còn lại:</span>
+          <span class="stat-value">{{ totalRemainingHp | number }} HP <b class="text-success" *ngIf="dungeonResult">({{ remainingHpPercent }}%)</b></span>
+        </div>
       </div>
     </div>
 
-    <!-- Bag Full Warning -->
-    <div class="bag-full-warning" *ngIf="dungeonResult?.isBagFull">
-      <i class="bi bi-exclamation-triangle-fill me-1"></i>
-      <span>Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.</span>
-    </div>
+    <!-- Scrollable Body Content -->
+    <div class="modal-scroll-body">
 
-    <!-- Campaign Rewards -->
-    <section class="campaign-rewards" *ngIf="dungeonResult">
-      <h3>Phần Thưởng Vượt Ải</h3>
-      <div class="rewards-pills">
-        <span>🪙 +{{ dungeonResult.goldGained | number }} Vàng</span>
-        <span>👤 +{{ dungeonResult.playerExpGained }} EXP</span>
-        <span>⚡ -{{ dungeonResult.staminaSpent }} Thể lực</span>
-        <span class="first-clear" *ngIf="dungeonResult.isFirstClear">🎁 Thưởng Vượt Lần Đầu</span>
-      </div>
-
-      <div class="heroes-exp-list">
-        <article *ngFor="let h of animatedHeroes" class="hero-exp-item" [class.flash-level-up]="h.isLevelUpFlash">
-          <div class="hero-avatar-wrapper">
-            <img [src]="h.avatar || '/assets/images/dcs-game/heroes/default.png'" [alt]="h.heroName" class="hero-avatar-img" />
-            <span class="hero-level-badge" [class.badge-leveled]="h.showLevelUpBadge">Lv.{{ h.displayedLevel }}</span>
+      <!-- 3. Character Combat Statistics Section (Full Width) -->
+      <section class="combat-statistics-section" *ngIf="hasHeroStatistics">
+        <div class="section-header-row">
+          <div class="section-title">
+            <i class="bi bi-bar-chart-fill me-2 text-warning"></i>Thống Kê Chiến Đấu
           </div>
 
-          <div class="hero-info-wrapper">
-            <div class="hero-name-row">
-              <div class="name-and-diff">
-                <span class="hero-name-label">{{ h.heroName }}</span>
-                <span class="hero-lvl-diff" *ngIf="h.targetLevel > h.oldLevel">
-                  Lv.{{ h.oldLevel }} → Lv.{{ h.targetLevel }}
-                </span>
-              </div>
-              <span class="hero-exp-gain">+{{ h.expGained }} EXP</span>
+          <!-- Team Switch Tabs -->
+          <div class="team-tabs" *ngIf="hasEnemyTeamStats">
+            <button class="team-tab-btn" [class.active]="selectedStatsTeam === 0" (click)="setStatsTeam(0)">
+              <i class="bi bi-shield-shaded me-1"></i>Đội Ta
+            </button>
+            <button class="team-tab-btn" [class.active]="selectedStatsTeam === 1" (click)="setStatsTeam(1)">
+              <i class="bi bi-skull me-1"></i>Đội Địch
+            </button>
+          </div>
+
+          <!-- Color Legends -->
+          <div class="stats-legend">
+            <span class="legend-item"><span class="legend-dot color-phys"></span>Vật lý</span>
+            <span class="legend-item"><span class="legend-dot color-magic"></span>Phép</span>
+            <span class="legend-item"><span class="legend-dot color-heal"></span>Hồi máu</span>
+          </div>
+        </div>
+
+        <!-- 3-Bar Clusters Chart Grid -->
+        <div class="heroes-stats-chart-grid">
+          <div *ngFor="let hero of processedTeamStats" class="hero-chart-cluster">
+            <!-- Hero Header -->
+            <div class="cluster-hero-info">
+              <img [src]="hero.avatar" [alt]="hero.heroName" class="cluster-hero-avatar" />
+              <div class="cluster-hero-name" [title]="hero.heroName">{{ hero.heroName }}</div>
             </div>
 
-            <!-- EXP Bar Track -->
-            <div class="hero-exp-track">
-              <div class="hero-exp-fill" [style.width.%]="h.expPercent">
-                <div class="hero-exp-shine"></div>
+            <!-- 3 Bars Area -->
+            <div class="cluster-bars-area">
+
+              <!-- BAR 1: SÁT THƯƠNG GÂY RA (Stacked) -->
+              <div class="stat-bar-column">
+                <div class="bar-top-value">{{ hero.damageDealtTeamPercent | number:'1.1-1' }}%</div>
+                <div class="bar-track"
+                     tabindex="0"
+                     role="button"
+                     [attr.aria-label]="'Sát thương gây ra của ' + hero.heroName"
+                     (mouseenter)="showTooltip(hero.combatantId, 'dealt')"
+                     (mouseleave)="hideTooltip()"
+                     (focus)="showTooltip(hero.combatantId, 'dealt')"
+                     (blur)="hideTooltip()"
+                     (click)="toggleTooltip(hero.combatantId, 'dealt', $event)">
+                  <div class="bar-fill bar-fill-dealt" [style.height.%]="hero.damageDealtBarHeight">
+                    <div class="segment-phys" [style.height.%]="hero.damageDealtPhysicalRatio"></div>
+                    <div class="segment-magic" [style.height.%]="hero.damageDealtMagicRatio"></div>
+                  </div>
+
+                  <!-- Tooltip: Gây sát thương -->
+                  <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'dealt')">
+                    <div class="tooltip-title">SÁT THƯƠNG GÂY RA</div>
+                    <div class="tooltip-row total-row">
+                      <span>Tổng:</span>
+                      <b>{{ formatFullNumber(hero.totalDamageDealt) }}</b>
+                    </div>
+                    <div class="tooltip-row phys-row">
+                      <span>Vật lý:</span>
+                      <span>{{ formatFullNumber(hero.physicalDamageDealt) }} ({{ hero.damageDealtPhysicalPercent | number:'1.1-1' }}%)</span>
+                    </div>
+                    <div class="tooltip-row magic-row">
+                      <span>Phép:</span>
+                      <span>{{ formatFullNumber(hero.magicDamageDealt) }} ({{ hero.damageDealtMagicPercent | number:'1.1-1' }}%)</span>
+                    </div>
+                    <div class="tooltip-row team-row">
+                      <span>Đóng góp toàn đội:</span>
+                      <b class="text-warning">{{ hero.damageDealtTeamPercent | number:'1.1-1' }}%</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="bar-bottom-label">
+                  <span class="bar-icon">⚔️</span>
+                  <span class="label-text">Gây dmg</span>
+                </div>
               </div>
-              <div class="hero-exp-numbers">
-                {{ h.displayedExp | number }} / {{ h.displayedMaxExp | number }}
+
+              <!-- BAR 2: HỒI MÁU (Single Green Bar) -->
+              <div class="stat-bar-column">
+                <div class="bar-top-value color-heal-text">{{ hero.healingFormatted }}</div>
+                <div class="bar-track"
+                     tabindex="0"
+                     role="button"
+                     [attr.aria-label]="'Hồi máu thực tế của ' + hero.heroName"
+                     (mouseenter)="showTooltip(hero.combatantId, 'heal')"
+                     (mouseleave)="hideTooltip()"
+                     (focus)="showTooltip(hero.combatantId, 'heal')"
+                     (blur)="hideTooltip()"
+                     (click)="toggleTooltip(hero.combatantId, 'heal', $event)">
+                  <div class="bar-fill bar-fill-heal" [style.height.%]="hero.healingBarHeight">
+                    <div class="segment-heal"></div>
+                  </div>
+
+                  <!-- Tooltip: Hồi máu -->
+                  <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'heal')">
+                    <div class="tooltip-title">HỒI MÁU</div>
+                    <div class="tooltip-row total-row">
+                      <span>Hồi máu thực tế:</span>
+                      <b class="text-success">{{ formatFullNumber(hero.healingDone) }}</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="bar-bottom-label">
+                  <span class="bar-icon">💚</span>
+                  <span class="label-text">Hồi máu</span>
+                </div>
               </div>
+
+              <!-- BAR 3: NHẬN SÁT THƯƠNG (Stacked) -->
+              <div class="stat-bar-column">
+                <div class="bar-top-value">{{ hero.damageTakenTeamPercent | number:'1.1-1' }}%</div>
+                <div class="bar-track"
+                     tabindex="0"
+                     role="button"
+                     [attr.aria-label]="'Sát thương nhận vào của ' + hero.heroName"
+                     (mouseenter)="showTooltip(hero.combatantId, 'taken')"
+                     (mouseleave)="hideTooltip()"
+                     (focus)="showTooltip(hero.combatantId, 'taken')"
+                     (blur)="hideTooltip()"
+                     (click)="toggleTooltip(hero.combatantId, 'taken', $event)">
+                  <div class="bar-fill bar-fill-taken" [style.height.%]="hero.damageTakenBarHeight">
+                    <div class="segment-phys" [style.height.%]="hero.damageTakenPhysicalRatio"></div>
+                    <div class="segment-magic" [style.height.%]="hero.damageTakenMagicRatio"></div>
+                  </div>
+
+                  <!-- Tooltip: Nhận sát thương -->
+                  <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'taken')">
+                    <div class="tooltip-title">SÁT THƯƠNG NHẬN</div>
+                    <div class="tooltip-row total-row">
+                      <span>Tổng:</span>
+                      <b>{{ formatFullNumber(hero.totalDamageTaken) }}</b>
+                    </div>
+                    <div class="tooltip-row phys-row">
+                      <span>Vật lý:</span>
+                      <span>{{ formatFullNumber(hero.physicalDamageTaken) }} ({{ hero.damageTakenPhysicalPercent | number:'1.1-1' }}%)</span>
+                    </div>
+                    <div class="tooltip-row magic-row">
+                      <span>Phép:</span>
+                      <span>{{ formatFullNumber(hero.magicDamageTaken) }} ({{ hero.damageTakenMagicPercent | number:'1.1-1' }}%)</span>
+                    </div>
+                    <div class="tooltip-row team-row">
+                      <span>Tỷ trọng toàn đội:</span>
+                      <b class="text-warning">{{ hero.damageTakenTeamPercent | number:'1.1-1' }}%</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="bar-bottom-label">
+                  <span class="bar-icon">🛡️</span>
+                  <span class="label-text">Nhận dmg</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 & 5. Rewards & EXP Two-Column Layout (Desktop) -->
+      <div class="rewards-and-exp-container" *ngIf="dungeonResult">
+
+        <!-- Column Left: Campaign Rewards & Dropped Equipment -->
+        <div class="rewards-left-column">
+          <!-- Dropped Equipment Card (Boss Stage Drop) -->
+          <div class="dropped-equipment-card"
+               *ngIf="dungeonResult.droppedEquipment as equip"
+               [ngClass]="(equip.rarityCode || '').toLowerCase()"
+               (mouseenter)="onDroppedEquipHover($event)"
+               (mouseleave)="onDroppedEquipLeave()">
+            <div class="card-glow"></div>
+            
+            <div class="card-top-row">
+              <div class="card-icon-box">
+                <img *ngIf="equip.imagePath" [src]="equip.imagePath" [alt]="equip.name" class="equip-img" />
+                <i *ngIf="!equip.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
+              </div>
+              <div class="card-info">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="card-tag"><i class="bi bi-gift-fill me-1"></i>TRANG BỊ MỚI RƠI!</span>
+                  <span class="card-cp" *ngIf="equip.combatPower">CP +{{ equip.combatPower }}</span>
+                </div>
+                <h4 class="card-name">{{ equip.name }}</h4>
+                <div class="card-sub-meta">
+                  <span class="card-rarity" [style.color]="equip.rarityColorHex">{{ equip.rarityName }}</span>
+                  <span class="card-growth" *ngIf="equip.enhancementGrowthPercent">Tăng trưởng: +{{ equip.enhancementGrowthPercent }}%/cấp</span>
+                  <span class="card-quality" *ngIf="equip.overallRollPercent">Chất lượng: {{ equip.overallRollPercent }}%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Equipment Roll Details Table -->
+            <div class="card-roll-details" *ngIf="equip.rolledAttributes && equip.rolledAttributes.length > 0">
+              <app-equipment-roll-details [attributes]="equip.rolledAttributes" [showEnhancement]="false" [compact]="true"></app-equipment-roll-details>
+            </div>
+
+            <div class="card-hint">
+              <i class="bi bi-info-circle me-1"></i>Rê chuột để so sánh và xem chi tiết
             </div>
           </div>
 
-          <!-- LEVEL UP Golden tag -->
-          <div class="hero-levelup-tag" *ngIf="h.showLevelUpBadge">
-            <i class="bi bi-arrow-up-circle-fill me-1"></i>LEVEL UP
+          <!-- Bag Full Warning -->
+          <div class="bag-full-warning" *ngIf="dungeonResult.isBagFull">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            <span>Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.</span>
           </div>
-        </article>
-      </div>
-    </section>
 
-    <div class="outcome-message">
-      {{ isVictory ? 'Đội hình đã vượt qua thử thách và mở khóa hành trình tiếp theo!' : 'Hãy củng cố đội hình, nâng cấp trang bị và thử lại.' }}
+          <!-- Resource Rewards Section -->
+          <div class="resource-rewards-card">
+            <h4 class="card-title"><i class="bi bi-trophy-fill text-warning me-2"></i>Phần Thưởng Vượt Ải</h4>
+            <div class="rewards-pills">
+              <span>🪙 +{{ dungeonResult.goldGained | number }} Vàng</span>
+              <span>👤 +{{ dungeonResult.playerExpGained }} EXP</span>
+              <span>⚡ -{{ dungeonResult.staminaSpent }} Thể lực</span>
+              <span class="first-clear" *ngIf="dungeonResult.isFirstClear">🎁 Thưởng Lần Đầu</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column Right: Hero EXP Gain Progress -->
+        <div class="exp-right-column">
+          <div class="heroes-exp-card">
+            <h4 class="card-title"><i class="bi bi-arrow-up-circle-fill text-success me-2"></i>Kinh Nghiệm Võ Tướng</h4>
+            <div class="heroes-exp-list">
+              <article *ngFor="let h of animatedHeroes" class="hero-exp-item" [class.flash-level-up]="h.isLevelUpFlash">
+                <div class="hero-avatar-wrapper">
+                  <img [src]="h.avatar || '/assets/images/dcs-game/heroes/default.png'" [alt]="h.heroName" class="hero-avatar-img" />
+                  <span class="hero-level-badge" [class.badge-leveled]="h.showLevelUpBadge">Lv.{{ h.displayedLevel }}</span>
+                </div>
+
+                <div class="hero-info-wrapper">
+                  <div class="hero-name-row">
+                    <div class="name-and-diff">
+                      <span class="hero-name-label">{{ h.heroName }}</span>
+                      <span class="hero-lvl-diff" *ngIf="h.targetLevel > h.oldLevel">
+                        Lv.{{ h.oldLevel }} → Lv.{{ h.targetLevel }}
+                      </span>
+                    </div>
+                    <span class="hero-exp-gain">+{{ h.expGained }} EXP</span>
+                  </div>
+
+                  <!-- EXP Bar Track -->
+                  <div class="hero-exp-track">
+                    <div class="hero-exp-fill" [style.width.%]="h.expPercent">
+                      <div class="hero-exp-shine"></div>
+                    </div>
+                    <div class="hero-exp-numbers">
+                      {{ h.displayedExp | number }} / {{ h.displayedMaxExp | number }}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- LEVEL UP Golden tag -->
+                <div class="hero-levelup-tag" *ngIf="h.showLevelUpBadge">
+                  <i class="bi bi-arrow-up-circle-fill me-1"></i>LEVEL UP
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 6. Outcome Message -->
+      <div class="outcome-message">
+        {{ isVictory ? 'Đội hình đã xuất sắc vượt qua thử thách và mở khóa chặng đường tiếp theo!' : 'Hãy củng cố đội hình, rèn luyện trang bị và thử lại lần nữa!' }}
+      </div>
+
     </div>
 
-    <div class="result-actions">
-      <button class="action-btn" (click)="onReplay.emit()">XEM LẠI</button>
-      <button class="action-btn exit" (click)="onExit.emit()">THOÁT</button>
+    <!-- 7. Action Buttons Footer -->
+    <div class="modal-footer-actions">
+      <button class="action-btn replay" (click)="onReplay.emit()">
+        <i class="bi bi-arrow-counterclockwise me-1"></i>XEM LẠI
+      </button>
+      <button class="action-btn exit" (click)="onExit.emit()">
+        <i class="bi bi-box-arrow-right me-1"></i>THOÁT
+      </button>
     </div>
 
   </div>

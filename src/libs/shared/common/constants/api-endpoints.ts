@@ -25,9 +25,13 @@ export const ApiEndpoints = {
     Detail: 'dcs-game/player/heroes/detail',
     Flags: (id: number) => `dcs-game/player/heroes/${id}/flags`,
     Equip: (id: number) => `dcs-game/player/heroes/${id}/equipment`,
-    Unequip: (id: number, slotCode: string) => `dcs-game/player/heroes/${id}/equipment/${slotCode}`
-    ,UpgradePreview: (id: number) => `dcs-game/player/heroes/${id}/upgrade-preview`
-    ,Upgrade: (id: number) => `dcs-game/player/heroes/${id}/upgrade`
+    Unequip: (id: number, slotCode: string) => `dcs-game/player/heroes/${id}/equipment/${slotCode}`,
+    UnequipAll: (id: number) => `dcs-game/player/heroes/${id}/equipment`,
+    SwapEquipment: (id: number) => `dcs-game/player/heroes/${id}/equipment/swap`,
+    UpgradePreview: (id: number) => `dcs-game/player/heroes/${id}/upgrade-preview`,
+    Upgrade: (id: number) => `dcs-game/player/heroes/${id}/upgrade`,
+    StarUpgradePreview: (id: number) => `dcs-game/player/heroes/${id}/star-upgrade-preview`,
+    StarUpgrade: (id: number) => `dcs-game/player/heroes/${id}/star-upgrade`
   },
 
   // Game Service - Inventory
@@ -41,7 +45,9 @@ export const ApiEndpoints = {
     Enhance: 'dcs-game/inventory/enhance',
     EnhancementConfigs: 'dcs-game/inventory/enhancement/configs',
     ForgeEquipment: 'dcs-game/inventory/forge-equipment',
-    EnhancementPreview: (id: number) => `dcs-game/inventory/enhancement/preview/${id}`
+    EnhancementPreview: (id: number) => `dcs-game/inventory/enhancement/preview/${id}`,
+    DowngradePreview: (id: number, level: number) => `dcs-game/inventory/enhancement/downgrade-preview/${id}?targetLevel=${level}`,
+    Downgrade: 'dcs-game/inventory/enhancement/downgrade'
   },
 
   // Game Service - Formation

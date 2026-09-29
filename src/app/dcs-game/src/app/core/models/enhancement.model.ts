@@ -105,3 +105,5 @@ export interface EquipmentEnhancementPreview {
   message?: string | null;
 }
 
+export interface RefundedMaterial { itemTemplateId: number; code: string; name: string; imagePath?: string; quantity: number; }
+export interface EquipmentDowngradePreview { inventoryItemId: number; currentEnhancement: number; targetEnhancement: number; currentStats: Record<string, number>; nextStats: Record<string, number>; currentCombatPower: number; nextCombatPower: number; refundedGold: number; refundedStones: RefundedMaterial[]; nonRefundedResources: string[]; canDowngrade: boolean; reasonCode?: string; message?: string; }

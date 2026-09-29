@@ -73,4 +73,49 @@ export class PassiveEffectComponent {
       e.startsWith('Khóa Khớp')
     ) || false;
   }
+
+  get hasCatCompanion(): boolean {
+    if (this.character?.statusEffects?.includes('CAT_COMPANION')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'CAT_COMPANION') || false;
+  }
+
+  get hasCatScratch(): boolean {
+    if (this.character?.statusEffects?.includes('CAT_SCRATCH')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'CAT_SCRATCH') || false;
+  }
+
+  get hasDeepCatScratch(): boolean {
+    if (this.character?.statusEffects?.includes('DEEP_CAT_SCRATCH')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'DEEP_CAT_SCRATCH') || false;
+  }
+
+  get hasChayNgayDi(): boolean {
+    if (this.character?.statusEffects?.includes('CHAY_NGAY_DI')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'CHAY_NGAY_DI') || false;
+  }
+
+  get phongAnStacks(): number {
+    const st = this.character?.battleStatuses?.find(s => s.code === 'PHONG_AN');
+    return st?.stacks || (this.character?.resources?.['PHONG_AN']?.currentValue ?? 0);
+  }
+
+  get tinChiStacks(): number {
+    const st = this.character?.battleStatuses?.find(s => s.code === 'TIN_CHI_DANH_DU');
+    return st?.stacks || (this.character?.resources?.['TIN_CHI_DANH_DU']?.currentValue ?? 0);
+  }
+
+  get luanDiemStacks(): number {
+    const st = this.character?.battleStatuses?.find(s => s.code === 'LUAN_DIEM');
+    return st?.stacks || 0;
+  }
+
+  get hasSilenceEffect(): boolean {
+    if (this.character?.statusEffects?.includes('SILENCE')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'SILENCE') || false;
+  }
+
+  get hasDamageReductionEffect(): boolean {
+    if (this.character?.statusEffects?.includes('DAMAGE_REDUCTION')) return true;
+    return this.character?.battleStatuses?.some(s => s.code === 'DAMAGE_REDUCTION') || false;
+  }
 }

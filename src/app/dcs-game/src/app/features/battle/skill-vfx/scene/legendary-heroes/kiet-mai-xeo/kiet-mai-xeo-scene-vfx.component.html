@@ -1,0 +1,117 @@
+<div
+  class="kiet-scene-container"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [style.--speed]="visualSpeed"
+>
+  <!-- Phase 1: Gather sword aura and 3 orbiting wind seals around caster -->
+  @if (phase === 'gather') {
+    <div
+      class="kiet-caster-gather"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="wind-foot-vortex"></div>
+      <div class="sword-aura-glint"></div>
+      <div class="orbiting-seals-ring">
+        <div class="wind-seal-orb seal-1"></div>
+        <div class="wind-seal-orb seal-2"></div>
+        <div class="wind-seal-orb seal-3"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 2: Blur Dash - Afterimage streak from caster toward target -->
+  @if (phase === 'blur_dash') {
+    <div
+      class="kiet-dash-afterimage"
+      [style.left.px]="dashPos.x"
+      [style.top.px]="dashPos.y"
+    >
+      <div class="phantom-dash-shadow shadow-1"></div>
+      <div class="phantom-dash-shadow shadow-2"></div>
+      <div class="wind-spiral spiral-1"></div>
+      <div class="wind-spiral spiral-2"></div>
+    </div>
+  }
+
+  <!-- Phase 3: Slash 1 - Low Horizontal Slash at target -->
+  @if (phase === 'slash_1') {
+    <div
+      class="kiet-impact-node slash-1-node"
+      [style.left.px]="targetPos.x"
+      [style.top.px]="targetPos.y"
+    >
+      <div class="slash-line horizontal-slash"></div>
+      <div class="impact-shards">
+        <span class="shard s1"></span>
+        <span class="shard s2"></span>
+        <span class="shard s3"></span>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 4: Slash 2 - Reverse Diagonal Slash at target -->
+  @if (phase === 'slash_2') {
+    <div
+      class="kiet-impact-node slash-2-node"
+      [style.left.px]="targetPos.x"
+      [style.top.px]="targetPos.y"
+    >
+      <div class="slash-line reverse-diag-slash"></div>
+      <div class="impact-shards">
+        <span class="shard s4"></span>
+        <span class="shard s5"></span>
+        <span class="shard s6"></span>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 5: Slash 3 - Massive Mái Xéo Cross Cut & Armor Penetration -->
+  @if (phase === 'slash_3') {
+    <div
+      class="kiet-impact-node slash-3-node"
+      [class.max-stacks]="isMaxStacks"
+      [class.is-crit]="hasCrit"
+      [style.left.px]="targetPos.x"
+      [style.top.px]="targetPos.y"
+    >
+      <!-- Dual crossing mái xéo slashes -->
+      <div class="mai-xeo-slash-a"></div>
+      <div class="mai-xeo-slash-b"></div>
+      <div class="cross-center-flash"></div>
+
+      <!-- Converged Wind Rift when 3 Phong Ấn are consumed -->
+      @if (isMaxStacks) {
+        <div class="wind-rift-fissure"></div>
+        <div class="armor-split-geometry">
+          <div class="armor-plate plate-left"></div>
+          <div class="armor-plate plate-right"></div>
+        </div>
+      }
+
+      <!-- Flying triangular crystal shards -->
+      <div class="impact-shards heavy-shards">
+        <span class="shard s1"></span>
+        <span class="shard s2"></span>
+        <span class="shard s3"></span>
+        <span class="shard s4"></span>
+        <span class="shard s5"></span>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 6: Ki Dissipation & Afterimage Return -->
+  @if (phase === 'dissipate') {
+    <div
+      class="kiet-dissipate-node"
+      [style.left.px]="targetPos.x"
+      [style.top.px]="targetPos.y"
+    >
+      <div class="dissipate-haze"></div>
+      <div class="ki-fragment k1"></div>
+      <div class="ki-fragment k2"></div>
+      <div class="ki-fragment k3"></div>
+    </div>
+  }
+</div>

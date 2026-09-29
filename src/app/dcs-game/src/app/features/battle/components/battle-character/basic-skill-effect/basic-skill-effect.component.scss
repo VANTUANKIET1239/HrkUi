@@ -445,5 +445,375 @@
       animation: generic-flash 0.4s ease-out forwards;
     }
   }
+
+  /* 24. Kiệt Mái Xéo: Đường Kiếm Mái Xéo - Blade glint, projection afterimage, dual mái xéo crossing cut & sharp shards */
+  &.basic-kiet-mai-xeo {
+    .kiet-prep-wind-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid #14b8a6;
+      box-shadow: 0 0 10px #06b6d4;
+      transform: translate(-50%, -50%);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+    .kiet-blade-glint {
+      position: absolute;
+      top: 40%;
+      left: 48%;
+      width: 3px;
+      height: 40px;
+      background: linear-gradient(180deg, #fff, #14b8a6, transparent);
+      box-shadow: 0 0 12px #22d3ee;
+      transform: rotate(25deg);
+      animation: generic-flash 0.25s ease-out forwards;
+    }
+    .kiet-afterimage-trail {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90px;
+      height: 30px;
+      background: linear-gradient(90deg, transparent, rgba(20, 184, 166, 0.4), transparent);
+      filter: blur(3px);
+      transform: translate(-50%, -50%);
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .kiet-wind-wisp {
+      position: absolute;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+      border-radius: 2px;
+      &.w1 { top: 40%; left: 45%; transform: rotate(-15deg); animation: generic-slash 0.3s ease-out forwards; }
+      &.w2 { top: 60%; left: 45%; transform: rotate(20deg); animation: generic-slash 0.3s 0.05s ease-out forwards; }
+    }
+    .teal-sword-slash-a,
+    .teal-sword-slash-b {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 95px;
+      height: 4.5px;
+      background: linear-gradient(90deg, transparent, #2dd4bf 20%, #fff 50%, #0d9488 80%, transparent);
+      box-shadow: 0 0 14px #2dd4bf, 0 0 24px #0d9488;
+      border-radius: 2px;
+    }
+    .teal-sword-slash-a {
+      transform: translate(-50%, -50%) rotate(-35deg);
+      animation: generic-slash 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+    .teal-sword-slash-b {
+      transform: translate(-50%, -50%) rotate(50deg);
+      animation: generic-slash 0.35s 0.04s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+    .mai-xeo-center-spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffffff 20%, #2dd4bf 60%, transparent 100%);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px #fff;
+      animation: generic-impact-flash 0.3s ease-out forwards;
+    }
+    .kiet-triangle-shard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 12px solid #a5f3fc;
+      filter: drop-shadow(0 0 6px #14b8a6);
+      &.ts1 { transform: translate(-30px, -20px) rotate(20deg); animation: generic-flash 0.35s ease-out forwards; }
+      &.ts2 { transform: translate(30px, -15px) rotate(-35deg); animation: generic-flash 0.35s ease-out forwards; }
+      &.ts3 { transform: translate(0, 30px) rotate(135deg); animation: generic-flash 0.35s ease-out forwards; }
+    }
+  }
+
+  /* 25. Trường Kiệt Tốt Nghiệp: Bảo Vệ Lễ Tốt Nghiệp - Shield slam, badge fragments & hemispherical ally shield */
+  &.basic-truong-kiet-grad {
+    .shield-bash-arc-gold {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      border: 3.5px solid #fbbf24;
+      border-top-color: #991b1b;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px #f59e0b, 0 0 24px rgba(153, 27, 27, 0.7);
+      animation: generic-impact-flash 0.38s ease-out forwards;
+    }
+    .badge-square-shard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      background: #fbbf24;
+      border: 1px solid #991b1b;
+      box-shadow: 0 0 6px #f59e0b;
+      &.bss1 { transform: translate(-25px, -20px) rotate(15deg); animation: generic-flash 0.35s ease-out forwards; }
+      &.bss2 { transform: translate(25px, -15px) rotate(-25deg); animation: generic-flash 0.35s ease-out forwards; }
+      &.bss3 { transform: translate(5px, 25px) rotate(45deg); animation: generic-flash 0.35s ease-out forwards; }
+    }
+    .grad-honor-crest-descend {
+      position: absolute;
+      top: 25%;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #fbbf24;
+      background: radial-gradient(circle, #f59e0b, #991b1b);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px #f59e0b;
+      animation: generic-flash 0.4s ease-out forwards;
+    }
+    .grad-hemisphere-shield {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      width: 54px;
+      height: 40px;
+      transform: translateX(-50%);
+      .shield-dome-core {
+        position: absolute;
+        inset: 0;
+        border-top-left-radius: 27px;
+        border-top-right-radius: 27px;
+        background: radial-gradient(ellipse at bottom, rgba(153, 27, 27, 0.45) 20%, transparent 80%);
+      }
+      .shield-dome-gold-rim {
+        position: absolute;
+        inset: 0;
+        border: 2px solid #fbbf24;
+        border-bottom: transparent;
+        border-top-left-radius: 27px;
+        border-top-right-radius: 27px;
+        box-shadow: 0 0 12px #f59e0b;
+        animation: generic-impact-flash 0.4s ease-out forwards;
+      }
+    }
+  }
+
+  /* 26. Quốc Nhân Tốt Nghiệp: Nhận Xét Bên Lề - Floating parchment, red ink brackets & cracked barrier */
+  &.basic-quoc-nhan-grad {
+    .thesis-note-parchment {
+      position: absolute;
+      top: 40%;
+      left: 45%;
+      width: 20px;
+      height: 26px;
+      background: #fef9c3;
+      border: 1.5px solid #881337;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #be123c;
+      transform: rotate(-10deg);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+    .pen-tip-ink-drop {
+      position: absolute;
+      top: 36%;
+      left: 56%;
+      width: 6px;
+      height: 6px;
+      background: #e11d48;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #e11d48;
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+    .magic-underline-trace {
+      position: absolute;
+      bottom: 25%;
+      left: 45%;
+      width: 40px;
+      height: 2.5px;
+      background: linear-gradient(90deg, #be123c, #fde047);
+      animation: generic-slash 0.35s ease-out forwards;
+    }
+    .curving-red-annotation {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      width: 55px;
+      height: 55px;
+      border: 2.5px dashed #be123c;
+      border-top-color: #fde047;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(40deg);
+      box-shadow: 0 0 12px rgba(190, 18, 60, 0.8);
+      animation: generic-slash 0.38s ease-out forwards;
+    }
+    .thesis-bracket-lock {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px double #e11d48;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 14px #be123c;
+      animation: generic-impact-flash 0.35s ease-out forwards;
+    }
+    .cracked-magic-barrier {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1.5px dashed #a855f7;
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 0 10px rgba(126, 34, 206, 0.6);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 27. Long Lê Con Mèo: Mèo Cào Đánh Dấu - Real cat sprite, 3 staggered claw cuts, NO emoji */
+  &.basic-long-le-cat {
+    .cat-target-lock-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fbbf24;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px #f59e0b;
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+    .long-le-foot-prep-ring {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      width: 44px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #f59e0b;
+      transform: translateX(-50%) rotateX(65deg);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.85);
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+
+    /* 3 Staggered Golden Claw Trails */
+    .staggered-claw-trail {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 55px;
+      height: 3.5px;
+      background: linear-gradient(90deg, transparent, #fbbf24, #fff, #f59e0b, transparent);
+      box-shadow: 0 0 10px #f59e0b, 0 0 18px #fbbf24;
+      border-radius: 2px;
+
+      &.ct1 {
+        transform: translate(-50%, -60%) rotate(-25deg);
+        animation: generic-slash 0.28s ease-out forwards;
+      }
+      &.ct2 {
+        transform: translate(-50%, -50%) rotate(-20deg);
+        animation: generic-slash 0.28s 0.06s ease-out forwards;
+      }
+      &.ct3 {
+        transform: translate(-50%, -40%) rotate(-15deg);
+        animation: generic-slash 0.28s 0.12s ease-out forwards;
+      }
+    }
+
+    .gold-scratch-impact-flash {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, #fbbf24 60%, transparent 100%);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 14px #f59e0b;
+      animation: generic-impact-flash 0.35s ease-out forwards;
+    }
+  }
+
+  /* 28. Quốc Nhân Chạy Ngay Đi: Lửa Nến Xuyên Hàng - Candle flame lance, white-gold core, black smoke */
+  &.basic-quoc-nhan-cnd {
+    .prep-wax-ring {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      width: 40px;
+      height: 16px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, #b91c1c, transparent);
+      transform: translateX(-50%);
+      box-shadow: 0 0 8px #ef4444;
+      animation: generic-flash 0.3s ease-out forwards;
+    }
+    .candle-lance-streak {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 110px;
+      height: 7px;
+      background: linear-gradient(90deg, transparent, #ef4444 20%, #f97316 50%, #fff 80%, transparent);
+      box-shadow: 0 0 16px #ef4444, 0 0 28px rgba(249, 115, 22, 0.8);
+      transform: translate(-50%, -50%);
+      border-radius: 3.5px;
+      animation: generic-slash 0.38s ease-out forwards;
+
+      .lance-core-white {
+        position: absolute;
+        inset: 1.5px 15px;
+        background: #ffffff;
+        border-radius: 2px;
+        box-shadow: 0 0 8px #fff;
+      }
+    }
+    .candle-lance-smoke {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      width: 70px;
+      height: 10px;
+      background: radial-gradient(ellipse, rgba(24, 24, 27, 0.7), transparent 70%);
+      filter: blur(3px);
+      transform: translate(-50%, -50%);
+      animation: generic-slash 0.38s ease-out forwards;
+    }
+    .lance-secondary-pulse {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid #ef4444;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px #dc2626;
+      animation: generic-impact-flash 0.38s 0.08s ease-out forwards;
+    }
+    .flame-ash-spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, #ef4444 60%, transparent 100%);
+      transform: translate(-50%, -50%);
+      animation: generic-flash 0.35s ease-out forwards;
+    }
+  }
 }
 

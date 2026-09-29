@@ -1,0 +1,126 @@
+<div
+  class="truong-kiet-grad-container"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [style.--speed]="visualSpeed"
+>
+  <!-- Phase 1: Shield Ground Slam & Graduation Crest Manifestation -->
+  @if (phase === 'slam') {
+    <div
+      class="grad-slam-node"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="ground-slam-ring"></div>
+      <div class="giant-graduation-crest">
+        <div class="crest-outer-laurel"></div>
+        <div class="crest-inner-seal">
+          <div class="valedictorian-star"></div>
+        </div>
+      </div>
+      @if (isMaxCredits) {
+        <div class="credits-unification-orbit">
+          <div class="credit-badge c1"></div>
+          <div class="credit-badge c2"></div>
+          <div class="credit-badge c3"></div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Phase 2: Golden-Crimson Shockwave Sweeping Front Row Enemies -->
+  @if (phase === 'shockwave') {
+    <div
+      class="grad-shockwave-sweep"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="shockwave-arc arc-1"></div>
+      <div class="shockwave-arc arc-2"></div>
+    </div>
+
+    <!-- Enemy target impacts -->
+    @for (t of enemyTargetNodes; track t.id) {
+      <div
+        class="enemy-impact-burst"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+      >
+        <div class="impact-gold-flash"></div>
+        <div class="badge-square-fragments">
+          <span class="sq-frag f1"></span>
+          <span class="sq-frag f2"></span>
+          <span class="sq-frag f3"></span>
+          <span class="sq-frag f4"></span>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Phase 3: Radiant Beams Curving Back to Ally Team -->
+  @if (phase === 'reflect') {
+    <div class="reflect-beam-network">
+      @for (ally of allyTargetNodes; track ally.id) {
+        <div
+          class="shield-travel-ray"
+          [style.left.px]="ally.x"
+          [style.top.px]="ally.y"
+        >
+          <div class="ray-line"></div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Phase 4: Individual Hemispherical Shields for Each Ally -->
+  @if (phase === 'ally_shields') {
+    @for (ally of allyTargetNodes; track ally.id) {
+      <div
+        class="individual-ally-shield"
+        [class.empowered-shield]="isMaxCredits"
+        [style.left.px]="ally.x"
+        [style.top.px]="ally.y"
+      >
+        <!-- Hemispherical shield dome -->
+        <div class="shield-dome-core"></div>
+        <div class="shield-dome-rim"></div>
+        <div class="shield-dome-crest-spark"></div>
+
+        @if (isMaxCredits) {
+          <!-- Golden Laurel Wreath Crown for 3 Credits -->
+          <div class="shield-laurel-wreath">
+            <span class="laurel-leaf l-left"></span>
+            <span class="laurel-leaf l-right"></span>
+            <span class="laurel-leaf l-top"></span>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Caster Valedictorian Armor / Lingering Damage Reduction Barrier -->
+    @if (isMaxCredits) {
+      <div
+        class="caster-valedictorian-barrier"
+        [style.left.px]="actorPos.x"
+        [style.top.px]="actorPos.y"
+      >
+        <div class="barrier-aura-light"></div>
+        <div class="valedictorian-sigil"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 5: Shields Gentle Fade / Dissipate -->
+  @if (phase === 'dissipate') {
+    @for (ally of allyTargetNodes; track ally.id) {
+      <div
+        class="shield-dissipate-node"
+        [style.left.px]="ally.x"
+        [style.top.px]="ally.y"
+      >
+        <div class="shield-fade-ring"></div>
+        <div class="gold-dissolve-sparkle"></div>
+      </div>
+    }
+  }
+</div>

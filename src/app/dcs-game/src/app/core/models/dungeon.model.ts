@@ -178,6 +178,7 @@ export interface DungeonResult {
   heroes: HeroExpResult[];
   droppedEquipment?: DungeonDroppedEquipment | null;
   isBagFull?: boolean;
+  heroStatistics?: import('./battle.model').BattleHeroStatisticsDto[];
 }
 
 export interface StartDungeonStageResult {

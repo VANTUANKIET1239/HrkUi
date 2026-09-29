@@ -136,4 +136,25 @@ export interface PlayerHeroDto {
 export interface PlayerHeroDetailDto extends PlayerHeroDto {
   equipment: HeroEquipmentDto;
   statBreakdowns: HeroStatBreakdownDto[];
+  starBonusAttributes: HeroBonusAttributeDto[];
 }
+
+export interface SwapHeroEquipmentResultDto {
+  sourceHero: PlayerHeroDetailDto;
+  targetHero: PlayerHeroDetailDto;
+}
+export interface StarMaterialRequirementDto { itemTemplateId:number; name:string; imagePath?:string; required:number; owned:number; }
+export interface HeroBonusAttributeDto { unlockedAtStar:number; code:string; name:string; value:number; isPercentage:boolean; }
+export interface HeroStarUpgradePreviewDto { heroId:number; currentStar:number; nextStar:number; currentLevel:number; maxStar:number; goldRequired:number; goldOwned:number; universalStone:StarMaterialRequirementDto; heroStone:StarMaterialRequirementDto; currentStats:HeroStatsDto; nextStats:HeroStatsDto; statIncrease:HeroStatsDto; currentGrowthRate:number; nextGrowthRate:number; currentBonusAttributes:HeroBonusAttributeDto[]; willUnlockBonusAttribute:boolean; currentCombatPower:number; nextCombatPower:number; canUpgrade:boolean; reasonCode?:string; message?:string; }
+
+export type EquipmentDragPayload =
+  | {
+      source: 'inventory';
+      inventoryItemId: string | number;
+    }
+  | {
+      source: 'equipped';
+      heroId: string | number;
+      slotCode: string;
+      inventoryItemId?: string | number;
+    };

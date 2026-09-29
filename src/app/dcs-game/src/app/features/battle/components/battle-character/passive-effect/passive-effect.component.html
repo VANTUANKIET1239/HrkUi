@@ -82,4 +82,77 @@
       <span class="spark s3">⚡</span>
     </div>
   </div>
+
+  <!-- Long Lê Cat Companion (cute feline bodyguard beside ally, mirrored for right team) -->
+  <div class="cat-companion-wrapper" *ngIf="hasCatCompanion" [class.team-right]="character.team === 'right'">
+    <img
+      src="/assets/images/dcs-game/skill-vfx/long-le-cat/cat-companion.png"
+      class="cat-companion-sprite-img"
+      alt="Guardian Cat Companion"
+    />
+    <div class="cat-companion-aura-halo"></div>
+  </div>
+
+  <!-- Cat Scratch (3 vibrant yellow claw cuts using cat-scratch.png) -->
+  <div class="cat-scratch-overlay normal-scratch" *ngIf="hasCatScratch && !hasDeepCatScratch">
+    <img
+      src="/assets/images/dcs-game/effects/cat-scratch.png"
+      class="cat-scratch-img"
+      alt="Cat Scratch"
+    />
+    <div class="scratch-pulse-halo"></div>
+  </div>
+
+  <!-- Deep Cat Scratch (3 intense crimson gouging claws using deep-cat-scratch.png) -->
+  <div class="cat-scratch-overlay deep-scratch" *ngIf="hasDeepCatScratch">
+    <img
+      src="/assets/images/dcs-game/effects/deep-cat-scratch.png"
+      class="deep-scratch-img"
+      alt="Deep Cat Scratch"
+    />
+    <div class="deep-scratch-pulse-halo"></div>
+  </div>
+
+  <!-- Chạy Ngay Đi (Candle wax mark and thin black smoke at feet) -->
+  <div class="chay-ngay-di-ground-fx" *ngIf="hasChayNgayDi">
+    <div class="candle-halo"></div>
+    <img
+      src="/assets/images/dcs-game/skill-vfx/quoc-nhan-run-now/red-wax-mark.png"
+      class="chay-ngay-di-wax-img"
+      alt="Chay Ngay Di Mark"
+    />
+    <div class="candle-smoke"></div>
+  </div>
+
+  <!-- Silence Status Seal (above head, not covering face) -->
+  <div class="academic-silence-lock-overlay" *ngIf="hasSilenceEffect">
+    <div class="silence-rune-lock"></div>
+  </div>
+
+  <!-- Damage Reduction Lingering Aura -->
+  <div class="graduation-dr-barrier-overlay" *ngIf="hasDamageReductionEffect">
+    <div class="dr-radiant-shield"></div>
+  </div>
+
+  <!-- Stack badges above hero: Phong Ấn, Tín Chỉ, Luận Điểm (No emojis!) -->
+  <div class="legendary-stack-row phong-an-row" *ngIf="phongAnStacks > 0">
+    <div *ngFor="let s of [1,2,3]" class="wind-seal-sigil" [class.active]="s <= phongAnStacks" [class.tier-1]="s === 1" [class.tier-2]="s === 2" [class.tier-3]="s === 3">
+      <div class="sigil-core"></div>
+    </div>
+  </div>
+  <div class="legendary-stack-row tin-chi-row" *ngIf="tinChiStacks > 0">
+    <div *ngFor="let s of [1,2,3]" class="honor-credit-sigil" [class.active]="s <= tinChiStacks">
+      <div class="credit-crest-box"></div>
+      <div class="stamp-gold-flash" *ngIf="s === tinChiStacks"></div>
+    </div>
+  </div>
+  <div class="legendary-stack-row luan-diem-row" *ngIf="luanDiemStacks > 0">
+    <div *ngFor="let s of [1,2,3]" class="thesis-point-sigil" [class.active]="s <= luanDiemStacks" [class.tier-1]="s === 1" [class.tier-2]="s === 2" [class.tier-3]="s === 3">
+      <div class="thesis-ring-layer"></div>
+    </div>
+  </div>
+  <!-- Cracked Magic Barrier when 3 Luận Điểm stacks active -->
+  <div class="cracked-purple-barrier-overlay" *ngIf="luanDiemStacks >= 3">
+    <div class="cracked-hex-grid"></div>
+  </div>
 </div>

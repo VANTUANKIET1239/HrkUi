@@ -149,6 +149,73 @@
     <div class="angel-heal-burst"></div>
   </div>
 
+  <!-- 24. Kiệt Mái Xéo: Đường Kiếm Mái Xéo - Blade glint, projection afterimage, dual mái xéo crossing cut & sharp shards -->
+  <div *ngSwitchCase="'kiet-mai-xeo'" class="legendary-basic-effect basic-kiet-mai-xeo" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <!-- Preparation & Projection -->
+    <div class="kiet-prep-wind-ring"></div>
+    <div class="kiet-blade-glint"></div>
+    <div class="kiet-afterimage-trail"></div>
+    <div class="kiet-wind-wisp w1"></div>
+    <div class="kiet-wind-wisp w2"></div>
+    <!-- Impact crossing cuts & crystal shards -->
+    <div class="teal-sword-slash-a"></div>
+    <div class="teal-sword-slash-b"></div>
+    <div class="mai-xeo-center-spark"></div>
+    <div class="kiet-triangle-shard ts1"></div>
+    <div class="kiet-triangle-shard ts2"></div>
+    <div class="kiet-triangle-shard ts3"></div>
+  </div>
+
+  <!-- 25. Trường Kiệt Tốt Nghiệp: Bảo Vệ Lễ Tốt Nghiệp - Shield slam, badge fragments & hemispherical ally shield -->
+  <div *ngSwitchCase="'truong-kiet-tot-nghiep-cap-3'" class="legendary-basic-effect basic-truong-kiet-grad" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <!-- Strike part -->
+    <div class="shield-bash-arc-gold"></div>
+    <div class="badge-square-shard bss1"></div>
+    <div class="badge-square-shard bss2"></div>
+    <div class="badge-square-shard bss3"></div>
+    <!-- Descending shield part -->
+    <div class="grad-honor-crest-descend"></div>
+    <div class="grad-hemisphere-shield">
+      <div class="shield-dome-core"></div>
+      <div class="shield-dome-gold-rim"></div>
+    </div>
+  </div>
+
+  <!-- 26. Quốc Nhân Tốt Nghiệp: Nhận Xét Bên Lề - Floating parchment, red ink brackets & cracked barrier -->
+  <div *ngSwitchCase="'quoc-nhan-tot-nghiep-cap-3'" class="legendary-basic-effect basic-quoc-nhan-grad" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="thesis-note-parchment"></div>
+    <div class="pen-tip-ink-drop"></div>
+    <div class="magic-underline-trace"></div>
+    <div class="curving-red-annotation"></div>
+    <div class="thesis-bracket-lock"></div>
+    <div class="cracked-magic-barrier"></div>
+  </div>
+
+  <!-- 27. Long Lê Con Mèo: Mèo Cào Đánh Dấu (Subtle local cast prep & target hit flash) -->
+  <div *ngSwitchCase="'long-le-con-meo'" class="legendary-basic-effect basic-long-le-cat" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <!-- Cast phase: Foot preparation ring (cat launched via scene VFX) -->
+    <div class="long-le-foot-prep-ring" *ngIf="phase === 'cast'"></div>
+
+    <!-- Impact phase: Target hit response -->
+    <ng-container *ngIf="phase === 'impact'">
+      <div class="staggered-claw-trail ct1"></div>
+      <div class="staggered-claw-trail ct2"></div>
+      <div class="staggered-claw-trail ct3"></div>
+      <div class="gold-scratch-impact-flash"></div>
+    </ng-container>
+  </div>
+
+  <!-- 28. Quốc Nhân Chạy Ngay Đi: Lửa Nến Xuyên Hàng - Candle flame lance, white-gold core, black smoke -->
+  <div *ngSwitchCase="'quoc-nhan-chay-ngay-di'" class="legendary-basic-effect basic-quoc-nhan-cnd" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
+    <div class="prep-wax-ring"></div>
+    <div class="candle-lance-streak">
+      <div class="lance-core-white"></div>
+    </div>
+    <div class="candle-lance-smoke"></div>
+    <div class="lance-secondary-pulse"></div>
+    <div class="flame-ash-spark"></div>
+  </div>
+
   <!-- Generic Fallback for Unknown Heroes -->
   <div *ngSwitchDefault class="generic-basic-effect" [class.team-right]="isTeamRight" [class.is-impact]="phase === 'impact'">
     <div class="generic-strike-flash"></div>

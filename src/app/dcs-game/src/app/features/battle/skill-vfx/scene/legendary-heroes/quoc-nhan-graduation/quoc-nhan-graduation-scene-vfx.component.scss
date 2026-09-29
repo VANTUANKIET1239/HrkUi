@@ -1,0 +1,359 @@
+:host {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 35;
+}
+
+.quoc-nhan-grad-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Phase 1: Academic Sanctum & Manuscripts */
+.caster-academic-sanctum {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .academic-rune-circle {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px dashed #be123c;
+    box-shadow: 0 0 16px rgba(190, 18, 60, 0.7), inset 0 0 12px rgba(126, 34, 206, 0.5);
+    animation: rune-spin calc(0.35s / var(--speed, 1)) linear infinite;
+  }
+
+  .floating-manuscripts {
+    position: absolute;
+    inset: 0;
+
+    .manuscript {
+      position: absolute;
+      width: 28px;
+      height: 38px;
+      background: #fef9c3;
+      border: 1.5px solid #881337;
+      border-radius: 2px;
+      box-shadow: 0 0 12px #be123c;
+
+      .page-flip {
+        position: absolute;
+        inset: 2px;
+        background: #fef08a;
+        animation: page-flutter calc(0.2s / var(--speed, 1)) ease-in-out infinite alternate;
+      }
+
+      &.ms-left {
+        top: 20px;
+        left: 10px;
+        transform: rotate(-20deg);
+        animation: ms-float calc(0.35s / var(--speed, 1)) ease-in-out infinite alternate;
+      }
+      &.ms-center {
+        top: -15px;
+        left: 76px;
+        transform: rotate(5deg);
+        animation: ms-float calc(0.35s / var(--speed, 1)) 0.1s ease-in-out infinite alternate;
+      }
+      &.ms-right {
+        top: 20px;
+        right: 10px;
+        transform: rotate(25deg);
+        animation: ms-float calc(0.35s / var(--speed, 1)) 0.05s ease-in-out infinite alternate;
+      }
+    }
+  }
+}
+
+/* Phase 2: Red Ink Annotation Locking */
+.target-pen-lock-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .red-ink-brackets {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px double #be123c;
+    box-shadow: 0 0 18px #e11d48;
+    animation: bracket-clamp calc(0.3s / var(--speed, 1)) cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  .annotation-underline-beam {
+    position: absolute;
+    bottom: 10px;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #be123c 40%, #fef08a 60%, transparent);
+    box-shadow: 0 0 10px #be123c;
+    animation: underline-trace calc(0.3s / var(--speed, 1)) ease-out forwards;
+  }
+}
+
+/* Phase 3: Debate Committee Seal Stamping */
+.target-debate-stamp-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .giant-debate-seal {
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(136, 19, 55, 0.9) 30%, rgba(88, 28, 135, 0.85) 75%, transparent 100%);
+    border: 3px solid #fef08a;
+    box-shadow: 0 0 24px #be123c, 0 0 35px rgba(126, 34, 206, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: stamp-descend calc(0.4s / var(--speed, 1)) ease-out forwards;
+
+    .seal-rim-hex {
+      position: absolute;
+      inset: 6px;
+      border: 1.5px solid #fde047;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+
+    .seal-inner-sigil {
+      width: 38px;
+      height: 38px;
+      background: #be123c;
+      border-radius: 50%;
+      border: 2px solid #fef08a;
+      box-shadow: 0 0 12px #fde047;
+    }
+  }
+
+  .stamp-impact-flash {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fef9c3 15%, #be123c 60%, transparent 100%);
+    animation: flash-bloom calc(0.35s / var(--speed, 1)) ease-out forwards;
+  }
+}
+
+/* Phase 4: Thesis Burst Nodes */
+.thesis-burst-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ink-burst-shockwave {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2.5px solid #e11d48;
+    box-shadow: 0 0 16px #be123c;
+    animation: shock-expand calc(0.45s / var(--speed, 1)) ease-out forwards;
+  }
+
+  .parchment-shards {
+    position: absolute;
+    inset: 0;
+
+    .ps {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 9px;
+      background: #fef08a;
+      border: 1px solid #881337;
+      box-shadow: 0 0 6px #e11d48;
+
+      &.p1 { transform: translate(-30px, -25px) rotate(20deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p2 { transform: translate(30px, -20px) rotate(-35deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p3 { transform: translate(-25px, 30px) rotate(45deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p4 { transform: translate(25px, 25px) rotate(-20deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p5 { transform: translate(0, -40px) rotate(10deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p6 { transform: translate(-45px, 5px) rotate(-55deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+      &.p7 { transform: translate(45px, 0px) rotate(65deg); animation: shard-scatter calc(0.45s / var(--speed, 1)) ease-out forwards; }
+    }
+  }
+
+  &.stacks-2 {
+    width: 140px;
+    height: 140px;
+    .ink-burst-shockwave {
+      width: 90px;
+      height: 90px;
+      border-color: #fde047;
+      box-shadow: 0 0 22px #e11d48;
+    }
+  }
+
+  &.stacks-3 {
+    width: 170px;
+    height: 170px;
+    .ink-burst-shockwave {
+      width: 120px;
+      height: 120px;
+      border-color: #fef9c3;
+      box-shadow: 0 0 32px #e11d48, 0 0 45px #7e22ce;
+    }
+  }
+}
+
+/* Phase 5: Silence Clamp Seal */
+.silence-clamp-seal-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: -35px; /* Floats directly above target head, never obscuring face */
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .silence-seal-ring {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #a855f7;
+    background: rgba(88, 28, 135, 0.7);
+    box-shadow: 0 0 14px #7e22ce;
+    animation: silence-ring-pulse calc(0.6s / var(--speed, 1)) ease-in-out infinite alternate;
+  }
+
+  .silence-seal-lock {
+    position: absolute;
+    width: 16px;
+    height: 12px;
+    background: #be123c;
+    border-radius: 2px;
+    border: 1px solid #fef08a;
+  }
+
+  .silence-mute-bars {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+
+    .bar {
+      position: absolute;
+      top: 11px;
+      left: 2px;
+      width: 20px;
+      height: 2.5px;
+      background: #fde047;
+      box-shadow: 0 0 6px #a855f7;
+
+      &.b1 { transform: rotate(45deg); }
+      &.b2 { transform: rotate(-45deg); }
+    }
+  }
+}
+
+/* Phase 6: Dissipate */
+.grad-dissipate-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+
+  .dissipate-ink-smoke {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(136, 19, 55, 0.4), transparent 70%);
+    animation: smoke-fade calc(0.3s / var(--speed, 1)) ease-out forwards;
+  }
+}
+
+/* Keyframes */
+@keyframes rune-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes page-flutter {
+  0% { transform: scaleX(1); }
+  100% { transform: scaleX(0.7); }
+}
+
+@keyframes ms-float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+@keyframes bracket-clamp {
+  0% { transform: scale(1.6); opacity: 0; }
+  60% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes underline-trace {
+  0% { transform: scaleX(0.1); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes stamp-descend {
+  0% { transform: scale(1.6) translateY(-30px); opacity: 0; }
+  60% { transform: scale(0.95) translateY(4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes flash-bloom {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+@keyframes shock-expand {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+@keyframes shard-scatter {
+  0% { opacity: 1; transform: translate(0, 0); }
+  100% { opacity: 0; }
+}
+
+@keyframes silence-ring-pulse {
+  0% { box-shadow: 0 0 8px #7e22ce; }
+  100% { box-shadow: 0 0 18px #a855f7; }
+}
+
+@keyframes smoke-fade {
+  0% { opacity: 0.8; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-rune-circle,
+  .page-flip,
+  .manuscript,
+  .giant-debate-seal,
+  .silence-seal-ring {
+    animation-duration: 0.05s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

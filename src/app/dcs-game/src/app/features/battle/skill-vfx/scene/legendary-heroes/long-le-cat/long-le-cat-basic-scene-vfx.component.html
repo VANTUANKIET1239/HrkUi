@@ -1,0 +1,92 @@
+<div
+  class="long-le-cat-basic-container"
+  [class.team-right]="actorTeamRight"
+  [class.phase-prep]="phase === 'crouch_prep'"
+  [class.phase-flight]="phase === 'pounce_flight'"
+  [class.phase-impact]="phase === 'claw_impact'"
+  [class.phase-mark]="phase === 'mark_placed'"
+  [class.phase-return]="phase === 'cat_return'"
+  [style.--start-x.px]="startX"
+  [style.--start-y.px]="startY"
+  [style.--target-x.px]="targetX"
+  [style.--target-y.px]="targetY"
+  [style.--delta-x.px]="deltaX"
+  [style.--delta-y.px]="deltaY"
+>
+  <!-- 1. Giai đoạn chuẩn bị (0–180ms) cạnh chân Long Lê -->
+  <div class="crouch-prep-anchor" *ngIf="phase === 'crouch_prep'">
+    <div class="foot-gold-prep-ring"></div>
+    <div class="cat-crouch-sprite">
+      <img
+        [src]="catProjectileAsset"
+        alt="Cat Ready to Pounce"
+        class="cat-prep-img"
+        (error)="onAssetError()"
+      />
+      <div *ngIf="assetFailed" class="cat-css-fallback"></div>
+    </div>
+    <div class="prep-tail-flick"></div>
+  </div>
+
+  <!-- 2. Giai đoạn phóng mèo (180–500ms) từ Caster tới Target -->
+  <div class="pounce-flight-track" *ngIf="phase === 'pounce_flight'">
+    <!-- Golden speed trail following the cat -->
+    <div class="golden-flight-trail"></div>
+    <div class="flight-afterimage ai1"></div>
+    <div class="flight-afterimage ai2"></div>
+
+    <!-- Leaping projectile cat sprite -->
+    <div class="cat-flight-projectile">
+      <img
+        [src]="catProjectileAsset"
+        alt="Cat Pouncing"
+        class="cat-pounce-img"
+        (error)="onAssetError()"
+      />
+      <div *ngIf="assetFailed" class="cat-css-fallback"></div>
+    </div>
+  </div>
+
+  <!-- 3. Giai đoạn cào mục tiêu (500–750ms) -->
+  <div class="claw-impact-anchor" *ngIf="phase === 'claw_impact' || phase === 'mark_placed'">
+    <!-- Impact flash -->
+    <div class="scratch-impact-flash"></div>
+
+    <!-- 3 Vệt cào vàng xuất hiện lần lượt -->
+    <div class="staggered-claw-slashes">
+      <div class="gold-claw-slash s1"></div>
+      <div class="gold-claw-slash s2"></div>
+      <div class="gold-claw-slash s3"></div>
+    </div>
+
+    <!-- Fur & spark particles -->
+    <div class="impact-fur-spark sp1"></div>
+    <div class="impact-fur-spark sp2"></div>
+    <div class="impact-fur-spark sp3"></div>
+    <div class="impact-fur-spark sp4"></div>
+
+    <!-- 4. Giai đoạn đặt Vết Cào (700–900ms) -->
+    <div class="cat-scratch-status-pulse" *ngIf="phase === 'mark_placed'">
+      <img
+        [src]="catScratchAsset"
+        alt="Cat Scratch Status Applied"
+        class="scratch-pulse-icon"
+      />
+      <div class="pulse-gold-halo"></div>
+    </div>
+  </div>
+
+  <!-- 5. Giai đoạn mèo quay về (750–1100ms) bật ngược về Long Lê -->
+  <div class="cat-return-track" *ngIf="phase === 'cat_return'">
+    <div class="cat-return-projectile">
+      <img
+        [src]="catProjectileAsset"
+        alt="Cat Returning"
+        class="cat-return-img"
+        (error)="onAssetError()"
+      />
+      <div *ngIf="assetFailed" class="cat-css-fallback"></div>
+      <div class="return-golden-blur"></div>
+    </div>
+  </div>
+</div>

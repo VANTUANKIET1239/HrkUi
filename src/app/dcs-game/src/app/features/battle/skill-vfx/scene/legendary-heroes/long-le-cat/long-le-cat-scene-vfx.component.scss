@@ -1,0 +1,418 @@
+.long-le-cat-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 35;
+  overflow: hidden;
+
+  // -------------------------------------------------------------
+  // Golden Paw Print (Pure CSS Component, No Emoji!)
+  // -------------------------------------------------------------
+  .golden-paw-print {
+    position: relative;
+    width: 20px;
+    height: 18px;
+    filter: drop-shadow(0 0 6px #f59e0b);
+
+    .paw-pad-main {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 9px;
+      background: radial-gradient(ellipse, #fef08a, #f59e0b 80%);
+      border-radius: 6px 6px 5px 5px;
+    }
+
+    .paw-toe {
+      position: absolute;
+      width: 5px;
+      height: 6px;
+      background: #fde047;
+      border-radius: 50%;
+
+      &.t1 { left: 1px; top: 2px; transform: rotate(-20deg); }
+      &.t2 { left: 50%; top: 0px; transform: translateX(-50%); }
+      &.t3 { right: 1px; top: 2px; transform: rotate(20deg); }
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Phase 1: Summoning Circle (0–250ms)
+  // -------------------------------------------------------------
+  .caster-summon-circle-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .summon-magic-circle {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.8), inset 0 0 12px rgba(251, 191, 36, 0.6);
+      transform: rotateX(75deg);
+      animation: summon-ring-spin 1.8s linear infinite;
+    }
+
+    .summon-inner-hex {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border: 1px dashed rgba(251, 191, 36, 0.7);
+      border-radius: 50%;
+      transform: rotateX(75deg);
+      animation: summon-ring-spin 1.2s linear infinite reverse;
+    }
+
+    .orbiting-paw-prints {
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      transform: rotateX(75deg);
+      animation: paw-orbit 1.6s linear infinite;
+
+      .golden-paw-print {
+        position: absolute;
+
+        &.p1 { top: 0; left: 50%; transform: translate(-50%, -50%); }
+        &.p2 { bottom: 8px; left: 10px; transform: rotate(120deg); }
+        &.p3 { bottom: 8px; right: 10px; transform: rotate(-120deg); }
+      }
+    }
+
+    .caster-hand-glow {
+      position: absolute;
+      top: -20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.9) 0%, rgba(245, 158, 11, 0.5) 50%, transparent 80%);
+      filter: blur(2px);
+      animation: hand-glow-pulse 0.25s ease-out forwards;
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Phase 2: Upward Throw Motion Arc (250–500ms)
+  // -------------------------------------------------------------
+  .throw-motion-arc-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .throw-motion-arc {
+      position: absolute;
+      bottom: 10px;
+      width: 4px;
+      height: 90px;
+      background: linear-gradient(180deg, #fef08a 0%, #f59e0b 60%, transparent 100%);
+      border-radius: 2px;
+      filter: drop-shadow(0 0 10px #f59e0b);
+      transform-origin: bottom center;
+      animation: throw-arc-sweep 0.25s cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
+    }
+
+    .throw-light-flare {
+      position: absolute;
+      top: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, #fbbf24 60%, transparent 80%);
+      animation: flare-expand 0.25s ease-out forwards;
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Phase 3: Airborne High Parabolic Arc (500–850ms)
+  // -------------------------------------------------------------
+  .airborne-cat-phantom {
+    position: absolute;
+    left: var(--start-x, 25%);
+    top: var(--start-y, 55%);
+    width: 68px;
+    height: 68px;
+    transform: translate(-50%, -50%);
+    animation: flight-to-apex 0.35s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+
+    .cat-airborne-img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.9)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+    }
+
+    .airborne-gold-trail {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 12px;
+      background: radial-gradient(ellipse, rgba(251, 191, 36, 0.8) 0%, transparent 70%);
+      filter: blur(2px);
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Phase 4: Descending Cats & Landing Marker (850–1150ms)
+  // -------------------------------------------------------------
+  .ally-landing-marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .landing-ring-glow {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.85);
+      transform: rotateX(70deg);
+      animation: marker-pulse 0.3s ease-out infinite alternate;
+    }
+
+    .landing-paw-center {
+      position: absolute;
+      transform: scale(0.9);
+      opacity: 0.85;
+
+      .paw-pad-main {
+        width: 10px;
+        height: 8px;
+        background: #facc15;
+        border-radius: 5px;
+      }
+      .paw-toe {
+        width: 4px;
+        height: 5px;
+        background: #fef08a;
+        border-radius: 50%;
+        position: absolute;
+        &.t1 { left: -1px; top: -5px; }
+        &.t2 { left: 4px; top: -7px; }
+        &.t3 { right: -1px; top: -5px; }
+      }
+    }
+  }
+
+  .descending-cat-node {
+    position: absolute;
+    left: var(--apex-x, 50%);
+    top: var(--apex-y, 20%);
+    width: 68px;
+    height: 68px;
+    transform: translate(-50%, -50%);
+    animation: flight-to-landing 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+
+    .cat-descending-img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.85));
+    }
+
+    .descend-light-beam {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 60px;
+      background: linear-gradient(180deg, transparent, rgba(254, 240, 138, 0.9));
+      box-shadow: 0 0 8px #f59e0b;
+    }
+  }
+
+  // -------------------------------------------------------------
+  // Phase 5: Touchdown Landing (1150–1400ms)
+  // -------------------------------------------------------------
+  .landing-impact-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .cat-landing-img {
+      width: 72px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.95)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+      animation: cat-land-squash 0.25s ease-out forwards;
+    }
+
+    .landing-dust-ring {
+      position: absolute;
+      bottom: 4px;
+      width: 64px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(251, 191, 36, 0.8);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+      animation: dust-ring-burst 0.25s ease-out forwards;
+    }
+
+    .landing-gold-shockwave {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.8) 0%, rgba(245, 158, 11, 0.4) 40%, transparent 70%);
+      animation: shockwave-fade 0.25s ease-out forwards;
+    }
+
+    .landing-paw-burst {
+      position: absolute;
+      inset: 0;
+
+      .burst-paw {
+        position: absolute;
+        width: 8px;
+        height: 6px;
+        background: #fde047;
+        border-radius: 4px;
+        box-shadow: 0 0 6px #f59e0b;
+
+        &.bp1 { animation: paw-scatter-1 0.25s ease-out forwards; }
+        &.bp2 { animation: paw-scatter-2 0.25s ease-out forwards; }
+        &.bp3 { animation: paw-scatter-3 0.25s ease-out forwards; }
+      }
+    }
+  }
+
+  // Mirroring for Right Team
+  &.caster-right {
+    .caster-summon-circle-node {
+      transform: translate(-50%, -50%) scaleX(-1);
+    }
+    .airborne-cat-phantom {
+      transform: translate(-50%, -50%) scaleX(-1);
+    }
+    .landing-impact-node {
+      transform: translate(-50%, -50%) scaleX(-1);
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// Keyframe Animations
+// -------------------------------------------------------------
+@keyframes summon-ring-spin {
+  0% { transform: rotateX(75deg) rotate(0deg); }
+  100% { transform: rotateX(75deg) rotate(360deg); }
+}
+
+@keyframes paw-orbit {
+  0% { transform: rotateX(75deg) rotate(0deg); }
+  100% { transform: rotateX(75deg) rotate(360deg); }
+}
+
+@keyframes hand-glow-pulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+@keyframes throw-arc-sweep {
+  0% { transform: rotate(-35deg) scaleY(0.2); opacity: 0; }
+  60% { transform: rotate(10deg) scaleY(1.2); opacity: 1; }
+  100% { transform: rotate(25deg) scaleY(0.8); opacity: 0.8; }
+}
+
+@keyframes flare-expand {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 1; }
+}
+
+@keyframes flight-to-apex {
+  0% {
+    transform: translate(-50%, -50%);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(
+      calc(-50% + (var(--apex-x, 400px) - var(--start-x, 200px))),
+      calc(-50% + (var(--apex-y, 100px) - var(--start-y, 250px)))
+    );
+    opacity: 1;
+  }
+}
+
+@keyframes flight-to-landing {
+  0% {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+      calc(-50% + (var(--landing-x, 300px) - var(--apex-x, 400px))),
+      calc(-50% + (var(--landing-y, 260px) - var(--apex-y, 100px)))
+    );
+    opacity: 1;
+  }
+}
+
+@keyframes marker-pulse {
+  0% { transform: rotateX(70deg) scale(0.9); opacity: 0.6; }
+  100% { transform: rotateX(70deg) scale(1.1); opacity: 1; }
+}
+
+@keyframes cat-land-squash {
+  0% { transform: scale(1.2) translateY(-20px); opacity: 0.7; }
+  60% { transform: scale(1.15, 0.85) translateY(0); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes dust-ring-burst {
+  0% { transform: scale(0.4); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 0.9; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes shockwave-fade {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes paw-scatter-1 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(-25px, -15px) scale(0.4); opacity: 0; }
+}
+
+@keyframes paw-scatter-2 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(25px, -20px) scale(0.4); opacity: 0; }
+}
+
+@keyframes paw-scatter-3 {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(0px, 20px) scale(0.4); opacity: 0; }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+  .long-le-cat-container {
+    .airborne-cat-phantom,
+    .descending-cat-node {
+      animation: none !important;
+    }
+  }
+}

@@ -9,7 +9,7 @@ import {
   EnhancementLevelConfig,
   EnhancementMaterialConfig,
   EquipmentEnhancementPreview,
-  ForgeEquipmentItem
+  ForgeEquipmentItem, EquipmentDowngradePreview
 } from '../../../../core/models/enhancement.model';
 import {
   EnhancementTier,
@@ -55,6 +55,10 @@ export class ForgeComponent implements OnInit {
   pickingStoneSlotIndex = -1;
   showCharmPicker = false;
   showResultModal = false;
+  showDowngradeModal = false;
+  downgradeTarget = 0;
+  downgradePreview: EquipmentDowngradePreview | null = null;
+  isDowngrading = false;
 
   // Metadata Configurations
   levelConfigs: EnhancementLevelConfig[] = [];
@@ -732,6 +736,10 @@ export class ForgeComponent implements OnInit {
   closeResultModal(): void {
     this.showResultModal = false;
   }
+
+  openDowngrade(): void { if(!this.selectedEquipment?.enhancement)return; this.downgradeTarget=this.selectedEquipment.enhancement-1; this.showDowngradeModal=true; this.loadDowngradePreview(); }
+  loadDowngradePreview(): void { if(!this.selectedEquipment)return; this.downgradePreview=null; this.enhancementService.getDowngradePreview(this.selectedEquipment.inventoryItemId,this.downgradeTarget).subscribe({next:r=>this.downgradePreview=r?.success?r.data:null,error:e=>this.errorMessage=e?.error?.message||'Không tải được preview hạ cấp.'}); }
+  confirmDowngrade(): void { const p=this.downgradePreview;if(!p?.canDowngrade||this.isDowngrading||!this.selectedEquipment)return;this.isDowngrading=true;this.enhancementService.downgradeEquipment({requestId:crypto.randomUUID(),inventoryItemId:this.selectedEquipment.inventoryItemId,targetEnhancement:this.downgradeTarget}).subscribe({next:r=>{this.isDowngrading=false;if(r?.success){this.showDowngradeModal=false;this.loadInitialData();}else this.errorMessage=r?.message||'Hạ cấp thất bại.';},error:e=>{this.isDowngrading=false;this.errorMessage=e?.error?.message||'Hạ cấp thất bại.';}});}
 
   // --- Stats Display Helpers ---
 

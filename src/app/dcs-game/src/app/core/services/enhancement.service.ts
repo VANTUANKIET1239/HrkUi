@@ -9,7 +9,7 @@ import {
   EnhanceEquipmentResult,
   EnhancementConfigResponse,
   EquipmentEnhancementPreview,
-  ForgeEquipmentItem
+  ForgeEquipmentItem, EquipmentDowngradePreview
 } from '../models/enhancement.model';
 
 @Injectable({
@@ -63,5 +63,12 @@ export class EnhancementService {
       request,
       { withCredentials: true }
     );
+  }
+
+  getDowngradePreview(id: number, targetLevel: number): Observable<BaseResponse<EquipmentDowngradePreview>> {
+    return this.hrkApiService.CallApi(ApiMethod.GET, this.inventoryApi.DowngradePreview(id, targetLevel), { withCredentials: true });
+  }
+  downgradeEquipment(request: { requestId: string; inventoryItemId: number; targetEnhancement: number }): Observable<BaseResponse<EquipmentDowngradePreview>> {
+    return this.hrkApiService.CallApi(ApiMethod.POST, this.inventoryApi.Downgrade, request, { withCredentials: true });
   }
 }

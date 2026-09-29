@@ -45,6 +45,11 @@ export class BattleSceneComponent {
   readonly isSkipModalOpen = signal(false);
   readonly isLogOpen = signal(false);
 
+  get currentHeroStatistics() {
+    const battle = this.replayBattle ?? this.dungeonSession.current()?.battle;
+    return battle?.heroStatistics ?? this.dungeonSession.current()?.result?.heroStatistics ?? [];
+  }
+
   replay(): void {
     const battle = this.replayBattle ?? this.dungeonSession.current()?.battle;
     if (!battle) return;

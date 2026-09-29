@@ -10,7 +10,10 @@ export class BattleStatusPresenter {
   create(event: BattleEventDto, effect: any): BattleStatusEffectViewModel {
     const code = event.effectTypeCode!.toUpperCase();
     const controls = ['STUN', 'SILENCE', 'TAUNT'];
-    const debuffs = ['MARK', 'STAT_DEBUFF', 'BLEED', 'PANIC', 'SHIELD_BLOCK', 'LOSS_OF_CONFIDENCE', 'PRIME_STAGGER', 'PRIME_BROKEN_MORALE'];
+    const debuffs = [
+      'MARK', 'STAT_DEBUFF', 'BLEED', 'PANIC', 'SHIELD_BLOCK', 'LOSS_OF_CONFIDENCE',
+      'PRIME_STAGGER', 'PRIME_BROKEN_MORALE', 'LUAN_DIEM', 'CAT_SCRATCH', 'DEEP_CAT_SCRATCH', 'CHAY_NGAY_DI'
+    ];
     const fallbackIcons: Record<string, string> = {
       STUN: '/assets/images/dcs-game/effects/stun.png',
       SHIELD: '/assets/images/dcs-game/effects/shield.png',
@@ -34,7 +37,14 @@ export class BattleStatusPresenter {
       PRIME_BROKEN_MORALE: '/assets/images/dcs-game/effects/damage-reduction.png',
       ENCOURAGEMENT_OFFENSE: '/assets/images/dcs-game/effects/stat-buff.png',
       ENCOURAGEMENT_DEFENSE: '/assets/images/dcs-game/effects/shield.png',
-      CELESTIAL_PROTECTION: '/assets/images/dcs-game/effects/stat-buff.png'
+      CELESTIAL_PROTECTION: '/assets/images/dcs-game/effects/stat-buff.png',
+      PHONG_AN: '/assets/images/dcs-game/effects/stat-buff.png',
+      TIN_CHI_DANH_DU: '/assets/images/dcs-game/effects/shield.png',
+      LUAN_DIEM: '/assets/images/dcs-game/effects/mark.png',
+      CAT_SCRATCH: '/assets/images/dcs-game/effects/mark.png',
+      DEEP_CAT_SCRATCH: '/assets/images/dcs-game/effects/mark.png',
+      CAT_COMPANION: '/assets/images/dcs-game/effects/stat-buff.png',
+      CHAY_NGAY_DI: '/assets/images/dcs-game/effects/stat-debuff.png'
     };
     const fallbackNames: Record<string, string> = {
       STUN: 'Choáng', SHIELD: 'Khiên', MARK: 'Đánh dấu', SILENCE: 'Câm lặng',
@@ -52,7 +62,14 @@ export class BattleStatusPresenter {
       PRIME_BROKEN_MORALE: 'Vỡ Trận',
       ENCOURAGEMENT_OFFENSE: 'Cổ Vũ (Công)',
       ENCOURAGEMENT_DEFENSE: 'Cổ Vũ (Thủ)',
-      CELESTIAL_PROTECTION: 'Thiên Hộ'
+      CELESTIAL_PROTECTION: 'Thiên Hộ',
+      PHONG_AN: 'Phong Ấn',
+      TIN_CHI_DANH_DU: 'Tín Chỉ Danh Dự',
+      LUAN_DIEM: 'Luận Điểm',
+      CAT_SCRATCH: 'Vết Cào',
+      DEEP_CAT_SCRATCH: 'Vết Cào Sâu',
+      CAT_COMPANION: 'Mèo Đồng Hành',
+      CHAY_NGAY_DI: 'Chạy Ngay Đi'
     };
     const fallbackDescriptions: Record<string, string> = {
       STUN: 'Không thể hành động trong lượt.',
@@ -70,7 +87,14 @@ export class BattleStatusPresenter {
       PRIME_BROKEN_MORALE: 'Sát thương gây ra -15% trong 2 lượt.',
       ENCOURAGEMENT_OFFENSE: 'Tăng 20% sát thương vật lý và 20% sát thương phép.',
       ENCOURAGEMENT_DEFENSE: 'Tăng 20% phòng thủ và 20% kháng phép.',
-      CELESTIAL_PROTECTION: 'Tăng 20% tốc độ và 20% kháng hiệu ứng.'
+      CELESTIAL_PROTECTION: 'Tăng 20% tốc độ và 20% kháng hiệu ứng.',
+      PHONG_AN: 'Mỗi tầng tăng 5% Tốc độ. Tiêu thụ bởi Tam Phong Đoạn Ảnh tăng 12% sát thương mỗi tầng (3 tầng bỏ qua 20% DEF).',
+      TIN_CHI_DANH_DU: 'Mỗi tầng tăng 6% DEF và 6% Kháng Phép. Tiêu thụ bởi Thủ Khoa Đứng Tuyến Đầu tăng giá trị khiên (3 tầng nhận 20% Giảm sát thương).',
+      LUAN_DIEM: 'Chịu thêm 4% sát thương phép từ Quốc Nhân mỗi tầng (tối đa 12%). Tiêu thụ bởi Hội Đồng Phản Biện gây thêm 18% sát thương mỗi tầng (3 tầng: 50% Câm Lặng).',
+      CAT_SCRATCH: 'Đồng minh tấn công trực tiếp tăng 10% sát thương và hồi HP bằng 5% sát thương thực tế.',
+      DEEP_CAT_SCRATCH: 'Đồng minh tấn công trực tiếp tăng 20% sát thương và hồi HP bằng 10% sát thương thực tế.',
+      CAT_COMPANION: 'Mèo của Long Lê hỗ trợ chiến đấu. Khi tấn công trực tiếp, mèo hỗ trợ cào gây Vết Cào Sâu lên mục tiêu.',
+      CHAY_NGAY_DI: 'Giảm 30% Kháng Phép trong 3 lượt. Khi bị Lửa Nến Xuyên Hàng đánh trúng, kích nổ vệt lửa gây thêm 75% sát thương phép và Choáng 1 lượt.'
     };
     const modifiers: BattleStatusModifierViewModel[] = event.statModifiers?.length
       ? event.statModifiers.map(modifier => this.attributes.toViewModel(modifier))
@@ -104,7 +128,21 @@ export class BattleStatusPresenter {
                       ? '#38bdf8'
                       : code === 'CELESTIAL_PROTECTION'
                         ? '#eab308'
-                        : effect?.effectColorHex ?? (debuffs.includes(code) ? '#ef4444' : '#22c55e');
+                        : code === 'PHONG_AN'
+                          ? '#0d9488'
+                          : code === 'TIN_CHI_DANH_DU'
+                            ? '#eab308'
+                            : code === 'LUAN_DIEM'
+                              ? '#a855f7'
+                              : code === 'CAT_SCRATCH'
+                                ? '#facc15'
+                                : code === 'DEEP_CAT_SCRATCH'
+                                  ? '#dc2626'
+                                  : code === 'CAT_COMPANION'
+                                    ? '#f59e0b'
+                                    : code === 'CHAY_NGAY_DI'
+                                      ? '#ef4444'
+                                      : effect?.effectColorHex ?? (debuffs.includes(code) ? '#ef4444' : '#22c55e');
 
     return {
       instanceId: event.statusInstanceId ?? `${event.actorId}:${event.skillId}:${code}:${event.targetId}`,
@@ -157,6 +195,45 @@ export class BattleStatusPresenter {
           if (status.remainingTurns && status.remainingTurns > 0) {
             valueLines.push(`Còn ${status.remainingTurns} lượt`);
           }
+        } else if (status.code === 'PHONG_AN') {
+          const stacks = status.stacks || 1;
+          valueLines.push(`Tốc độ +${stacks * 5}%`);
+          valueLines.push(`Tầng: ${stacks}/3`);
+        } else if (status.code === 'TIN_CHI_DANH_DU') {
+          const stacks = status.stacks || 1;
+          valueLines.push(`Phòng thủ +${stacks * 6}%`);
+          valueLines.push(`Kháng phép +${stacks * 6}%`);
+          valueLines.push(`Tầng: ${stacks}/3`);
+        } else if (status.code === 'LUAN_DIEM') {
+          const stacks = status.stacks || 1;
+          valueLines.push(`Chịu thêm +${stacks * 4}% sát thương phép từ Quốc Nhân`);
+          valueLines.push(`Tầng: ${stacks}/3`);
+          if (status.remainingTurns && status.remainingTurns > 0) {
+            valueLines.push(`Còn ${status.remainingTurns} lượt`);
+          }
+        } else if (status.code === 'CAT_SCRATCH') {
+          valueLines.push('Sát thương nhận từ đồng minh +10%');
+          valueLines.push('Người tấn công hồi 5% sát thương thực tế');
+          if (status.remainingTurns && status.remainingTurns > 0) {
+            valueLines.push(`Còn ${status.remainingTurns} lượt`);
+          }
+        } else if (status.code === 'DEEP_CAT_SCRATCH') {
+          valueLines.push('Sát thương nhận từ đồng minh +20%');
+          valueLines.push('Người tấn công hồi 10% sát thương thực tế');
+          if (status.remainingTurns && status.remainingTurns > 0) {
+            valueLines.push(`Còn ${status.remainingTurns} lượt`);
+          }
+        } else if (status.code === 'CAT_COMPANION') {
+          valueLines.push('Mèo cào hỗ trợ đặt Vết Cào Sâu khi tấn công');
+          if (status.remainingTurns && status.remainingTurns > 0) {
+            valueLines.push(`Còn ${status.remainingTurns} lượt`);
+          }
+        } else if (status.code === 'CHAY_NGAY_DI') {
+          valueLines.push('Kháng phép -30%');
+          valueLines.push('Kích nổ vệt lửa khi trúng Lửa Nến Xuyên Hàng');
+          if (status.remainingTurns && status.remainingTurns > 0) {
+            valueLines.push(`Còn ${status.remainingTurns} lượt`);
+          }
         } else if (status.code === 'SHIELD') {
           valueLines.push(`Khiên còn lại: ${status.value.toLocaleString('vi-VN')}`);
         } else if (status.value && status.code !== 'RICARDO') {
@@ -179,6 +256,20 @@ export class BattleStatusPresenter {
           displayName = 'Lung Lay';
         } else if (status.code === 'PRIME_BROKEN_MORALE') {
           displayName = 'Vỡ Trận';
+        } else if (status.code === 'PHONG_AN') {
+          displayName = `Phong Ấn ${status.stacks || 1}/3`;
+        } else if (status.code === 'TIN_CHI_DANH_DU') {
+          displayName = `Tín Chỉ ${status.stacks || 1}/3`;
+        } else if (status.code === 'LUAN_DIEM') {
+          displayName = `Luận Điểm ${status.stacks || 1}/3`;
+        } else if (status.code === 'CAT_SCRATCH') {
+          displayName = 'Vết Cào';
+        } else if (status.code === 'DEEP_CAT_SCRATCH') {
+          displayName = 'Vết Cào Sâu';
+        } else if (status.code === 'CAT_COMPANION') {
+          displayName = 'Mèo Đồng Hành';
+        } else if (status.code === 'CHAY_NGAY_DI') {
+          displayName = 'Chạy Ngay Đi';
         }
 
         results.push({

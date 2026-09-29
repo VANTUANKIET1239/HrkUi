@@ -1,0 +1,136 @@
+<div
+  class="long-le-cat-container"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [style.--speed]="visualSpeed"
+>
+  <!-- Phase 1: Golden-Orange Summoning Circle around Long Lê (0–250ms) -->
+  @if (phase === 'summon_circle' || phase === 'throw_motion') {
+    <div
+      class="caster-summon-circle-node"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="summon-magic-circle"></div>
+      <div class="summon-inner-hex"></div>
+      <!-- Orbiting Golden Paw Prints (Pure CSS, No Emoji!) -->
+      <div class="orbiting-paw-prints">
+        <div class="golden-paw-print p1">
+          <div class="paw-pad-main"></div>
+          <div class="paw-toe t1"></div>
+          <div class="paw-toe t2"></div>
+          <div class="paw-toe t3"></div>
+        </div>
+        <div class="golden-paw-print p2">
+          <div class="paw-pad-main"></div>
+          <div class="paw-toe t1"></div>
+          <div class="paw-toe t2"></div>
+          <div class="paw-toe t3"></div>
+        </div>
+        <div class="golden-paw-print p3">
+          <div class="paw-pad-main"></div>
+          <div class="paw-toe t1"></div>
+          <div class="paw-toe t2"></div>
+          <div class="paw-toe t3"></div>
+        </div>
+      </div>
+      <!-- Hand / Chest light concentration -->
+      <div class="caster-hand-glow"></div>
+    </div>
+  }
+
+  <!-- Phase 2: Upward Throw Motion Arc (250–500ms) -->
+  @if (phase === 'throw_motion') {
+    <div
+      class="throw-motion-arc-node"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="throw-motion-arc"></div>
+      <div class="throw-light-flare"></div>
+    </div>
+  }
+
+  <!-- Phase 3: Cats Airborne in High Parabolic Arc (500–850ms) -->
+  @if (phase === 'airborne') {
+    @for (ally of allyNodes; track ally.id) {
+      <div
+        class="airborne-cat-phantom"
+        [style.--start-x.px]="actorPos.x"
+        [style.--start-y.px]="actorPos.y"
+        [style.--apex-x.px]="ally.apexX"
+        [style.--apex-y.px]="ally.apexY"
+      >
+        <img
+          [src]="catAirborneAsset"
+          alt="Airborne Cat"
+          class="cat-airborne-img"
+          (error)="onAssetError()"
+        />
+        <div class="airborne-gold-trail"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 4: Cats Descending toward Allies & Landing Marker (850–1150ms) -->
+  @if (phase === 'descend') {
+    @for (ally of allyNodes; track ally.id) {
+      <!-- Landing Marker under ally's feet -->
+      <div
+        class="ally-landing-marker"
+        [style.left.px]="ally.landingX"
+        [style.top.px]="ally.landingY"
+      >
+        <div class="landing-ring-glow"></div>
+        <div class="landing-paw-center">
+          <div class="paw-pad-main"></div>
+          <div class="paw-toe t1"></div>
+          <div class="paw-toe t2"></div>
+          <div class="paw-toe t3"></div>
+        </div>
+      </div>
+
+      <!-- Descending Cat -->
+      <div
+        class="descending-cat-node"
+        [style.--apex-x.px]="ally.apexX"
+        [style.--apex-y.px]="ally.apexY"
+        [style.--landing-x.px]="ally.landingX"
+        [style.--landing-y.px]="ally.landingY"
+      >
+        <img
+          [src]="catAirborneAsset"
+          alt="Descending Cat"
+          class="cat-descending-img"
+          (error)="onAssetError()"
+        />
+        <div class="descend-light-beam"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 5: Touchdown Landing Dust Ring & Buff Pulse (1150–1400ms) -->
+  @if (phase === 'landing') {
+    @for (ally of allyNodes; track ally.id) {
+      <div
+        class="landing-impact-node"
+        [style.left.px]="ally.landingX"
+        [style.top.px]="ally.landingY"
+      >
+        <img
+          [src]="catLandingAsset"
+          alt="Landing Cat"
+          class="cat-landing-img"
+          (error)="onAssetError()"
+        />
+        <div class="landing-dust-ring"></div>
+        <div class="landing-gold-shockwave"></div>
+        <div class="landing-paw-burst">
+          <div class="burst-paw bp1"></div>
+          <div class="burst-paw bp2"></div>
+          <div class="burst-paw bp3"></div>
+        </div>
+      </div>
+    }
+  }
+</div>

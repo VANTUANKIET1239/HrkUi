@@ -61,7 +61,13 @@ export class BattleSkillVfxHostComponent {
       this.skillId === 'QUOC_NHAN_NIGHT_PHANTOMS' ||
       this.skillId === 'CAU_VANG_CALM_GUARD' ||
       this.skillId === 'SIBA_CELESTIAL_PROTECTION' ||
-      this.skillId === 'SIBA_ANGEL_GENTLE_WING'
+      this.skillId === 'SIBA_ANGEL_GENTLE_WING' ||
+      this.skillId === 'KIET_MAI_XEO_ENERGY' ||
+      this.skillId === 'TRUONG_KIET_GRADUATION_ENERGY' ||
+      this.skillId === 'QUOC_NHAN_GRADUATION_ENERGY' ||
+      this.skillId === 'LONG_LE_CAT_COMPANIONS' ||
+      this.skillId === 'LONG_LE_CAT_SCRATCH_BASIC' ||
+      this.skillId === 'QUOC_NHAN_RUN_NOW_ENERGY'
     ) {
       return {
         skillId: this.skillId,

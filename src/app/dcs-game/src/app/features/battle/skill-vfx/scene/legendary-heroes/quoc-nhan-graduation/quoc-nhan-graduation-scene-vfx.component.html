@@ -1,0 +1,121 @@
+<div
+  class="quoc-nhan-grad-container"
+  [class.caster-right]="actorTeamRight"
+  [class.caster-left]="!actorTeamRight"
+  [style.--speed]="visualSpeed"
+>
+  <!-- Phase 1: 3 Magical Thesis Manuscripts around Caster -->
+  @if (phase === 'podiums') {
+    <div
+      class="caster-academic-sanctum"
+      [style.left.px]="actorPos.x"
+      [style.top.px]="actorPos.y"
+    >
+      <div class="academic-rune-circle"></div>
+      <div class="floating-manuscripts">
+        <div class="manuscript ms-left">
+          <div class="page-flip"></div>
+        </div>
+        <div class="manuscript ms-center">
+          <div class="page-flip"></div>
+        </div>
+        <div class="manuscript ms-right">
+          <div class="page-flip"></div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Phase 2: Red Pen Annotation Locking onto Targets -->
+  @if (phase === 'pen_lock') {
+    @for (t of targets; track t.id) {
+      <div
+        class="target-pen-lock-node"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+      >
+        <div class="red-ink-brackets"></div>
+        <div class="annotation-underline-beam"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 3: Giant Debate Committee Seal Stamping Down -->
+  @if (phase === 'debate_stamp') {
+    @for (t of targets; track t.id) {
+      <div
+        class="target-debate-stamp-node"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+      >
+        <div class="giant-debate-seal">
+          <div class="seal-rim-hex"></div>
+          <div class="seal-inner-sigil"></div>
+        </div>
+        <div class="stamp-impact-flash"></div>
+      </div>
+    }
+  }
+
+  <!-- Phase 4: Thesis Point (Luận Điểm) Explosion -->
+  @if (phase === 'thesis_burst') {
+    @for (t of targets; track t.id) {
+      <div
+        class="thesis-burst-node"
+        [class.stacks-1]="t.luanDiemStacks === 1"
+        [class.stacks-2]="t.luanDiemStacks === 2"
+        [class.stacks-3]="t.luanDiemStacks >= 3"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+      >
+        <div class="ink-burst-shockwave"></div>
+        <div class="parchment-shards">
+          <span class="ps p1"></span>
+          <span class="ps p2"></span>
+          <span class="ps p3"></span>
+          @if (t.luanDiemStacks >= 2) {
+            <span class="ps p4"></span>
+            <span class="ps p5"></span>
+          }
+          @if (t.luanDiemStacks >= 3) {
+            <span class="ps p6"></span>
+            <span class="ps p7"></span>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Phase 5: Silence Seal Clamped on Silenced Targets -->
+  @if (phase === 'silence_seal') {
+    @for (t of targets; track t.id) {
+      @if (t.isSilenced) {
+        <div
+          class="silence-clamp-seal-node"
+          [style.left.px]="t.x"
+          [style.top.px]="t.y"
+        >
+          <div class="silence-seal-ring"></div>
+          <div class="silence-seal-lock"></div>
+          <div class="silence-mute-bars">
+            <span class="bar b1"></span>
+            <span class="bar b2"></span>
+          </div>
+        </div>
+      }
+    }
+  }
+
+  <!-- Phase 6: Dissipate -->
+  @if (phase === 'dissipate') {
+    @for (t of targets; track t.id) {
+      <div
+        class="grad-dissipate-node"
+        [style.left.px]="t.x"
+        [style.top.px]="t.y"
+      >
+        <div class="dissipate-ink-smoke"></div>
+      </div>
+    }
+  }
+</div>

@@ -333,4 +333,81 @@ describe('Basic Skill Effect System Tests', () => {
       });
     });
   });
+
+  describe('7. Five Legendary Heroes Basic Effect Resolutions', () => {
+    const legendarySkills: [string, BasicEffectCode][] = [
+      ['KIET_MAI_XEO_BASIC', 'kiet-mai-xeo'],
+      ['TRUONG_KIET_GRADUATION_BASIC', 'truong-kiet-tot-nghiep-cap-3'],
+      ['QUOC_NHAN_GRADUATION_BASIC', 'quoc-nhan-tot-nghiep-cap-3'],
+      ['LONG_LE_CAT_SCRATCH_BASIC', 'long-le-con-meo'],
+      ['QUOC_NHAN_RUN_NOW_BASIC', 'quoc-nhan-chay-ngay-di']
+    ];
+
+    legendarySkills.forEach(([skillId, expectedCode]) => {
+      it(`should resolve activeSkillId '${skillId}' to '${expectedCode}'`, () => {
+        expect(resolveBasicEffectCode(null, skillId)).toBe(expectedCode);
+      });
+    });
+
+    const legendaryAvatars: [string, BasicEffectCode][] = [
+      ['HrkUi/src/assets/images/dcs-game/kiet-mai-xeo.jpg', 'kiet-mai-xeo'],
+      ['/assets/images/dcs-game/kiet-mai-xeo-legendary.png', 'kiet-mai-xeo'],
+      ['HrkUi/src/assets/images/dcs-game/truong-kiet-tot-nghiep-cap-3.png', 'truong-kiet-tot-nghiep-cap-3'],
+      ['/assets/images/dcs-game/truong-kiet-tot-nghiep-cap-3-legendary.png', 'truong-kiet-tot-nghiep-cap-3'],
+      ['HrkUi/src/assets/images/dcs-game/quoc-nhan-tot-nghiep-cap-3.png', 'quoc-nhan-tot-nghiep-cap-3'],
+      ['/assets/images/dcs-game/quoc-nhan-tot-nghiep-cap-3-legendary.png', 'quoc-nhan-tot-nghiep-cap-3'],
+      ['HrkUi/src/assets/images/dcs-game/long-le-con-meo.jpg', 'long-le-con-meo'],
+      ['/assets/images/dcs-game/long-le-con-meo-legendary.png', 'long-le-con-meo'],
+      ['HrkUi/src/assets/images/dcs-game/quoc-nhan-chay-ngay-di.png', 'quoc-nhan-chay-ngay-di'],
+      ['/assets/images/dcs-game/quoc-nhan-chay-ngay-di-legendary.png', 'quoc-nhan-chay-ngay-di']
+    ];
+
+    legendaryAvatars.forEach(([avatar, expectedCode]) => {
+      it(`should resolve avatar '${avatar}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 70,
+          name: 'Legendary Hero',
+          avatar,
+          hp: 2000,
+          maxHp: 2000,
+          mana: 0,
+          maxMana: 100,
+          attack: 200,
+          defense: 100,
+          speed: 120,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+
+    const legendaryNames: [string, BasicEffectCode][] = [
+      ['Kiệt Mái Xéo', 'kiet-mai-xeo'],
+      ['Trường Kiệt Tốt Nghiệp Cấp 3', 'truong-kiet-tot-nghiep-cap-3'],
+      ['Quốc Nhân Tốt Nghiệp Cấp 3', 'quoc-nhan-tot-nghiep-cap-3'],
+      ['Long Lê Con Mèo', 'long-le-con-meo'],
+      ['Quốc Nhân Chạy Ngay Đi', 'quoc-nhan-chay-ngay-di']
+    ];
+
+    legendaryNames.forEach(([name, expectedCode]) => {
+      it(`should resolve hero name '${name}' to '${expectedCode}'`, () => {
+        const hero: Hero = {
+          id: 71,
+          name,
+          avatar: '',
+          hp: 2000,
+          maxHp: 2000,
+          mana: 0,
+          maxMana: 100,
+          attack: 200,
+          defense: 100,
+          speed: 120,
+          position: 1,
+          team: 'left'
+        };
+        expect(resolveBasicEffectCode(hero)).toBe(expectedCode);
+      });
+    });
+  });
 });

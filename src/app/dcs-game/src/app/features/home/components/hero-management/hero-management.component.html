@@ -184,6 +184,20 @@
           <span class="text-gold small font-title">{{ isProcessingEquipment ? 'Đang cập nhật trang bị...' : 'Đang tải dữ liệu...' }}</span>
         </div>
 
+        <!-- Action Buttons: Unequip All & Swap Equipment -->
+        <div class="equipment-radial-actions d-flex justify-content-center gap-2 mb-2">
+          <button class="btn btn-sm btn-outline-danger font-title px-3 py-1"
+                  [disabled]="!hasEquippedItems || isProcessingEquipment"
+                  (click)="openUnequipAllModal()">
+            <i class="bi bi-x-circle me-1"></i>THÁO TẤT CẢ
+          </button>
+          <button class="btn btn-sm btn-outline-warning font-title px-3 py-1"
+                  [disabled]="isProcessingEquipment || availableSwapHeroes.length === 0"
+                  (click)="openSwapModal()">
+            <i class="bi bi-arrow-left-right me-1"></i>ĐỔI BỘ TRANG BỊ
+          </button>
+        </div>
+
         <!-- Radial Equipment Slots surrounding the character (Fixed 6 slots) -->
         <div class="equipment-radial-container">
           <div *ngFor="let slot of equipmentSlots; let idx = index"
@@ -192,6 +206,10 @@
                [class.epic]="slot.item?.rarityName === 'Epic' || slot.item?.rarityCode === 'EPIC'"
                [class.legendary]="slot.item?.rarityName === 'Legendary' || slot.item?.rarityCode === 'LEGENDARY'"
                [class.rare]="slot.item?.rarityName === 'Rare' || slot.item?.rarityCode === 'RARE'"
+               [class.dragging-source]="draggedSlotIndex === idx"
+               [draggable]="!isProcessingEquipment && !!slot.item"
+               (dragstart)="onEquippedSlotDragStart($event, slot, idx)"
+               (dragend)="onDragEnd()"
                (mouseenter)="onSlotMouseEnter($event, slot)"
                (mouseleave)="onSlotMouseLeave()"
                (click)="onSlotClick(slot)"
@@ -321,10 +339,13 @@
                     <span class="text-white">+{{ card.breakdown.auraValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
                   </div>
 
-                  <!-- Other Value -->
-                  <div class="tooltip-source-item d-flex justify-content-between" *ngIf="card.breakdown.otherValue > 0">
-                    <span class="text-secondary"><i class="bi bi-plus-circle me-1"></i>Khác:</span>
-                    <span class="text-white">+{{ card.breakdown.otherValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                  <!-- Star bonus sources -->
+                  <div class="tooltip-star-group mt-1" *ngIf="card.breakdown.otherValue > 0">
+                    <div class="text-warning small fw-bold"><i class="bi bi-stars me-1"></i>Tăng sao (+{{ card.breakdown.otherValue }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}):</div>
+                    <div *ngFor="let src of card.breakdown.sources" class="tooltip-source-item d-flex justify-content-between ms-2" [hidden]="src.sourceType !== 'STAR'">
+                      <span class="text-secondary">{{ src.sourceName }}:</span>
+                      <span class="text-warning">+{{ src.value }}{{ (card.code === 'CRIT_RATE' || card.code === 'CRIT_DAMAGE' || card.code === 'LIFESTEAL' || card.code === 'ACCURACY' || card.code === 'RESISTANCE') ? '%' : '' }}</span>
+                    </div>
                   </div>
                 </div>
 
@@ -463,7 +484,18 @@
         </div>
 
         <!-- Inventory grid list -->
-        <div *ngIf="!isLoadingInventory" class="inventory-grid d-flex flex-wrap gap-2 overflow-auto">
+        <div *ngIf="!isLoadingInventory"
+             class="inventory-grid d-flex flex-wrap gap-2 overflow-auto position-relative"
+             [class.inventory-drop-active]="isDragOverInventory"
+             (dragover)="onInventoryDragOver($event)"
+             (dragleave)="onInventoryDragLeave($event)"
+             (drop)="onInventoryDrop($event)">
+
+          <!-- Drop Area Indicator when dragging equipped item -->
+          <div *ngIf="isDragOverInventory" class="inventory-drag-drop-overlay d-flex flex-column align-items-center justify-content-center">
+            <i class="bi bi-box-arrow-in-down fs-2 text-warning mb-1 animate-bounce"></i>
+            <span class="font-title text-gold fw-bold">Thả vào đây để tháo trang bị</span>
+          </div>
           <div 
             *ngFor="let item of filteredInventoryEquipments; let idx = index" 
             class="inventory-item-box"
@@ -511,182 +543,30 @@
     <!-- ========================================== -->
     <div class="right-panel d-flex flex-column">
       
-      <!-- Premium Action Grid (Growth Operations) -->
-      <div class="actions-group mb-3">
-        <div class="panel-header-sub">Tính Năng Tăng Trưởng</div>
-        <div *ngIf="upgradePreview as preview" class="p-2 mb-2 border border-warning-subtle rounded small">
-          <div class="d-flex justify-content-between text-gold font-title"><span>Cấp {{ preview.currentLevel }} → {{ preview.nextLevel }}</span><span>Tối đa {{ preview.maxLevel }}</span></div>
-          <div class="d-flex justify-content-between mt-1 text-warning"><span>Vàng</span><span>{{ preview.goldCost | number }}</span></div>
-          <div class="d-flex justify-content-between text-info"><span>Đá nâng cấp</span><span>{{ preview.materialCost }}</span></div>
-          <div class="border-top border-secondary mt-1 pt-1 text-success">HP +{{ preview.statIncrease.hp }} · ATK +{{ preview.statIncrease.atk }} · DEF +{{ preview.statIncrease.def }} · SPD +{{ preview.statIncrease.spd }}</div>
-        </div>
-        <div class="action-grid row g-1">
-          <div class="col-6">
-            <button class="btn btn-action w-100 font-title" (click)="upgradeHero(1)" [disabled]="isUpgradingHero || !upgradePreview || upgradePreview.currentLevel >= upgradePreview.maxLevel">
-              <i class="bi bi-chevron-double-up text-success d-block mb-1"></i>Nâng Cấp
-            </button>
-          </div>
-          <div class="col-6">
-            <button class="btn btn-action w-100 font-title text-warning-hover" (click)="upgradeHero(5)" [disabled]="isUpgradingHero || !upgradePreview || upgradePreview.currentLevel >= upgradePreview.maxLevel">
-              <i class="bi bi-lightning-fill text-warning d-block mb-1"></i>Đột Phá Nhanh
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- Extra Features Tabs -->
       <div class="extra-features-panel flex-grow-1 d-flex flex-column">
         <!-- Navigation Buttons -->
         <div class="extra-tabs-nav d-flex mb-2 border border-warning-subtle">
-          <button 
-            class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
-            [class.active]="activeTab === 'PassiveAura'"
-            (click)="activeTab = 'PassiveAura'">Hào Quang</button>
-          <button 
-            class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
-            [class.active]="activeTab === 'HeroStory'"
-            (click)="activeTab = 'HeroStory'">Tiểu Sử</button>
-          <button 
-            class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
-            [class.active]="activeTab === 'BattleHistory'"
-            (click)="activeTab = 'BattleHistory'">Lịch Sử</button>
-          <button 
-            class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
-            [class.active]="activeTab === 'FactionBuff'"
-            (click)="activeTab = 'FactionBuff'">Duyên Faction</button>
-          <button 
-            class="tab-btn py-1 px-2 font-title small flex-fill text-center" 
-            [class.active]="activeTab === 'HeroBond'"
-            (click)="activeTab = 'HeroBond'">Kích Duyên</button>
+          <button
+            *ngFor="let tab of heroFeatureTabs"
+            class="tab-btn py-2 px-2 font-title small flex-fill text-center"
+            [class.active]="activeHeroFeatureTab === tab.code"
+            [class.locked]="tab.isLocked"
+            [disabled]="tab.isLocked"
+            (click)="selectHeroFeatureTab(tab)">
+            <i class="bi me-1" [ngClass]="tab.icon || 'bi-grid'"></i>{{ tab.name }}
+          </button>
         </div>
 
         <!-- Tab Body Container -->
         <div class="extra-tab-content p-2 bg-dark-glass flex-grow-1 overflow-auto">
           
-          <!-- TAB 1: PASSIVE AURA EVOLUTION TIER -->
-          <div *ngIf="activeTab === 'PassiveAura'" class="aura-evolution-panel text-center">
-            <div class="evolution-title font-title mb-2 text-warning">Hệ Thống Thức Tỉnh Hào Quang</div>
-            <p class="small text-muted mb-2 text-start">Nâng phẩm chất linh hồn của võ tướng để mở khóa các vầng sáng hào quang huyền ảo rực rỡ:</p>
-            
-            <div class="row g-2 evolution-stages text-center mb-2">
-              <div class="col-6">
-                <div class="aura-tier-card p-2" [class.active]="selectedHero.auraTier === 1" (click)="setAuraTier(1)">
-                  <span class="badge bg-primary d-block mb-1">Tier 1</span>
-                  <span class="small d-block text-info">Blue Aura</span>
-                  <div class="tier-dot blue mt-1 mx-auto"></div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="aura-tier-card p-2" [class.active]="selectedHero.auraTier === 2" (click)="setAuraTier(2)">
-                  <span class="badge bg-purple d-block mb-1" style="background-color: #8a2be2;">Tier 2</span>
-                  <span class="small d-block text-purple" style="color: #c084fc;">Purple Aura</span>
-                  <div class="tier-dot purple mt-1 mx-auto"></div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="aura-tier-card p-2" [class.active]="selectedHero.auraTier === 3" (click)="setAuraTier(3)">
-                  <span class="badge bg-warning d-block mb-1 text-dark">Tier 3</span>
-                  <span class="small d-block text-gold">Golden Aura</span>
-                  <div class="tier-dot gold mt-1 mx-auto"></div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="aura-tier-card p-2" [class.active]="selectedHero.auraTier === 4" (click)="setAuraTier(4)">
-                  <span class="badge bg-danger d-block mb-1">Tier 4</span>
-                  <span class="small d-block text-danger">Red Lightning</span>
-                  <div class="tier-dot red mt-1 mx-auto"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="aura-preview-frame p-2 border border-warning-subtle rounded text-start bg-black-opacity">
-              <span class="small text-gold font-title d-block mb-1"><i class="bi bi-info-circle me-1"></i>Hào Quang Thần Cấp:</span>
-              <span class="small text-muted" *ngIf="selectedHero.auraTier === 1">Hào Quang Xanh Băng: Tăng nhẹ tốc độ đánh (+5%). Thần sắc tươi mát.</span>
-              <span class="small text-muted" *ngIf="selectedHero.auraTier === 2">Hào Quang Tím Hắc Ám: Tăng sát thương kỹ năng cơ bản (+10%).</span>
-              <span class="small text-muted" *ngIf="selectedHero.auraTier === 3">Hoàng Kim Thần Điện: Thần uy chí cao, tăng 12% tỷ lệ bạo kích và sát thương chí mạng.</span>
-              <span class="small text-muted" *ngIf="selectedHero.auraTier === 4">Lôi Quang Xích Thần: Đốt cháy đấu trường bằng những tia sét đỏ liên tục, tăng 15% hút máu và 20% sát thương bạo kích.</span>
-            </div>
-          </div>
-
-          <!-- TAB 2: HERO STORY -->
-          <div *ngIf="activeTab === 'HeroStory'" class="hero-story-panel">
-            <span class="story-title font-title text-gold d-block mb-2">Truyền Thuyết Về {{ selectedHero.name }}</span>
-            <div class="story-content text-muted small lh-base">
-              <p *ngIf="selectedHero.name === 'K Cởi Trần'">
-                Xuất thân từ dòng dõi thần binh vĩ đại thời Thục Hán, K Cởi Trần nổi tiếng với cơ bắp sáu múi lực lưỡng và tư thế uy nghiêm. Người đời đồn đại hắn chưa bao giờ mặc áo giáp vì cơ thể rắn chắc hơn sắt thép. Cầm trong tay thanh Long Đao Vô Song, K Cởi Trần sẵn sàng chém bay mọi dòng code lỗi hay deadline trên trần thế.
-              </p>
-              <p *ngIf="selectedHero.name === 'Nam Deadline'">
-                Nam Deadline, nỗi ác mộng của các thế lực phản loạn Ngụy Quốc. Được sinh ra trong bóng tối của các đợt chạy dự án không ngừng nghỉ (Overtime), hắn sở hữu tốc độ xuất chiêu tột đỉnh và luôn kết liễu kẻ địch trước giờ G.
-              </p>
-              <p *ngIf="selectedHero.name === 'Long Bug Hunter'">
-                Thống lĩnh vạn quân bảo vệ hải cương Ngô Quốc. Được mệnh danh là "Khắc tinh của lỗi hệ thống", lá chắn của Long Bug Hunter vững như bàn thạch, có thể chặn đứng hàng triệu dòng lệnh tấn công hiểm độc.
-              </p>
-              <p *ngIf="selectedHero.name === 'Chuẩn Men'">
-                Danh tướng phong nhã Quần Hùng, say đắm lòng người bằng những điệu múa Crimson quyến rũ. Giai điệu thần bí của hắn giúp kích thích tinh thần đồng đội cực đại.
-              </p>
-              <p *ngIf="selectedHero.name === 'Coder Bảnh'">
-                Mưu sĩ thiên tài với bộ óc xử lý thuật toán vô cực của Thục Quốc. Chiêu thức của hắn có thể đóng băng toàn bộ server hệ thống của quân địch ngay lập tức.
-              </p>
-            </div>
-          </div>
-
-          <!-- TAB 3: BATTLE HISTORY -->
-          <div *ngIf="activeTab === 'BattleHistory'" class="battle-history-panel">
-            <span class="font-title text-gold d-block mb-2">Chiến Tích Vang Dội</span>
-            <div class="history-list small">
-              <div class="history-item border-bottom border-warning-subtle py-1 d-flex justify-content-between text-muted">
-                <span>Trận Chiến Hổ Lao Quan:</span>
-                <span class="text-success font-title">VICTORY (MVP)</span>
-              </div>
-              <div class="history-item border-bottom border-warning-subtle py-1 d-flex justify-content-between text-muted">
-                <span>Vượt Ải Chém Sếp:</span>
-                <span class="text-success font-title">VICTORY</span>
-              </div>
-              <div class="history-item border-bottom border-warning-subtle py-1 d-flex justify-content-between text-muted">
-                <span>Công Thành Xích Bích:</span>
-                <span class="text-danger font-title">DEFEATED</span>
-              </div>
-              <div class="history-item py-1 d-flex justify-content-between text-muted">
-                <span>Đấu Trường Kỳ Hợp V1:</span>
-                <span class="text-success font-title">VICTORY</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB 4: FACTION BUFF -->
-          <div *ngIf="activeTab === 'FactionBuff'" class="faction-buff-panel">
-            <span class="font-title text-gold d-block mb-2">Hào Quang Đồng Đội Phe {{ selectedHero.faction }}</span>
-            <div class="buff-details text-muted small">
-              <div class="mb-2 p-2 border border-danger-subtle bg-black-opacity" *ngIf="selectedHero.faction === 'Thục'">
-                <strong class="text-danger">Kích Hoạt (Phe Thục):</strong> Xuất chiến tối thiểu 3 võ tướng Thục tăng 15% Công vật lý và HP cho toàn đội hình.
-              </div>
-              <div class="mb-2 p-2 border border-primary-subtle bg-black-opacity" *ngIf="selectedHero.faction === 'Ngụy'">
-                <strong class="text-primary">Kích Hoạt (Phe Ngụy):</strong> Xuất chiến tối thiểu 3 võ tướng Ngụy tăng 20% Phòng Thủ vật lý và 10% Tốc Độ đánh.
-              </div>
-              <div class="mb-2 p-2 border border-success-subtle bg-black-opacity" *ngIf="selectedHero.faction === 'Ngô'">
-                <strong class="text-success">Kích Hoạt (Phe Ngô):</strong> Xuất chiến tối thiểu 3 võ tướng Ngô tạo Lá chắn hộ thân bằng 10% HP tối đa ở lượt đầu.
-              </div>
-              <div class="mb-2 p-2 border border-secondary-subtle bg-black-opacity" *ngIf="selectedHero.faction === 'Quần'">
-                <strong class="text-warning">Kích Hoạt (Phe Quần):</strong> Xuất chiến 3 võ tướng Quần Hùng tăng 12% tỷ lệ Hút Máu toàn năng cho đội hình.
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB 5: HERO BOND -->
-          <div *ngIf="activeTab === 'HeroBond'" class="hero-bond-panel">
-            <span class="font-title text-gold d-block mb-2">Kích Duyên Định Mệnh</span>
-            <div class="bonds-list small text-muted">
-              <div class="bond-item p-2 mb-2 border border-warning-subtle bg-black-opacity">
-                <span class="d-block text-gold font-title">Sát Thủ Trị Deadline</span>
-                <span class="text-success small">Tình trạng: <span class="badge bg-success">Đang Kích Hoạt (+10% Công)</span></span>
-              </div>
-              <div class="bond-item p-2 mb-2 border border-warning-subtle bg-black-opacity opacity-50">
-                <span class="d-block text-gold font-title">Thần Binh Vô Cực</span>
-                <span class="text-danger small">Tình trạng: Chưa Đủ Tướng (+15% HP)</span>
-              </div>
-            </div>
-          </div>
-
+          <ng-container *ngIf="activeHeroFeatureComponent; else unavailableHeroFeature">
+            <ng-container *ngComponentOutlet="activeHeroFeatureComponent; inputs: activeHeroFeatureInputs"></ng-container>
+          </ng-container>
+          <ng-template #unavailableHeroFeature>
+            <div class="empty-feature-state">Tính năng này chưa được đăng ký component giao diện.</div>
+          </ng-template>
         </div>
       </div>
 
@@ -732,6 +612,229 @@
                 (click)="unequipCurrentSlot()">
           <span *ngIf="isProcessingEquipment" class="spinner-border spinner-border-sm me-1"></span>
           <i *ngIf="!isProcessingEquipment" class="bi bi-box-arrow-up-left me-1"></i>Tháo Trang Bị
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Xác Nhận Tháo Toàn Bộ Trang Bị -->
+  <div class="equipment-action-dialog-backdrop"
+       *ngIf="showUnequipAllModal"
+       (click)="onUnequipAllBackdropClick($event)">
+    <div class="equipment-action-dialog font-title unequip-all-dialog"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="unequip-all-title"
+         (click)="$event.stopPropagation()">
+      <div class="dialog-header border-bottom border-warning-subtle pb-2 mb-3 d-flex justify-content-between align-items-center">
+        <h5 id="unequip-all-title" class="text-gold m-0 d-flex align-items-center">
+          <i class="bi bi-x-circle-fill text-danger me-2"></i>Tháo Toàn Bộ Trang Bị
+        </h5>
+        <button class="btn-close btn-close-white small" 
+                aria-label="Đóng" 
+                [disabled]="isProcessingEquipment" 
+                (click)="closeUnequipAllModal()"></button>
+      </div>
+
+      <div class="dialog-body mb-3">
+        <!-- Hero Target Banner -->
+        <div class="hero-target-banner d-flex align-items-center gap-3 p-2 rounded mb-3 bg-dark-subtle border border-secondary">
+          <img [src]="selectedHero.avatar" [alt]="selectedHero.name" class="rounded-circle border border-gold" style="width: 48px; height: 48px; object-fit: cover;" />
+          <div>
+            <div class="text-white fw-bold fs-6">{{ selectedHero.name }}</div>
+            <div class="text-gold small">Cấp {{ selectedHero.level }} · Lực chiến: {{ selectedHero.power | number }}</div>
+          </div>
+        </div>
+
+        <!-- 6-Slot Preview Grid (Items to unequip) -->
+        <div class="unequip-preview-slots mb-3">
+          <div class="small text-muted mb-2"><i class="bi bi-eye me-1"></i>Trang bị trên người võ tướng:</div>
+          <div class="row g-2">
+            <div *ngFor="let slot of equipmentSlots" class="col-4">
+              <div class="slot-preview-card p-2 rounded text-center border"
+                   [class.has-item]="!!slot.item"
+                   [class.empty-slot]="!slot.item"
+                   [class.epic]="slot.item?.rarityName === 'Epic' || slot.item?.rarityCode === 'EPIC'"
+                   [class.legendary]="slot.item?.rarityName === 'Legendary' || slot.item?.rarityCode === 'LEGENDARY'"
+                   [class.rare]="slot.item?.rarityName === 'Rare' || slot.item?.rarityCode === 'RARE'">
+                <div class="slot-icon-box mx-auto mb-1">
+                  <img *ngIf="slot.item?.imagePath" [src]="slot.item?.imagePath" class="slot-item-img" [alt]="slot.item?.name || 'Trang bị'" />
+                  <i *ngIf="!slot.item?.imagePath" class="bi {{ slot.item?.icon || slot.icon }} fs-5"></i>
+                </div>
+                <div class="slot-name-label small text-truncate" [title]="slot.item?.name || slot.displayName">
+                  {{ slot.item ? slot.item.name : slot.displayName }}
+                </div>
+                <div class="slot-status-sub" [class.text-gold]="!!slot.item" [class.text-muted]="!slot.item">
+                  {{ slot.item ? '+' + slot.item.enhancement : '(Trống)' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Capacity and Counter info -->
+        <div class="capacity-info-box p-2 rounded bg-black-opacity border border-warning-subtle mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-1 px-1">
+            <span class="text-light small"><i class="bi bi-box-arrow-up-right me-1 text-warning"></i>Số trang bị sẽ đưa về hành trang:</span>
+            <span class="text-warning fw-bold">{{ equippedItemsCount }} / 6 món</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center px-1">
+            <span class="text-muted small"><i class="bi bi-bag-check me-1 text-info"></i>Chỗ trống hiện tại trong hành trang:</span>
+            <span class="small fw-bold" [class.text-danger]="isUnequipAllBagInsufficient" [class.text-success]="!isUnequipAllBagInsufficient">
+              {{ bagFreeSlots }} / {{ maxBagCapacity }} ô trống
+            </span>
+          </div>
+        </div>
+
+        <!-- Cảnh báo nếu hành trang không đủ chỗ -->
+        <div *ngIf="isUnequipAllBagInsufficient" class="alert alert-danger py-2 px-3 small font-title d-flex align-items-center mb-0">
+          <i class="bi bi-exclamation-octagon-fill fs-5 me-2 flex-shrink-0"></i>
+          <div>Hành trang không đủ chỗ! Cần <b>{{ equippedItemsCount }}</b> ô nhưng chỉ còn <b>{{ bagFreeSlots }}</b> ô trống. Vui lòng dọn bớt túi đồ.</div>
+        </div>
+      </div>
+
+      <div class="dialog-footer d-flex justify-content-end gap-2 border-top border-warning-subtle pt-2">
+        <button class="btn btn-sm btn-outline-secondary font-title px-3" 
+                (click)="closeUnequipAllModal()" 
+                [disabled]="isProcessingEquipment">Hủy</button>
+        <button class="btn btn-sm btn-danger font-title px-3"
+                [disabled]="isProcessingEquipment || isUnequipAllBagInsufficient"
+                (click)="confirmUnequipAll()">
+          <span *ngIf="isProcessingEquipment" class="spinner-border spinner-border-sm me-1"></span>
+          <i *ngIf="!isProcessingEquipment" class="bi bi-trash3-fill me-1"></i>
+          <span>{{ isProcessingEquipment ? 'Đang tháo...' : 'Tháo Tất Cả' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Hoán Đổi Toàn Bộ Bộ Trang Bị Giữa Hai Võ Tướng -->
+  <div class="equipment-action-dialog-backdrop"
+       *ngIf="showSwapModal"
+       (click)="onSwapBackdropClick($event)">
+    <div class="equipment-action-dialog font-title swap-equipment-dialog"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="swap-equipment-title"
+         (click)="$event.stopPropagation()">
+      <div class="dialog-header border-bottom border-warning-subtle pb-2 mb-3 d-flex justify-content-between align-items-center">
+        <h5 id="swap-equipment-title" class="text-gold m-0 d-flex align-items-center">
+          <i class="bi bi-arrow-left-right text-warning me-2"></i>Đổi Bộ Trang Bị
+        </h5>
+        <button class="btn-close btn-close-white small" 
+                aria-label="Đóng" 
+                [disabled]="isProcessingEquipment" 
+                (click)="closeSwapModal()"></button>
+      </div>
+
+      <div class="dialog-body mb-3">
+        <!-- Target Hero Selector Carousel -->
+        <div class="target-hero-selector-section mb-3">
+          <label class="text-gold small mb-1 d-block"><i class="bi bi-person-fill-check me-1"></i>Chọn võ tướng muốn hoán đổi trang bị cùng:</label>
+          <div class="swap-hero-selector-scroll d-flex gap-2 overflow-auto py-1">
+            <div *ngFor="let h of availableSwapHeroes"
+                 class="swap-hero-pill d-flex align-items-center gap-2 p-1 pe-2 rounded cursor-pointer"
+                 [class.active]="targetHeroForSwap?.id === h.id"
+                 [class.disabled]="isProcessingEquipment"
+                 (click)="!isProcessingEquipment && selectTargetHeroForSwap(h)">
+              <img [src]="h.avatar" [alt]="h.name" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;" />
+              <div class="text-start">
+                <div class="text-white small fw-bold text-nowrap">{{ h.name }}</div>
+                <div class="text-warning text-nowrap" style="font-size: 10px;">CP {{ h.power | number }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Balanced 2-Side Comparison Grid -->
+        <div *ngIf="targetHeroForSwap" class="swap-comparison-wrapper">
+          <div class="swap-preview-container row g-2 align-items-center">
+            
+            <!-- Hero Source Column (Tướng hiện tại) -->
+            <div class="col-md-5 swap-col">
+              <div class="swap-hero-card p-2 rounded text-center border border-warning-subtle bg-dark-subtle">
+                <div class="swap-card-badge text-gold mb-1">TƯỚNG HIỆN TẠI</div>
+                <img [src]="selectedHero.avatar" class="rounded-circle border border-gold mb-1" style="width: 44px; height: 44px; object-fit: cover;" />
+                <div class="text-white fw-bold small text-truncate">{{ selectedHero.name }}</div>
+                <div class="text-warning small" style="font-size: 11px;">CP: {{ selectedHero.power | number }} · {{ equippedItemsCount }}/6 món</div>
+                
+                <div class="swap-slots-grid mt-2">
+                  <div *ngFor="let s of equipmentSlots" 
+                       class="swap-slot-item" 
+                       [class.has-item]="!!s.item"
+                       [class.empty-slot]="!s.item"
+                       [class.epic]="s.item?.rarityName === 'Epic' || s.item?.rarityCode === 'EPIC'"
+                       [class.legendary]="s.item?.rarityName === 'Legendary' || s.item?.rarityCode === 'LEGENDARY'"
+                       [class.rare]="s.item?.rarityName === 'Rare' || s.item?.rarityCode === 'RARE'"
+                       [title]="s.displayName + (s.item ? ': ' + s.item.name + ' (+' + s.item.enhancement + ')' : ' (Trống)')">
+                    <img *ngIf="s.item?.imagePath" [src]="s.item?.imagePath" class="swap-slot-img" [alt]="s.item?.name || 'Trang bị'" />
+                    <i *ngIf="!s.item?.imagePath" class="bi {{ s.item?.icon || s.icon }} fs-6"></i>
+                    <span class="slot-mini-enh" *ngIf="s.item">+{{ s.item.enhancement }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Swap Indicator Center Column -->
+            <div class="col-md-2 text-center my-2 my-md-0">
+              <div class="swap-arrows-circle p-2 rounded-circle bg-warning text-dark d-inline-flex">
+                <i class="bi bi-arrow-left-right fs-4"></i>
+              </div>
+              <div class="text-gold small mt-1 font-title" style="font-size: 10px;">HOÁN ĐỔI</div>
+            </div>
+
+            <!-- Hero Target Column (Tướng nhận/đổi) -->
+            <div class="col-md-5 swap-col">
+              <div class="swap-hero-card p-2 rounded text-center border border-warning-subtle bg-dark-subtle">
+                <div class="swap-card-badge text-warning mb-1">TƯỚNG HOÁN ĐỔI</div>
+                <img [src]="targetHeroForSwap.avatar" class="rounded-circle border border-warning mb-1" style="width: 44px; height: 44px; object-fit: cover;" />
+                <div class="text-white fw-bold small text-truncate">{{ targetHeroForSwap.name }}</div>
+                <div class="text-warning small" style="font-size: 11px;">
+                  <span *ngIf="isLoadingTargetHeroSlots" class="spinner-border spinner-border-sm"></span>
+                  <span *ngIf="!isLoadingTargetHeroSlots">CP: {{ targetHeroForSwap.power | number }} · {{ targetHeroEquippedCount }}/6 món</span>
+                </div>
+                
+                <div class="swap-slots-grid mt-2">
+                  <div *ngFor="let s of targetHeroSlots" 
+                       class="swap-slot-item" 
+                       [class.has-item]="!!s.item"
+                       [class.empty-slot]="!s.item"
+                       [class.epic]="s.item?.rarityName === 'Epic' || s.item?.rarityCode === 'EPIC'"
+                       [class.legendary]="s.item?.rarityName === 'Legendary' || s.item?.rarityCode === 'LEGENDARY'"
+                       [class.rare]="s.item?.rarityName === 'Rare' || s.item?.rarityCode === 'RARE'"
+                       [title]="s.displayName + (s.item ? ': ' + s.item.name + ' (+' + s.item.enhancement + ')' : ' (Trống)')">
+                    <img *ngIf="s.item?.imagePath" [src]="s.item?.imagePath" class="swap-slot-img" [alt]="s.item?.name || 'Trang bị'" />
+                    <i *ngIf="!s.item?.imagePath" class="bi {{ s.item?.icon || s.icon }} fs-6"></i>
+                    <span class="slot-mini-enh" *ngIf="s.item">+{{ s.item.enhancement }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Outcome Preview Notice -->
+          <div class="swap-preview-notice text-center mt-3 p-2 rounded bg-black-opacity border border-warning-subtle small">
+            <i class="bi bi-info-circle-fill text-warning me-1"></i>
+            <span>Sau khi đổi: <b>{{ selectedHero.name }}</b> sẽ mặc toàn bộ trang bị của <b>{{ targetHeroForSwap.name }}</b> và ngược lại.</span>
+          </div>
+        </div>
+
+        <div *ngIf="!targetHeroForSwap" class="text-center py-4 text-muted small">
+          Vui lòng chọn một võ tướng trong danh sách phía trên để hoán đổi.
+        </div>
+      </div>
+
+      <div class="dialog-footer d-flex justify-content-end gap-2 border-top border-warning-subtle pt-2">
+        <button class="btn btn-sm btn-outline-secondary font-title px-3" 
+                (click)="closeSwapModal()" 
+                [disabled]="isProcessingEquipment">Hủy</button>
+        <button class="btn btn-sm btn-warning font-title px-3"
+                [disabled]="isProcessingEquipment || !targetHeroForSwap || isLoadingTargetHeroSlots"
+                (click)="confirmSwapEquipment()">
+          <span *ngIf="isProcessingEquipment" class="spinner-border spinner-border-sm me-1"></span>
+          <i *ngIf="!isProcessingEquipment" class="bi bi-arrow-left-right me-1"></i>
+          <span>{{ isProcessingEquipment ? 'Đang đổi...' : 'Xác Nhận Đổi' }}</span>
         </button>
       </div>
     </div>
