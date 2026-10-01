@@ -3,10 +3,17 @@
 
     <!-- 1. Result Title Header -->
     <div class="modal-header-section">
-      <div class="result-title">{{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}</div>
+      <div class="result-title">
+        <ng-container *ngIf="mode === 'TOWER'">
+          {{ isVictory ? 'VƯỢT TẦNG ' + towerFloor + ' THÀNH CÔNG!' : 'THẤT BẠI TẦNG ' + towerFloor }}
+        </ng-container>
+        <ng-container *ngIf="mode !== 'TOWER'">
+          {{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}
+        </ng-container>
+      </div>
 
-      <!-- 3-Star Reveal Display (for Victory) -->
-      <div class="stars-reveal-section" *ngIf="isVictory">
+      <!-- 3-Star Reveal Display (only for Dungeon Victory) -->
+      <div class="stars-reveal-section" *ngIf="mode !== 'TOWER' && isVictory">
         <div class="stars-row">
           <i *ngFor="let s of [1, 2, 3]; let i = index"
              class="bi bi-star-fill star-icon"
@@ -14,6 +21,26 @@
         </div>
         <div class="star-record-badge" *ngIf="dungeonResult?.isNewStarRecord">
           <i class="bi bi-award-fill me-1"></i>KỶ LỤC SAO MỚI!
+        </div>
+      </div>
+
+      <!-- Tower Badges & Alerts (for Tower mode) -->
+      <div class="tower-status-banner-row" *ngIf="mode === 'TOWER'">
+        <div class="tower-lives-pill" [class.danger]="towerLivesAfter <= 1">
+          <i class="bi bi-heart-fill text-danger me-1"></i>
+          <span>Mạng: <b>{{ towerLivesBefore }}</b> → <b [class.text-danger]="towerLivesAfter < towerLivesBefore">{{ towerLivesAfter }}</b></span>
+        </div>
+        <div class="tower-milestone-pill" *ngIf="unlockedMilestoneChest">
+          <i class="bi bi-gift-fill text-warning me-1"></i>
+          <span>Mở khóa <b>{{ unlockedMilestoneChest.chestName }}</b> (Tầng {{ unlockedMilestoneChest.floorNumber }})</span>
+        </div>
+        <div class="tower-completed-pill" *ngIf="isTowerCompleted">
+          <i class="bi bi-trophy-fill text-warning me-1"></i>
+          <span>CHINH PHỤC THÀNH CÔNG ĐỈNH THÁP 60 TẦNG!</span>
+        </div>
+        <div class="tower-ended-pill" *ngIf="isTowerRunEnded">
+          <i class="bi bi-heartbreak-fill text-danger me-1"></i>
+          <span>HẾT MẠNG - LƯỢT LEO KẾT THÚC (VỀ TẦNG 1)</span>
         </div>
       </div>
 
@@ -199,13 +226,33 @@
       </section>
 
       <!-- 4 & 5. Rewards & EXP Two-Column Layout (Desktop) -->
-      <div class="rewards-and-exp-container" *ngIf="dungeonResult">
+      <div class="rewards-and-exp-container" *ngIf="dungeonResult || (mode === 'TOWER' && (towerEarnedRewards.length > 0 || animatedHeroes.length > 0))">
 
-        <!-- Column Left: Campaign Rewards & Dropped Equipment -->
+        <!-- Column Left: Campaign Rewards or Tower Rewards -->
         <div class="rewards-left-column">
-          <!-- Dropped Equipment Card (Boss Stage Drop) -->
+          <!-- Tower Rewards Card -->
+          <div class="resource-rewards-card tower-rewards-card" *ngIf="mode === 'TOWER'">
+            <h4 class="card-title"><i class="bi bi-gift-fill text-warning me-2"></i>Phần Thưởng Tầng {{ towerFloor }}</h4>
+            <div class="tower-rewards-grid" *ngIf="towerEarnedRewards.length > 0">
+              <div *ngFor="let r of towerEarnedRewards" class="tower-reward-chip">
+                <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="reward-chip-img" />
+                <span class="reward-chip-name">{{ r.name }}</span>
+                <span class="reward-chip-qty">x{{ r.quantity | number }}</span>
+              </div>
+            </div>
+            <div class="text-muted small py-2" *ngIf="towerEarnedRewards.length === 0">
+              <i class="bi bi-info-circle me-1"></i>(Đã nhận thưởng tầng này trong kỳ hôm nay)
+            </div>
+            <!-- Pending rewards notification if bag was full -->
+            <div class="bag-full-warning mt-2" *ngIf="towerPendingRewards.length > 0">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>
+              <span>Túi đầy: {{ towerPendingRewards.length }} vật phẩm đã chuyển vào Phần Thưởng Chờ Nhận!</span>
+            </div>
+          </div>
+
+          <!-- Dungeon Dropped Equipment Card (Boss Stage Drop) -->
           <div class="dropped-equipment-card"
-               *ngIf="dungeonResult.droppedEquipment as equip"
+               *ngIf="mode !== 'TOWER' && dungeonResult?.droppedEquipment as equip"
                [ngClass]="(equip.rarityCode || '').toLowerCase()"
                (mouseenter)="onDroppedEquipHover($event)"
                (mouseleave)="onDroppedEquipLeave()">
@@ -240,14 +287,14 @@
             </div>
           </div>
 
-          <!-- Bag Full Warning -->
-          <div class="bag-full-warning" *ngIf="dungeonResult.isBagFull">
+          <!-- Dungeon Bag Full Warning -->
+          <div class="bag-full-warning" *ngIf="mode !== 'TOWER' && dungeonResult?.isBagFull">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
             <span>Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.</span>
           </div>
 
-          <!-- Resource Rewards Section -->
-          <div class="resource-rewards-card">
+          <!-- Dungeon Resource Rewards Section -->
+          <div class="resource-rewards-card" *ngIf="mode !== 'TOWER' && dungeonResult">
             <h4 class="card-title"><i class="bi bi-trophy-fill text-warning me-2"></i>Phần Thưởng Vượt Ải</h4>
             <div class="rewards-pills">
               <span>🪙 +{{ dungeonResult.goldGained | number }} Vàng</span>
@@ -311,10 +358,56 @@
 
     <!-- 7. Action Buttons Footer -->
     <div class="modal-footer-actions">
+      <!-- Replay Button (always available) -->
       <button class="action-btn replay" (click)="onReplay.emit()">
         <i class="bi bi-arrow-counterclockwise me-1"></i>XEM LẠI
       </button>
-      <button class="action-btn exit" (click)="onExit.emit()">
+
+      <!-- Tower Action Buttons -->
+      <ng-container *ngIf="mode === 'TOWER'">
+        <!-- Victory & Not Completed -->
+        <ng-container *ngIf="isVictory && !isTowerCompleted">
+          <button class="action-btn next-floor" (click)="onContinueClimb.emit()">
+            <i class="bi bi-arrow-up-circle-fill me-1"></i>TIẾP TỤC LEO (TẦNG {{ nextTowerFloor || towerFloor + 1 }})
+          </button>
+          <button class="action-btn exit" (click)="onExit.emit()">
+            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+          </button>
+        </ng-container>
+
+        <!-- Victory & Completed -->
+        <ng-container *ngIf="isVictory && isTowerCompleted">
+          <button class="action-btn exit" (click)="onExit.emit()">
+            <i class="bi bi-check-circle-fill me-1"></i>HOÀN THÀNH (VỀ THÁP)
+          </button>
+        </ng-container>
+
+        <!-- Defeat & Remaining Lives > 0 -->
+        <ng-container *ngIf="!isVictory && towerLivesAfter > 0">
+          <button class="action-btn retry" (click)="onRetryClimb.emit()">
+            <i class="bi bi-arrow-repeat me-1"></i>THỬ LẠI (CÒN {{ towerLivesAfter }} MẠNG)
+          </button>
+          <button class="action-btn edit-formation" (click)="onEditFormation.emit()">
+            <i class="bi bi-sliders me-1"></i>CHỈNH ĐỘI HÌNH
+          </button>
+          <button class="action-btn exit" (click)="onExit.emit()">
+            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+          </button>
+        </ng-container>
+
+        <!-- Defeat & Run Ended (0 lives) -->
+        <ng-container *ngIf="!isVictory && towerLivesAfter <= 0">
+          <button class="action-btn new-run" (click)="onStartNewRun.emit()">
+            <i class="bi bi-arrow-clockwise me-1"></i>BẮT ĐẦU LƯỢT MỚI
+          </button>
+          <button class="action-btn exit" (click)="onExit.emit()">
+            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+          </button>
+        </ng-container>
+      </ng-container>
+
+      <!-- Standard Dungeon Exit Button -->
+      <button class="action-btn exit" *ngIf="mode !== 'TOWER'" (click)="onExit.emit()">
         <i class="bi bi-box-arrow-right me-1"></i>THOÁT
       </button>
     </div>

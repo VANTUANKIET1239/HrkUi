@@ -1,3 +1,4 @@
+import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +13,7 @@ import { EquipmentRollDetailsComponent } from '../../../../shared/components/equ
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
+  imports: [ItemImageComponent, CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
 })

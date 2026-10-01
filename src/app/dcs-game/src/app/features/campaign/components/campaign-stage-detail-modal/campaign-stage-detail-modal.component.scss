@@ -722,3 +722,20 @@
   }
 }
 
+.tower-rules-card {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.04);
+
+  .rules-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #cbd5e1;
+    font-size: 13px;
+
+    li {
+      margin-bottom: 6px;
+    }
+  }
+}
+
+

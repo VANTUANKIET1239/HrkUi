@@ -75,8 +75,25 @@ export class BattleResultModalComponent implements OnInit, OnDestroy {
   @Input() dungeonResult?: DungeonResult | null;
   @Input() heroStatistics: BattleHeroStatisticsDto[] = [];
 
+  // Tower Climb extension inputs
+  @Input() mode: 'DUNGEON' | 'TOWER' = 'DUNGEON';
+  @Input() towerFloor = 0;
+  @Input() towerLivesBefore = 3;
+  @Input() towerLivesAfter = 3;
+  @Input() nextTowerFloor?: number | null;
+  @Input() towerEarnedRewards: any[] = [];
+  @Input() towerPendingRewards: any[] = [];
+  @Input() unlockedMilestoneChest?: { chestName: string; floorNumber: number } | null;
+  @Input() isTowerCompleted = false;
+  @Input() isTowerRunEnded = false;
+  @Input() heroExpResults: HeroExpResult[] = [];
+
   @Output() onReplay = new EventEmitter<void>();
   @Output() onExit = new EventEmitter<void>();
+  @Output() onContinueClimb = new EventEmitter<void>();
+  @Output() onRetryClimb = new EventEmitter<void>();
+  @Output() onEditFormation = new EventEmitter<void>();
+  @Output() onStartNewRun = new EventEmitter<void>();
 
   displayedStars = 0;
   animatedHeroes: AnimatedHeroExpState[] = [];
@@ -264,7 +281,9 @@ export class BattleResultModalComponent implements OnInit, OnDestroy {
   // --- Hero EXP Animations ---
 
   private initHeroExpAnimations(): void {
-    const rawHeroes = this.dungeonResult?.heroes ?? [];
+    const rawHeroes = (this.heroExpResults && this.heroExpResults.length > 0)
+      ? this.heroExpResults
+      : (this.dungeonResult?.heroes ?? []);
     if (!rawHeroes.length) return;
 
     const prefersReducedMotion = typeof window !== 'undefined' &&

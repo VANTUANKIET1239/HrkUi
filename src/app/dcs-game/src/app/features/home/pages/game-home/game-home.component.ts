@@ -331,7 +331,7 @@ export class GameHomeComponent implements OnInit {
       case 'INVENTORY': this.isInventoryOpen = true; return;
       case 'FORGE': this.isForgeOpen = true; return;
       case 'LIBRARY': this.isLibraryOpen = true; return;
-      case 'BATTLE': this.router.navigate(['/dcs-game/campaign']); return;
+      case 'BATTLE': this.router.navigate(['/dcs-game/campaign/dungeons']); return;
       case 'DEMO_BATTLE': this.router.navigate(['/dcs-game/battle/demo']); return;
       case 'CAMPAIGN': this.router.navigate(['/dcs-game/campaign']); return;
       case 'LOGOUT': this.openLogoutConfirm(); return;
@@ -387,6 +387,6 @@ export class GameHomeComponent implements OnInit {
       this.onFeatureClick(this.focusFeature);
       return;
     }
-    this.router.navigate(['/dcs-game/campaign']);
+    this.router.navigate(['/dcs-game/campaign/dungeons']);
   }
 }

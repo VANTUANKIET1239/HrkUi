@@ -232,7 +232,7 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
   }
 
   back(): void {
-    this.router.navigate(['/dcs-game/campaign']);
+    this.router.navigate(['/dcs-game/campaign/dungeons']);
   }
 }
 

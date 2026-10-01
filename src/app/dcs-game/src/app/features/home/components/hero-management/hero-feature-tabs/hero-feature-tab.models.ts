@@ -11,6 +11,6 @@ export interface HeroFeatureTabContext {
   isUpgradingHero: boolean;
   isStarUpgrading: boolean;
   upgradeHero: (levels: number) => void;
-  confirmStarUpgrade: () => void;
+  confirmStarUpgrade: (materialType: 'HERO' | 'UNIVERSAL') => void;
   setAuraTier: (tier: 1 | 2 | 3 | 4) => void;
 }

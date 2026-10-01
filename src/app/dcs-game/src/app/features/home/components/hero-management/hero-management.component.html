@@ -129,7 +129,7 @@
             </div>
 
             <!-- Star Count -->
-            <div class="hero-stars small text-warning mt-1">
+            <div class="hero-stars small mt-1" [style.color]="starColors[hero.stars]">
               <i class="bi bi-star-fill me-1" *ngFor="let s of [].constructor(hero.stars)"></i>
             </div>
           </div>
@@ -160,7 +160,7 @@
           </div>
 
           <div class="text-end">
-            <div class="stars-large text-warning mb-1">
+            <div class="stars-large mb-1" [style.color]="starColors[selectedHero.stars]">
               <i class="bi bi-star-fill text-shadow-glow" *ngFor="let s of [].constructor(selectedHero.stars)"></i>
             </div>
             <div class="combat-power-container font-title">

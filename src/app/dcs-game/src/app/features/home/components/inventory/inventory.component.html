@@ -124,10 +124,7 @@
             <div class="slot-inner">
               <!-- Item Icon / Image -->
               <div class="item-icon-wrapper">
-                <img *ngIf="item.imagePath; else itemIconFallback" [src]="item.imagePath" class="item-img" [alt]="item.name" />
-                <ng-template #itemIconFallback>
-                  <i class="bi {{ item.icon }}"></i>
-                </ng-template>
+                <app-item-image [item]="item" class="item-img"></app-item-image>
               </div>
 
               <!-- Equipped Status Badge -->
@@ -180,10 +177,7 @@
               <!-- Large Icon Box -->
               <div 
                 class="item-icon-box-large" [ngStyle]="rarityStyle(selectedItem)">
-                <img *ngIf="selectedItem.imagePath; else selectedIconFallback" [src]="selectedItem.imagePath" class="item-img-large" [alt]="selectedItem.name" />
-                <ng-template #selectedIconFallback>
-                  <i class="bi {{ selectedItem.icon }}"></i>
-                </ng-template>
+                <app-item-image [item]="selectedItem" class="item-img-large"></app-item-image>
               </div>
 
               <!-- Item Name -->

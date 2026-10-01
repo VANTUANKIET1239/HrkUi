@@ -14,7 +14,7 @@
         <span class="hero-level">Lv.{{ hero.level || 1 }}</span>
       </div>
       <div class="hero-stars" *ngIf="starsCount > 0">
-        <span *ngFor="let _ of starsArray" class="star-icon">⭐</span>
+        <span *ngFor="let _ of starsArray" class="star-icon" [style.color]="starColors[starsCount]">★</span>
       </div>
     </div>
   </div>

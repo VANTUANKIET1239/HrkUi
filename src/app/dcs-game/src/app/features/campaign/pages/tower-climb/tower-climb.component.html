@@ -1,0 +1,339 @@
+<div *ngIf="isPlayingBattle" class="tower-live-battle">
+  <app-battle-scene [replayBattle]="battleResult?.battleSimulation" [externalResult]="true" (externalExit)="closeBattleResult()"></app-battle-scene>
+</div>
+<main class="tower-climb-shell">
+  <!-- Atmospheric Fog, Clouds & Magic Light -->
+  <app-campaign-atmosphere></app-campaign-atmosphere>
+
+  <!-- Sticky Top Header -->
+  <header class="tower-header">
+    <div class="header-left">
+      <button type="button" class="btn-back" (click)="backToCampaign()">
+        <span class="back-arrow">←</span>
+        <span class="back-text">Chiến Dịch</span>
+      </button>
+      <div class="title-block">
+        <span class="eyebrow">SỰ KIỆN HẰNG NGÀY</span>
+        <h1 class="header-title">LEO THÁP VÔ TẬN</h1>
+        <p class="header-subtitle">
+          Chinh phục {{ progress?.maxFloor ?? '…' }} tầng tháp · Kỳ tiếp theo: {{ progress?.resetTimeUtc | date:'HH:mm dd/MM' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Header Badges: Reset Timer & Pending Rewards -->
+    <div class="header-right" *ngIf="progress">
+      <!-- Pending Rewards Alert (unclaimed chests from past period) -->
+      <button
+        type="button"
+        class="btn-pending-rewards"
+        *ngIf="pendingRewards.length > 0"
+        (click)="claimPending(pendingRewards[0])"
+        [disabled]="claimingPendingId !== null"
+      >
+        <i class="bi bi-gift-fill text-warning me-1"></i>
+        <span>Nhận Quà Kỳ Trước ({{ pendingRewards.length }})</span>
+      </button>
+
+      <!-- Reset Countdown Pill -->
+      <div class="reset-timer-pill">
+        <i class="bi bi-hourglass-split text-warning me-1"></i>
+        <span>Làm mới: <b>{{ formatCountdown(progress.secondsUntilReset) }}</b></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="state-container" *ngIf="loading && !progress">
+    <div class="state-spinner">
+      <span class="spinner-border text-warning" role="status"></span>
+      <span>Đang triệu hồi chiến trường Leo Tháp...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="state-container state-error" *ngIf="!loading && error">
+    <div class="error-box">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error }}</span>
+      <button type="button" class="btn-retry" (click)="fetchTowerData()">Thử lại</button>
+    </div>
+  </div>
+
+  <!-- Main Tower Arena (Two Columns Layout) -->
+  <div class="tower-arena-container" *ngIf="progress">
+
+    <!-- ================= LEFT COLUMN: HERO FLOATING ISLAND & STATS ================= -->
+    <section class="left-hero-column">
+
+      <!-- Floating Rock Island Container -->
+      <div class="floating-island-wrapper">
+        <!-- Celestial Backlight & Aura -->
+        <div class="celestial-backlight"></div>
+
+        <!-- Floating Cloud Layers -->
+        <div class="cloud-layer layer-back"></div>
+
+        <!-- The Floating Rock Platform -->
+        <div class="floating-rock-platform">
+          <!-- Shadow of Hero onto Platform -->
+          <div class="hero-drop-shadow"></div>
+
+          <!-- Lead Hero Figure (Highest CP hero of active formation) -->
+          <div class="hero-figure-container" *ngIf="progress.leadHero as hero">
+            <img [src]="hero.avatar || '/assets/images/dcs-game/heroes/default.png'" [alt]="hero.name" class="hero-full-art" />
+            <div class="hero-floating-badge">
+              <span class="hero-name">{{ hero.name }}</span>
+              <span class="hero-level">Lv.{{ hero.level }} · {{ hero.stars }}★</span>
+            </div>
+            <div class="hero-cp-tag">
+              <i class="bi bi-lightning-charge-fill me-1"></i>CP: {{ hero.power | number }}
+            </div>
+          </div>
+
+          <!-- Empty Formation Guide Fallback -->
+          <div class="empty-formation-guide" *ngIf="!progress.leadHero">
+            <i class="bi bi-people-fill text-warning mb-2" style="font-size: 36px;"></i>
+            <h4>Chưa có đội hình hợp lệ</h4>
+            <p>Vui lòng xếp tướng vào đội hình để bắt đầu khiêu chiến tháp.</p>
+            <button type="button" class="btn-setup-now" (click)="openFormationModal()">
+              <i class="bi bi-sliders me-1"></i>Xếp Đội Hình Ngay
+            </button>
+          </div>
+
+          <!-- Floating Clouds Underneath -->
+          <div class="rock-base-shadow"></div>
+        </div>
+
+        <div class="cloud-layer layer-front"></div>
+      </div>
+
+      <!-- Team Stats & Record Card -->
+      <div class="team-stats-card">
+        <!-- Team CP Big Metric -->
+        <div class="team-cp-row">
+          <div class="cp-label"><i class="bi bi-shield-shaded text-warning me-1"></i>LỰC CHIẾN ĐỘI HÌNH:</div>
+          <div class="cp-value">{{ progress.playerPower | number }}</div>
+        </div>
+
+        <!-- Current Floor & Lives Matrix -->
+        <div class="tower-metrics-grid">
+          <div class="tower-metric-item">
+            <span class="t-label">Tầng Hiện Tại</span>
+            <span class="t-value">Tầng <b>{{ progress.currentFloor }}</b> / {{ progress.maxFloor }}</span>
+          </div>
+
+          <div class="tower-metric-item lives-item" [class.danger]="progress.remainingLives <= 1">
+            <span class="t-label">Số Mạng Còn Lại</span>
+            <div class="lives-hearts-row">
+              <i *ngFor="let i of lifeIcons"
+                 class="bi bi-heart-fill heart-icon"
+                 [class.active]="i <= progress.remainingLives"></i>
+              <span class="lives-text">({{ progress.remainingLives }}/{{ progress.initialLives }})</span>
+            </div>
+          </div>
+
+          <div class="tower-metric-item">
+            <span class="t-label">Kỷ Lục Hôm Nay</span>
+            <span class="t-value">Tầng <b>{{ progress.highestFloorInPeriod }}</b></span>
+          </div>
+
+          <div class="tower-metric-item">
+            <span class="t-label">Kỷ Lục Mọi Thời Đại</span>
+            <span class="t-value">Tầng <b>{{ progress.highestFloorAllTime }}</b></span>
+          </div>
+        </div>
+
+        <!-- Out of Lives Alert & New Run Button -->
+        <div class="out-of-lives-box" *ngIf="progress.remainingLives <= 0">
+          <div class="out-of-lives-msg">
+            <i class="bi bi-heartbreak-fill text-danger me-2"></i>
+            <span>Bạn đã hết 3 mạng! Bắt đầu lượt leo mới để thử sức lại từ Tầng 1 (thưởng đã nhận trong ngày không bị reset).</span>
+          </div>
+          <button type="button" class="btn-new-run" (click)="startNewRun()">
+            <i class="bi bi-arrow-clockwise me-2"></i>BẮT ĐẦU LƯỢT LEO MỚI
+          </button>
+        </div>
+
+        <!-- Action Buttons: Formation Setup & Quick Climb -->
+        <div class="tower-action-buttons" *ngIf="progress.remainingLives > 0">
+          <button type="button" class="btn-formation-setup" (click)="openFormationModal()">
+            <i class="bi bi-sliders me-2"></i>Chỉnh Đội Hình
+          </button>
+          <button
+            type="button"
+            class="btn-quick-climb"
+            [disabled]="progress.isCompleted"
+            (click)="openQuickClimb()"
+          >
+            <span class="btn-shimmer"></span>
+            <i class="bi bi-lightning-charge-fill me-2"></i>Leo Nhanh
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================= RIGHT COLUMN: SKY FLOATING ROCK ISLANDS (1..60) ================= -->
+    <section class="right-floors-column">
+
+      <!-- Floor Range Window Tabs -->
+      <div class="chunk-tabs-nav">
+        <button
+          *ngFor="let tab of chunkTabs; let i = index"
+          type="button"
+          class="chunk-tab-btn"
+          [class.active]="activeChunkIndex === i"
+          (click)="selectChunk(i)"
+        >
+          <span class="tab-label">{{ tab.label }}</span>
+          <span *ngIf="tab.chestFloor" class="tab-chest-badge" title="Rương mốc tầng {{ tab.chestFloor }}">
+            🎁 T{{ tab.chestFloor }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Milestone Chest Bar -->
+      <div class="milestone-chests-bar" *ngIf="progress.milestoneChests && progress.milestoneChests.length > 0">
+        <div class="chest-bar-title"><i class="bi bi-gift text-warning me-1"></i>Rương Mốc Kỳ Này:</div>
+        <div class="chests-row">
+          <div
+            *ngFor="let chest of progress.milestoneChests"
+            class="milestone-chest-chip"
+            [ngClass]="chest.state.toLowerCase()"
+            (click)="claimMilestoneChest(chest)"
+            [title]="chest.description || chest.chestName"
+          >
+            <i class="bi" [ngClass]="{
+              'bi-gift-fill': chest.state === 'UNLOCKED',
+              'bi-box2-fill': chest.state === 'LOCKED',
+              'bi-check-circle-fill': chest.state === 'CLAIMED'
+            }"></i>
+            <span class="chest-name">Tầng {{ chest.floorNumber }}</span>
+            <span class="chest-state-tag">
+              {{ chest.state === 'CLAIMED' ? 'Đã nhận' : chest.state === 'UNLOCKED' ? 'Nhận ngay!' : 'Khóa' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sky Islands Grid / List (Windowed 15 floors) -->
+      <div
+        class="sky-islands-container"
+        [class.is-transitioning]="isFloorTransitioning"
+      >
+        <article
+          *ngFor="let f of displayedFloors"
+          class="sky-island-card"
+          [class.is-current]="f.isCurrent"
+          [class.is-cleared]="f.isCleared"
+          [class.is-locked]="f.isLocked"
+          [class.is-boss]="f.floorType === 'BOSS'"
+          [class.is-elite]="f.floorType === 'ELITE'"
+          (click)="openFloorDetail(f)"
+        >
+          <!-- Island Rock Graphic Shape -->
+          <div class="island-art-base"></div>
+
+          <!-- Island Header Badges -->
+          <div class="island-header">
+            <span class="floor-num-badge">TẦNG {{ f.floorNumber }}</span>
+            <span class="floor-type-badge" [ngClass]="f.floorType.toLowerCase()">
+              {{ f.floorType === 'BOSS' ? 'BOSS' : f.floorType === 'ELITE' ? 'TINH ANH' : 'THƯỜNG' }}
+            </span>
+            <span class="milestone-indicator" *ngIf="f.isMilestone" title="Có rương mốc!">
+              🎁 RƯƠNG
+            </span>
+          </div>
+
+          <!-- Representative Enemy Art & Power -->
+          <div class="island-enemy-box">
+            <img
+              [src]="f.representativeEnemyAvatar || '/assets/images/dcs-game/heroes/default.png'"
+              [alt]="f.representativeEnemyName || 'Địch'"
+              class="enemy-avatar-img"
+            />
+            <div class="enemy-info-overlay">
+              <span class="enemy-name">{{ f.representativeEnemyName || 'Thủ vệ Tầng ' + f.floorNumber }}</span>
+              <span class="enemy-cp">⚔️ Đề nghị: {{ f.recommendedPower | number }}</span>
+            </div>
+          </div>
+
+          <!-- Status Bottom Indicator -->
+          <div class="island-status-bar">
+            <ng-container *ngIf="f.isCleared">
+              <i class="bi bi-check-circle-fill text-success me-1"></i>
+              <span class="text-success">Đã Vượt Qua</span>
+            </ng-container>
+            <ng-container *ngIf="f.isCurrent">
+              <span class="pulse-challenge-dot"></span>
+              <span class="challenge-text">KHIÊU CHIẾN NGAY</span>
+            </ng-container>
+            <ng-container *ngIf="f.isLocked">
+              <i class="bi bi-lock-fill text-muted me-1"></i>
+              <span class="text-muted">Chưa Mở Khóa</span>
+            </ng-container>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. Shared Pre-Battle Modal (Floor Details & Confirmation) -->
+  <app-campaign-stage-detail-modal
+    *ngIf="selectedFloorDetail"
+    [mode]="'TOWER'"
+    [towerFloor]="selectedFloorDetail"
+    [remainingLives]="progress?.remainingLives ?? 0"
+    [isStarting]="startingBattle"
+    (close)="closeFloorDetail()"
+    (startBattle)="startFloorBattle($event)"
+  ></app-campaign-stage-detail-modal>
+
+  <!-- 2. Formation Management Modal -->
+  <app-formation-management
+    *ngIf="isFormationModalOpen"
+    (close)="closeFormationModal()"
+  ></app-formation-management>
+
+  <!-- 3. Quick Climb Modal (Auto Simulation) -->
+  <app-tower-quick-climb-modal
+    *ngIf="isQuickClimbModalOpen"
+    [jobId]="activeQuickClimbJobId"
+    (close)="closeQuickClimbModal()"
+    (refreshTower)="fetchTowerData(false)"
+    (viewLastBattle)="viewBattleFromHistory($event)"
+  ></app-tower-quick-climb-modal>
+
+  <!-- 4. Shared Battle Result Modal -->
+  <app-battle-result-modal
+    *ngIf="isBattleResultOpen && battleResult && (!isPlayingBattle || battleEngine.status() === 'finished')"
+    [mode]="'TOWER'"
+    [isVictory]="battleResult.isVictory"
+    [totalTurns]="totalBattleRounds"
+    [totalRemainingHp]="0"
+    [heroStatistics]="battleHeroStats"
+    [towerFloor]="battleResult.floorNumber"
+    [towerLivesBefore]="battleResult.livesBefore"
+    [towerLivesAfter]="battleResult.livesAfter"
+    [nextTowerFloor]="battleResult.nextFloorNumber"
+    [towerEarnedRewards]="battleResult.earnedRewards"
+    [towerPendingRewards]="battleResult.pendingRewards"
+    [unlockedMilestoneChest]="battleResult.unlockedChest"
+    [isTowerCompleted]="battleResult.isTowerCompleted"
+    [isTowerRunEnded]="battleResult.isRunEnded"
+    [heroExpResults]="battleResult.heroExpResults"
+    (onContinueClimb)="handleContinueClimb()"
+    (onRetryClimb)="handleRetryClimb()"
+    (onEditFormation)="openFormationModal(); closeBattleResult()"
+    (onStartNewRun)="startNewRun()"
+    (onExit)="closeBattleResult()"
+    (onReplay)="replayCurrentBattle()"
+  ></app-battle-result-modal>
+
+</main>

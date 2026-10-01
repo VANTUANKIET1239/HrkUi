@@ -1,5 +1,86 @@
-<main class="demo-battle-page">
-  <div class="loading" *ngIf="loading">Đang tạo đội hình đối thủ ngẫu nhiên…</div>
-  <div class="error" *ngIf="error">{{error}}</div>
-  <app-battle-scene *ngIf="battle && !loading" [replayBattle]="battle" [demoMode]="true"></app-battle-scene>
+<main class="lab">
+  <header><div><small>DEMO BATTLE / SANDBOX</small><h1>Battle Lab</h1></div><a routerLink="/dcs-game/home">← Về game</a></header>
+  <p>Thử chỉ số và kỹ năng thật từ DB. Không tiêu tài nguyên, không phát thưởng, không thay đổi tướng thật.</p>
+  <p class="muted">Mỗi tướng chọn Build thực tế hoặc Chỉ số tùy chỉnh. Build tính cấp/sao/trang bị tại backend; chỉ số tùy chỉnh là giá trị cuối. Không cộng hai chế độ.</p>
+  <p class="muted">AuraTier hiện chưa cộng bonus trong bộ tính stats của game. Chưa áp dụng bonus trận pháp/bộ trang bị; các giới hạn engine được ghi trong báo cáo.</p>
+  <p *ngIf="loading">Đang tải danh mục tướng…</p>
+  <p class="error" role="alert" *ngIf="error">{{ error }}</p>
+  <p role="status" *ngIf="notice">{{ notice }}</p>
+  <fieldset [disabled]="loading || running || importing || !heroes.length">
+    <section class="config-panel">
+      <h2>Cấu hình từ file JSON</h2>
+      <p>Tải config hiện tại → sửa file → chọn file → áp dụng. Thay toàn bộ hai đội và thông số Lab; không ghi DB.</p>
+      <div class="toolbar">
+        <button (click)="exportConfig()">Tải config hiện tại (.json)</button>
+        <label>Chọn file config (tối đa 64 KB)<input type="file" accept=".json,application/json" (change)="importConfig($event)"></label>
+      </div>
+      <p class="muted">JSON v2: CUSTOM nhận stats cuối; BUILD nhận level/stars/auraTier/rollSeed/equipment, không nhận stats. Với CUSTOM, chỉ số bỏ qua lấy từ template DB. Kỹ năng vẫn lấy từ DB.</p>
+      <div *ngIf="pendingConfig as config" role="status">
+        <p>{{configFileName}} hợp lệ: {{config.left.length}} tướng trái / {{config.right.length}} tướng phải · seed {{config.seed}} · {{config.count}} trận · K={{config.defenseConstant}}.</p>
+        <button class="primary" (click)="applyImportedConfig()">Áp dụng config vào Lab</button>
+        <button (click)="pendingConfig = undefined">Hủy</button>
+      </div>
+    </section>
+    <section class="settings">
+      <label>Seed bắt đầu<input type="number" [(ngModel)]="settings.seed" min="0" max="2147483347"></label>
+      <label>Số trận<input type="number" [(ngModel)]="settings.count" min="1" max="300"></label>
+      <label>Giới hạn vòng<input type="number" [(ngModel)]="settings.maxRounds" min="1" max="100"></label>
+      <label>Hệ số giáp/kháng phép K<input type="number" [(ngModel)]="settings.defenseConstant" min="1" max="1000000"></label>
+    </section>
+    <div class="toolbar">
+      <button (click)="mirror()">Sao chép trái → phải</button>
+      <button *ngFor="let value of [0, 500, 1100, 2000]" (click)="presetDefense(value)">DEF/MR địch {{value}}</button>
+      <button (click)="save()">Lưu preset</button><button (click)="load()">Nạp preset</button>
+    </div>
+    <div class="teams">
+      <section *ngFor="let team of [settings.left, settings.right]; let side = index" class="team">
+        <h2>{{ side === 0 ? 'Đội trái' : 'Đội phải' }}</h2>
+        <article *ngFor="let slot of team; let i = index">
+          <div class="slot-heading">
+            <select aria-label="Chọn võ tướng" [(ngModel)]="slot.heroTemplateId" (ngModelChange)="selectHero(slot)">
+              <option *ngFor="let hero of heroes" [ngValue]="hero.heroTemplateId">{{hero.name}}</option>
+            </select>
+            <label>Vị trí<select [(ngModel)]="slot.position"><option *ngFor="let p of [1,2,3,4,5]" [ngValue]="p">{{p}}</option></select></label>
+            <button (click)="remove(team, i)" aria-label="Bỏ tướng">×</button>
+          </div>
+          <label>Chế độ<select [ngModel]="slot.mode || 'CUSTOM'" (ngModelChange)="changeMode(slot, $event)"><option value="CUSTOM">Chỉ số tùy chỉnh</option><option value="BUILD">Build thực tế</option></select></label>
+          <div class="stats" *ngIf="slot.stats as stats"><label *ngFor="let f of fields">{{f.label}}<input type="number" [(ngModel)]="stats[f.key]" [min]="f.min" [max]="f.max"></label></div>
+          <div *ngIf="slot.build as build">
+            <div class="stats">
+              <label>Cấp<input type="number" [(ngModel)]="build.level" min="1" max="1000"></label>
+              <label>Sao<input type="number" [(ngModel)]="build.stars" min="1" max="5"></label>
+              <label>Aura tier<input type="number" [(ngModel)]="build.auraTier" min="1" max="4"></label>
+              <label>Seed roll đồ / sao<input type="number" [(ngModel)]="build.rollSeed" min="0" max="2147483647"></label>
+            </div>
+            <div class="equipment-row" *ngFor="let item of build.equipment; let index = index">
+              <label>Trang bị<select [(ngModel)]="item.itemTemplateId"><option *ngFor="let option of equipment" [ngValue]="option.id">{{option.name}} · {{option.category}} · Lv{{option.levelReq}}</option></select></label>
+              <label>Cường hóa<input type="number" [(ngModel)]="item.enhancement" min="0" max="15"></label>
+              <label>Sao đồ<input type="number" [(ngModel)]="item.stars" min="0" max="5"></label>
+              <button (click)="build.equipment.splice(index, 1)">Bỏ</button>
+            </div>
+            <button (click)="addEquipment(slot)" [disabled]="build.equipment.length >= 6 || !equipment.length">+ Trang bị</button>
+            <p class="muted">Roll được chốt một lần cho toàn batch. Đổi seed roll để thử chất lượng build khác. Kết quả chứa chỉ số cuối và nguồn cộng.</p>
+          </div>
+        </article>
+        <button (click)="add(team)" [disabled]="team.length >= 5">+ Thêm tướng</button>
+      </section>
+    </div>
+    <div class="toolbar"><button class="primary" (click)="run(true)">▶ Đánh thử một trận</button><button class="primary" (click)="run(false)">Chạy hàng loạt</button></div>
+  </fieldset>
+  <p *ngIf="importing" role="status">Đang đọc và kiểm tra config…</p>
+  <p *ngIf="running" role="status">Đang mô phỏng… giới hạn 45 giây được kiểm tra giữa các trận. Chỉ lưu replay đại diện cho từng kết quả.</p>
+  <section *ngIf="report as r" class="report">
+    <h2>Báo cáo {{r.runs.length}} trận · K = {{r.settings.defenseConstant}}</h2>
+    <p>Trái thắng: {{wins}}/{{r.runs.length}} ({{wins / r.runs.length * 100 | number:'1.1-1'}}%) · Số vòng TB: {{averageRounds | number:'1.1-1'}} · Seeds {{r.settings.seed}}–{{r.settings.seed + r.runs.length - 1}}</p>
+    <p *ngIf="baseline as b">Baseline K={{b.k}}: trái thắng {{b.wins}}/{{b.count}} · {{b.rounds | number:'1.1-1'}} vòng. Chỉ so sánh khi đội hình và tập seed giống nhau.</p>
+    <div class="toolbar"><button (click)="pinBaseline()">Ghim baseline</button><button (click)="exportReport()">Tải báo cáo JSON + replay</button><button class="primary" (click)="exportAnalysis()">Tải báo cáo phân tích cân bằng</button></div>
+    <p>Gửi file <code>battle-balance-analysis-*.json</code> để phân tích. File lưu cấu hình, build đã roll, chỉ số cuối, kỹ năng, kết quả và độ dao động; không chỉ có tỷ lệ thắng.</p>
+    <details><summary>Giới hạn cần biết</summary><p *ngFor="let warning of r.warnings">{{warning}}</p></details>
+    <details><summary>Chỉ số thực tế đã dùng trong batch</summary><pre>{{r.resolvedSnapshot.leftTeam | json}}</pre><pre>{{r.resolvedSnapshot.rightTeam | json}}</pre></details>
+    <div class="table-wrap"><table><thead><tr><th>Tướng</th><th>Đội</th><th>ST vật lý TB</th><th>ST phép TB</th><th>Hồi máu TB</th><th>Nhận ST TB</th></tr></thead>
+      <tbody><tr *ngFor="let s of r.totals"><td>{{s.heroName}}</td><td>{{s.team === 0 ? 'Trái' : 'Phải'}}</td><td>{{s.physicalDamageDealt / r.runs.length | number:'1.0-0'}}</td><td>{{s.magicDamageDealt / r.runs.length | number:'1.0-0'}}</td><td>{{s.healingDone / r.runs.length | number:'1.0-0'}}</td><td>{{(s.physicalDamageTaken + s.magicDamageTaken) / r.runs.length | number:'1.0-0'}}</td></tr></tbody>
+    </table></div>
+    <div class="toolbar"><button *ngFor="let replay of r.replays" (click)="play(replay)">Xem trận {{replay.winner}} · seed {{replay.randomSeed}}</button></div>
+  </section>
 </main>
+<div class="replay" *ngIf="battle"><button class="close" (click)="closeReplay()">← Về báo cáo</button><app-battle-scene [replayBattle]="battle" [demoMode]="true" [externalResult]="true" (externalExit)="closeReplay()"></app-battle-scene></div>

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
 import { Hero, BattleStatusEffectViewModel } from '../../../../core/models/hero.model';
 
@@ -10,6 +11,7 @@ import { Hero, BattleStatusEffectViewModel } from '../../../../core/models/hero.
   styleUrl: './battle-character-tooltip.component.scss'
 })
 export class BattleCharacterTooltipComponent {
+  readonly starColors = HERO_STAR_COLORS;
   @Input({ required: true }) hero!: Hero;
   @Input() placement: 'left' | 'right' | 'auto' = 'auto';
 

@@ -68,5 +68,5 @@ export class PlayerHeroService {
     return this.api.CallApi<BaseResponse<PlayerHeroDetailDto>>(ApiMethod.POST, ApiEndpoints.PlayerHeroes.Upgrade(heroId), { levels }, { withCredentials: true });
   }
   getStarUpgradePreview(heroId: number): Observable<BaseResponse<HeroStarUpgradePreviewDto>> { return this.api.CallApi(ApiMethod.GET, ApiEndpoints.PlayerHeroes.StarUpgradePreview(heroId), { withCredentials: true }); }
-  starUpgrade(heroId: number, requestId: string): Observable<BaseResponse<HeroStarUpgradePreviewDto>> { return this.api.CallApi(ApiMethod.POST, ApiEndpoints.PlayerHeroes.StarUpgrade(heroId), { requestId }, { withCredentials: true }); }
+  starUpgrade(heroId: number, requestId: string, materialType: 'HERO' | 'UNIVERSAL'): Observable<BaseResponse<HeroStarUpgradePreviewDto>> { return this.api.CallApi(ApiMethod.POST, ApiEndpoints.PlayerHeroes.StarUpgrade(heroId), { requestId, materialType }, { withCredentials: true }); }
 }

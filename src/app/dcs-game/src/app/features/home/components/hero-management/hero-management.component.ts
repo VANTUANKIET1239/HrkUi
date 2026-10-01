@@ -7,6 +7,7 @@ import {
   HostListener,
   Type,
 } from '@angular/core';
+import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
@@ -64,6 +65,7 @@ export interface RPGHero {
   name: string;
   avatar: string;
   rarity: 'Legendary' | 'Epic' | 'Rare';
+  rarityCode?: string;
   level: number;
   stars: number;
   faction: 'Thục' | 'Ngụy' | 'Ngô' | 'Quần';
@@ -97,6 +99,7 @@ export interface StatCardDisplay {
   styleUrl: './hero-management.component.scss',
 })
 export class HeroManagementComponent implements OnInit, OnDestroy {
+  readonly starColors = HERO_STAR_COLORS;
   @Output() close = new EventEmitter<void>();
 
   // Resources
@@ -572,7 +575,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         isUpgradingHero: this.isUpgradingHero,
         isStarUpgrading: this.isStarUpgrading,
         upgradeHero: (levels) => this.upgradeHero(levels),
-        confirmStarUpgrade: () => this.confirmStarUpgrade(),
+        confirmStarUpgrade: (materialType) => this.confirmStarUpgrade(materialType),
         setAuraTier: (tier) => this.setAuraTier(tier),
       },
     };
@@ -654,6 +657,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       name: hero.name,
       avatar: hero.avatar || '/assets/images/dcs-game/kiet.png',
       rarity: this.toRarity(hero.rarityId, hero.rarityCode, hero.rarityName),
+      rarityCode: hero.rarityCode,
       level: hero.level,
       stars: hero.stars,
       faction: this.toFaction(hero.factionName),
@@ -1764,12 +1768,12 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       });
   }
 
-  confirmStarUpgrade(): void {
+  confirmStarUpgrade(materialType: 'HERO' | 'UNIVERSAL'): void {
     const p = this.starUpgradePreview;
     if (!p?.canUpgrade || this.isStarUpgrading) return;
     this.isStarUpgrading = true;
     this.playerHeroService
-      .starUpgrade(this.selectedHero.id, crypto.randomUUID())
+      .starUpgrade(this.selectedHero.id, crypto.randomUUID(), materialType)
       .pipe(finalize(() => (this.isStarUpgrading = false)))
       .subscribe({
         next: (r) => {

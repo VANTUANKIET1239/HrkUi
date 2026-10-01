@@ -1,0 +1,144 @@
+<main class="campaign-events-shell">
+  <!-- Atmospheric Fog & Particles -->
+  <app-campaign-atmosphere></app-campaign-atmosphere>
+
+  <!-- Sticky Fantasy Top Header -->
+  <header class="events-header">
+    <div class="header-left">
+      <button type="button" class="btn-back" (click)="backToHome()">
+        <span class="back-arrow">←</span>
+        <span class="back-text">Sảnh Chính</span>
+      </button>
+      <div class="title-block">
+        <span class="eyebrow">CHẾ ĐỘ CHIẾN DỊCH</span>
+        <h1 class="header-title">DANH SÁCH SỰ KIỆN</h1>
+        <p class="header-subtitle">Khiêu chiến các hoạt động đặc sắc, săn tìm tài nguyên quý hiếm - Làm mới mỗi ngày lúc 12:00 trưa</p>
+      </div>
+    </div>
+
+    <!-- Navigation to Story Dungeons -->
+    <div class="header-right">
+      <button type="button" class="btn-switch-dungeon" (click)="goToDungeons()">
+        <i class="bi bi-map-fill me-2"></i>
+        <span>Phó Bản Chính Tuyến</span>
+        <span class="arrow-icon">→</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  <div class="state-container" *ngIf="loading">
+    <div class="state-spinner">
+      <span class="spinner-border text-warning" role="status"></span>
+      <span>Đang tải danh sách sự kiện...</span>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="state-container state-error" *ngIf="!loading && error">
+    <div class="error-box">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ error }}</span>
+      <button type="button" class="btn-retry" (click)="fetchEvents()">Thử lại</button>
+    </div>
+  </div>
+
+  <!-- Event Cards Grid -->
+  <section class="events-grid" *ngIf="!loading && !error">
+    <article
+      *ngFor="let ev of events"
+      class="event-card"
+      [class.is-locked]="ev.status === 'LOCKED'"
+      [class.is-ended]="ev.status === 'ENDED'"
+      (click)="openEvent(ev)"
+    >
+      <div class="card-glow"></div>
+
+      <!-- Card Banner Image -->
+      <div class="card-banner-box">
+        <img [src]="ev.bannerImagePath || '/assets/images/dcs-game/events/tower-banner.png'" [alt]="ev.name" class="banner-img" />
+        <div class="banner-overlay"></div>
+
+        <!-- Status Badge -->
+        <div class="status-badge" [ngClass]="ev.status.toLowerCase()">
+          <i class="bi" [ngClass]="{
+            'bi-check-circle-fill': ev.status === 'OPEN',
+            'bi-lock-fill': ev.status === 'LOCKED',
+            'bi-x-circle-fill': ev.status === 'ENDED'
+          }"></i>
+          <span>{{ ev.status === 'OPEN' ? 'ĐANG DIỄN RA' : ev.status === 'LOCKED' ? 'CHƯA MỞ' : 'KẾT THÚC' }}</span>
+        </div>
+
+        <!-- Reset Time Pill (12:00 PM Vietnam time) -->
+        <div class="reset-countdown-pill" *ngIf="ev.status === 'OPEN'">
+          <i class="bi bi-hourglass-split text-warning me-1"></i>
+          <span>Reset 12:00 trưa: <b>{{ formatCountdown(ev.secondsUntilReset) }}</b></span>
+        </div>
+      </div>
+
+      <!-- Card Content Info -->
+      <div class="card-content">
+        <div class="card-title-row">
+          <div class="card-icon-tag" *ngIf="ev.icon">
+            <i class="bi" [ngClass]="ev.icon"></i>
+          </div>
+          <div class="title-and-condition">
+            <h3 class="event-name">{{ ev.name }}</h3>
+            <span class="condition-text">
+              <i class="bi bi-shield-lock me-1"></i>{{ ev.participationCondition || 'Mọi cấp độ' }}
+            </span>
+          </div>
+        </div>
+
+        <p class="event-desc">{{ ev.description }}</p>
+
+        <!-- Player Progress & Lives Matrix -->
+        <div class="progress-matrix">
+          <div class="progress-pill">
+            <span class="p-label"><i class="bi bi-flag-fill me-1 text-warning"></i>Tiến độ:</span>
+            <span class="p-val">Tầng <b>{{ ev.currentFloor }}</b> / {{ ev.maxFloor }}</span>
+          </div>
+          <div class="progress-pill lives-pill" [class.danger]="ev.remainingLives <= 1">
+            <span class="p-label"><i class="bi bi-heart-fill me-1 text-danger"></i>Số mạng:</span>
+            <span class="p-val"><b>{{ ev.remainingLives }}</b> / {{ ev.initialLives }}</span>
+          </div>
+        </div>
+
+        <!-- Highlight Rewards -->
+        <div class="highlight-rewards-section" *ngIf="ev.highlightRewards && ev.highlightRewards.length > 0">
+          <div class="rewards-title"><i class="bi bi-gem me-1 text-warning"></i>Phần thưởng nổi bật:</div>
+          <div class="rewards-chips-row">
+            <div *ngFor="let reward of ev.highlightRewards" class="reward-mini-chip" [title]="reward.name">
+              <img *ngIf="reward.imagePath" [src]="reward.imagePath" [alt]="reward.name" class="chip-img" />
+              <span class="chip-qty">x{{ reward.quantity | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="card-footer-action">
+          <button
+            type="button"
+            class="btn-enter-event"
+            [disabled]="ev.status !== 'OPEN'"
+            (click)="openEvent(ev); $event.stopPropagation()"
+          >
+            <ng-container *ngIf="ev.status === 'OPEN'">
+              <span class="btn-shimmer"></span>
+              <i class="bi bi-play-circle-fill me-2"></i>
+              <span>{{ ev.currentFloor > 1 ? 'Tiếp Tục Leo (Tầng ' + ev.currentFloor + ')' : 'Tham Gia Ngay' }}</span>
+            </ng-container>
+            <ng-container *ngIf="ev.status === 'LOCKED'">
+              <i class="bi bi-lock-fill me-2"></i>
+              <span>{{ ev.lockReason || 'Chưa Đạt Điều Kiện' }}</span>
+            </ng-container>
+            <ng-container *ngIf="ev.status === 'ENDED'">
+              <i class="bi bi-clock-history me-2"></i>
+              <span>Sự Kiện Đã Kết Thúc</span>
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>

@@ -70,6 +70,8 @@ export const ApiEndpoints = {
 
   // Game Service - Battle Engine
   Battle: {
+    LabCatalog: 'dcs-game/battle/lab/catalog',
+    LabRun: 'dcs-game/battle/lab/run',
     Start: 'dcs-game/battle/start',
     InitialState: 'dcs-game/battle/initial-state',
     Logs: 'dcs-game/battle/logs'
@@ -96,5 +98,21 @@ export const ApiEndpoints = {
   GameConfig: {
     Features: 'dcs-game/game-config/features',
     CombatPower: 'dcs-game/game-config/combat-power'
+  },
+  Events: {
+    List: 'dcs-game/events',
+    TowerProgress: 'dcs-game/events/tower/progress',
+    TowerFloors: 'dcs-game/events/tower/floors',
+    TowerFloorDetail: (floorNumber: number) => `dcs-game/events/tower/floors/${floorNumber}`,
+    TowerStartBattle: (floorNumber: number) => `dcs-game/events/tower/floors/${floorNumber}/start`,
+    TowerStartNewRun: 'dcs-game/events/tower/new-run',
+    TowerClaimChest: (chestId: number) => `dcs-game/events/tower/chests/${chestId}/claim`,
+    TowerStartQuickClimb: 'dcs-game/events/tower/quick-climb/start',
+    TowerCurrentQuickClimb: 'dcs-game/events/tower/quick-climb/active',
+    TowerQuickClimbJob: (jobId: string) => `dcs-game/events/tower/quick-climb/${jobId}`,
+    TowerStopQuickClimb: (jobId: string) => `dcs-game/events/tower/quick-climb/${jobId}/stop`,
+    TowerPendingRewards: 'dcs-game/events/tower/pending-rewards',
+    TowerClaimPendingReward: (pendingId: number) => `dcs-game/events/tower/pending-rewards/${pendingId}/claim`,
+    TowerBattleHistory: (battleId: string) => `dcs-game/events/tower/battles/${battleId}`
   }
 };

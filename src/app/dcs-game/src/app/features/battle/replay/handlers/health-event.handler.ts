@@ -6,16 +6,9 @@ export class HealthEventHandler implements BattleEventHandler {
 
   handle(event: BattleEventDto, context: BattleEventHandlerContext): void {
     if (event.eventType === 'PRIME_GUARD_REDIRECTED') {
-      context.updateHeroes(heroes => heroes.map(hero => hero.id === event.actorId && event.hpAfter != null
-        ? { ...hero, hp: event.hpAfter! }
-        : hero));
-      if (event.actorId != null && event.value > 0) {
-        context.showCombatText({
-          ...event,
-          targetId: event.actorId,
-          value: event.value
-        });
-      }
+      // actorId is the attacker; these HP snapshots belong to the guardian.
+      // The backend emits a separate DAMAGE event targeting the guardian.
+      // Keep this redirect marker visual-only to avoid wrong HP and duplicate text.
       return;
     }
     context.updateHeroes(heroes => heroes.map(hero => hero.id === event.targetId && event.hpAfter != null

@@ -475,8 +475,8 @@
             </span>
           </div>
 
-          <div class="stars-pool text-warning text-center small">
-            <i class="bi bi-star-fill" *ngFor="let s of [].constructor(hero.stars || 1)"></i>
+          <div class="stars-pool text-center small" [style.color]="starColors[hero.stars || 0]">
+            <i class="bi bi-star-fill" *ngFor="let s of [].constructor(hero.stars || 0)"></i>
           </div>
         </div>
 

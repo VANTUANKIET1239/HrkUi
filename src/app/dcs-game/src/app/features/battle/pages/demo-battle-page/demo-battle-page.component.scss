@@ -1,1 +1,22 @@
-:host,.demo-battle-page{display:block;min-height:100vh;background:#090d18}.loading,.error{min-height:100vh;display:grid;place-items:center;color:#f5d77c;font-size:18px}.error{color:#ff9a9a}
+:host { display: block; min-height: 100vh; background: #0b101b; color: #e4eaf4; }
+.lab { max-width: 1440px; margin: auto; padding: 28px; }
+.config-panel { border: 1px solid #354663; border-radius: 14px; padding: 18px; margin-bottom: 20px; background: #101827; }
+.equipment-row { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 8px; align-items: end; margin: 12px 0; }
+pre { max-height: 400px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+header, .toolbar, .slot-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+header { justify-content: space-between; } h1 { margin: 4px 0; } h2 { font-size: 20px; }
+small, a { color: #88bfff; } p { line-height: 1.6; }.muted { color: #a1aec3; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.settings, .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: #b9c7df; }
+input, select, button { border: 1px solid #354663; border-radius: 8px; background: #131f32; color: #e4eaf4; padding: 10px; min-width: 0; }
+input, select { width: 100%; box-sizing: border-box; } button { cursor: pointer; } button:disabled { opacity: .4; cursor: default; }
+button:hover:not(:disabled), a:hover { color: #9fceff; } .primary { background: #234c89; }
+.toolbar { margin: 18px 0; }.teams { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.team, .report { border: 1px solid #293b57; border-radius: 14px; padding: 18px; background: #101827; }
+article { background: #0b1220; padding: 14px; border-radius: 10px; margin-bottom: 12px; }
+.slot-heading { margin-bottom: 14px; }.slot-heading > select { flex: 1; }.slot-heading label { width: 65px; }
+.error { color: #ffaaaa; background: #381b26; padding: 12px; }.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }th, td { padding: 12px; text-align: left; border-bottom: 1px solid #293b57; white-space: nowrap; }
+.replay { position: fixed; inset: 0; z-index: 1000; overflow: auto; background: #090d18; }.close { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); z-index: 1100; }
+@media (max-width: 900px) { .teams { grid-template-columns: 1fr; }.settings, .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }.lab { padding: 14px; } }

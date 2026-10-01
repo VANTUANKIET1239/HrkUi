@@ -22,6 +22,7 @@ export interface InventoryItemDto {
   itemCode: string;
   name: string;
   imagePath?: string;
+  heroStonePortrait?: string;
   icon: string;
   rarityId: number;
   rarityCode: string;

@@ -919,6 +919,149 @@
         box-shadow: 0 0 25px rgba(251, 191, 36, 0.7);
       }
     }
+
+    &.next-floor {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+
+      &:hover {
+        background: linear-gradient(135deg, #34d399, #10b981);
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.7);
+      }
+    }
+
+    &.retry {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+
+      &:hover {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        box-shadow: 0 0 25px rgba(220, 38, 38, 0.7);
+      }
+    }
+
+    &.edit-formation {
+      background: #2563eb;
+      border: 1px solid #3b82f6;
+      color: #ffffff;
+
+      &:hover {
+        background: #1d4ed8;
+      }
+    }
+
+    &.new-run {
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+
+      &:hover {
+        background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+      }
+    }
+  }
+}
+
+// Tower Status Banners in Header
+.tower-status-banner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+
+  .tower-lives-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 20px;
+    font-size: 13px;
+    color: #fca5a5;
+
+    &.danger {
+      animation: pulseBadge 1s infinite alternate;
+    }
+  }
+
+  .tower-milestone-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: 20px;
+    font-size: 13px;
+    color: #fde047;
+  }
+
+  .tower-completed-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid #10b981;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #6ee7b7;
+  }
+
+  .tower-ended-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    background: rgba(220, 38, 38, 0.25);
+    border: 1px solid #dc2626;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fca5a5;
+  }
+}
+
+// Tower Rewards Grid
+.tower-rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+
+  .tower-reward-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+
+    .reward-chip-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .reward-chip-name {
+      font-size: 11px;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .reward-chip-qty {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fbbf24;
+    }
   }
 }
 

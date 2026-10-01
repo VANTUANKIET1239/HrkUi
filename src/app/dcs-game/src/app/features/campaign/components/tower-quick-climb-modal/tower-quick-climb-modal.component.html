@@ -1,0 +1,159 @@
+<div class="modal-backdrop">
+  <div class="modal-container" [class.is-finished]="isJobFinished(job?.status)">
+
+    <!-- Header Section -->
+    <header class="modal-header">
+      <div class="header-title-box">
+        <span class="eyebrow">CHẾ ĐỘ TỰ ĐỘNG CHIẾN ĐẤU</span>
+        <h2 class="title">
+          <i class="bi bi-lightning-charge-fill text-warning me-2"></i>LEO THÁP NHANH
+        </h2>
+      </div>
+      <button type="button" class="btn-close" (click)="onClose()" [disabled]="!isJobFinished(job?.status)" aria-label="Đóng">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading && !job">
+      <span class="spinner-border text-warning" role="status"></span>
+      <span>Đang kết nối phiên leo nhanh...</span>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-banner" *ngIf="error">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+    </div>
+
+    <!-- Main Content Body -->
+    <div class="modal-body" *ngIf="job">
+
+      <!-- ================= 1. IN PROGRESS STATE ================= -->
+      <div class="in-progress-view" *ngIf="!isJobFinished(job.status)">
+        <!-- Simulation Radar / Status -->
+        <div class="status-pulse-bar">
+          <span class="pulse-dot"></span>
+          <span class="status-text">
+            Đang mô phỏng giao tranh thực tế Tầng <b>{{ job.currentFloor }}</b>...
+          </span>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="m-label"><i class="bi bi-layers-fill text-warning me-1"></i>Tầng hiện tại</span>
+            <span class="m-val">Tầng {{ job.currentFloor }}</span>
+          </div>
+          <div class="metric-card">
+            <span class="m-label"><i class="bi bi-trophy-fill text-success me-1"></i>Số tầng đã vượt</span>
+            <span class="m-val">{{ job.clearedFloorsCount }}</span>
+          </div>
+          <div class="metric-card" [class.danger]="job.remainingLives <= 1">
+            <span class="m-label"><i class="bi bi-heart-fill text-danger me-1"></i>Số mạng còn</span>
+            <span class="m-val">{{ job.remainingLives }} / {{ job.initialLives }}</span>
+          </div>
+        </div>
+
+        <!-- Realtime Logs Stream -->
+        <div class="logs-section">
+          <div class="logs-header"><i class="bi bi-terminal me-1 text-info"></i>Nhật Ký Từng Tầng:</div>
+          <div class="logs-container">
+            <div *ngFor="let log of job.logs" class="log-entry">
+              <span class="log-bullet">▸</span> {{ log }}
+            </div>
+            <div *ngIf="!job.logs || job.logs.length === 0" class="log-empty">
+              Đang chuẩn bị mô phỏng lượt giao tranh đầu tiên...
+            </div>
+          </div>
+        </div>
+
+        <!-- Accumulated Rewards -->
+        <div class="accumulated-rewards-section" *ngIf="job.accumulatedRewards && job.accumulatedRewards.length > 0">
+          <div class="rewards-header"><i class="bi bi-gift-fill me-1 text-warning"></i>Phần Thưởng Tích Lũy Đã Nhận:</div>
+          <div class="rewards-chips-grid">
+            <div *ngFor="let r of job.accumulatedRewards" class="reward-chip">
+              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="chip-img" />
+              <span class="chip-name">{{ r.name }}</span>
+              <span class="chip-qty">x{{ r.quantity | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action: Stop Quick Climb -->
+        <div class="running-actions">
+          <button type="button" class="btn-stop-climb" (click)="stopQuickClimb()" [disabled]="stopping">
+            <span class="spinner-border spinner-border-sm me-2" *ngIf="stopping"></span>
+            <i class="bi bi-stop-circle-fill me-2" *ngIf="!stopping"></i>
+            <span>{{ stopping ? 'Đang dừng phiên...' : 'DỪNG LEO NHANH NGAY' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 2. FINISHED SUMMARY STATE ================= -->
+      <div class="finished-summary-view" *ngIf="isJobFinished(job.status)">
+        <!-- Stop Reason Alert Box -->
+        <div class="summary-reason-banner" [ngClass]="job.stopReason?.toLowerCase() || ''">
+          <i class="bi" [ngClass]="{
+            'bi-shield-slash-fill': job.stopReason === 'FIRST_DEFEAT',
+            'bi-trophy-fill': job.stopReason === 'TOWER_COMPLETED',
+            'bi-pause-circle-fill': job.stopReason === 'USER_CANCELLED',
+            'bi-clock-history': job.stopReason === 'PERIOD_EXPIRED',
+            'bi-exclamation-octagon-fill': job.stopReason === 'ERROR'
+          }"></i>
+          <span class="reason-title">{{ stopReasonText }}</span>
+        </div>
+
+        <!-- Journey Summary Matrix -->
+        <div class="journey-matrix">
+          <div class="j-card">
+            <span class="j-label">Tầng Khởi Hành</span>
+            <span class="j-val">Tầng {{ job.startFloor }}</span>
+          </div>
+          <div class="j-card highlight">
+            <span class="j-label">Tầng Đã Vượt Cuối</span>
+            <span class="j-val">Tầng {{ job.startFloor + job.clearedFloorsCount - 1 }}</span>
+          </div>
+          <div class="j-card danger" *ngIf="job.failedFloor">
+            <span class="j-label">Tầng Thất Bại</span>
+            <span class="j-val">Tầng {{ job.failedFloor }}</span>
+          </div>
+          <div class="j-card">
+            <span class="j-label">Mạng Còn Lại</span>
+            <span class="j-val">❤️ {{ job.remainingLives }} / {{ job.initialLives }}</span>
+          </div>
+        </div>
+
+        <!-- Total Accumulated Rewards -->
+        <div class="final-rewards-section" *ngIf="job.accumulatedRewards && job.accumulatedRewards.length > 0">
+          <div class="rewards-header">
+            <i class="bi bi-box2-heart-fill me-2 text-warning"></i>Tổng Phần Thưởng Nhận Được:
+          </div>
+          <div class="rewards-chips-grid">
+            <div *ngFor="let r of job.accumulatedRewards" class="reward-chip">
+              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="chip-img" />
+              <span class="chip-name">{{ r.name }}</span>
+              <span class="chip-qty">x{{ r.quantity | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Footer Actions -->
+        <div class="summary-actions">
+          <button
+            type="button"
+            class="btn-view-battle"
+            *ngIf="job.lastBattleId"
+            (click)="onViewBattleDetails()"
+          >
+            <i class="bi bi-bar-chart-fill me-2"></i>Xem Chi Tiết Trận Cuối
+          </button>
+          <button type="button" class="btn-confirm-close" (click)="onClose()">
+            <i class="bi bi-check-lg me-2"></i>Đóng & Nhận Kết Quả
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

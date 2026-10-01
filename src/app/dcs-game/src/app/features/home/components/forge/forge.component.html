@@ -273,7 +273,7 @@
                   <!-- Occupied Stone -->
                   <div *ngIf="stone" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
                     <button class="btn btn-remove-slot" (click)="removeStone(i, $event)" title="Gỡ đá"><i class="bi bi-x"></i></button>
-                    <i class="bi bi-gem fs-2 text-info mb-1"></i>
+                    <app-item-image [item]="stone" style="width: 52px; height: 52px"></app-item-image>
                     <span class="slot-item-name text-truncate px-1">{{ stone.name }}</span>
                     <span class="slot-bonus text-success">+{{ (stone.bonus * 100) | number:'1.0-0' }}%</span>
                   </div>
@@ -293,7 +293,7 @@
                   <!-- Occupied Charm -->
                   <div *ngIf="selectedCharm" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
                     <button class="btn btn-remove-slot" (click)="removeCharm($event)" title="Gỡ bùa"><i class="bi bi-x"></i></button>
-                    <i class="bi {{ selectedCharm.preventsDrop ? 'bi-shield-fill-check text-success' : 'bi-stars text-warning' }} fs-2 mb-1"></i>
+                    <app-item-image [item]="selectedCharm" style="width: 52px; height: 52px"></app-item-image>
                     <span class="slot-item-name text-truncate px-1">{{ selectedCharm.name }}</span>
                     <span class="slot-bonus" [class.text-success]="selectedCharm.preventsDrop" [class.text-warning]="!selectedCharm.preventsDrop">
                       {{ selectedCharm.preventsDrop ? 'Hộ Mệnh' : '+' + (selectedCharm.bonus * 100) + '%' }}
@@ -539,7 +539,7 @@
           class="picker-item-slot p-2 rounded-3 border d-flex align-items-center gap-2"
           [class.disabled]="getAvailableStoneCount(stone) <= 0"
           (click)="getAvailableStoneCount(stone) > 0 ? selectStone(stone) : null">
-          <i class="bi bi-gem fs-2 text-info"></i>
+          <app-item-image [item]="stone" style="width: 52px; height: 52px"></app-item-image>
           <div class="flex-grow-1">
             <span class="d-block text-light fw-bold">{{ stone.name }}</span>
             <span class="text-success small">+{{ (stone.bonus * 100) | number:'1.0-0' }}% Tỷ Lệ</span>
@@ -567,7 +567,7 @@
           *ngFor="let charm of playerCharms" 
           class="picker-item-slot p-2 rounded-3 border d-flex align-items-center gap-2"
           (click)="selectCharm(charm)">
-          <i class="bi {{ charm.preventsDrop ? 'bi-shield-fill-check text-success' : 'bi-stars text-warning' }} fs-2"></i>
+          <app-item-image [item]="charm" style="width: 52px; height: 52px"></app-item-image>
           <div class="flex-grow-1">
             <span class="d-block text-light fw-bold">{{ charm.name }}</span>
             <span [class.text-success]="charm.preventsDrop" [class.text-warning]="!charm.preventsDrop" class="small">

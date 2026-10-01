@@ -1,4 +1,4 @@
-<div class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" [attr.aria-label]="stage.name">
+<div class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" [attr.aria-label]="modalTitle">
   <section class="stage-modal">
     <!-- Close Button -->
     <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" aria-label="Đóng cửa sổ">
@@ -8,18 +8,19 @@
     <!-- Modal Header -->
     <header class="modal-header">
       <div class="header-badges">
-        <span class="badge-stage-num">ẢI {{ stage.stageNumber }}</span>
-        <span class="badge-stage-type" [class.type-boss]="stage.stageType !== 'NORMAL'">{{ stageTypeLabel }}</span>
-        <span class="badge-stamina">⚡ {{ stage.staminaCost }} Thể Lực</span>
+        <span class="badge-stage-num">{{ mode === 'TOWER' ? 'TẦNG ' + (towerFloor?.floorNumber || 1) : 'ẢI ' + stage?.stageNumber }}</span>
+        <span class="badge-stage-type" [class.type-boss]="(mode === 'TOWER' ? towerFloor?.floorType : stage?.stageType) !== 'NORMAL'">{{ challengeTypeLabel }}</span>
+        <span class="badge-stamina" *ngIf="mode === 'DUNGEON' && stage">⚡ {{ stage.staminaCost }} Thể Lực</span>
+        <span class="badge-stamina bg-danger" *ngIf="mode === 'TOWER'">❤️ {{ remainingLives }} Mạng Còn Lại</span>
       </div>
-      <h2 class="modal-title">{{ stage.name }}</h2>
+      <h2 class="modal-title">{{ modalTitle }}</h2>
     </header>
 
     <!-- Combat Power Comparison Matrix -->
     <div class="power-matrix">
       <div class="power-card player-power">
         <span class="power-label">Lực Chiến Của Bạn</span>
-        <span class="power-value">{{ stage.playerPower | number }}</span>
+        <span class="power-value">{{ effectivePlayerPower | number }}</span>
         <i class="bi bi-shield-shaded power-icon"></i>
       </div>
 
@@ -32,19 +33,19 @@
 
       <div class="power-card enemy-power">
         <span class="power-label">Tổng Lực Chiến Địch</span>
-        <span class="power-value">{{ stage.enemyPower | number }}</span>
+        <span class="power-value">{{ effectiveEnemyPower | number }}</span>
         <i class="bi bi-crosshair power-icon"></i>
       </div>
 
       <div class="power-card recommended-power">
         <span class="power-label">Lực Chiến Đề Nghị</span>
-        <span class="power-value">{{ stage.recommendedPower | number }}</span>
+        <span class="power-value">{{ effectiveRecommendedPower | number }}</span>
         <i class="bi bi-bullseye power-icon"></i>
       </div>
     </div>
 
-    <!-- 3-Star Rating Conditions -->
-    <div class="star-rating-block">
+    <!-- 3-Star Rating Conditions (Dungeon Mode) -->
+    <div class="star-rating-block" *ngIf="mode === 'DUNGEON' && stage">
       <div class="star-rating-header">
         <span class="rating-title"><i class="bi bi-star-fill text-gold me-1"></i>ĐIỀU KIỆN ĐÁNH GIÁ SAO (Kỷ lục: {{ stage.bestStars || 0 }}★)</span>
       </div>
@@ -64,21 +65,42 @@
       </div>
     </div>
 
+    <!-- Tower Rules Block (Tower Mode) -->
+    <div class="star-rating-block tower-rules-card" *ngIf="mode === 'TOWER'">
+      <div class="star-rating-header">
+        <span class="rating-title"><i class="bi bi-shield-fill-check text-warning me-1"></i>QUY TẮC LEO THÁP & MẠNG</span>
+      </div>
+      <div class="star-rules-list">
+        <div class="star-rule-item achieved">
+          <span class="star-badge">⚔️</span>
+          <span class="rule-text"><b>Chiến thắng:</b> Tiến lên tầng tiếp theo, <b>không tiêu hao mạng</b>.</span>
+        </div>
+        <div class="star-rule-item">
+          <span class="star-badge text-danger">💔</span>
+          <span class="rule-text"><b>Thất bại:</b> Bị trừ đúng 1 mạng, giữ nguyên tầng để khiêu chiến lại.</span>
+        </div>
+        <div class="star-rule-item">
+          <span class="star-badge text-warning">🔄</span>
+          <span class="rule-text"><b>Hết mạng (0):</b> Lượt leo kết thúc, quay về tầng 1 để bắt đầu lại (không mất thưởng đã nhận).</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Error Alert if Any -->
-    <div class="error-banner" *ngIf="errorMessage || !isStaminaSufficient">
+    <div class="error-banner" *ngIf="lockOrErrorText">
       <i class="bi bi-exclamation-triangle-fill"></i>
-      <span>{{ errorMessage || 'Không đủ thể lực để bắt đầu chiến đấu (cần ' + stage.staminaCost + ', hiện có ' + staminaCurrent + ').' }}</span>
+      <span>{{ lockOrErrorText }}</span>
     </div>
 
     <!-- Enemy Lineup Section -->
     <div class="section-block">
       <div class="section-title">
         <i class="bi bi-people-fill"></i>
-        <span>ĐỘI HÌNH ĐỐI THỦ ({{ stage.enemies.length }} TƯỚNG)</span>
+        <span>ĐỘI HÌNH ĐỐI THỦ ({{ displayEnemies.length }} TƯỚNG)</span>
       </div>
       <div class="enemy-grid">
         <article
-          *ngFor="let enemy of stage.enemies"
+          *ngFor="let enemy of displayEnemies"
           class="enemy-card"
           [class.is-boss-card]="enemy.isBoss"
         >
@@ -94,8 +116,8 @@
       </div>
     </div>
 
-    <!-- Boss Equipment Drops Section -->
-    <div class="section-block drops-block" *ngIf="stage.possibleDrops && stage.possibleDrops.length > 0">
+    <!-- Boss Equipment Drops Section (Dungeon Mode) -->
+    <div class="section-block drops-block" *ngIf="mode === 'DUNGEON' && stage && stage.possibleDrops && stage.possibleDrops.length > 0">
       <div class="section-title">
         <i class="bi bi-shield-shaded text-warning"></i>
         <span>TRANG BỊ CÓ THỂ RƠI (BOSS STAGE)</span>
@@ -121,8 +143,8 @@
       </div>
     </div>
 
-    <!-- Rewards Section -->
-    <div class="section-block rewards-block">
+    <!-- Rewards Section: Dungeon Mode -->
+    <div class="section-block rewards-block" *ngIf="mode === 'DUNGEON' && stage">
       <div class="section-title">
         <i class="bi bi-gift-fill"></i>
         <span>PHẦN THƯỞNG CHIẾN THẮNG</span>
@@ -162,20 +184,50 @@
       </div>
     </div>
 
+    <!-- Rewards Section: Tower Mode -->
+    <div class="section-block rewards-block" *ngIf="mode === 'TOWER' && towerFloor">
+      <div class="section-title">
+        <i class="bi bi-gift-fill"></i>
+        <span>PHẦN THƯỞNG VƯỢT TẦNG {{ towerFloor.floorNumber }}</span>
+      </div>
+      <div class="rewards-grid">
+        <div class="reward-pill gold-pill" *ngFor="let reward of towerFloor.rewards">
+          <img *ngIf="reward.imagePath" [src]="reward.imagePath" [alt]="reward.name" class="reward-icon-img" style="width: 24px; height: 24px; object-fit: contain; margin-right: 6px;" />
+          <span class="reward-icon" *ngIf="!reward.imagePath">🎁</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ reward.quantity | number }}</span>
+            <span class="reward-name">{{ reward.name }}</span>
+          </div>
+        </div>
+        <div class="reward-pill player-exp-pill" *ngIf="towerFloor.playerExpReward > 0">
+          <span class="reward-icon">👤</span>
+          <div class="reward-info">
+            <span class="reward-val">+{{ towerFloor.playerExpReward }}</span>
+            <span class="reward-name">EXP Người chơi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Footer Actions -->
     <footer class="modal-footer">
       <button
         type="button"
         class="btn-fight"
-        [disabled]="isStarting || !isStaminaSufficient"
+        [disabled]="!canStart"
         (click)="onFightClick()"
       >
         <span class="fight-shimmer"></span>
         <span class="spinner-border spinner-border-sm" *ngIf="isStarting" role="status" aria-hidden="true"></span>
         <span class="fight-icon" *ngIf="!isStarting">⚔️</span>
-        <span class="fight-text">{{ isStarting ? 'Đang Khởi Tạo Trận Đấu...' : 'BẮT ĐẦU CHIẾN ĐẤU' }}</span>
-        <span class="fight-cost" *ngIf="!isStarting">(⚡ {{ stage.staminaCost }})</span>
+        <span class="fight-text">
+          <ng-container *ngIf="isStarting">Đang Khởi Tạo Trận Đấu...</ng-container>
+          <ng-container *ngIf="!isStarting && mode === 'TOWER'">KHIÊU CHIẾN TẦNG {{ towerFloor?.floorNumber }}</ng-container>
+          <ng-container *ngIf="!isStarting && mode !== 'TOWER'">BẮT ĐẦU CHIẾN ĐẤU</ng-container>
+        </span>
+        <span class="fight-cost" *ngIf="!isStarting && mode === 'DUNGEON' && stage">(⚡ {{ stage.staminaCost }})</span>
       </button>
     </footer>
   </section>
 </div>
+

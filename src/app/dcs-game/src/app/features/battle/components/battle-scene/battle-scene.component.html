@@ -127,7 +127,7 @@
 
   <!-- 7. Victory / Defeat Results Modal (Z-index 1000) -->
   <app-battle-result-modal 
-    *ngIf="battleEngine.status() === 'finished'" 
+    *ngIf="!externalResult && battleEngine.status() === 'finished'"
     [isVictory]="isPlayerVictory()"
     [totalTurns]="battleEngine.currentTurn()" 
     [aliveCount]="getAliveCount('left')"

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="paper" x2="1" y2="1"><stop stop-color="#77f0d0"/><stop offset=".5" stop-color="#145c66"/><stop offset="1" stop-color="#77f0d0"/></linearGradient>
+    <radialGradient id="halo"><stop stop-color="#77f0d0" stop-opacity=".4"/><stop offset="1" stop-color="#77f0d0" stop-opacity="0"/></radialGradient>
+  </defs>
+  <circle cx="64" cy="67" r="60" fill="url(#halo)"/>
+  <path d="M58 22c-16-13-1-23 6-8 7-15 22-5 6 8" fill="none" stroke="#eac76b" stroke-width="4"/>
+  <path d="m33 24 62 0-5 86-12-6-14 11-14-11-12 6Z" fill="url(#paper)" stroke="#f5d78c" stroke-width="3"/>
+  <path d="M41 33h46l-4 61M45 95l-4-62" fill="none" stroke="#ffefbe" stroke-opacity=".55"/>
+  <path d="M32 22h64v9H32Z" fill="#9c3437" stroke="#f6da86" stroke-width="2"/>
+  <path d="m64 40 21 9v17c0 14-12 24-21 29-9-5-21-15-21-29V49Z" fill="#123f56" stroke="#e3ffce" stroke-width="3"/><path d="m52 65 8 8 16-18" fill="none" stroke="#afffde" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m14 67 3-7 3 7 7 3-7 3-3 7-3-7-7-3Zm93-29 2-5 2 5 5 2-5 2-2 5-2-5-5-2Z" fill="#77f0d0"/>
+</svg>

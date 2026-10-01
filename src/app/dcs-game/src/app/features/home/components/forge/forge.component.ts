@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InventoryItemDto } from '../../../../core/models/inventory.model';
@@ -33,7 +34,7 @@ export interface CharmInventorySlot extends InventoryItemDto {
 @Component({
   selector: 'app-forge',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [ItemImageComponent, CommonModule, FormsModule],
   templateUrl: './forge.component.html',
   styleUrl: './forge.component.scss'
 })

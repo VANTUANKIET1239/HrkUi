@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BattleCharacterComponent } from '../../../battle/components/battle-character/battle-character.component';
@@ -21,6 +22,7 @@ import { PlayerService } from '../../../../core/services/player.service';
   styleUrl: './formation-management.component.scss'
 })
 export class FormationManagementComponent implements OnInit {
+  readonly starColors = HERO_STAR_COLORS;
   @Output() close = new EventEmitter<void>();
 
   // Currencies / Resources

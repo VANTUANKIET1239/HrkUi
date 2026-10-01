@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewEncapsulation, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BattleEngineService } from '../../../../core/services/battle-engine.service';
@@ -37,6 +37,8 @@ import { EquipmentTooltipComponent } from '../../../../shared/components/equipme
 export class BattleSceneComponent {
   @Input() replayBattle?: StartBattleResultDto | null;
   @Input() demoMode = false;
+  @Input() externalResult = false;
+  @Output() externalExit = new EventEmitter<void>();
 
   readonly battleEngine = inject(BattleEngineService);
   readonly dungeonSession = inject(DungeonSessionService);
@@ -59,6 +61,10 @@ export class BattleSceneComponent {
   }
 
   exitBattle(): void {
+    if (this.externalResult) {
+      this.externalExit.emit();
+      return;
+    }
     if (this.demoMode) {
       this.router.navigate(['/dcs-game/home']);
       return;
