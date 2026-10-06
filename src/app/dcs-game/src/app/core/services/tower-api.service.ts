@@ -87,10 +87,8 @@ export class TowerApiService {
     );
   }
 
-  startQuickClimb(startFloor?: number, targetFloor?: number, draft?: BattleFormationDraft): Observable<BaseResponse<TowerQuickClimbJob>> {
+  startQuickClimb(draft?: BattleFormationDraft): Observable<BaseResponse<TowerQuickClimbJob>> {
     const payload = {
-      
-      
       formationCode: draft?.formationCode,
       positions: draft?.positions || []
     };

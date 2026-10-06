@@ -98,6 +98,10 @@ export interface TowerProgress {
   initialLives: number;
   highestFloorInPeriod: number;
   highestFloorAllTime: number;
+  quickClimbRunsUsed: number;
+  quickClimbDailyLimit: number;
+  quickClimbRunsRemaining: number;
+  canStartQuickClimb: boolean;
   isCompleted: boolean;
   hasActiveQuickClimbJob: boolean;
   activeQuickClimbJobId?: string;
@@ -138,14 +142,16 @@ export interface StartTowerBattleResult {
 
 export interface TowerQuickClimbJob {
   jobId: string;
+  version: number;
   status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'STOPPED_DEFEAT' | 'CANCELLED' | 'EXPIRED' | 'ERROR';
-  stopReason?: 'FIRST_DEFEAT' | 'TOWER_COMPLETED' | 'USER_CANCELLED' | 'PERIOD_EXPIRED' | 'EVENT_CLOSED' | 'LIVES_EXHAUSTED' | 'ERROR';
+  stopReason?: 'FIRST_DEFEAT' | 'TOWER_COMPLETED' | 'USER_CANCELLED' | 'PERIOD_EXPIRED' | 'EVENT_CLOSED' | 'RULES_CHANGED' | 'ERROR';
   startFloor: number;
   currentFloor: number;
   targetFloor: number;
   initialLives: number;
   remainingLives: number;
   clearedFloorsCount: number;
+  dailyRunNumber: number;
   failedFloor?: number;
   accumulatedRewards: GenericRewardItem[];
   logs: string[];

@@ -36,5 +36,5 @@ export const isQuickClimbFinished = (status: string): boolean =>
   ['COMPLETED', 'STOPPED_DEFEAT', 'CANCELLED', 'EXPIRED', 'ERROR'].includes(status);
 export const mapJob = (x: WireQuickJob): TowerQuickClimbJob => ({
   ...x, isCompleted: isQuickClimbFinished(x.status),
-  logs: x.logs.map(l => `Tầng ${l.floorNumber}: ${l.isVictory ? 'Thắng' : 'Thua'} · ${l.totalTurns} lượt · Còn ${l.livesRemaining} mạng`)
+  logs: x.logs.map(l => `Tầng ${l.floorNumber}: ${l.isVictory ? 'Thắng' : 'Thua'} · ${l.totalTurns} lượt`)
 });

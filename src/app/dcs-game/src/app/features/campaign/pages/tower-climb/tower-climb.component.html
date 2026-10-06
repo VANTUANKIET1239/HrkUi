@@ -156,18 +156,19 @@
         </div>
 
         <!-- Action Buttons: Formation Setup & Quick Climb -->
-        <div class="tower-action-buttons" *ngIf="progress.remainingLives > 0">
+        <div class="tower-action-buttons">
           <button type="button" class="btn-formation-setup" (click)="openFormationModal()">
             <i class="bi bi-sliders me-2"></i>Chỉnh Đội Hình
           </button>
           <button
             type="button"
             class="btn-quick-climb"
-            [disabled]="progress.isCompleted"
+            [disabled]="!progress.canStartQuickClimb || progress.hasActiveQuickClimbJob"
             (click)="openQuickClimb()"
           >
             <span class="btn-shimmer"></span>
-            <i class="bi bi-lightning-charge-fill me-2"></i>Leo Nhanh
+            <i class="bi bi-lightning-charge-fill me-2"></i>
+            Leo Nhanh ({{ progress.quickClimbRunsRemaining }}/{{ progress.quickClimbDailyLimit }})
           </button>
         </div>
 

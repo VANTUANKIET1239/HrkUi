@@ -45,6 +45,7 @@ interface FeatureItem {
 }
 
 import { TokenManagerService } from '../../../../../../../../libs/core/auth/services/token-manager';
+import { ProcessRealtimeService } from '../../../../core/services/process-realtime.service';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { ApiMethod } from '../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
 import { ApiEndpoints } from '../../../../../../../../libs/shared/common/constants/api-endpoints';
@@ -129,7 +130,8 @@ export class GameHomeComponent implements OnInit {
     private playerService: PlayerService,
     private gameHomeInitService: GameHomeInitializationService,
     private gameFeatureConfigService: GameFeatureConfigService,
-    private dungeonApiService: DungeonApiService
+    private dungeonApiService: DungeonApiService,
+    private processRealtimeService: ProcessRealtimeService
   ) { }
 
   ngOnInit(): void {
@@ -362,6 +364,7 @@ export class GameHomeComponent implements OnInit {
         this.isLoggingOut = false;
         this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
+        void this.processRealtimeService.stop();
         this.router.navigate(['/login'], {
           queryParams: { app: 'dcs-game', returnUrl: '/dcs-game/home' }
         });
@@ -371,6 +374,7 @@ export class GameHomeComponent implements OnInit {
         this.isLoggingOut = false;
         this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();
+        void this.processRealtimeService.stop();
         this.router.navigate(['/login'], {
           queryParams: { app: 'dcs-game', returnUrl: '/dcs-game/home' }
         });

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription, interval, finalize } from 'rxjs';
 import { TowerApiService } from '../../../../core/services/tower-api.service';
 import { TowerQuickClimbJob } from '../../../../core/models/event.model';
+import { ProcessRealtimeService } from '../../../../core/services/process-realtime.service';
 
 @Component({
   selector: 'app-tower-quick-climb-modal',
@@ -15,6 +16,7 @@ import { TowerQuickClimbJob } from '../../../../core/models/event.model';
 export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
   private readonly api = inject(TowerApiService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly realtime = inject(ProcessRealtimeService);
 
   @Input() jobId?: string;
   @Output() close = new EventEmitter<void>();
@@ -28,10 +30,22 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
   private pollSub?: Subscription;
   private requestSub?: Subscription;
   private polling = false;
+  private realtimeSub?: Subscription;
+  private reconnectSub?: Subscription;
 
   ngOnInit(): void {
     this.pollJob();
-    this.pollSub = interval(1500).subscribe(() => {
+    void this.realtime.connect().catch(() => {
+      // REST polling below remains the source-of-truth fallback.
+    });
+    this.realtimeSub = this.realtime.allEvents().subscribe(event => {
+      const activeJobId = this.job?.jobId ?? this.jobId;
+      if (event.processType === 'TOWER_QUICK_CLIMB' && event.jobId === activeJobId) {
+        this.pollJob(true);
+      }
+    });
+    this.reconnectSub = this.realtime.reconnected$.subscribe(() => this.pollJob(true));
+    this.pollSub = interval(15000).subscribe(() => {
       if (this.job && this.isJobFinished(this.job.status)) {
         return; // Stopped polling
       }
@@ -42,6 +56,8 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.pollSub?.unsubscribe();
     this.requestSub?.unsubscribe();
+    this.realtimeSub?.unsubscribe();
+    this.reconnectSub?.unsubscribe();
   }
 
   pollJob(silent = false): void {
@@ -102,6 +118,22 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
     return isQuickClimbFinished(status);
   }
 
+  get progressPercent(): number {
+    if (!this.job || this.job.targetFloor <= 0) return 0;
+    if (this.job.status === 'COMPLETED') return 100;
+    return Math.min(100, Math.max(0,
+      Math.round(this.job.clearedFloorsCount * 100 / this.job.targetFloor)));
+  }
+
+  get progressStateText(): string {
+    if (!this.job) return '';
+    if (this.job.status === 'COMPLETED') return 'Hoàn thành';
+    if (this.job.status === 'STOPPED_DEFEAT') return `Dừng tại tầng ${this.job.failedFloor ?? this.job.currentFloor}`;
+    if (this.job.status === 'CANCELLED') return 'Đã dừng';
+    if (this.job.status === 'ERROR') return 'Gián đoạn';
+    return `Đang đánh tầng ${this.job.currentFloor}`;
+  }
+
   get stopReasonText(): string {
     switch (this.job?.stopReason) {
       case 'FIRST_DEFEAT':
@@ -114,8 +146,8 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
         return 'Đã đến thời điểm làm mới kỳ sự kiện';
       case 'EVENT_CLOSED':
         return 'Sự kiện đã kết thúc';
-      case 'LIVES_EXHAUSTED':
-        return 'Lượt leo đã hết mạng theo cấu hình sự kiện';
+      case 'RULES_CHANGED':
+        return 'Phiên cũ đã dừng do luật leo nhanh được cập nhật';
       case 'ERROR':
         return 'Dừng do lỗi hệ thống';
       default:

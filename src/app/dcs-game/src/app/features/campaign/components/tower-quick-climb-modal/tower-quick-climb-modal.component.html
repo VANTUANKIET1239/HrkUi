@@ -28,6 +28,42 @@
     <!-- Main Content Body -->
     <div class="modal-body" *ngIf="job">
 
+      <section
+        class="climb-progress"
+        [class.is-complete]="job.status === 'COMPLETED'"
+        [class.is-stopped]="isJobFinished(job.status) && job.status !== 'COMPLETED'"
+      >
+        <div class="progress-heading">
+          <div>
+            <span class="progress-eyebrow">TIẾN ĐỘ LEO THÁP</span>
+            <strong>{{ progressStateText }}</strong>
+          </div>
+          <span class="progress-percentage">{{ progressPercent }}%</span>
+        </div>
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Tiến độ leo nhanh"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-valuenow]="progressPercent"
+        >
+          <div class="progress-fill" [style.width.%]="progressPercent">
+            <span class="progress-runner" *ngIf="progressPercent > 0"></span>
+          </div>
+          <div class="track-segments" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="progress-caption">
+          <span>Tầng 1</span>
+          <span>Đã vượt {{ job.clearedFloorsCount }}/{{ job.targetFloor }} tầng</span>
+          <span>Tầng {{ job.targetFloor }}</span>
+        </div>
+      </section>
+
       <!-- ================= 1. IN PROGRESS STATE ================= -->
       <div class="in-progress-view" *ngIf="!isJobFinished(job.status)">
         <!-- Simulation Radar / Status -->
@@ -48,9 +84,9 @@
             <span class="m-label"><i class="bi bi-trophy-fill text-success me-1"></i>Số tầng đã vượt</span>
             <span class="m-val">{{ job.clearedFloorsCount }}</span>
           </div>
-          <div class="metric-card" [class.danger]="job.remainingLives <= 1">
-            <span class="m-label"><i class="bi bi-heart-fill text-danger me-1"></i>Số mạng còn</span>
-            <span class="m-val">{{ job.remainingLives }} / {{ job.initialLives }}</span>
+          <div class="metric-card">
+            <span class="m-label"><i class="bi bi-calendar-check-fill text-info me-1"></i>Lượt hôm nay</span>
+            <span class="m-val">Lượt {{ job.dailyRunNumber }}</span>
           </div>
         </div>
 
@@ -118,8 +154,8 @@
             <span class="j-val">Tầng {{ job.failedFloor }}</span>
           </div>
           <div class="j-card">
-            <span class="j-label">Mạng Còn Lại</span>
-            <span class="j-val">❤️ {{ job.remainingLives }} / {{ job.initialLives }}</span>
+            <span class="j-label">Lượt Leo Trong Ngày</span>
+            <span class="j-val">Lượt {{ job.dailyRunNumber }}</span>
           </div>
         </div>
 

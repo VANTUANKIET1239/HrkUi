@@ -285,20 +285,19 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
   // --- Quick Climb ---
   openQuickClimb(): void {
     if (!this.progress) return;
-    if (this.progress.remainingLives <= 0) {
-      alert('Bạn đã hết mạng! Vui lòng bắt đầu lượt mới trước.');
-      return;
-    }
-    if (this.progress.isCompleted) {
-      alert('Bạn đã hoàn thành toàn bộ các tầng tháp hôm nay!');
+    if (!this.progress.canStartQuickClimb) {
+      alert(`Bạn đã sử dụng hết ${this.progress.quickClimbDailyLimit} lượt leo nhanh hôm nay.`);
       return;
     }
 
-    if (!confirm(`Bắt đầu leo nhanh từ Tầng ${this.progress.currentFloor}? Leo nhanh sẽ tự động dừng ngay ở trận thua đầu tiên.`)) {
+    if (!confirm(
+      `Bắt đầu lượt leo nhanh ${this.progress.quickClimbRunsUsed + 1}/${this.progress.quickClimbDailyLimit} từ Tầng 1? ` +
+      'Phần thưởng của các tầng thắng sẽ được cộng dồn và lượt leo dừng tại trận thua đầu tiên.'
+    )) {
       return;
     }
 
-    this.api.startQuickClimb(this.progress.currentFloor, this.progress.maxFloor).subscribe({
+    this.api.startQuickClimb().subscribe({
       next: res => {
         if (res.success && res.data) {
           this.activeQuickClimbJobId = res.data.jobId;

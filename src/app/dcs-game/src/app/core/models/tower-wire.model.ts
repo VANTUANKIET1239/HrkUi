@@ -14,6 +14,8 @@ export interface WireProgress {
   eventId: number; eventName: string; periodKey: string; periodEndUtc: string;
   secondsUntilReset: number; currentFloor: number; maxFloor: number;
   remainingLives: number; initialLives: number; highestFloorInPeriod: number;
+  quickClimbRunsUsed: number; quickClimbDailyLimit: number;
+  quickClimbRunsRemaining: number; canStartQuickClimb: boolean;
   highestFloorAllTime: number; isCompleted: boolean; hasActiveQuickClimb: boolean;
   activeQuickClimbJobId?: string; pendingRewardsCount: number; playerPower: number;
   leadHero?: { id: number; name: string; avatar: string; level: number; stars: number; power: number; rarityColorHex?: string };
