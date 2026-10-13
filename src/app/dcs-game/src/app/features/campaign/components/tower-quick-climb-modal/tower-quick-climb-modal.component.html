@@ -1,15 +1,15 @@
-<div class="modal-backdrop">
-  <div class="modal-container" [class.is-finished]="isJobFinished(job?.status)">
+<hrk-modal #modalShell modalCode="TOWER_QUICK_CLIMB" title="Leo tháp nhanh" [chrome]="false" [dismissible]="!!error || isJobFinished(job?.status)" [closeOnBackdrop]="false" [busy]="stopping" (closed)="onClose()">
+  <div class="modal-container" [style.max-width.%]="100" [class.is-finished]="isJobFinished(job?.status)">
 
     <!-- Header Section -->
     <header class="modal-header">
       <div class="header-title-box">
         <span class="eyebrow">CHẾ ĐỘ TỰ ĐỘNG CHIẾN ĐẤU</span>
         <h2 class="title">
-          <i class="bi bi-lightning-charge-fill text-warning me-2"></i>LEO THÁP NHANH
+          <i class="bi bi-lightning-charge-fill text-warning me-2"></i>{{ modalShell.resolved.title }}
         </h2>
       </div>
-      <button type="button" class="btn-close" (click)="onClose()" [disabled]="!isJobFinished(job?.status)" aria-label="Đóng">
+      <button type="button" class="btn-close" (click)="onClose()" [disabled]="stopping || (!error && !isJobFinished(job?.status))" aria-label="Đóng">
         <i class="bi bi-x-lg"></i>
       </button>
     </header>
@@ -192,4 +192,4 @@
     </div>
 
   </div>
-</div>
+</hrk-modal>

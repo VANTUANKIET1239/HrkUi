@@ -1,0 +1,211 @@
+.reel-layout { min-height:100dvh; display:grid; place-items:center; padding:16px; background:#06080f; }
+
+.reel-dialog {
+  width: min(960px, 96vw);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  color: #caab6d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+h2 {
+  color: #f3e5c9;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: clamp(22px, 4vw, 34px);
+  margin: 14px 0 28px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.reel-viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 24px 0;
+  border-block: 1px solid rgba(184, 155, 85, 0.35);
+  background: radial-gradient(ellipse at center, #1c1a27 0%, #10111a 60%, #070911 100%);
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.9), 0 10px 30px rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+
+  /* Left and right vignette gradients creating depth without obscuring center */
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 16%;
+    max-width: 150px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(90deg, #070911 0%, rgba(7, 9, 17, 0.85) 40%, rgba(7, 9, 17, 0.3) 75%, transparent 100%);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(-90deg, #070911 0%, rgba(7, 9, 17, 0.85) 40%, rgba(7, 9, 17, 0.3) 75%, transparent 100%);
+  }
+}
+
+.reel-spotlight {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(244, 215, 133, 0.08) 0%, transparent 75%);
+}
+
+.reel-track {
+  display: flex;
+  column-gap: 12px;
+  width: max-content;
+  will-change: transform;
+  align-items: center;
+
+  app-summon-hero-card {
+    width: 124px;
+    flex: 0 0 124px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+
+    &.winner-highlight {
+      position: relative;
+      z-index: 5;
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 14px var(--winner-color, #ffd700));
+
+      ::ng-deep .hero-card {
+        border-color: var(--rarity, #ffd700) !important;
+        box-shadow: 0 0 25px var(--rarity, #ffd700),
+                    0 0 45px color-mix(in srgb, var(--rarity, #ffd700), transparent 30%),
+                    inset 0 0 16px var(--rarity, #ffd700) !important;
+        animation: winner-glow-pulse 1.2s ease-in-out infinite alternate;
+      }
+    }
+  }
+}
+
+@keyframes winner-glow-pulse {
+  0% {
+    box-shadow: 0 0 20px var(--rarity, #ffd700),
+                0 0 35px color-mix(in srgb, var(--rarity, #ffd700), transparent 50%),
+                inset 0 0 12px var(--rarity, #ffd700);
+  }
+  100% {
+    box-shadow: 0 0 32px var(--rarity, #ffd700),
+                0 0 55px color-mix(in srgb, var(--rarity, #ffd700), transparent 25%),
+                inset 0 0 20px var(--rarity, #ffd700);
+  }
+}
+
+/* Needle / Pointer */
+.reel-pointer {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(180deg, #ffd700 0%, #f4d785 50%, #d4a340 100%);
+  box-shadow: 0 0 10px #f4d785b3, 0 0 20px rgba(244, 215, 133, 0.35);
+  pointer-events: none;
+  transition: box-shadow 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top: 10px solid #ffd700;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-bottom: 10px solid #ffd700;
+    filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.8));
+  }
+
+  &.winner-active {
+    box-shadow: 0 0 16px var(--winner-color, #ffd700), 0 0 30px var(--winner-color, #ffd700);
+  }
+}
+
+.status-message {
+  color: #a7a3b3;
+  font-size: 13px;
+  margin: 24px 0 18px;
+  min-height: 20px;
+  transition: all 0.3s ease;
+
+  &.winner-reveal {
+    color: #f4d785;
+    font-size: 14px;
+    font-weight: 500;
+    text-shadow: 0 0 12px rgba(244, 215, 133, 0.6);
+
+    strong {
+      color: #fff;
+    }
+  }
+}
+
+button {
+  color: #d8c6a5;
+  background: #201e29;
+  border: 1px solid #80704e;
+  border-radius: 5px;
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #2a2736;
+    border-color: #caab6d;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #f4d785;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reel-track app-summon-hero-card {
+    width: 104px;
+    flex-basis: 104px;
+  }
+  .reel-viewport {
+    padding: 18px 0;
+  }
+  h2 {
+    margin: 10px 0 20px;
+  }
+}
+

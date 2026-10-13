@@ -1,0 +1,234 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.chest-panel {
+  --accent: #d3a85b;
+  position: relative;
+  padding: 26px 28px 18px;
+  border: 1px solid #80613c70;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 45%, #6d432127, transparent 65%), linear-gradient(150deg, #241c1bcc, #10131eee);
+  box-shadow: 0 20px 60px #0005, inset 0 1px #ead8b018;
+  overflow: hidden;
+
+  &.premium {
+    --accent: #9fc9ff;
+    border-color: #618fba75;
+    background: radial-gradient(ellipse at 50% 45%, #347be522, transparent 65%), linear-gradient(150deg, #1a2133e6, #10131eee);
+  }
+
+  &.active {
+    border-color: var(--accent);
+  }
+}
+
+.panel-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 9px;
+  letter-spacing: 2.2px;
+}
+
+.rates-link {
+  padding: 5px 0;
+  border: 0;
+  background: none;
+  color: #c5c0b9;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+h2 {
+  margin: 18px 0 7px;
+  color: #f6e7c6;
+  font-family: 'Spectral', Georgia, serif;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.description {
+  color: #aaa6af;
+  font-size: 13px;
+  margin: 0;
+}
+
+.chest-art {
+  position: relative;
+  height: 285px;
+  display: grid;
+  place-items: center;
+
+  img {
+    z-index: 1;
+    position: relative;
+    width: min(340px, 100%);
+    height: 270px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 20px #0008);
+    animation: chest-float 6s ease-in-out infinite;
+  }
+}
+
+.chest-halo {
+  position: absolute;
+  width: 65%;
+  height: 60%;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--accent), transparent 80%), transparent 70%);
+  filter: blur(10px);
+}
+
+.magic-ring {
+  position: absolute;
+  width: 62%;
+  height: 60px;
+  bottom: 28px;
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 60%);
+  border-radius: 50%;
+  box-shadow: 0 0 25px color-mix(in srgb, var(--accent), transparent 90%);
+}
+
+.charging img {
+  animation: chest-charge .65s ease-in-out infinite alternate;
+}
+
+.open-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  button {
+    min-height: 65px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter .2s, transform .2s;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.16);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: .4;
+      cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #fff2cd;
+      outline-offset: 3px;
+    }
+  }
+
+  span {
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  small {
+    font-size: 11px;
+  }
+}
+
+.open-one {
+  background: #332a21;
+  border: 1px solid #a88b54;
+  color: #e8d2a3;
+}
+
+.open-ten {
+  background: linear-gradient(135deg, #edcd86, #b98c40);
+  border: 1px solid #f4dda7;
+  color: #281d10;
+  box-shadow: 0 3px 16px #d8a85217;
+}
+
+.premium .open-one {
+  background: #232e43;
+  border-color: #769cc6;
+  color: #c3d7f1;
+}
+
+.premium .open-ten {
+  background: linear-gradient(135deg, #d5e7ff, #8fb8ec);
+  border-color: #dbedff;
+  color: #18243a;
+}
+
+.footnote {
+  text-align: center;
+  color: #a29ba4;
+  margin: 15px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@keyframes chest-float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes chest-charge {
+  from {
+    filter: drop-shadow(0 0 10px var(--accent));
+    transform: scale(1);
+  }
+
+  to {
+    filter: drop-shadow(0 0 25px var(--accent));
+    transform: scale(1.03);
+  }
+}
+
+@media(max-width:600px) {
+  .chest-panel {
+    padding: 20px 18px 16px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  .chest-art {
+    height: 235px;
+
+    img {
+      height: 225px;
+    }
+  }
+
+  .eyebrow {
+    letter-spacing: 1px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+  .chest-art img,
+  .charging img {
+    animation: none;
+  }
+
+  .open-actions button {
+    transition: none;
+  }
+}

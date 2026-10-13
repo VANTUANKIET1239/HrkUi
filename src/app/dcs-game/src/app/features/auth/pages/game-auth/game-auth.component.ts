@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GameLoginComponent } from '../../components/game-login/game-login.component';
 import { GameRegisterComponent } from '../../components/game-register/game-register.component';
+import { GameToastComponent } from '../../../../shared/components/game-toast/game-toast.component';
 import { AppAuthConfig, getAppAuthConfig } from '../../../../../../../../libs/core/auth/config/app-auth.config';
 
 @Component({
@@ -12,7 +13,8 @@ import { AppAuthConfig, getAppAuthConfig } from '../../../../../../../../libs/co
     CommonModule,
     RouterModule,
     GameLoginComponent,
-    GameRegisterComponent
+    GameRegisterComponent,
+    GameToastComponent
   ],
   templateUrl: './game-auth.component.html',
   styleUrl: './game-auth.component.scss'

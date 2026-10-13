@@ -1,4 +1,9 @@
 export const ApiEndpoints = {
+  Summon: {
+    Configuration: 'dcs-game/summon/configuration',
+    Open: 'dcs-game/summon',
+    Result: (requestId: string) => `dcs-game/summon/results/${encodeURIComponent(requestId)}`
+  },
   // Authentication Service
   Auth: {
     Login: 'auth/login',
@@ -96,6 +101,7 @@ export const ApiEndpoints = {
   },
 
   GameConfig: {
+    Modals: 'dcs-game/game-config/modals',
     Features: 'dcs-game/game-config/features',
     CombatPower: 'dcs-game/game-config/combat-power'
   },

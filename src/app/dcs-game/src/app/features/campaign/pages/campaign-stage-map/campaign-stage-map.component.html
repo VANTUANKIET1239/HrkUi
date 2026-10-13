@@ -59,9 +59,6 @@
         <span class="counter-text">Tổng Sao Bản Đồ: <strong>{{ map.totalStars || 0 }}</strong>/45</span>
       </div>
       <span class="milestone-hint">Đạt đủ sao để mở rương báu phó bản chứa Vàng, Kim Cương & Trang Bị!</span>
-      <div *ngIf="chestError" class="chest-error-inline">
-        <i class="bi bi-exclamation-circle-fill me-1"></i>{{ chestError }}
-      </div>
     </div>
 
     <div class="milestone-track-container">
@@ -171,13 +168,13 @@
   ></app-battle-formation-setup-modal>
 
   <!-- Chest Preview Modal -->
-  <div class="modal-backdrop-chest" *ngIf="previewChest" (click)="closePreviewChest()">
-    <div class="chest-dialog-card" (click)="$event.stopPropagation()">
+  <hrk-modal #previewModal *ngIf="previewChest" modalCode="CAMPAIGN_CHEST_PREVIEW" title="Rương báu" [chrome]="false" [busy]="claimingChestId !== null" (closed)="closePreviewChest()">
+    <div class="chest-dialog-card" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="chest-dialog-header">
         <h3 class="dialog-title">
-          <i class="bi bi-gift-fill text-gold me-2"></i>RƯƠNG BÁU {{ previewChest.requiredStars }} SAO
+          <i class="bi bi-gift-fill text-gold me-2"></i>{{ previewModal.resolved.title }} {{ previewChest.requiredStars }} SAO
         </h3>
-        <button class="btn-close-dialog" (click)="closePreviewChest()"><i class="bi bi-x-lg"></i></button>
+        <button class="btn-close-dialog" [disabled]="claimingChestId !== null" (click)="closePreviewChest()"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <div class="chest-dialog-body">
@@ -227,15 +224,15 @@
         </button>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
   <!-- Claimed Reward Celebration Modal -->
-  <div class="modal-backdrop-chest" *ngIf="claimedReward" (click)="closeClaimedReward()">
-    <div class="chest-dialog-card celebration-card" (click)="$event.stopPropagation()">
+  <hrk-modal #rewardModal *ngIf="claimedReward" modalCode="CAMPAIGN_CHEST_REWARD" title="Nhận thưởng rương báu thành công" [chrome]="false" (closed)="closeClaimedReward()">
+    <div class="chest-dialog-card celebration-card" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="celebration-rays"></div>
       <div class="chest-dialog-header">
         <h3 class="dialog-title text-gold">
-          <i class="bi bi-stars text-warning me-2"></i>NHẬN THƯỞNG RƯƠNG BÁU THÀNH CÔNG!
+          <i class="bi bi-stars text-warning me-2"></i>{{ rewardModal.resolved.title }}
         </h3>
         <button class="btn-close-dialog" (click)="closeClaimedReward()"><i class="bi bi-x-lg"></i></button>
       </div>
@@ -277,9 +274,7 @@
         <button class="btn-dialog-claim px-5" (click)="closeClaimedReward()">Tuyệt Vời</button>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
-  <!-- Universal Equipment Tooltip Host -->
-  <app-equipment-tooltip></app-equipment-tooltip>
 </main>
 

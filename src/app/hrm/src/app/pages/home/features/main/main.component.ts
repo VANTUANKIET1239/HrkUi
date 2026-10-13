@@ -1,3 +1,4 @@
+import { reportAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { TokenManagerService } from './../../../../../../../../libs/core/auth/services/token-manager';
 import { ApiMethod } from './../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
 import { Component, OnInit } from '@angular/core';
@@ -31,7 +32,7 @@ export class MainComponent implements OnInit {
                   this.navigationService.goTo('/login');
               },
               error: (err) => {
-                console.error('API error:', err);
+                reportAppError('API error:', err);
               },
               complete: () => {
               }

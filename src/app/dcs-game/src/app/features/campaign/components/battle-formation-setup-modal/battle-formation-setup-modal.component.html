@@ -1,16 +1,16 @@
-<div class="modal-backdrop" (click)="onBackdropClick($event)">
-  <div class="formation-modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<hrk-modal #modalShell modalCode="BATTLE_FORMATION_SETUP" title="Chuẩn bị xuất chiến" [chrome]="false" [busy]="isStarting || isSavingDefault" (closed)="close.emit()">
+  <div class="formation-modal-card" [style.max-width.%]="100" >
 
     <!-- Modal Header -->
     <div class="modal-header">
       <div class="header-title-box">
         <h3 id="modal-title" class="title-text">
-          <i class="bi bi-shield-shaded me-2 text-warning"></i>CHUẨN BỊ XUẤT CHIẾN
+          <i class="bi bi-shield-shaded me-2 text-warning"></i>{{ modalShell.resolved.title }}
         </h3>
         <span class="stage-badge">{{ stage.name }} (Màn {{ stage.stageNumber }})</span>
       </div>
 
-      <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" title="Đóng">
+      <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting || isSavingDefault" title="Đóng">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
@@ -394,11 +394,5 @@
       </div>
     </div>
 
-    <!-- In-Modal Toast Feedback -->
-    <div *ngIf="showToast" class="modal-toast" [ngClass]="toastType">
-      <i class="bi me-2" [class.bi-check-circle-fill]="toastType==='success'" [class.bi-exclamation-triangle-fill]="toastType==='warning'" [class.bi-info-circle-fill]="toastType==='info'"></i>
-      <span>{{ toastMessage }}</span>
-    </div>
-
   </div>
-</div>
+</hrk-modal>

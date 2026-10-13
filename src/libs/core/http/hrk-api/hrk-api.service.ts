@@ -6,7 +6,8 @@ import {
   HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { reportAppError, toAppError } from './app-error';
 import { environment as env } from '../../../../../environments/dev/environment';
 import { LoadingMode, LOADING_MODE } from '../../loading/loading.tokens';
 
@@ -93,35 +94,22 @@ export class HrkApiService {
         responseType,
         withCredentials: currentOptions.withCredentials
       })
-      .pipe(catchError((err) => {
-        // Business-rule failures are expected game outcomes (insufficient gold,
-        // locked item, invalid formation...). Return the API contract to the UI
-        // instead of raising an RxJS exception that callers log to the console.
-        if (err instanceof HttpErrorResponse && err.error && typeof err.error === 'object'
-          && typeof err.error.success === 'boolean') {
-          return of(err.error as T);
-        }
-        return throwError(() => this.toAppError(err));
-      }));
+      .pipe(
+        map(data => {
+          // Support legacy endpoints during migration; gameplay data.success is untouched.
+          const envelope = data as { success?: boolean; statusCode?: number } | null;
+          if (envelope?.success === false && typeof envelope.statusCode === 'number')
+            throw new HttpErrorResponse({ error: data, status: envelope.statusCode >= 400 ? envelope.statusCode : 400, url: fullUrl });
+          return data;
+        }),
+        catchError(err => {
+          const error = toAppError(err);
+          reportAppError('API request failed', error);
+          return throwError(() => error);
+        })
+      );
 
     return res;
-  }
-
-  private toAppError(err: unknown) {
-    if (err instanceof HttpErrorResponse) {
-      return {
-        status: err.status,
-        message: err.error?.message ?? err.message,
-        url: err.url ?? '',
-        details: err.error ?? null,
-      };
-    }
-    return {
-      status: -1,
-      message: (err as any)?.message ?? 'Unknown error',
-      url: '',
-      details: err,
-    };
   }
 
   private isWithBodyMethod(method: HttpMethod): method is WithBodyHttpMethod {

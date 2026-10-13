@@ -1,3 +1,6 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import {
   Component,
   OnInit,
@@ -6,7 +9,6 @@ import {
   EventEmitter,
   ChangeDetectorRef,
   HostListener,
-  OnDestroy,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -26,11 +28,13 @@ import { InventoryService } from '../../../../core/services/inventory.service';
 @Component({
   selector: 'app-battle-formation-setup-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './battle-formation-setup-modal.component.html',
   styleUrl: './battle-formation-setup-modal.component.scss'
 })
-export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
+export class BattleFormationSetupModalComponent implements OnInit {
+  private readonly toast = inject(GameToastService);
+
   @Input({ required: true }) stage!: DungeonStage;
   @Input() staminaCurrent = 0;
   @Input() isStarting = false;
@@ -67,12 +71,6 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
   validationErrors: string[] = [];
   isBagFull = false;
 
-  // Toast / notification
-  toastMessage = '';
-  toastType: 'success' | 'warning' | 'info' = 'info';
-  showToast = false;
-  private toastTimer: any = null;
-
   // Saving default formation state
   isSavingDefault = false;
 
@@ -86,10 +84,6 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
     this.setupPreviewDebounce();
     this.loadData();
     this.checkInventoryCapacity();
-  }
-
-  ngOnDestroy(): void {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
   }
 
   private normalizeDraftKey(draft: BattleFormationDraft): string {
@@ -115,7 +109,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
           return this.dungeonApi.previewFormation(this.stage.id, draft).pipe(
             map(res => ({ res, version: currentVersion })),
             catchError(err => {
-              console.error('Failed to preview formation:', err);
+              reportAppError('Failed to preview formation:', err);
               return of({ res: null, version: currentVersion });
             })
           );
@@ -143,7 +137,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
         this.heroes = res.data ?? [];
         this.cdr.markForCheck();
       },
-      error: (err) => console.error('Failed to load heroes:', err)
+      error: (err) => reportAppError('Failed to load heroes:', err)
     });
 
     // Load formation templates and select current default
@@ -157,7 +151,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        console.error('Failed to load formations:', err);
+        reportAppError('Failed to load formations:', err);
         this.isPreviewLoading = false;
       }
     });
@@ -198,7 +192,7 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load formation detail:', err);
+        reportAppError('Failed to load formation detail:', err);
         this.isPreviewLoading = false;
         this.cdr.markForCheck();
       }
@@ -422,19 +416,19 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
         this.formationService.selectFormation(this.selectedFormationCode).subscribe({
           next: () => {
             this.isSavingDefault = false;
-            this.showCustomToast('Đã lưu làm đội hình mặc định!', 'success');
+            this.toast.success('Đã lưu làm đội hình mặc định!');
             this.cdr.markForCheck();
           },
           error: (err) => {
             this.isSavingDefault = false;
-            this.showCustomToast('Không thể chọn làm đội hình mặc định.', 'warning');
+            this.toast.fromError(err, 'Không thể chọn làm đội hình mặc định.');
             this.cdr.markForCheck();
           }
         });
       },
       error: (err) => {
         this.isSavingDefault = false;
-        this.showCustomToast('Lưu đội hình thất bại.', 'warning');
+        this.toast.fromError(err, 'Lưu đội hình thất bại.');
         this.cdr.markForCheck();
       }
     });
@@ -444,27 +438,27 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
     if (this.isStarting || this.isSavingDefault) return;
 
     if (this.isPreviewLoading) {
-      this.showCustomToast('Đang tính lực chiến đội hình, vui lòng đợi trong giây lát...', 'info');
+      this.toast.info('Đang tính lực chiến đội hình, vui lòng đợi trong giây lát...');
       return;
     }
 
     if (this.deployedCount === 0) {
-      this.showCustomToast('Vui lòng chọn ít nhất 1 võ tướng xuất chiến!', 'warning');
+      this.toast.warning('Vui lòng chọn ít nhất 1 võ tướng xuất chiến!');
       return;
     }
 
     if (this.staminaCurrent < this.stage.staminaCost) {
-      this.showCustomToast(`Không đủ thể lực! Cần ${this.stage.staminaCost}, hiện có ${this.staminaCurrent}.`, 'warning');
+      this.toast.warning(`Không đủ thể lực! Cần ${this.stage.staminaCost}, hiện có ${this.staminaCurrent}.`);
       return;
     }
 
     if (this.isBagFull) {
-      this.showCustomToast('Hành trang đã đầy. Vui lòng dọn bớt trước khi vào phó bản!', 'warning');
+      this.toast.warning('Hành trang đã đầy. Vui lòng dọn bớt trước khi vào phó bản!');
       return;
     }
 
     if (this.previewData && !this.previewData.isValid) {
-      this.showCustomToast(this.previewData.validationErrors?.[0] || 'Đội hình không hợp lệ.', 'warning');
+      this.toast.warning(this.previewData.validationErrors?.[0] || 'Đội hình không hợp lệ.');
       return;
     }
 
@@ -488,8 +482,8 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.isSavingDefault = false;
-          console.error('Failed to save default formation before battle:', err);
-          this.showCustomToast('Lưu đội hình mặc định thất bại. Không thể bắt đầu phó bản!', 'warning');
+          reportAppError('Failed to save default formation before battle:', err);
+          this.toast.fromError(err, 'Lưu đội hình mặc định thất bại. Không thể bắt đầu phó bản!');
           this.cdr.markForCheck();
         }
       });
@@ -501,22 +495,10 @@ export class BattleFormationSetupModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  @HostListener('document:keydown.escape')
+
   onEscape(): void {
     if (!this.isStarting) {
       this.close.emit();
     }
-  }
-
-  private showCustomToast(msg: string, type: 'success' | 'warning' | 'info' = 'info'): void {
-    this.toastMessage = msg;
-    this.toastType = type;
-    this.showToast = true;
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => {
-      this.showToast = false;
-      this.cdr.markForCheck();
-    }, 3000);
-    this.cdr.markForCheck();
   }
 }

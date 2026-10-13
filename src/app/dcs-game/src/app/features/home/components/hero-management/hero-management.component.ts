@@ -1,3 +1,6 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import {
   Component,
   OnInit,
@@ -6,6 +9,7 @@ import {
   EventEmitter,
   HostListener,
   Type,
+  inject,
 } from '@angular/core';
 import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
@@ -94,11 +98,13 @@ export interface StatCardDisplay {
 @Component({
   selector: 'app-hero-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './hero-management.component.html',
   styleUrl: './hero-management.component.scss',
 })
 export class HeroManagementComponent implements OnInit, OnDestroy {
+  private readonly toast = inject(GameToastService);
+
   readonly starColors = HERO_STAR_COLORS;
   @Output() close = new EventEmitter<void>();
 
@@ -107,12 +113,6 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
   gems = 997300;
   fragments = 120;
   materials = 4500;
-
-  // Feedback notifications
-  toastMessage = '';
-  toastType: 'success' | 'warning' | 'info' = 'info';
-  showToast = false;
-  private toastTimer: any = null;
 
   // List of heroes
   heroes: RPGHero[] = [];
@@ -606,7 +606,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         this.materials = response.data.upgradeMaterials;
         this.maxBagCapacity = response.data.maxCapacity || 200;
       },
-      error: (error) => console.warn('Không thể tải ví người chơi.', error),
+      error: (error) => reportAppWarning('Không thể tải ví người chơi.', error),
     });
   }
 
@@ -622,11 +622,8 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.warn('Không thể tải Võ tướng từ API.', error);
-        this.triggerToast(
-          'Không thể kết nối máy chủ để tải danh sách võ tướng.',
-          'warning',
-        );
+        reportAppWarning('Không thể tải Võ tướng từ API.', error);
+        this.toast.fromError(error, 'Không thể kết nối máy chủ để tải danh sách võ tướng.');
       },
     });
   }
@@ -644,7 +641,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.isLoadingInventory = false;
-        console.warn('Không thể tải hành trang trang bị từ API.', err);
+        reportAppWarning('Không thể tải hành trang trang bị từ API.', err);
         this.inventoryEquipments = [];
       },
     });
@@ -916,20 +913,6 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       : 'Chiến Sĩ';
   }
 
-  // Toast System
-  triggerToast(
-    message: string,
-    type: 'success' | 'warning' | 'info' = 'success',
-  ): void {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toastMessage = message;
-    this.toastType = type;
-    this.showToast = true;
-    this.toastTimer = setTimeout(() => {
-      this.showToast = false;
-    }, 2800);
-  }
-
   // Filtered Heroes
   get filteredHeroes(): RPGHero[] {
     return this.heroes
@@ -966,7 +949,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       .detail(hero.id)
       .pipe(
         catchError((err) => {
-          console.warn(`Không thể tải chi tiết võ tướng ${hero.id}.`, err);
+          reportAppWarning(`Không thể tải chi tiết võ tướng ${hero.id}.`, err);
           return of(null);
         }),
       )
@@ -989,10 +972,10 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.applyEquipmentData(null);
           }
         },
-        error: () => {
+        error: (error) => {
           this.isLoadingHeroDetail = false;
           this.applyEquipmentData(null);
-          this.triggerToast('Không thể tải chi tiết võ tướng.', 'warning');
+          this.toast.fromError(error, 'Không thể tải chi tiết võ tướng.');
         },
       });
   }
@@ -1013,10 +996,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.isUpgradingHero = false;
         if (!response?.success || !response.data) {
-          this.triggerToast(
-            response?.message || 'Nâng cấp thất bại.',
-            'warning',
-          );
+          this.toast.warning(response?.message || 'Nâng cấp thất bại.');
           return;
         }
         const updated = this.mapApiHero(response.data);
@@ -1026,17 +1006,11 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         this.applyEquipmentData(response.data.equipment);
         this.loadWallet();
         this.loadUpgradePreview(updated.id);
-        this.triggerToast(
-          `Nâng ${levels} cấp cho ${updated.name} thành công.`,
-          'success',
-        );
+        this.toast.success(`Nâng ${levels} cấp cho ${updated.name} thành công.`);
       },
       error: (error) => {
         this.isUpgradingHero = false;
-        this.triggerToast(
-          error?.error?.message || 'Không thể nâng cấp võ tướng.',
-          'warning',
-        );
+        this.toast.fromError(error, 'Không thể nâng cấp võ tướng.');
       },
     });
   }
@@ -1090,19 +1064,13 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
 
             // Update inventory unequipped list
             this.loadInventoryEquipments();
-            this.triggerToast(
-              `Mặc thành công ${item.name} cho ${this.selectedHero.name}!`,
-              'success',
-            );
+            this.toast.success(`Mặc thành công ${item.name} cho ${this.selectedHero.name}!`);
           } else {
-            this.triggerToast(
-              res?.message || 'Không thể mặc trang bị.',
-              'warning',
-            );
+            this.toast.warning(res?.message || 'Không thể mặc trang bị.');
           }
         },
         error: (err) => {
-          this.triggerToast(err?.message || 'Lỗi khi mặc trang bị.', 'warning');
+          this.toast.fromError(err, 'Lỗi khi mặc trang bị.');
         },
       });
   }
@@ -1110,7 +1078,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
   // Slot Click: If has item, open action dialog to unequip
   onSlotClick(slot: HeroEquipmentSlot): void {
     if (!slot.item) {
-      this.triggerToast(`Ô ${slot.displayName}: Chưa trang bị.`, 'info');
+      this.toast.info(`Ô ${slot.displayName}: Chưa trang bị.`);
       return;
     }
     this.selectedSlotForAction = slot;
@@ -1168,22 +1136,13 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.applyEquipmentData(res.data.equipment);
 
             this.loadInventoryEquipments();
-            this.triggerToast(
-              `Đã tháo ${itemName} khỏi ${this.selectedHero.name}!`,
-              'info',
-            );
+            this.toast.info(`Đã tháo ${itemName} khỏi ${this.selectedHero.name}!`);
           } else {
-            this.triggerToast(
-              res?.message || 'Không thể tháo trang bị.',
-              'warning',
-            );
+            this.toast.warning(res?.message || 'Không thể tháo trang bị.');
           }
         },
         error: (err) => {
-          this.triggerToast(
-            err?.message || 'Lỗi khi tháo trang bị.',
-            'warning',
-          );
+          this.toast.fromError(err, 'Lỗi khi tháo trang bị.');
         },
       });
   }
@@ -1249,13 +1208,10 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (!response?.success || !response.data) return;
           this.selectedHero.locked = response.data.isLocked;
-          this.triggerToast(
-            `${this.selectedHero.locked ? 'Khóa' : 'Mở khóa'} võ tướng ${this.selectedHero.name} thành công!`,
-            'info',
-          );
+          this.toast.info(`${this.selectedHero.locked ? 'Khóa' : 'Mở khóa'} võ tướng ${this.selectedHero.name} thành công!`);
         },
-        error: () =>
-          this.triggerToast('Không thể cập nhật trạng thái khóa.', 'warning'),
+        error: (error) =>
+          this.toast.fromError(error, 'Không thể cập nhật trạng thái khóa.'),
       });
   }
 
@@ -1267,16 +1223,10 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (!response?.success || !response.data) return;
           this.selectedHero.favorite = response.data.isFavorite;
-          this.triggerToast(
-            `${this.selectedHero.favorite ? 'Đã thêm vào yêu thích' : 'Đã bỏ yêu thích'} võ tướng ${this.selectedHero.name}!`,
-            'info',
-          );
+          this.toast.info(`${this.selectedHero.favorite ? 'Đã thêm vào yêu thích' : 'Đã bỏ yêu thích'} võ tướng ${this.selectedHero.name}!`);
         },
-        error: () =>
-          this.triggerToast(
-            'Không thể cập nhật trạng thái yêu thích.',
-            'warning',
-          ),
+        error: (error) =>
+          this.toast.fromError(error, 'Không thể cập nhật trạng thái yêu thích.'),
       });
   }
 
@@ -1284,12 +1234,12 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
   levelUp(): void {
     const cost = this.selectedHero.level * 1200;
     if (this.gold < cost) {
-      this.triggerToast('Không đủ Vàng để nâng cấp!', 'warning');
+      this.toast.warning('Không đủ Vàng để nâng cấp!');
       return;
     }
 
     if (this.materials < 15) {
-      this.triggerToast('Không đủ Nguyên liệu nâng cấp!', 'warning');
+      this.toast.warning('Không đủ Nguyên liệu nâng cấp!');
       return;
     }
 
@@ -1306,10 +1256,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     this.selectedHero.exp = 0;
     this.selectedHero.maxExp = this.selectedHero.level * 100 + 400;
 
-    this.triggerToast(
-      `Nâng cấp ${this.selectedHero.name} lên cấp ${this.selectedHero.level}!`,
-      'success',
-    );
+    this.toast.success(`Nâng cấp ${this.selectedHero.name} lên cấp ${this.selectedHero.level}!`);
   }
 
   autoUpgrade(): void {
@@ -1342,12 +1289,9 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     }
 
     if (upgradeCount === 0) {
-      this.triggerToast('Không đủ Vàng hoặc Nguyên liệu nâng cấp!', 'warning');
+      this.toast.warning('Không đủ Vàng hoặc Nguyên liệu nâng cấp!');
     } else {
-      this.triggerToast(
-        `Đột phá nhanh ${upgradeCount} cấp! Cấp hiện tại: ${this.selectedHero.level}. Lực chiến +${totalPowerGained}!`,
-        'success',
-      );
+      this.toast.success(`Đột phá nhanh ${upgradeCount} cấp! Cấp hiện tại: ${this.selectedHero.level}. Lực chiến +${totalPowerGained}!`);
     }
   }
 
@@ -1359,7 +1303,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     if (tier === 3) tierName = 'Hào Quang Kim Hoàng Kim';
     if (tier === 4) tierName = 'Lôi Quang Xích Thần (Sét Đỏ)';
 
-    this.triggerToast(`Đã thức tỉnh Aura cấp ${tier}: ${tierName}!`, 'success');
+    this.toast.success(`Đã thức tỉnh Aura cấp ${tier}: ${tierName}!`);
   }
 
   // Drag and Drop (Two-way: Inventory <-> Equipped Slot)
@@ -1451,10 +1395,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
 
     const expectedCode = categoryMapping[targetSlot.slot];
     if ((this.draggedItem.categoryCode || '').toUpperCase() !== expectedCode) {
-      this.triggerToast(
-        `Trang bị không phù hợp! Ô này cần: ${targetSlot.displayName}`,
-        'warning',
-      );
+      this.toast.warning(`Trang bị không phù hợp! Ô này cần: ${targetSlot.displayName}`);
       this.onDragEnd();
       return;
     }
@@ -1512,27 +1453,18 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero = mappedHero;
             this.applyEquipmentData(res.data.equipment);
             this.loadInventoryEquipments();
-            this.triggerToast(
-              `Đã tháo trang bị khỏi ${this.selectedHero.name}!`,
-              'info',
-            );
+            this.toast.info(`Đã tháo trang bị khỏi ${this.selectedHero.name}!`);
           } else {
-            this.triggerToast(
-              res?.message || 'Không thể tháo trang bị.',
-              'warning',
-            );
+            this.toast.warning(res?.message || 'Không thể tháo trang bị.');
           }
         },
         error: (err) => {
-          this.triggerToast(
-            err?.error?.message || err?.message || 'Lỗi khi tháo trang bị.',
-            'warning',
-          );
+          this.toast.fromError(err, 'Lỗi khi tháo trang bị.');
         },
       });
   }
 
-  @HostListener('document:keydown.escape')
+
   onEscapeKey(): void {
     if (this.isProcessingEquipment) return;
     if (this.showUnequipAllModal) {
@@ -1594,24 +1526,13 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero = mappedHero;
             this.applyEquipmentData(res.data.equipment);
             this.loadInventoryEquipments();
-            this.triggerToast(
-              `Đã tháo toàn bộ trang bị của ${this.selectedHero.name}!`,
-              'success',
-            );
+            this.toast.success(`Đã tháo toàn bộ trang bị của ${this.selectedHero.name}!`);
           } else {
-            this.triggerToast(
-              res?.message || 'Không thể tháo toàn bộ trang bị.',
-              'warning',
-            );
+            this.toast.warning(res?.message || 'Không thể tháo toàn bộ trang bị.');
           }
         },
         error: (err) => {
-          this.triggerToast(
-            err?.error?.message ||
-              err?.message ||
-              'Lỗi khi tháo toàn bộ trang bị.',
-            'warning',
-          );
+          this.toast.fromError(err, 'Lỗi khi tháo toàn bộ trang bị.');
         },
       });
   }
@@ -1721,22 +1642,13 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             if (tgtIdx >= 0) this.heroes[tgtIdx] = mappedTarget;
 
             this.loadInventoryEquipments();
-            this.triggerToast(
-              `Đã đổi toàn bộ bộ trang bị giữa ${sourceName} và ${targetName}!`,
-              'success',
-            );
+            this.toast.success(`Đã đổi toàn bộ bộ trang bị giữa ${sourceName} và ${targetName}!`);
           } else {
-            this.triggerToast(
-              res?.message || 'Không thể hoán đổi trang bị.',
-              'warning',
-            );
+            this.toast.warning(res?.message || 'Không thể hoán đổi trang bị.');
           }
         },
         error: (err) => {
-          this.triggerToast(
-            err?.error?.message || err?.message || 'Lỗi khi hoán đổi trang bị.',
-            'warning',
-          );
+          this.toast.fromError(err, 'Lỗi khi hoán đổi trang bị.');
         },
       });
   }
@@ -1761,10 +1673,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (r) => (this.starUpgradePreview = r?.success ? r.data : null),
         error: (e) =>
-          this.triggerToast(
-            e?.error?.message || 'Không tải được thông tin tăng sao.',
-            'warning',
-          ),
+          this.toast.fromError(e, 'Không tải được thông tin tăng sao.'),
       });
   }
 
@@ -1781,18 +1690,12 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero.stars = r.data.currentStar;
             this.selectedHero.power = r.data.currentCombatPower;
             this.selectHero(this.selectedHero);
-            this.triggerToast(
-              `Tăng lên ${r.data.currentStar} sao thành công!`,
-              'success',
-            );
+            this.toast.success(`Tăng lên ${r.data.currentStar} sao thành công!`);
           } else
-            this.triggerToast(r?.message || 'Không thể tăng sao.', 'warning');
+            this.toast.warning(r?.message || 'Không thể tăng sao.');
         },
         error: (e) =>
-          this.triggerToast(
-            e?.error?.message || 'Tăng sao thất bại.',
-            'warning',
-          ),
+          this.toast.fromError(e, 'Tăng sao thất bại.'),
       });
   }
 }

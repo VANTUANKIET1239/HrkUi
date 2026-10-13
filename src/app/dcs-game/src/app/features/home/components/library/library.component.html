@@ -1,8 +1,9 @@
+<hrk-modal #libraryModal modalCode="LIBRARY" title="Thư viện" [chrome]="false" size="FULLSCREEN" (closed)="close.emit()">
 <div class="library-overlay">
   <header class="library-header">
     <div>
       <span class="eyebrow">BÁCH KHOA DCS</span>
-      <h1><i class="bi bi-book-half"></i> THƯ VIỆN</h1>
+      <h1><i class="bi bi-book-half"></i> {{ libraryModal.resolved.title }}</h1>
       <p>Khám phá toàn bộ võ tướng và trang bị theo phẩm chất.</p>
     </div>
     <button class="close-button" type="button" aria-label="Đóng thư viện" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
@@ -71,3 +72,5 @@
     </ng-template>
   </aside>
 </div>
+
+</hrk-modal>

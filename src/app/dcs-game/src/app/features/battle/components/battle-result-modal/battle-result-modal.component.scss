@@ -2,21 +2,7 @@
 // BATTLE RESULT MODAL - WIDE HORIZONTAL LAYOUT
 // ==========================================
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(4, 4, 8, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fade-in 0.3s ease-out forwards;
-}
+
 
 .modal-container {
   width: min(1150px, 95vw);

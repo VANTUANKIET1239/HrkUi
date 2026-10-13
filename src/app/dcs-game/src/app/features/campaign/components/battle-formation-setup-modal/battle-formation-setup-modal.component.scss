@@ -1,16 +1,4 @@
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(4, 7, 16, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  animation: fadeIn 0.2s ease-out;
-  padding: 12px;
-}
+
 
 .formation-modal-card {
   position: relative;
@@ -701,37 +689,7 @@
 }
 
 // In-Modal Toast
-.modal-toast {
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  animation: toastSlideDown 0.2s ease-out;
 
-  &.success {
-    background: #065f46;
-    border: 1px solid #10b981;
-    color: #a7f3d0;
-  }
-  &.warning {
-    background: #78350f;
-    border: 1px solid #f59e0b;
-    color: #fde68a;
-  }
-  &.info {
-    background: #1e3a8a;
-    border: 1px solid #3b82f6;
-    color: #bfdbfe;
-  }
-}
 
 // Keyframes
 @keyframes fadeIn {

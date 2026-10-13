@@ -1,3 +1,5 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { isQuickClimbFinished } from '../../../../core/services/tower-response.mapper';
 import { CommonModule } from '@angular/common';
@@ -9,11 +11,13 @@ import { ProcessRealtimeService } from '../../../../core/services/process-realti
 @Component({
   selector: 'app-tower-quick-climb-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkModalComponent, CommonModule],
   templateUrl: './tower-quick-climb-modal.component.html',
   styleUrl: './tower-quick-climb-modal.component.scss'
 })
 export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
+  private readonly toast = inject(GameToastService);
+
   private readonly api = inject(TowerApiService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly realtime = inject(ProcessRealtimeService);
@@ -108,7 +112,7 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
         this.pollJob(true);
       },
       error: err => {
-        alert(err?.error?.message || 'Không thể dừng phiên leo nhanh.');
+        this.toast.fromError(err, 'Không thể dừng phiên leo nhanh.');
       }
     });
   }

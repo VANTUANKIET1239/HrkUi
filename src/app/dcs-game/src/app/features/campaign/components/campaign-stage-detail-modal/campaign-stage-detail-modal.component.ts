@@ -1,3 +1,4 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DungeonPossibleDrop, DungeonStage } from '../../../../core/models/dungeon.model';
@@ -7,7 +8,7 @@ import { EquipmentTooltipService } from '../../../../shared/components/equipment
 @Component({
   selector: 'app-campaign-stage-detail-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkModalComponent, CommonModule],
   templateUrl: './campaign-stage-detail-modal.component.html',
   styleUrl: './campaign-stage-detail-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -34,7 +35,7 @@ export class CampaignStageDetailModalComponent {
     this.tooltipService.hide();
   }
 
-  @HostListener('document:keydown.escape')
+
   onEscape(): void {
     if (!this.isStarting) {
       this.close.emit();

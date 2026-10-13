@@ -1,5 +1,5 @@
-<div class="modal-backdrop" (click)="onBackdropClick($event)" role="dialog" aria-modal="true" [attr.aria-label]="modalTitle">
-  <section class="stage-modal">
+<hrk-modal modalCode="CAMPAIGN_STAGE_DETAIL" [chrome]="false" [busy]="isStarting" (closed)="close.emit()">
+  <section class="stage-modal" [style.max-width.%]="100">
     <!-- Close Button -->
     <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" aria-label="Đóng cửa sổ">
       <i class="bi bi-x-lg"></i>
@@ -229,5 +229,4 @@
       </button>
     </footer>
   </section>
-</div>
-
+</hrk-modal>

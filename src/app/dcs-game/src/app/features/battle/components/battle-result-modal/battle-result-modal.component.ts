@@ -1,3 +1,5 @@
+import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DungeonResult, HeroExpResult } from '../../../../core/models/dungeon.model';
@@ -59,7 +61,7 @@ export interface ProcessedHeroStat {
 @Component({
   selector: 'app-battle-result-modal',
   standalone: true,
-  imports: [CommonModule, EquipmentRollDetailsComponent],
+  imports: [EquipmentTooltipComponent, HrkModalComponent, CommonModule, EquipmentRollDetailsComponent],
   templateUrl: './battle-result-modal.component.html',
   styleUrl: './battle-result-modal.component.scss'
 })

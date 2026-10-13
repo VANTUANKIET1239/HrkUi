@@ -1877,54 +1877,8 @@ $color-common: #9ca3af;
 }
 
 // -------------------------------------------------------------
-// Toast notification
 // -------------------------------------------------------------
-.custom-game-toast {
-  position: fixed;
-  top: 80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  padding: 10px 24px;
-  border-radius: 8px;
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  &.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  &.toast-success {
-    background: linear-gradient(135deg, #1b4d22 0%, #0e2a12 100%);
-    border: 2px solid #2ecc71;
-    color: #2ecc71;
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
-  }
-
-  &.toast-warning {
-    background: linear-gradient(135deg, #7c2d12 0%, #451a03 100%);
-    border: 2px solid #ea580c;
-    color: #f97316;
-    box-shadow: 0 0 15px rgba(234, 88, 12, 0.4);
-  }
-
-  &.toast-info {
-    background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-    border: 2px solid $gold-primary;
-    color: $gold-primary;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-  }
-
-  .toast-text {
-    font-size: 13.5px;
-    letter-spacing: 0.5px;
-  }
-}
 
 // -------------------------------------------------------------
 // Inventory Section Panel Styles

@@ -9,14 +9,13 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  BehaviorSubject,
   catchError,
-  filter,
+  defer,
   finalize,
   from,
   Observable,
   switchMap,
-  take,
+  shareReplay,
   throwError,
 } from 'rxjs';
 import { ApiEndpoints } from '../../../../../app/shell/src/app/core/api-enpoints/api-endpoints';
@@ -32,8 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
   ];
 
   public readonly authApi = ApiEndpoints.Auth;
-  private isRefreshing = false;
-  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+  private readonly refreshRequests = new Map<string, Observable<string>>();
 
   private uncheckAuthApiUrls = [
     this.authApi.Login,
@@ -62,7 +60,7 @@ export class AuthInterceptor implements HttpInterceptor {
         // getAccessToken can fail before the protected request is sent when
         // the refresh cookie/token has already expired. This error therefore
         // never reaches the inner HTTP catchError below.
-        this.expireSession();
+        if (err?.status === 401) this.expireSession();
         return throwError(() => err);
       }),
       switchMap((at) => {
@@ -97,43 +95,25 @@ export class AuthInterceptor implements HttpInterceptor {
       return throwError(() => originalErr);
     }
 
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
-
-      return from(this.tokens.forceRefresh(audience)).pipe(
-        switchMap((token) => {
-          this.refreshTokenSubject.next(token);
-          const retryReq = req.clone({
-            setHeaders: { Authorization: `Bearer ${token}` },
-            withCredentials: true
-          });
-          return next.handle(retryReq);
-        }),
+    let refresh = this.refreshRequests.get(audience);
+    if (!refresh) {
+      refresh = defer(() => from(this.tokens.forceRefresh(audience))).pipe(
         catchError((err) => {
-          // Refresh token is expired or invalid -> clear session and open single session-expired modal
-          this.expireSession();
-
+          if (err?.status === 401) this.expireSession();
           return throwError(() => err);
         }),
-        finalize(() => {
-          this.isRefreshing = false;
-        })
+        finalize(() => this.refreshRequests.delete(audience)),
+        shareReplay({ bufferSize: 1, refCount: false })
       );
-    } else {
-      // Single-flight queue for concurrent 401 requests
-      return this.refreshTokenSubject.pipe(
-        filter((token): token is string => token !== null),
-        take(1),
-        switchMap((token) => {
-          const retryReq = req.clone({
-            setHeaders: { Authorization: `Bearer ${token}` },
-            withCredentials: true
-          });
-          return next.handle(retryReq);
-        })
-      );
+      this.refreshRequests.set(audience, refresh);
     }
+    // All waiting requests receive refresh failures too; none wait indefinitely.
+    return refresh.pipe(switchMap(token => next.handle(req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }, withCredentials: true
+    })).pipe(catchError(err => {
+      if (err?.status === 401) this.expireSession();
+      return throwError(() => err);
+    }))));
   }
 
   private expireSession(): void {

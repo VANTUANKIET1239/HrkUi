@@ -1,0 +1,18 @@
+<dialog #dialog role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" [attr.aria-busy]="busy"
+  [class.framed]="chrome" [attr.data-size]="size || resolved.size" [attr.data-tone]="resolved.tone"
+  (cancel)="onCancel($event)" (keydown.escape)="$event.stopPropagation()"
+  (click)="$event.stopPropagation()"
+  (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)">
+  @if (chrome) {
+    <header class="hrk-modal-header">
+      <h2 [id]="titleId">{{ resolved.title }}</h2>
+      @if (dismissible) {
+        <button class="hrk-modal-close" type="button" aria-label="Đóng" [disabled]="busy" (click)="requestClose()">✕</button>
+      }
+    </header>
+  } @else {
+    <h2 class="visually-hidden" [id]="titleId">{{ resolved.title }}</h2>
+  }
+  <div class="hrk-modal-body"><ng-content /></div>
+  <footer class="hrk-modal-footer"><ng-content select="[hrkModalFooter]" /></footer>
+</dialog>

@@ -1,3 +1,5 @@
+import { HrkConfirmationService } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation.service';
+import { GameToastService } from '../../../../core/services/game-toast.service';
 import { BattleSceneComponent } from '../../../battle/components/battle-scene/battle-scene.component';
 import { BattleEngineService } from '../../../../core/services/battle-engine.service';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
@@ -36,6 +38,11 @@ import { BattleHeroStatisticsDto } from '../../../../core/models/battle.model';
   styleUrl: './tower-climb.component.scss'
 })
 export class TowerClimbComponent implements OnInit, OnDestroy {
+  private readonly toast = inject(GameToastService);
+  private readonly confirmation = inject(HrkConfirmationService);
+  private confirmationPending = false;
+  private destroyed = false;
+
   private readonly router = inject(Router);
   readonly battleEngine = inject(BattleEngineService);
   isPlayingBattle = false;
@@ -93,6 +100,7 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed = true;
     this.timerSub?.unsubscribe();
     if (this.isPlayingBattle) this.battleEngine.resetBattle();
   }
@@ -159,14 +167,14 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: res => {
         if (res.success) {
-          if (res.data?.isBagFull) alert(res.data.message);
+          if (res.data?.isBagFull) this.toast.warning(res.data.message);
           this.fetchTowerData(false);
         } else {
-          alert(res.message || 'Không thể nhận phần thưởng chờ.');
+          this.toast.warning(res.message || 'Không thể nhận phần thưởng chờ.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi nhận thưởng chờ.');
+        this.toast.fromError(err, 'Lỗi khi nhận thưởng chờ.');
       }
     });
   }
@@ -184,14 +192,14 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
       next: res => {
         if (res.success && res.data) {
           chest.state = 'CLAIMED';
-          alert(`Nhận thành công ${chest.chestName}!`);
+          this.toast.success(`Nhận thành công ${chest.chestName}!`);
           this.fetchTowerData(false);
         } else {
-          alert(res.message || 'Không thể nhận rương.');
+          this.toast.warning(res.message || 'Không thể nhận rương.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi nhận rương mốc.');
+        this.toast.fromError(err, 'Lỗi khi nhận rương mốc.');
       }
     });
   }
@@ -223,11 +231,11 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
         if (res.success && res.data) {
           this.selectedFloorDetail = res.data;
         } else {
-          alert(res.message || 'Không thể xem chi tiết tầng.');
+          this.toast.warning(res.message || 'Không thể xem chi tiết tầng.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi tải chi tiết tầng.');
+        this.toast.fromError(err, 'Lỗi khi tải chi tiết tầng.');
       }
     });
   }
@@ -253,19 +261,22 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
           this.battleEngine.startBattle();
           this.cdr.markForCheck();
         } else {
-          alert(res.message || 'Không thể bắt đầu trận.');
+          this.toast.warning(res.message || 'Không thể bắt đầu trận.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi bắt đầu trận chiến.');
+        this.toast.fromError(err, 'Lỗi khi bắt đầu trận chiến.');
       }
     });
   }
 
-  startNewRun(): void {
-    if (!confirm('Bạn có chắc muốn bắt đầu lượt leo mới với số mạng ban đầu?')) return;
+  async startNewRun(): Promise<void> {
+    if (this.confirmationPending) return;
+    this.confirmationPending = true;
+    const confirmed = await this.confirmation.confirm('TOWER_START_NEW_RUN');
+    if (!confirmed || this.destroyed) { this.confirmationPending = false; return; }
 
-    this.api.startNewRun().subscribe({
+    this.api.startNewRun().pipe(finalize(() => this.confirmationPending = false)).subscribe({
       next: res => {
         if (res.success) {
           this.isBattleResultOpen = false;
@@ -273,42 +284,42 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
     this.battleEngine.resetBattle();
           this.fetchTowerData(true);
         } else {
-          alert(res.message || 'Không thể bắt đầu lượt mới.');
+          this.toast.warning(res.message || 'Không thể bắt đầu lượt mới.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi bắt đầu lượt mới.');
+        this.toast.fromError(err, 'Lỗi khi bắt đầu lượt mới.');
       }
     });
   }
 
   // --- Quick Climb ---
-  openQuickClimb(): void {
+  async openQuickClimb(): Promise<void> {
     if (!this.progress) return;
     if (!this.progress.canStartQuickClimb) {
-      alert(`Bạn đã sử dụng hết ${this.progress.quickClimbDailyLimit} lượt leo nhanh hôm nay.`);
+      this.toast.warning(`Bạn đã sử dụng hết ${this.progress.quickClimbDailyLimit} lượt leo nhanh hôm nay.`);
       return;
     }
 
-    if (!confirm(
-      `Bắt đầu lượt leo nhanh ${this.progress.quickClimbRunsUsed + 1}/${this.progress.quickClimbDailyLimit} từ Tầng 1? ` +
-      'Phần thưởng của các tầng thắng sẽ được cộng dồn và lượt leo dừng tại trận thua đầu tiên.'
-    )) {
-      return;
-    }
+    if (this.confirmationPending) return;
+    this.confirmationPending = true;
+    const confirmed = await this.confirmation.confirm('TOWER_START_QUICK_CLIMB', {}, {
+      used: this.progress.quickClimbRunsUsed + 1, limit: this.progress.quickClimbDailyLimit
+    });
+    if (!confirmed || this.destroyed) { this.confirmationPending = false; return; }
 
-    this.api.startQuickClimb().subscribe({
+    this.api.startQuickClimb().pipe(finalize(() => this.confirmationPending = false)).subscribe({
       next: res => {
         if (res.success && res.data) {
           this.activeQuickClimbJobId = res.data.jobId;
           this.isQuickClimbModalOpen = true;
           this.cdr.markForCheck();
         } else {
-          alert(res.message || 'Không thể bắt đầu leo nhanh.');
+          this.toast.warning(res.message || 'Không thể bắt đầu leo nhanh.');
         }
       },
       error: err => {
-        alert(err?.error?.message || 'Lỗi khi khởi chạy leo nhanh.');
+        this.toast.fromError(err, 'Lỗi khi khởi chạy leo nhanh.');
       }
     });
   }

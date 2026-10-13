@@ -1,10 +1,4 @@
-export interface BaseResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-  errors?: string[];
-  statusCode: number;
-}
+export type { BaseResponse } from '../../../../../../libs/core/http/hrk-api/api-response';
 
 export interface PlayerGameInfoDto {
   profile: PlayerProfileDto | null;

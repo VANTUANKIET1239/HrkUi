@@ -1,9 +1,10 @@
+<hrk-modal #formationModal modalCode="FORMATION_MANAGEMENT" title="Trận pháp" [chrome]="false" size="FULLSCREEN" [busy]="isSaving || isUpgrading" (closed)="close.emit()">
 <div class="formation-overlay">
   <!-- Top Bar: Title, Currencies, and Close Button -->
   <div class="formation-top-bar d-flex justify-content-between align-items-center">
     <div class="title-section d-flex align-items-center">
       <i class="bi bi-grid-3x3-gap-fill title-icon me-2 text-warning fs-3"></i>
-      <h1 class="m-0 page-title">BINH PHÁP TRẬN HÌNH <span class="subtitle">— Đội Ngũ Chiến Thuật 5 Tướng</span></h1>
+      <h1 class="m-0 page-title">{{ formationModal.resolved.title }} <span class="subtitle">— Đội Ngũ Chiến Thuật 5 Tướng</span></h1>
     </div>
 
     <!-- Currencies -->
@@ -18,7 +19,7 @@
       </div>
     </div>
 
-    <button class="btn btn-close-modal" (click)="close.emit()" title="Đóng">
+    <button class="btn btn-close-modal" [disabled]="isSaving || isUpgrading" (click)="close.emit()" title="Đóng">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
@@ -488,14 +489,6 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- TOAST NOTIFICATION SYSTEM                  -->
-  <!-- ========================================== -->
-  <div class="custom-game-toast" [class.show]="showToast" [class.toast-success]="toastType === 'success'"
-    [class.toast-warning]="toastType === 'warning'" [class.toast-info]="toastType === 'info'">
-    <i class="bi"
-      [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
-    <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
-  </div>
-
 </div>
+
+</hrk-modal>

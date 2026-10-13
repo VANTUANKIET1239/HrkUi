@@ -9,6 +9,12 @@ const routes: Routes = [
     component: App,
     children: [
       {
+        path: 'summon',
+        canActivate: [authGuard],
+        data: { appCode: 'dcs-game', audience: 'game-api' },
+        loadComponent: () => import('./features/summon/pages/summon-page.component').then(m => m.SummonPageComponent)
+      },
+      {
         path: 'battle',
         canActivate: [authGuard],
         data: { appCode: 'dcs-game', audience: 'game-api' },

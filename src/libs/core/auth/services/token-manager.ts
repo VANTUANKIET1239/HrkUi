@@ -1,4 +1,5 @@
 import { HrkApiService } from '../../http/hrk-api/hrk-api.service';
+import { AppError } from '../../http/hrk-api/app-error';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiEndpoints } from '../../../../app/shell/src/app/core/api-enpoints/api-endpoints';
@@ -141,8 +142,8 @@ export class TokenManagerService {
     try {
       const token = await this.getAccessToken(audience);
       return !!(token && !this.isExpiringSoon(token));
-    } catch {
-      this.clearSessionHint();
+    } catch (error) {
+      if (error instanceof AppError && error.status === 401) this.clearSessionHint();
       return false;
     }
   }

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { HrkConfirmationModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
+import { Component, OnInit , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
@@ -8,7 +11,6 @@ import { ForgeComponent } from '../../components/forge/forge.component';
 import { LibraryComponent } from '../../components/library/library.component';
 import { PlayerLevelBadgeComponent } from '../../components/player-level-badge/player-level-badge.component';
 import { AvatarSelectorComponent } from '../../components/avatar-selector/avatar-selector.component';
-import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
 import { PlayerProfileDto } from '../../../../core/models/player.model';
 
 interface PlayerInfo {
@@ -58,11 +60,13 @@ import { DungeonApiService } from '../../../../core/services/dungeon-api.service
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent, EquipmentTooltipComponent],
+  imports: [HrkConfirmationModalComponent, CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
 export class GameHomeComponent implements OnInit {
+  private readonly toast = inject(GameToastService);
+
   isHeroManagementOpen = false;
   isFormationManagementOpen = false;
   isInventoryOpen = false;
@@ -167,7 +171,7 @@ export class GameHomeComponent implements OnInit {
         this.bottomFeaturesRight = features.filter(x => x.placement === 'BOTTOM_RIGHT');
         this.focusFeature = features.find(x => x.placement === 'BOTTOM_FOCUS');
       },
-      error: error => console.warn('Could not load game feature configuration.', error)
+      error: error => reportAppWarning('Could not load game feature configuration.', error)
     });
   }
 
@@ -234,7 +238,7 @@ export class GameHomeComponent implements OnInit {
           }
         }
       },
-      error: (err) => console.warn('Could not refresh player combat power.', err)
+      error: (err) => reportAppWarning('Could not refresh player combat power.', err)
     });
   }
 
@@ -277,7 +281,7 @@ export class GameHomeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.warn('Could not refresh player wallet, using cached values.', err);
+        reportAppWarning('Could not refresh player wallet, using cached values.', err);
       }
     });
   }
@@ -302,16 +306,16 @@ export class GameHomeComponent implements OnInit {
         this.playerInfo.maxStamina = response.data.max;
         this.refreshWallet();
       },
-      error: error => alert(error?.error?.message ?? 'Không thể mua thể lực.')
+      error: error => this.toast.fromError(error, 'Không thể mua thể lực.')
     });
   }
 
   buyGold(): void {
-    alert('Chức năng mua Vàng sẽ sớm ra mắt!');
+    this.toast.info('Chức năng mua Vàng sẽ sớm ra mắt!');
   }
 
   buyDiamonds(): void {
-    alert('Chức năng nạp Kim Cương sẽ sớm ra mắt!');
+    this.toast.info('Chức năng nạp Kim Cương sẽ sớm ra mắt!');
   }
 
   openLogoutConfirm(): void {
@@ -328,6 +332,10 @@ export class GameHomeComponent implements OnInit {
   onFeatureClick(feature: FeatureItem): void {
     // Navigation is driven by ActionCode from HRK_GameFeatureConfigs, not display text.
     switch (feature.actionCode) {
+      case 'SUMMON':
+        if (feature.locked) this.toast.warning('Chiêu mộ hiện đang bị khóa.');
+        else this.router.navigate(['/dcs-game/summon']);
+        return;
       case 'HERO_MANAGEMENT': this.isHeroManagementOpen = true; return;
       case 'FORMATION_MANAGEMENT': this.isFormationManagementOpen = true; return;
       case 'INVENTORY': this.isInventoryOpen = true; return;
@@ -342,6 +350,9 @@ export class GameHomeComponent implements OnInit {
       this.openLogoutConfirm();
     } else if (feature.name === 'Võ Tướng') {
       this.isHeroManagementOpen = true;
+    } else if (feature.name.toLocaleLowerCase('vi') === 'chiêu mộ') {
+      if (feature.locked) this.toast.warning('Chiêu mộ hiện đang bị khóa.');
+      else this.router.navigate(['/dcs-game/summon']);
     } else if (feature.name === 'Đội Ngũ') {
       this.isFormationManagementOpen = true;
     } else if (feature.name === 'Hành Trang') {
@@ -349,13 +360,14 @@ export class GameHomeComponent implements OnInit {
     } else if (feature.name === 'Rèn' || feature.name === 'Forge') {
       this.isForgeOpen = true;
     } else if (feature.locked) {
-      alert(`Tính năng "${feature.name}" đang bị khóa!`);
+      this.toast.warning(`Tính năng "${feature.name}" đang bị khóa!`);
     } else {
-      alert(`Đang chuyển đến tính năng: ${feature.name}`);
+      this.toast.info(`Đang chuyển đến tính năng: ${feature.name}`);
     }
   }
 
   logout(): void {
+    if (this.isLoggingOut) return;
     this.isLoggingOut = true;
     this.logoutError = '';
 
@@ -370,7 +382,7 @@ export class GameHomeComponent implements OnInit {
         });
       },
       error: (err) => {
-        console.warn('Logout API error or expired session, clearing local tokens anyway.', err);
+        reportAppWarning('Logout API error or expired session, clearing local tokens anyway.', err);
         this.isLoggingOut = false;
         this.isLogoutConfirmOpen = false;
         this.tokenManager.clearTokens();

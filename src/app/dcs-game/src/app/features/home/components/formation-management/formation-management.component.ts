@@ -1,4 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppError, reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
+import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, inject } from '@angular/core';
 import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,11 +20,13 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-formation-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './formation-management.component.html',
   styleUrl: './formation-management.component.scss'
 })
 export class FormationManagementComponent implements OnInit {
+  private readonly toast = inject(GameToastService);
+
   readonly starColors = HERO_STAR_COLORS;
   @Output() close = new EventEmitter<void>();
 
@@ -57,12 +62,6 @@ export class FormationManagementComponent implements OnInit {
   isUpgrading = false;
   isSelecting = false;
 
-  // Toast Notification System
-  toastMessage = '';
-  toastType: 'success' | 'warning' | 'info' = 'info';
-  showToast = false;
-  private toastTimer: any = null;
-
   constructor(
     private readonly formationService: FormationService,
     private readonly playerHeroService: PlayerHeroService,
@@ -84,7 +83,7 @@ export class FormationManagementComponent implements OnInit {
           this.gold = res.data.gold ?? 0;
         }
       },
-      error: (err) => console.warn('Failed to load wallet:', err)
+      error: (err) => reportAppWarning('Failed to load wallet:', err)
     });
 
     // Load heroes list
@@ -94,8 +93,8 @@ export class FormationManagementComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: (err) => {
-        console.error('Failed to load heroes:', err);
-        this.showCustomToast('Không thể tải danh sách tướng!', 'warning');
+        reportAppError('Failed to load heroes:', err);
+        this.toast.fromError(err, 'Không thể tải danh sách tướng!');
       }
     });
 
@@ -114,9 +113,9 @@ export class FormationManagementComponent implements OnInit {
         this.loadFormationDetail(this.currentFormationCode);
       },
       error: (err) => {
-        console.error('Failed to load formations:', err);
+        reportAppError('Failed to load formations:', err);
         this.isLoading = false;
-        this.showCustomToast('Không thể tải danh sách trận hình!', 'warning');
+        this.toast.fromError(err, 'Không thể tải danh sách trận hình!');
         this.cdr.markForCheck();
       }
     });
@@ -141,8 +140,8 @@ export class FormationManagementComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error(`Failed to load formation ${code}:`, err);
-        this.showCustomToast(`Không thể tải chi tiết trận hình ${code}!`, 'warning');
+        reportAppError(`Failed to load formation ${code}:`, err);
+        this.toast.fromError(err, `Không thể tải chi tiết trận hình ${code}!`);
         this.cdr.markForCheck();
       }
     });
@@ -228,7 +227,7 @@ export class FormationManagementComponent implements OnInit {
       this.selectedPoolHero = null;
     } else {
       this.selectedPoolHero = hero;
-      this.showCustomToast(`Đã chọn [${hero.name}]. Nhấp vào một ô để xếp trận!`, 'info');
+      this.toast.info(`Đã chọn [${hero.name}]. Nhấp vào một ô để xếp trận!`);
     }
   }
 
@@ -259,7 +258,7 @@ export class FormationManagementComponent implements OnInit {
 
   autoArrange(): void {
     if (!this.heroes || this.heroes.length === 0) {
-      this.showCustomToast('Không có võ tướng để tự động xếp!', 'warning');
+      this.toast.warning('Không có võ tướng để tự động xếp!');
       return;
     }
 
@@ -289,13 +288,13 @@ export class FormationManagementComponent implements OnInit {
           this.applySlotsFromDetail(res.data);
           this.updateSummaryData(res.data);
         }
-        this.showCustomToast(customMessage || 'Đã cập nhật trận hình thành công!', 'success');
+        this.toast.success(customMessage || 'Đã cập nhật trận hình thành công!');
         this.cdr.markForCheck();
       },
       error: (err) => {
         this.isSaving = false;
-        console.error('Failed to update positions:', err);
-        this.showCustomToast('Cập nhật trận hình thất bại!', 'warning');
+        reportAppError('Failed to update positions:', err);
+        this.toast.fromError(err, 'Cập nhật trận hình thất bại!');
         // Reload detail to restore server truth
         this.loadFormationDetail(this.currentFormationCode);
       }
@@ -318,13 +317,13 @@ export class FormationManagementComponent implements OnInit {
         this.formations.forEach((f) => {
           f.isSelected = f.code === this.currentFormationCode;
         });
-        this.showCustomToast(`Đã chọn [${this.formationDetail?.name}] làm trận hình xuất chiến!`, 'success');
+        this.toast.success(`Đã chọn [${this.formationDetail?.name}] làm trận hình xuất chiến!`);
         this.cdr.markForCheck();
       },
       error: (err) => {
         this.isSelecting = false;
-        console.error('Failed to select formation:', err);
-        this.showCustomToast('Không thể kích hoạt trận hình!', 'warning');
+        reportAppError('Failed to select formation:', err);
+        this.toast.fromError(err, 'Không thể kích hoạt trận hình!');
         this.cdr.markForCheck();
       }
     });
@@ -333,10 +332,7 @@ export class FormationManagementComponent implements OnInit {
   upgradeFormation(): void {
     if (this.isUpgrading) return;
     if (!this.formationDetail?.upgradeCost?.canUpgrade) {
-      this.showCustomToast(
-        this.formationDetail?.upgradeCost?.cannotUpgradeReason || 'Không đủ điều kiện nâng cấp!',
-        'warning'
-      );
+      this.toast.warning(this.formationDetail?.upgradeCost?.cannotUpgradeReason || 'Không đủ điều kiện nâng cấp!');
       return;
     }
 
@@ -365,14 +361,13 @@ export class FormationManagementComponent implements OnInit {
             summary.totalPower = res.data.totalPower;
           }
         }
-        this.showCustomToast(`Nâng cấp trận pháp lên Cấp ${res.data?.newLevel} thành công!`, 'success');
+        this.toast.success(`Nâng cấp trận pháp lên Cấp ${res.data?.newLevel} thành công!`);
         this.cdr.markForCheck();
       },
       error: (err) => {
         this.isUpgrading = false;
-        console.error('Failed to upgrade formation:', err);
-        const errMsg = err?.error?.message || err?.message || 'Nâng cấp trận pháp thất bại!';
-        this.showCustomToast(errMsg, 'warning');
+        reportAppError('Failed to upgrade formation:', err);
+        this.toast.fromError(err, 'Nâng cấp trận pháp thất bại!');
         this.cdr.markForCheck();
       }
     });
@@ -432,20 +427,6 @@ export class FormationManagementComponent implements OnInit {
     if (placed.length === 0) return 0;
     const sum = placed.reduce((acc, curr) => acc + (curr.level || 1), 0);
     return Math.round(sum / placed.length);
-  }
-
-  showCustomToast(msg: string, type: 'success' | 'warning' | 'info'): void {
-    this.toastMessage = msg;
-    this.toastType = type;
-    this.showToast = true;
-    if (this.toastTimer) {
-      clearTimeout(this.toastTimer);
-    }
-    this.toastTimer = setTimeout(() => {
-      this.showToast = false;
-      this.cdr.markForCheck();
-    }, 3000);
-    this.cdr.markForCheck();
   }
 
   formatNumber(val: number | undefined | null): string {

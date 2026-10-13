@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppError, toAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
+import { Component, EventEmitter, Output, signal , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -25,11 +27,14 @@ import { HrkIconComponent } from '../../../../../../../../libs/shared/ui/control
   styleUrl: './game-register.component.scss'
 })
 export class GameRegisterComponent {
+  private readonly toast = inject(GameToastService);
+
   @Output() navigateToLogin = new EventEmitter<void>();
 
   public dataForm!: FormGroup;
   public readonly authApi = ApiEndpoints.Auth;
   public loading = signal(false);
+  public errorMessage = signal('');
   public showPwd = signal(false);
   public showConfirmPwd = signal(false);
 
@@ -87,6 +92,7 @@ export class GameRegisterComponent {
       return;
     }
     this.loading.set(true);
+    this.errorMessage.set('');
 
     this.hrkApiService.CallApi(
       ApiMethod.POST,
@@ -99,14 +105,13 @@ export class GameRegisterComponent {
       { withCredentials: true }
     ).subscribe({
       next: () => {
-        alert('Tạo tài khoản thành công! Vui lòng đăng nhập.');
+        this.toast.success('Tạo tài khoản thành công! Vui lòng đăng nhập.');
         this.navigateToLogin.emit();
       },
       error: (err) => {
-        console.error('Register error:', err);
-        // Fallback demo for successful registration flow
+        reportAppError('Register error:', err);
+        this.errorMessage.set(toAppError(err).message);
         this.loading.set(false);
-        this.navigateToLogin.emit();
       },
       complete: () => {
         this.loading.set(false);

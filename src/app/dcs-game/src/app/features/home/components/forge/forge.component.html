@@ -1,11 +1,12 @@
-<div class="forge-overlay" (click)="close.emit()">
+<hrk-modal #forgeModal modalCode="FORGE" title="Lò rèn" [chrome]="false" size="FULLSCREEN" [busy]="isForging || isDowngrading" (closed)="close.emit()">
+<div class="forge-overlay">
   <div class="forge-container" (click)="$event.stopPropagation()">
     
     <!-- Top Bar -->
     <div class="forge-top-bar d-flex justify-content-between align-items-center px-4 py-3">
       <div class="title-group d-flex align-items-center">
         <i class="bi bi-hammer title-icon text-warning fs-3 me-2"></i>
-        <h2 class="m-0 page-title font-title">LÒ RÈN THẦN BINH <span class="subtitle">— The Ancient Forge</span></h2>
+        <h2 class="m-0 page-title font-title">{{ forgeModal.resolved.title }} <span class="subtitle">— The Ancient Forge</span></h2>
       </div>
 
       <!-- Currency & Actions -->
@@ -16,7 +17,7 @@
           <span class="gold-unit ms-1 text-muted">Vàng</span>
         </div>
 
-        <button class="btn btn-close-forge" (click)="close.emit()" title="Đóng lò rèn">
+        <button class="btn btn-close-forge" [disabled]="isForging || isDowngrading" (click)="close.emit()" title="Đóng lò rèn">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -352,12 +353,6 @@
                 </span>
               </div>
             </div>
-
-            <!-- Error Banner -->
-            <div *ngIf="errorMessage" class="alert alert-danger py-2 mb-0 mt-1 d-flex align-items-center gap-2">
-              <i class="bi bi-x-circle-fill"></i>
-              <span>{{ errorMessage }}</span>
-            </div>
           </div>
         </div>
 
@@ -526,10 +521,10 @@
   </div>
 
   <!-- MODAL: Stone Picker Drawer -->
-  <div class="picker-overlay" *ngIf="showStonePicker" (click)="showStonePicker = false">
-    <div class="picker-card p-4 rounded-4" (click)="$event.stopPropagation()">
+  <hrk-modal #stoneModal *ngIf="showStonePicker" modalCode="FORGE_STONE_PICKER" title="Chọn đá cường hóa" [chrome]="false" (closed)="showStonePicker = false">
+    <div class="picker-card p-4 rounded-4" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-gem me-2"></i>Chọn Đá Cường Hóa (Ô {{ pickingStoneSlotIndex + 1 }})</h4>
+        <h4 class="m-0 font-title text-warning"><i class="bi bi-gem me-2"></i>{{ stoneModal.resolved.title }} (Ô {{ pickingStoneSlotIndex + 1 }})</h4>
         <button class="btn btn-close-modal" (click)="showStonePicker = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
@@ -552,13 +547,13 @@
         </div>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
   <!-- MODAL: Charm Picker Drawer -->
-  <div class="picker-overlay" *ngIf="showCharmPicker" (click)="showCharmPicker = false">
-    <div class="picker-card p-4 rounded-4" (click)="$event.stopPropagation()">
+  <hrk-modal #charmModal *ngIf="showCharmPicker" modalCode="FORGE_CHARM_PICKER" title="Chọn bùa hộ mệnh / may mắn" [chrome]="false" (closed)="showCharmPicker = false">
+    <div class="picker-card p-4 rounded-4" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-check me-2"></i>Chọn Bùa Hộ Mệnh / May Mắn</h4>
+        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-check me-2"></i>{{ charmModal.resolved.title }}</h4>
         <button class="btn btn-close-modal" (click)="showCharmPicker = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
@@ -582,11 +577,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
-  <div class="result-overlay" *ngIf="showDowngradeModal" (click)="showDowngradeModal=false">
-    <div class="result-card downgrade-card p-4 rounded-4 border" (click)="$event.stopPropagation()">
-      <h3 class="font-title text-warning">Hạ cấp trang bị</h3>
+  <hrk-modal #downgradeModal *ngIf="showDowngradeModal" modalCode="FORGE_DOWNGRADE" title="Hạ cấp trang bị" [chrome]="false" [busy]="isDowngrading" (closed)="showDowngradeModal = false">
+    <div class="result-card downgrade-card p-4 rounded-4 border" [style.max-width.%]="100" (click)="$event.stopPropagation()">
+      <h3 class="font-title text-warning">{{ downgradeModal.resolved.title }}</h3>
       <label class="d-block text-start mb-2">Cấp đích</label>
       <select class="form-select bg-dark text-light border-warning" [(ngModel)]="downgradeTarget" (change)="loadDowngradePreview()">
         <option *ngFor="let level of [].constructor(selectedEquipment?.enhancement || 0); let i=index" [ngValue]="i">+{{ i }}</option>
@@ -598,14 +593,14 @@
         <div *ngFor="let stone of p.refundedStones" class="d-flex align-items-center gap-2"><img [src]="stone.imagePath" width="36" height="36" style="object-fit:contain" (error)="$any($event.target).style.display='none'"><span>{{ stone.name }} × {{ stone.quantity }}</span></div>
         <p class="small text-danger mt-2">Không hoàn lại 100% tài nguyên. Không hoàn bùa và tài nguyên của lần cường hóa thất bại.</p>
       </div>
-      <div class="d-flex justify-content-end gap-2 mt-3"><button class="btn btn-outline-secondary" (click)="showDowngradeModal=false">Hủy</button><button class="btn btn-warning" [disabled]="!downgradePreview?.canDowngrade || isDowngrading" (click)="confirmDowngrade()">Xác nhận</button></div>
+      <div class="d-flex justify-content-end gap-2 mt-3"><button class="btn btn-outline-secondary" (click)="showDowngradeModal=false" [disabled]="isDowngrading">Hủy</button><button class="btn btn-warning" [disabled]="!downgradePreview?.canDowngrade || isDowngrading" (click)="confirmDowngrade()">Xác nhận</button></div>
     </div>
-  </div>
+  </hrk-modal>
 
   <!-- RESULT MODAL -->
-  <div class="result-overlay" *ngIf="showResultModal" (click)="closeResultModal()">
+  <hrk-modal *ngIf="showResultModal" modalCode="FORGE_RESULT" [chrome]="false" [busy]="false" (closed)="closeResultModal()">
     <div 
-      class="result-card p-4 rounded-4 text-center border position-relative" 
+      class="result-card p-4 rounded-4 text-center border position-relative" [style.max-width.%]="100"
       [class.success-result]="lastResult?.success" 
       [class.failure-result]="!lastResult?.success"
       (click)="$event.stopPropagation()">
@@ -638,6 +633,8 @@
         TIẾP TỤC
       </button>
     </div>
-  </div>
+  </hrk-modal>
 
 </div>
+
+</hrk-modal>

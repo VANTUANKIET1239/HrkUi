@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { Component, inject, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerAvatarTemplateDto, PlayerProfileDto } from '../../../../core/models/player.model';
 import { PlayerService } from '../../../../core/services/player.service';
@@ -6,11 +8,12 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-avatar-selector',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkModalComponent, CommonModule],
   templateUrl: './avatar-selector.component.html',
   styleUrl: './avatar-selector.component.scss'
 })
 export class AvatarSelectorComponent implements OnInit, OnDestroy {
+  private readonly toast = inject(GameToastService);
   @Input({ required: true }) profile!: PlayerProfileDto;
   @Input() currentAvatarUrl = '';
   @Output() close = new EventEmitter<void>();
@@ -42,7 +45,7 @@ export class AvatarSelectorComponent implements OnInit, OnDestroy {
     this.saving = true; this.error = '';
     this.playerService.selectAvatar(this.selectedId).subscribe({
       next: response => this.finish(response),
-      error: error => this.fail(error?.message || 'Không thể đổi ảnh đại diện.')
+      error: error => this.fail(error, 'Không thể đổi ảnh đại diện.')
     });
   }
 
@@ -76,7 +79,7 @@ export class AvatarSelectorComponent implements OnInit, OnDestroy {
     this.saving = true; this.error = '';
     this.playerService.uploadCustomAvatar(this.selectedFile).subscribe({
       next: response => this.finish(response),
-      error: error => this.fail(error?.message || 'Không thể tải ảnh đại diện.')
+      error: error => this.fail(error, 'Không thể tải ảnh đại diện.')
     });
   }
 
@@ -85,17 +88,23 @@ export class AvatarSelectorComponent implements OnInit, OnDestroy {
     this.saving = true; this.error = '';
     this.playerService.deleteCustomAvatar().subscribe({
       next: response => this.finish(response),
-      error: error => this.fail(error?.message || 'Không thể xóa ảnh cá nhân.')
+      error: error => this.fail(error, 'Không thể xóa ảnh cá nhân.')
     });
   }
 
   ngOnDestroy(): void { this.clearPreview(); }
 
   private finish(response: { success: boolean; message?: string; data: PlayerProfileDto }): void {
-    if (!response.success || !response.data) { this.fail(response.message || 'Thao tác không thành công.'); return; }
-    this.saving = false; this.avatarChanged.emit(response.data);
+    if (!response.success || !response.data) {
+      this.saving = false;
+      this.toast.warning(response.message || 'Thao tác không thành công.');
+      return;
+    }
+    this.saving = false;
+    this.toast.success('Đã cập nhật ảnh đại diện.');
+    this.avatarChanged.emit(response.data);
   }
-  private fail(message: string): void { this.saving = false; this.error = message; }
+  private fail(error: unknown, fallback: string): void { this.saving = false; this.toast.fromError(error, fallback); }
   private clearPreview(): void { if (this.previewUrl) URL.revokeObjectURL(this.previewUrl); this.previewUrl = ''; this.selectedFile = undefined; }
   private readDimensions(url: string): Promise<{ width: number; height: number }> {
     return new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight }); image.onerror = reject; image.src = url; });

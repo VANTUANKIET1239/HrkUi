@@ -1,9 +1,10 @@
+<hrk-modal #heroModal modalCode="HERO_MANAGEMENT" title="Võ tướng" [chrome]="false" size="FULLSCREEN" [busy]="isProcessingEquipment || isUpgradingHero" (closed)="close.emit()">
 <div class="hero-mgmt-overlay">
   <!-- Top Bar: Currencies, Title, and Close Button -->
   <div class="hero-mgmt-top-bar d-flex justify-content-between align-items-center">
     <div class="title-section d-flex align-items-center">
       <i class="bi bi-shield-shaded title-icon me-2 text-warning fs-3"></i>
-      <h1 class="m-0 page-title">VÕ TƯỚNG <span class="subtitle">— Hero Management</span></h1>
+      <h1 class="m-0 page-title">{{ heroModal.resolved.title }} <span class="subtitle">— Hero Management</span></h1>
     </div>
 
     <!-- Resource Counters -->
@@ -26,7 +27,7 @@
       </div>
     </div>
 
-    <button class="btn btn-close-modal" (click)="close.emit()" aria-label="Đóng bảng quản lý võ tướng">
+    <button class="btn btn-close-modal" [disabled]="isProcessingEquipment || isUpgradingHero" (click)="close.emit()" aria-label="Đóng bảng quản lý võ tướng">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
@@ -577,10 +578,8 @@
   <!-- ============================================================== -->
   <!-- MODAL: THÁO TRANG BỊ ĐANG MẶC TRÊN SLOT                        -->
   <!-- ============================================================== -->
-  <div class="modal-backdrop-custom d-flex align-items-center justify-content-center" 
-       *ngIf="showSlotActionModal && selectedSlotForAction && selectedSlotForAction.item" 
-       (click)="closeSlotActionModal()">
-    <div class="equipment-action-dialog p-3 bg-dark border border-warning rounded shadow-lg" (click)="$event.stopPropagation()" *ngIf="selectedSlotForAction as slot">
+  <hrk-modal *ngIf="showSlotActionModal && selectedSlotForAction && selectedSlotForAction.item" modalCode="HERO_SLOT_ACTION" [chrome]="false" [busy]="isProcessingEquipment" (closed)="closeSlotActionModal()">
+    <div class="equipment-action-dialog p-3 bg-dark border border-warning rounded shadow-lg" [style.max-width.%]="100" (click)="$event.stopPropagation()" *ngIf="selectedSlotForAction as slot">
       <div class="dialog-header d-flex justify-content-between align-items-center border-bottom border-warning-subtle pb-2 mb-3">
         <h5 class="m-0 text-gold font-title">
           <i class="bi {{ slot.icon }} me-2"></i>{{ slot.displayName }}
@@ -615,20 +614,15 @@
         </button>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
   <!-- Modal: Xác Nhận Tháo Toàn Bộ Trang Bị -->
-  <div class="equipment-action-dialog-backdrop"
-       *ngIf="showUnequipAllModal"
-       (click)="onUnequipAllBackdropClick($event)">
-    <div class="equipment-action-dialog font-title unequip-all-dialog"
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="unequip-all-title"
+  <hrk-modal #unequipModal *ngIf="showUnequipAllModal" modalCode="HERO_UNEQUIP_ALL" title="Tháo toàn bộ trang bị" [chrome]="false" [busy]="isProcessingEquipment" (closed)="closeUnequipAllModal()">
+    <div class="equipment-action-dialog font-title unequip-all-dialog" [style.max-width.%]="100"
          (click)="$event.stopPropagation()">
       <div class="dialog-header border-bottom border-warning-subtle pb-2 mb-3 d-flex justify-content-between align-items-center">
         <h5 id="unequip-all-title" class="text-gold m-0 d-flex align-items-center">
-          <i class="bi bi-x-circle-fill text-danger me-2"></i>Tháo Toàn Bộ Trang Bị
+          <i class="bi bi-x-circle-fill text-danger me-2"></i>{{ unequipModal.resolved.title }}
         </h5>
         <button class="btn-close btn-close-white small" 
                 aria-label="Đóng" 
@@ -706,20 +700,15 @@
         </button>
       </div>
     </div>
-  </div>
+  </hrk-modal>
 
   <!-- Modal: Hoán Đổi Toàn Bộ Bộ Trang Bị Giữa Hai Võ Tướng -->
-  <div class="equipment-action-dialog-backdrop"
-       *ngIf="showSwapModal"
-       (click)="onSwapBackdropClick($event)">
-    <div class="equipment-action-dialog font-title swap-equipment-dialog"
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="swap-equipment-title"
+  <hrk-modal #swapModal *ngIf="showSwapModal" modalCode="HERO_SWAP_EQUIPMENT" title="Hoán đổi trang bị" [chrome]="false" [busy]="isProcessingEquipment" (closed)="closeSwapModal()">
+    <div class="equipment-action-dialog font-title swap-equipment-dialog" [style.max-width.%]="100"
          (click)="$event.stopPropagation()">
       <div class="dialog-header border-bottom border-warning-subtle pb-2 mb-3 d-flex justify-content-between align-items-center">
         <h5 id="swap-equipment-title" class="text-gold m-0 d-flex align-items-center">
-          <i class="bi bi-arrow-left-right text-warning me-2"></i>Đổi Bộ Trang Bị
+          <i class="bi bi-arrow-left-right text-warning me-2"></i>{{ swapModal.resolved.title }}
         </h5>
         <button class="btn-close btn-close-white small" 
                 aria-label="Đóng" 
@@ -838,16 +827,8 @@
         </button>
       </div>
     </div>
-  </div>
-
-  <!-- Toast Message System -->
-  <div class="toast-notification font-title" *ngIf="showToast" [ngClass]="toastType">
-    <i class="bi me-2" [ngClass]="{
-      'bi-check-circle-fill': toastType === 'success',
-      'bi-exclamation-triangle-fill': toastType === 'warning',
-      'bi-info-circle-fill': toastType === 'info'
-    }"></i>
-    <span>{{ toastMessage }}</span>
-  </div>
+  </hrk-modal>
 
 </div>
+
+</hrk-modal>

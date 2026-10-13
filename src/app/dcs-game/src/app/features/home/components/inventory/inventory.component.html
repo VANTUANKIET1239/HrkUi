@@ -1,9 +1,10 @@
+<hrk-modal #inventoryModal modalCode="INVENTORY" title="Hành trang" [chrome]="false" size="FULLSCREEN" [busy]="isSellingSingleItem" (closed)="close.emit()">
 <div class="inventory-overlay">
   <!-- TOP BAR: Title, Gold, Diamonds, and Close Button -->
   <div class="inventory-top-bar d-flex justify-content-between align-items-center">
     <div class="title-section d-flex align-items-center">
       <i class="bi bi-briefcase-fill title-icon me-2 text-warning fs-3"></i>
-      <h1 class="m-0 page-title">HÀNH TRANG <span class="subtitle">— Inventory Bag</span></h1>
+      <h1 class="m-0 page-title">{{ inventoryModal.resolved.title }} <span class="subtitle">— Inventory Bag</span></h1>
     </div>
 
     <!-- Resource Counters -->
@@ -30,7 +31,7 @@
       </div>
     </div>
 
-    <button class="btn btn-close-modal" (click)="close.emit()">
+    <button class="btn btn-close-modal" [disabled]="isSellingSingleItem" (click)="close.emit()">
       <i class="bi bi-x-lg"></i>
     </button>
   </div>
@@ -319,20 +320,10 @@
 
   </div>
 
-  <!-- ========================================== -->
-  <!-- CUSTOM TOAST NOTIFICATION SYSTEM           -->
-  <!-- ========================================== -->
-  <div 
-    class="custom-game-toast" 
-    [class.show]="showToast" 
-    [class.toast-success]="toastType === 'success'"
-    [class.toast-warning]="toastType === 'warning'"
-    [class.toast-info]="toastType === 'info'">
-    <i class="bi" [ngClass]="toastType === 'success' ? 'bi-check-circle-fill' : toastType === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"></i>
-    <span class="toast-text ms-2 font-title">{{ toastMessage }}</span>
-  </div>
 
   <!-- Reusable Forge Popup (Cường Hóa & Lò Rèn) -->
   <app-forge *ngIf="isForgeOpen" [preselectedItemId]="selectedEquipmentForForge" [currentGold]="gold" (close)="onForgeClosed()" (itemUpdated)="onForgeItemUpdated($event)"></app-forge>
 
 </div>
+
+</hrk-modal>

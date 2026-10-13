@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
+import { reportAppError, reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
+import { Component, inject, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -34,11 +37,12 @@ export interface CharmInventorySlot extends InventoryItemDto {
 @Component({
   selector: 'app-forge',
   standalone: true,
-  imports: [ItemImageComponent, CommonModule, FormsModule],
+  imports: [HrkModalComponent, ItemImageComponent, CommonModule, FormsModule],
   templateUrl: './forge.component.html',
   styleUrl: './forge.component.scss'
 })
 export class ForgeComponent implements OnInit {
+  private readonly toast = inject(GameToastService);
   @Input() preselectedItemId?: number;
   @Input() currentGold?: number;
   @Output() close = new EventEmitter<void>();
@@ -114,7 +118,6 @@ export class ForgeComponent implements OnInit {
 
   // Result & Error Reporting
   lastResult: EnhanceEquipmentResult | null = null;
-  errorMessage = '';
 
   constructor(
     private enhancementService: EnhancementService,
@@ -142,7 +145,7 @@ export class ForgeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.warn('Could not load wallet in Forge, using cached/input gold:', err);
+        reportAppWarning('Could not load wallet in Forge, using cached/input gold:', err);
         if (this.currentGold !== undefined && this.currentGold > 0) {
           this.playerGold = this.currentGold;
         }
@@ -160,7 +163,7 @@ export class ForgeComponent implements OnInit {
         this.loadForgeEquipment();
       },
       error: (err) => {
-        console.warn('Failed to load enhancement configs:', err);
+        reportAppWarning('Failed to load enhancement configs:', err);
         this.loadMaterialsInventory();
         this.loadForgeEquipment();
       }
@@ -207,7 +210,7 @@ export class ForgeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Failed to load material items in Forge:', err);
+        reportAppError('Failed to load material items in Forge:', err);
       }
     });
   }
@@ -248,7 +251,7 @@ export class ForgeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Failed to load forge equipment list:', err);
+        reportAppError('Failed to load forge equipment list:', err);
         this.isLoading = false;
       }
     });
@@ -339,7 +342,7 @@ export class ForgeComponent implements OnInit {
     if (this.isForging) return;
 
     if (!item.canEnhance) {
-      this.errorMessage = item.enhancementBlockedMessage || 'Trang bị không đủ điều kiện cường hóa.';
+      this.toast.warning(item.enhancementBlockedMessage || 'Trang bị không đủ điều kiện cường hóa.');
       return;
     }
     this.selectEquipment(item);
@@ -402,7 +405,6 @@ export class ForgeComponent implements OnInit {
 
     this.selectedEquipment = item;
     this.focusedItem = item;
-    this.errorMessage = '';
 
     // Requirement 9: Reset materials when changing target equipment
     this.selectedStones = [null, null, null];
@@ -422,7 +424,7 @@ export class ForgeComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.warn('Failed to load enhancement preview:', err);
+        reportAppWarning('Failed to load enhancement preview:', err);
         this.isLoadingPreview = false;
       }
     });
@@ -563,7 +565,6 @@ export class ForgeComponent implements OnInit {
     }
 
     this.isForging = true;
-    this.errorMessage = '';
     this.animationResultType = null;
 
     // Determine Animation Tier strictly by targetLevel = currentLevel + 1
@@ -586,7 +587,7 @@ export class ForgeComponent implements OnInit {
 
     // Hold API response and status
     let apiResponse: EnhanceEquipmentResult | null = null;
-    let apiError: string | null = null;
+    let notifyFailure: () => void = () => this.toast.error('Không thể thực hiện cường hóa.');
     let apiFinished = false;
     let animationRevealReached = false;
 
@@ -597,13 +598,13 @@ export class ForgeComponent implements OnInit {
         if (res?.success && res.data) {
           apiResponse = res.data;
         } else {
-          apiError = res?.message || 'Có lỗi xảy ra trong quá trình cường hóa.';
+          notifyFailure = () => this.toast.warning(res?.message || 'Có lỗi xảy ra trong quá trình cường hóa.');
         }
         checkAndReveal();
       },
       error: (err) => {
         apiFinished = true;
-        apiError = err?.error?.message || err?.message || 'Lỗi kết nối máy chủ.';
+        notifyFailure = () => this.toast.fromError(err, 'Không thể thực hiện cường hóa.');
         checkAndReveal();
       }
     });
@@ -655,7 +656,7 @@ export class ForgeComponent implements OnInit {
         } else {
           this.isForging = false;
           this.animationPhase = 'idle';
-          this.errorMessage = apiError || 'Lỗi không xác định.';
+          notifyFailure();
         }
       }
     };
@@ -739,8 +740,39 @@ export class ForgeComponent implements OnInit {
   }
 
   openDowngrade(): void { if(!this.selectedEquipment?.enhancement)return; this.downgradeTarget=this.selectedEquipment.enhancement-1; this.showDowngradeModal=true; this.loadDowngradePreview(); }
-  loadDowngradePreview(): void { if(!this.selectedEquipment)return; this.downgradePreview=null; this.enhancementService.getDowngradePreview(this.selectedEquipment.inventoryItemId,this.downgradeTarget).subscribe({next:r=>this.downgradePreview=r?.success?r.data:null,error:e=>this.errorMessage=e?.error?.message||'Không tải được preview hạ cấp.'}); }
-  confirmDowngrade(): void { const p=this.downgradePreview;if(!p?.canDowngrade||this.isDowngrading||!this.selectedEquipment)return;this.isDowngrading=true;this.enhancementService.downgradeEquipment({requestId:crypto.randomUUID(),inventoryItemId:this.selectedEquipment.inventoryItemId,targetEnhancement:this.downgradeTarget}).subscribe({next:r=>{this.isDowngrading=false;if(r?.success){this.showDowngradeModal=false;this.loadInitialData();}else this.errorMessage=r?.message||'Hạ cấp thất bại.';},error:e=>{this.isDowngrading=false;this.errorMessage=e?.error?.message||'Hạ cấp thất bại.';}});}
+  loadDowngradePreview(): void {
+    if (!this.selectedEquipment) return;
+    this.downgradePreview = null;
+    this.enhancementService.getDowngradePreview(this.selectedEquipment.inventoryItemId, this.downgradeTarget).subscribe({
+      next: r => {
+        this.downgradePreview = r?.success ? r.data : null;
+        if (!r?.success) this.toast.warning(r?.message || 'Không tải được thông tin hạ cấp.');
+      },
+      error: error => this.toast.fromError(error, 'Không tải được thông tin hạ cấp.')
+    });
+  }
+  confirmDowngrade(): void {
+    if (!this.downgradePreview?.canDowngrade || this.isDowngrading || !this.selectedEquipment) return;
+    this.isDowngrading = true;
+    this.enhancementService.downgradeEquipment({
+      requestId: crypto.randomUUID(),
+      inventoryItemId: this.selectedEquipment.inventoryItemId,
+      targetEnhancement: this.downgradeTarget
+    }).subscribe({
+      next: r => {
+        this.isDowngrading = false;
+        if (r?.success) {
+          this.showDowngradeModal = false;
+          this.toast.success('Hạ cấp trang bị thành công.');
+          this.loadInitialData();
+        } else this.toast.warning(r?.message || 'Hạ cấp thất bại.');
+      },
+      error: error => {
+        this.isDowngrading = false;
+        this.toast.fromError(error, 'Hạ cấp thất bại.');
+      }
+    });
+  }
 
   // --- Stats Display Helpers ---
 

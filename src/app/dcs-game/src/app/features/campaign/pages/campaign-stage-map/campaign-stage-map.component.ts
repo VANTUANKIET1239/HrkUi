@@ -1,3 +1,5 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, inject, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,26 +15,25 @@ import { CampaignStageDetailModalComponent } from '../../components/campaign-sta
 import { BattleFormationSetupModalComponent } from '../../components/battle-formation-setup-modal/battle-formation-setup-modal.component';
 import { STAGE_COORDINATES, RoadPoint } from '../../components/campaign-road/campaign-road.models';
 import { BattleFormationDraft } from '../../../../core/models/dungeon.model';
-import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
 import { CampaignThemeService, CampaignTheme } from '../../services/campaign-theme.service';
 
 @Component({
   selector: 'app-campaign-stage-map',
   standalone: true,
-  imports: [
+  imports: [HrkModalComponent,
     CommonModule,
     CampaignAtmosphereComponent,
     CampaignRoadComponent,
     CampaignStageNodeComponent,
     CampaignBossNodeComponent,
     CampaignStageDetailModalComponent,
-    BattleFormationSetupModalComponent,
-    EquipmentTooltipComponent
+    BattleFormationSetupModalComponent
   ],
   templateUrl: './campaign-stage-map.component.html',
   styleUrl: './campaign-stage-map.component.scss'
 })
 export class CampaignStageMapComponent implements OnInit, AfterViewInit {
+  private readonly toast = inject(GameToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly api = inject(DungeonApiService);
@@ -55,7 +56,6 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
   claimedReward: ClaimStarChestResult | null = null;
   error = '';
   modalError = '';
-  chestError = '';
 
   private readonly coordsMap = new Map<number, RoadPoint>(
     STAGE_COORDINATES.map(p => [p.stageNumber, p])
@@ -174,10 +174,11 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
           this.formationSetupStage = undefined;
           this.session.set(r.data, mapId);
           this.router.navigate(['/dcs-game/battle']);
-        }
+        } else this.toast.warning(r.message || 'Không thể bắt đầu trận đấu.');
       },
-      error: () => {
+      error: error => {
         this.starting = false;
+        this.toast.fromError(error, 'Không thể bắt đầu trận đấu.');
       }
     });
   }
@@ -198,7 +199,6 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
     if (chest.state === 'CLAIMABLE') {
       if (this.claimingChestId !== null) return;
       this.claimingChestId = chest.id;
-      this.chestError = '';
 
       this.api.claimChest(chest.id).pipe(
         finalize(() => {
@@ -211,11 +211,11 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
             this.claimedReward = res.data;
             this.refreshStamina();
           } else {
-            this.chestError = res.message || 'Không thể nhận rương sao.';
+            this.toast.warning(res.message || 'Không thể nhận rương sao.');
           }
         },
         error: err => {
-          this.chestError = err?.error?.message || 'Lỗi khi nhận thưởng rương sao.';
+          this.toast.fromError(err, 'Lỗi khi nhận thưởng rương sao.');
         }
       });
     } else {

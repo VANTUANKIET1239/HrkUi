@@ -1,5 +1,5 @@
-<div class="session-modal-backdrop" *ngIf="sessionExpiredService.isOpen()">
-  <div class="session-modal-card" role="dialog" aria-modal="true" aria-labelledby="session-expired-title">
+<hrk-modal *ngIf="sessionExpiredService.isOpen()" title="Phiên đăng nhập đã hết hạn" size="SM" [chrome]="false" [dismissible]="false">
+  <div class="session-modal-card">
     <div class="modal-icon-container">
       <div class="icon-pulse"></div>
       <svg class="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -30,4 +30,4 @@
       </button>
     </div>
   </div>
-</div>
+</hrk-modal>

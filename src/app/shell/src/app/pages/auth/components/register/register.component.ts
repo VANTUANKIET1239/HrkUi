@@ -1,3 +1,4 @@
+import { reportAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
@@ -70,7 +71,7 @@ constructor(private fb: FormBuilder, private HrkApiService: HrkApiService) {
         console.log('API response:', res);
       },
       error: (err) => {
-        console.error('API error:', err);
+        reportAppError('API error:', err);
       }
     });
 

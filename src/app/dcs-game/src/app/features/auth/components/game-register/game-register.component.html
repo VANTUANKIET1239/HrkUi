@@ -1,4 +1,5 @@
 <form [formGroup]="dataForm" (ngSubmit)="submit()" class="game-form" novalidate>
+  <p class="error-msg" role="alert" *ngIf="errorMessage()">{{ errorMessage() }}</p>
   <!-- Username Field -->
   <div class="form-group">
     <label class="field-label" for="reg-username">

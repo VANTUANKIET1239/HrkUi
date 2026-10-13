@@ -1,3 +1,4 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,7 @@ type LibraryTab = 'heroes' | 'items';
 @Component({
   selector: 'app-library',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './library.component.html',
   styleUrl: './library.component.scss'
 })

@@ -745,47 +745,6 @@ $glow-active: 0 0 16px rgba(34, 197, 94, 0.5);
   }
 }
 
-// Toast Notifications
-.custom-game-toast {
-  position: fixed;
-  bottom: 180px;
-  right: 24px;
-  background: rgba(20, 10, 8, 0.96);
-  border: 1.5px solid $gold-primary;
-  border-radius: 8px;
-  padding: 10px 18px;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
-  z-index: 2000;
-  opacity: 0;
-  transform: translateY(20px);
-  pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-
-  &.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  &.toast-success {
-    border-color: #22c55e;
-    color: #86efac;
-  }
-
-  &.toast-warning {
-    border-color: #eab308;
-    color: #fde047;
-  }
-
-  &.toast-info {
-    border-color: #38bdf8;
-    color: #bae6fd;
-  }
-}
-
 // Readability pass for the dark tactical background. Bootstrap's default
 // muted color is too low-contrast here, so the formation screen owns its tokens.
 .formation-overlay {

@@ -15,6 +15,7 @@
     </div>
 
     <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
+      <p class="error" role="alert" *ngIf="errorMessage()">{{ errorMessage() }}</p>
 
       <div class="field">
         <label for="email">Email</label>

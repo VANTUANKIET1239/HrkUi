@@ -1,3 +1,4 @@
+import { HrkModalComponent } from '../../../../shared/ui/modal/hrk-modal.component';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SessionExpiredService } from '../../services/session-expired.service';
@@ -5,7 +6,7 @@ import { SessionExpiredService } from '../../services/session-expired.service';
 @Component({
   selector: 'app-session-expired-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HrkModalComponent],
   templateUrl: './session-expired-modal.component.html',
   styleUrl: './session-expired-modal.component.scss'
 })

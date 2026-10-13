@@ -1,6 +1,8 @@
+import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
+import { GameToastService } from '../../../../core/services/game-toast.service';
 import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, forkJoin } from 'rxjs';
 import { InventoryItemDto, ItemCategoryDto, ItemRarityDto } from '../../../../core/models/inventory.model';
@@ -13,11 +15,13 @@ import { EquipmentRollDetailsComponent } from '../../../../shared/components/equ
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [ItemImageComponent, CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
+  imports: [HrkModalComponent, ItemImageComponent, CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
 })
 export class InventoryComponent implements OnInit {
+  private readonly toast = inject(GameToastService);
+
   @Output() close = new EventEmitter<void>();
 
   items: InventoryItemDto[] = [];
@@ -44,11 +48,6 @@ export class InventoryComponent implements OnInit {
   isForgeOpen = false;
   selectedEquipmentForForge: number | undefined;
 
-  toastMessage = '';
-  toastType: 'success' | 'warning' | 'info' = 'info';
-  showToast = false;
-  private toastTimer?: ReturnType<typeof setTimeout>;
-
   constructor(
     private readonly playerService: PlayerService,
     private readonly inventoryService: InventoryService,
@@ -67,7 +66,7 @@ export class InventoryComponent implements OnInit {
     this.playerService.getWallet().pipe(finalize(() => this.isWalletLoading = false)).subscribe({
       next: response => {
         if (!response?.success || !response.data) {
-          this.triggerToast(response?.message || 'Không thể tải thông tin ví.', 'warning');
+          this.toast.warning(response?.message || 'Không thể tải thông tin ví.');
           return;
         }
         this.gold = response.data.gold ?? 0;
@@ -75,7 +74,7 @@ export class InventoryComponent implements OnInit {
         this.upgradeMaterialsCount = response.data.upgradeMaterials ?? 0;
         this.maxCapacity = response.data.maxCapacity ?? 0;
       },
-      error: () => this.triggerToast('Không thể tải thông tin ví từ máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể tải thông tin ví từ máy chủ.')
     });
   }
 
@@ -88,16 +87,16 @@ export class InventoryComponent implements OnInit {
     }).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: ({ inventory, categories, rarities }) => {
         if (!inventory?.success || !categories?.success || !rarities?.success) {
-          this.triggerToast('Không thể đồng bộ đầy đủ dữ liệu hành trang.', 'warning');
+          this.toast.warning('Không thể đồng bộ đầy đủ dữ liệu hành trang.');
           return;
         }
         this.items = inventory.data ?? [];
         this.categories = (categories.data ?? []).sort((a, b) => a.displayOrder - b.displayOrder);
         this.rarities = (rarities.data ?? []).sort((a, b) => b.displayOrder - a.displayOrder);
         this.ensureValidSelection();
-        if (showSuccess) this.triggerToast(`Đã đồng bộ ${this.items.length} vật phẩm.`, 'success');
+        if (showSuccess) this.toast.success(`Đã đồng bộ ${this.items.length} vật phẩm.`);
       },
-      error: () => this.triggerToast('Không thể tải hành trang từ máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể tải hành trang từ máy chủ.')
     });
   }
 
@@ -168,13 +167,13 @@ export class InventoryComponent implements OnInit {
     this.inventoryService.toggleLock(item.id, targetState).pipe(finalize(() => this.lockingItemId = null)).subscribe({
       next: response => {
         if (!response?.success) {
-          this.triggerToast(response?.message || 'Không thể cập nhật trạng thái khóa.', 'warning');
+          this.toast.warning(response?.message || 'Không thể cập nhật trạng thái khóa.');
           return;
         }
         item.isLocked = targetState;
-        this.triggerToast(targetState ? 'Đã khóa vật phẩm.' : 'Đã mở khóa vật phẩm.', 'info');
+        this.toast.info(targetState ? 'Đã khóa vật phẩm.' : 'Đã mở khóa vật phẩm.');
       },
-      error: () => this.triggerToast('Không thể cập nhật trạng thái khóa trên máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể cập nhật trạng thái khóa trên máy chủ.')
     });
   }
 
@@ -186,14 +185,14 @@ export class InventoryComponent implements OnInit {
     ).subscribe({
       next: response => {
         if (!response?.success || !response.data) {
-          this.triggerToast(response?.message || 'Không thể bán vật phẩm.', 'warning');
+          this.toast.warning(response?.message || 'Không thể bán vật phẩm.');
           return;
         }
         this.gold = response.data.currentGold;
         this.applySoldCount(item, 1);
-        this.triggerToast(`Đã bán “${item.name}”, nhận ${response.data.earnedGold} vàng.`, 'success');
+        this.toast.success(`Đã bán “${item.name}”, nhận ${response.data.earnedGold} vàng.`);
       },
-      error: () => this.triggerToast('Không thể bán vật phẩm trên máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể bán vật phẩm trên máy chủ.')
     });
   }
 
@@ -203,7 +202,7 @@ export class InventoryComponent implements OnInit {
     const candidates = this.items.filter(item =>
       item.rarityDisplayOrder === lowestRarityOrder && !item.isLocked && !item.isEquipped);
     if (!candidates.length) {
-      this.triggerToast('Không có vật phẩm phẩm chất thấp nhất có thể bán.', 'warning');
+      this.toast.warning('Không có vật phẩm phẩm chất thấp nhất có thể bán.');
       return;
     }
     this.isBatchSelling = true;
@@ -212,16 +211,16 @@ export class InventoryComponent implements OnInit {
     ).subscribe({
       next: response => {
         if (!response?.success || !response.data) {
-          this.triggerToast(response?.message || 'Không thể bán nhanh vật phẩm.', 'warning');
+          this.toast.warning(response?.message || 'Không thể bán nhanh vật phẩm.');
           return;
         }
         this.gold = response.data.currentGold;
         const ids = new Set(candidates.map(item => item.id));
         this.items = this.items.filter(item => !ids.has(item.id));
         this.ensureValidSelection();
-        this.triggerToast(`Đã bán ${response.data.soldItemsCount} vật phẩm, nhận ${response.data.earnedGold} vàng.`, 'success');
+        this.toast.success(`Đã bán ${response.data.soldItemsCount} vật phẩm, nhận ${response.data.earnedGold} vàng.`);
       },
-      error: () => this.triggerToast('Không thể bán nhanh vật phẩm trên máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể bán nhanh vật phẩm trên máy chủ.')
     });
   }
 
@@ -231,14 +230,14 @@ export class InventoryComponent implements OnInit {
     this.inventoryService.expandCapacity(slots).pipe(finalize(() => this.isExpandingCapacity = false)).subscribe({
       next: response => {
         if (!response?.success || !response.data) {
-          this.triggerToast(response?.message || 'Không thể mở rộng hành trang.', 'warning');
+          this.toast.warning(response?.message || 'Không thể mở rộng hành trang.');
           return;
         }
         this.diamonds = response.data.diamonds;
         this.maxCapacity = response.data.maxCapacity;
-        this.triggerToast(`Đã mở rộng thêm ${slots} ô hành trang.`, 'success');
+        this.toast.success(`Đã mở rộng thêm ${slots} ô hành trang.`);
       },
-      error: () => this.triggerToast('Không thể mở rộng hành trang trên máy chủ.', 'warning')
+      error: (error) => this.toast.fromError(error, 'Không thể mở rộng hành trang trên máy chủ.')
     });
   }
 
@@ -251,14 +250,6 @@ export class InventoryComponent implements OnInit {
   }
 
   onItemLeave(): void { this.tooltipService.hide(); }
-
-  triggerToast(message: string, type: 'success' | 'warning' | 'info' = 'success'): void {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toastMessage = message;
-    this.toastType = type;
-    this.showToast = true;
-    this.toastTimer = setTimeout(() => this.showToast = false, 2500);
-  }
 
   private matchesLevelFilter(level: number): boolean {
     if (this.filterLevel === '1-10') return level >= 1 && level <= 10;

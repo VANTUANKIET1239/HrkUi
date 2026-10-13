@@ -960,60 +960,6 @@ $color-common: #9ca3af; // Common = Gray
   }
 }
 
-// Custom Alert Toast
-.custom-game-toast {
-  position: fixed;
-  bottom: 85px;
-  left: 50%;
-  transform: translateX(-50%) translateY(30px);
-  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(20, 15, 10, 0.95) 15%, rgba(20, 15, 10, 0.95) 85%, rgba(0, 0, 0, 0) 100%);
-  border-top: 1.5px solid rgba(255, 215, 0, 0.5);
-  border-bottom: 1.5px solid rgba(255, 215, 0, 0.5);
-  color: #fff;
-  padding: 8px 40px;
-  font-size: 14px;
-  z-index: 1100;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  &.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  &.toast-success {
-    border-color: rgba(46, 204, 113, 0.8);
-
-    i {
-      color: #2ecc71;
-      filter: drop-shadow(0 0 4px #2ecc71);
-    }
-  }
-
-  &.toast-warning {
-    border-color: rgba(231, 76, 60, 0.8);
-
-    i {
-      color: #e74c3c;
-      filter: drop-shadow(0 0 4px #e74c3c);
-    }
-  }
-
-  &.toast-info {
-    border-color: rgba(52, 152, 219, 0.8);
-
-    i {
-      color: #3498db;
-      filter: drop-shadow(0 0 4px #3498db);
-    }
-  }
-}
-
 // -------------------------------------------------------------
 // Interactive drag animation classes
 // -------------------------------------------------------------

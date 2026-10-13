@@ -1,3 +1,4 @@
+import { reportAppError, toAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -34,6 +35,7 @@ export class GameLoginComponent {
   public dataForm!: FormGroup;
   public readonly authApi = ApiEndpoints.Auth;
   public loading = signal(false);
+  public errorMessage = signal('');
   public showPwd = signal(false);
 
   roles = [
@@ -84,6 +86,7 @@ export class GameLoginComponent {
       : appConfig.defaultRoute;
 
     this.loading.set(true);
+    this.errorMessage.set('');
 
     this.hrkApiService.CallApi(
       ApiMethod.POST,
@@ -107,7 +110,7 @@ export class GameLoginComponent {
           try {
             await this.navigationService.goTo(returnUrl);
           } catch (navErr) {
-            console.error('Navigation error after login:', navErr);
+            reportAppError('Navigation error after login:', navErr);
             this.loading.set(false);
           } finally {
             this.loadingService.hide();
@@ -117,7 +120,8 @@ export class GameLoginComponent {
         }
       },
       error: (err) => {
-        console.error('Login error:', err);
+        this.errorMessage.set(toAppError(err).message);
+        reportAppError('Login error:', err);
         this.loading.set(false);
       }
     });
@@ -132,7 +136,7 @@ export class GameLoginComponent {
       try {
         await this.navigationService.goTo('/dcs-game/home');
       } catch (navErr) {
-        console.error('Navigation error after SSO:', navErr);
+        reportAppError('Navigation error after SSO:', navErr);
         this.loading.set(false);
       } finally {
         this.loadingService.hide();

@@ -1,3 +1,4 @@
+import { reportAppError, toAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { NavigationService } from './../../../../../../../../libs/core/services/navigation.service';
 import { Component, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -33,6 +34,7 @@ constructor(private fb: FormBuilder, private HrkApiService: HrkApiService, priva
 
   year = new Date().getFullYear();
   loading = signal(false);
+  errorMessage = signal('');
   showPwd = signal(false);
 
 
@@ -60,6 +62,7 @@ constructor(private fb: FormBuilder, private HrkApiService: HrkApiService, priva
       return;
     }
     this.loading.set(true);
+    this.errorMessage.set('');
 
     this.HrkApiService.CallApi(ApiMethod.POST, this.authApi.Login,{
       email: this.dataForm.value.email,
@@ -73,7 +76,8 @@ constructor(private fb: FormBuilder, private HrkApiService: HrkApiService, priva
           this.navigationService.goTo('/hrm/home/main');
         },
         error: (err) => {
-          console.error('API error:', err);
+          this.errorMessage.set(toAppError(err).message);
+          reportAppError('API error:', err);
           this.loading.set(false);
         },
         complete: () => {
@@ -99,7 +103,7 @@ constructor(private fb: FormBuilder, private HrkApiService: HrkApiService, priva
         console.log('API response:', res);
       },
       error: (err) => {
-        console.error('API error:', err);
+        reportAppError('API error:', err);
       }
     });
 

@@ -1,8 +1,8 @@
-<div class="avatar-modal-backdrop" (click)="close.emit()">
-  <section class="avatar-modal" (click)="$event.stopPropagation()">
+<hrk-modal #modalShell modalCode="AVATAR_SELECTOR" title="Ảnh đại diện" [chrome]="false" [busy]="saving" (closed)="close.emit()">
+  <section class="avatar-modal" [style.max-width.%]="100" (click)="$event.stopPropagation()">
     <header>
-      <div><span>TÙY CHỈNH HỒ SƠ</span><h2>ẢNH ĐẠI DIỆN</h2></div>
-      <button type="button" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+      <div><span>TÙY CHỈNH HỒ SƠ</span><h2>{{ modalShell.resolved.title }}</h2></div>
+      <button type="button" [disabled]="saving" (click)="close.emit()" aria-label="Đóng"><i class="bi bi-x-lg"></i></button>
     </header>
 
     <nav>
@@ -37,4 +37,4 @@
     </div>
     <div *ngIf="error" class="error-message"><i class="bi bi-exclamation-triangle-fill"></i>{{ error }}</div>
   </section>
-</div>
+</hrk-modal>

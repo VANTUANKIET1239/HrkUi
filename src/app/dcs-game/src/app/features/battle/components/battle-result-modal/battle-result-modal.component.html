@@ -1,5 +1,5 @@
-<div class="modal-backdrop">
-  <div class="modal-container" [ngClass]="{'is-victory': isVictory, 'is-defeat': !isVictory}">
+<hrk-modal modalCode="BATTLE_RESULT" [chrome]="false" [dismissible]="false">
+  <div class="modal-container" [style.max-width.%]="100" [ngClass]="{'is-victory': isVictory, 'is-defeat': !isVictory}">
 
     <!-- 1. Result Title Header -->
     <div class="modal-header-section">
@@ -413,4 +413,5 @@
     </div>
 
   </div>
-</div>
+  <app-equipment-tooltip />
+</hrk-modal>
