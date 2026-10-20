@@ -9,6 +9,12 @@ const routes: Routes = [
     component: App,
     children: [
       {
+        path: 'check-in',
+        canActivate: [authGuard],
+        data: { appCode: 'dcs-game', audience: 'game-api' },
+        loadComponent: () => import('./features/check-in/check-in-page.component').then(m => m.CheckInPageComponent)
+      },
+      {
         path: 'summon',
         canActivate: [authGuard],
         data: { appCode: 'dcs-game', audience: 'game-api' },

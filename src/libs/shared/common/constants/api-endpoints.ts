@@ -1,4 +1,5 @@
 export const ApiEndpoints = {
+  CheckIn: { Calendar: 'dcs-game/check-in', Claim: 'dcs-game/check-in/claim' },
   Summon: {
     Configuration: 'dcs-game/summon/configuration',
     Open: 'dcs-game/summon',
@@ -101,6 +102,8 @@ export const ApiEndpoints = {
   },
 
   GameConfig: {
+    TemplateCapabilities: 'dcs-game/game-config/templates/capabilities',
+    RefreshTemplates: 'dcs-game/game-config/templates/refresh',
     Modals: 'dcs-game/game-config/modals',
     Features: 'dcs-game/game-config/features',
     CombatPower: 'dcs-game/game-config/combat-power'

@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, ElementRef, HostListener, Input, ViewChild, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentTooltipItem, EquipmentTooltipService } from './equipment-tooltip.service';
@@ -22,7 +23,7 @@ export interface StatComparisonRow {
 @Component({
   selector: 'app-equipment-tooltip',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './equipment-tooltip.component.html',
   styleUrls: ['./equipment-tooltip.component.scss']
 })

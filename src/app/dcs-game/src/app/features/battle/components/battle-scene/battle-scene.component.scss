@@ -14,7 +14,7 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   user-select: none;
   background: radial-gradient(circle at 50% 45%, rgba(26, 36, 68, 0.45) 0%, rgba(6, 10, 20, 0.95) 85%),
-    url('/assets/images/dcs-game/lobby_bg.png') no-repeat center center;
+    var(--hrk-lobby-background) no-repeat center center;
   background-size: cover;
 
   &.battle-paused * {

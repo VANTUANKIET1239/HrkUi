@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { reportAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
@@ -15,8 +16,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap, map, catchError } from 'rxjs/operators';
+import { Subject, of, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap, map, catchError, finalize } from 'rxjs/operators';
 import { DungeonStage, BattleFormationDraft, BattleFormationPosition, FormationPreviewResponse } from '../../../../core/models/dungeon.model';
 import { FormationDetailDto, PlayerFormationSummaryDto } from '../../../../core/models/formation.model';
 import { PlayerHeroDto } from '../../../../core/models/player-hero.model';
@@ -24,11 +25,12 @@ import { FormationService } from '../../../../core/services/formation.service';
 import { PlayerHeroService } from '../../../../core/services/player-hero.service';
 import { DungeonApiService } from '../../../../core/services/dungeon-api.service';
 import { InventoryService } from '../../../../core/services/inventory.service';
+import { PlayerService } from '../../../../core/services/player.service';
 
 @Component({
   selector: 'app-battle-formation-setup-modal',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule, FormsModule],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './battle-formation-setup-modal.component.html',
   styleUrl: './battle-formation-setup-modal.component.scss'
 })
@@ -46,6 +48,7 @@ export class BattleFormationSetupModalComponent implements OnInit {
   private readonly playerHeroService = inject(PlayerHeroService);
   private readonly dungeonApi = inject(DungeonApiService);
   private readonly inventoryService = inject(InventoryService);
+  private readonly playerService = inject(PlayerService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -70,6 +73,7 @@ export class BattleFormationSetupModalComponent implements OnInit {
   isPreviewLoading = false;
   validationErrors: string[] = [];
   isBagFull = false;
+  isInventoryCapacityLoading = true;
 
   // Saving default formation state
   isSavingDefault = false;
@@ -158,15 +162,33 @@ export class BattleFormationSetupModalComponent implements OnInit {
   }
 
   private checkInventoryCapacity(): void {
-    this.inventoryService.getInventory().subscribe({
-      next: (res) => {
-        if (res.data) {
-          const used = res.data.length ?? 0;
-          this.isBagFull = used >= 100;
-          this.cdr.markForCheck();
+    this.isInventoryCapacityLoading = true;
+    forkJoin({
+      inventory: this.inventoryService.getInventory(),
+      wallet: this.playerService.getWallet()
+    }).pipe(
+      map(({ inventory, wallet }) => {
+        const capacity = wallet.data?.maxCapacity;
+        if (!inventory.success || !Array.isArray(inventory.data) || !wallet.success ||
+            typeof capacity !== 'number' || !Number.isInteger(capacity) || capacity < 0) {
+          throw new Error('Invalid inventory capacity response.');
         }
-      },
-      error: () => {}
+        // The inventory endpoint returns active rows, including equipped items.
+        // Each unequipped row/stack occupies one bag slot, regardless of its quantity.
+        return inventory.data.filter(item => !item.isEquipped).length >= capacity;
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.isInventoryCapacityLoading = false;
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: isBagFull => this.isBagFull = isBagFull,
+      error: error => {
+        // The start-stage API still enforces capacity if this advisory check fails.
+        this.isBagFull = false;
+        this.toast.fromError(error, 'Không thể kiểm tra sức chứa hành trang. Máy chủ sẽ kiểm tra khi bắt đầu trận.');
+      }
     });
   }
 
@@ -436,6 +458,11 @@ export class BattleFormationSetupModalComponent implements OnInit {
 
   onStartBattle(): void {
     if (this.isStarting || this.isSavingDefault) return;
+
+    if (this.isInventoryCapacityLoading) {
+      this.toast.info('Đang kiểm tra hành trang, vui lòng đợi trong giây lát...');
+      return;
+    }
 
     if (this.isPreviewLoading) {
       this.toast.info('Đang tính lực chiến đội hình, vui lòng đợi trong giây lát...');

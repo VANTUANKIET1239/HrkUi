@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { AssetUrlService } from '../../../../libs/core/assets/asset-url.service';
 import { RouterOutlet } from '@angular/router';
 import { GameToastComponent } from './shared/components/game-toast/game-toast.component';
 import { HrkConfirmationHostComponent } from '../../../../libs/shared/ui/modal/hrk-confirmation-host.component';
@@ -9,11 +10,13 @@ import { HrkModalFloatingDirective } from '../../../../libs/shared/ui/modal/hrk-
 
 @Component({
   selector: 'app-root',
+  host: { '[style.--hrk-lobby-background]': 'lobbyBackground' },
   imports: [RouterOutlet, GameToastComponent, HrkConfirmationHostComponent, EquipmentTooltipComponent, HrkModalFloatingDirective],
   providers: [{ provide:HRK_MODAL_CONFIG_SOURCE, useExisting:GameModalConfigService }],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
+  protected readonly lobbyBackground = inject(AssetUrlService).background('images/dcs-game/backgrounds/lobby-bg.png');
   protected readonly title = signal('DCS_GAME_UI');
 }

@@ -68,13 +68,7 @@ interface TargetCoord {
             <div class="cross-slash slash-1"></div>
             <div class="cross-slash slash-2"></div>
             <div class="mask-burst-prop">
-              <img
-                [src]="maskAssetUrl"
-                alt="Phantom Mask"
-                class="mask-image"
-                (error)="onAssetError()"
-              />
-              @if (assetFailed) {
+              @if (useCssArtwork) {
                 <div class="mask-fallback">
                   <div class="mask-grin"></div>
                   <div class="mask-eye left-eye"></div>
@@ -337,8 +331,8 @@ export class QuocNhanSceneVfxComponent implements OnInit, OnChanges, OnDestroy {
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly maskAssetUrl = '/assets/images/dcs-game/skills/quoc-nhan-gia-dien/phantom-mask.png';
-  assetFailed = false;
+  // This scene uses its native CSS artwork; no missing bitmap request is needed.
+  readonly useCssArtwork = true;
 
   phase: 'idle' | 'split' | 'dash' | 'strike' = 'idle';
   actorPos = { x: 0, y: 0 };
@@ -372,11 +366,6 @@ export class QuocNhanSceneVfxComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearAll();
-  }
-
-  onAssetError(): void {
-    this.assetFailed = true;
-    this.cdr.markForCheck();
   }
 
   getMidpointX(x1: number, x2: number, idx: number): number {

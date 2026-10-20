@@ -14,7 +14,7 @@
         <span class="value">{{ formatNumber(gold) }}</span>
       </div>
       <div class="resource-item d-flex align-items-center" title="Đá Trận Pháp">
-        <img src="/assets/images/dcs-game/items/formation_stone.png" class="resource-stone-img me-1" alt="Đá Trận Pháp" />
+        <img src="/assets/images/dcs-game/items/formation-stone.png" class="resource-stone-img me-1" alt="Đá Trận Pháp" />
         <span class="value">{{ formatNumber(stones) }} Đá Trận Pháp</span>
       </div>
     </div>
@@ -391,7 +391,7 @@
               <div class="cost-item d-flex flex-column align-items-center">
                 <span class="small text-muted mb-1">Đá Trận Pháp</span>
                 <div class="d-flex align-items-center" [class.text-danger]="cost.playerStones < cost.stoneCost" [class.text-warning]="cost.playerStones >= cost.stoneCost">
-                  <img src="/assets/images/dcs-game/items/formation_stone.png" class="cost-stone-img me-1" alt="Đá Trận Pháp" />
+                  <img src="/assets/images/dcs-game/items/formation-stone.png" class="cost-stone-img me-1" alt="Đá Trận Pháp" />
                   <span class="font-title fs-6">{{ cost.stoneCost }} viên</span>
                 </div>
                 <span class="small text-muted">Hiện có: {{ cost.playerStones }}</span>
@@ -462,7 +462,7 @@
           (click)="selectPoolHeroClick(hero)">
 
           <div class="avatar-frame-pool mb-1 position-relative">
-            <img [src]="hero.avatar || '/assets/images/dcs-game/kiet.png'" class="pool-hero-avatar-img" alt="{{ hero.name }}" />
+            <img [src]="hero.avatar" imageKind="hero" class="pool-hero-avatar-img" alt="{{ hero.name }}" />
             <span class="level-indicator font-title">Lv.{{ hero.level }}</span>
             <span *ngIf="isHeroPlaced(hero)" class="placed-badge font-title">
               Ô {{ getHeroPlacedSlot(hero) }} • RA TRẬN

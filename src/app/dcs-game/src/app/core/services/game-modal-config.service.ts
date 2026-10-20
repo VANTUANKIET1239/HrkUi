@@ -11,13 +11,18 @@ export class GameModalConfigService implements HrkModalConfigSource {
   private readonly api = inject(HrkApiService);
   private readonly presets = signal<Record<string, Partial<HrkModalConfig>>>({});
   private loading = false;
+  private reloadAfterCurrent = false;
   private refreshAfter = 0;
 
   load(force = false): void {
-    if (this.loading || (!force && Date.now() < this.refreshAfter)) return;
+    if (this.loading) { this.reloadAfterCurrent ||= force; return; }
+    if (!force && Date.now() < this.refreshAfter) return;
     this.loading = true;
     this.api.CallApi<BaseResponse<unknown[]>>('GET', ApiEndpoints.GameConfig.Modals,
-      { withCredentials:true, loading:'none' }).pipe(finalize(() => this.loading = false)).subscribe({
+      { withCredentials:true, loading:'none' }).pipe(finalize(() => {
+        this.loading = false;
+        if (this.reloadAfterCurrent) { this.reloadAfterCurrent = false; this.load(true); }
+      })).subscribe({
       next: response => {
         if (!response.success || !Array.isArray(response.data)) { this.refreshAfter = Date.now() + 30000; return; }
         const entries: Record<string, Partial<HrkModalConfig>> = {};

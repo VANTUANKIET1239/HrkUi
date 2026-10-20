@@ -4,6 +4,16 @@ import { HrkApiService } from '../../../../../../libs/core/http/hrk-api/hrk-api.
 import { GameModalConfigService } from './game-modal-config.service';
 
 describe('GameModalConfigService', () => {
+  it('queues a forced reload when an older load is still pending', () => {
+    const first = response, second = new Subject<any>();
+    api.CallApi.and.returnValues(first, second);
+    const configs = service;
+    configs.load(); configs.load(true);
+    expect(api.CallApi).toHaveBeenCalledTimes(1);
+    first.next({ success: true, data: [] }); first.complete();
+    expect(api.CallApi).toHaveBeenCalledTimes(2);
+    second.next({ success: true, data: [] }); second.complete();
+  });
   let api:jasmine.SpyObj<HrkApiService>;
   let service:GameModalConfigService;
   let response:Subject<any>;

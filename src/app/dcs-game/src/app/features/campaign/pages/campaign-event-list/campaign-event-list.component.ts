@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -10,7 +11,7 @@ import { GameEventItem } from '../../../../core/models/event.model';
 @Component({
   selector: 'app-campaign-event-list',
   standalone: true,
-  imports: [CommonModule, CampaignAtmosphereComponent],
+  imports: [HrkImageDirective, CommonModule, CampaignAtmosphereComponent],
   templateUrl: './campaign-event-list.component.html',
   styleUrl: './campaign-event-list.component.scss'
 })

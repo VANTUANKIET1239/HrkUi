@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, Output, EventEmitter, ViewEncapsulation, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -18,7 +19,7 @@ import { EquipmentTooltipComponent } from '../../../../shared/components/equipme
 @Component({
   selector: 'app-battle-scene',
   standalone: true,
-  imports: [
+  imports: [HrkImageDirective,
     CommonModule,
     BattleCharacterComponent,
     BattleResultModalComponent,

@@ -37,13 +37,7 @@ interface TargetCoord {
           [style.left.px]="actorPos.x"
           [style.top.px]="actorPos.y - 70"
         >
-          <img
-            [src]="bellAssetUrl"
-            alt="Jade Guard Bell"
-            class="bell-image"
-            (error)="onAssetError()"
-          />
-          @if (assetFailed) {
+          @if (useCssArtwork) {
             <div class="bell-fallback">
               <div class="bell-dome"></div>
               <div class="bell-collar-cord"></div>
@@ -309,8 +303,8 @@ export class CauVangSceneVfxComponent implements OnInit, OnChanges, OnDestroy {
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly bellAssetUrl = '/assets/images/dcs-game/skills/cau-vang-mat-lanh/jade-guard-bell.png';
-  assetFailed = false;
+  // This scene uses its native CSS artwork; no missing bitmap request is needed.
+  readonly useCssArtwork = true;
 
   phase: 'idle' | 'chime' | 'paws' | 'barrier' = 'idle';
   actorPos = { x: 0, y: 0 };
@@ -344,11 +338,6 @@ export class CauVangSceneVfxComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.clearAll();
-  }
-
-  onAssetError(): void {
-    this.assetFailed = true;
-    this.cdr.markForCheck();
   }
 
   private clearAll(): void {

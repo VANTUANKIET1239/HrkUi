@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,7 +12,7 @@ type LibraryTab = 'heroes' | 'items';
 @Component({
   selector: 'app-library',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule, FormsModule],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './library.component.html',
   styleUrl: './library.component.scss'
 })
@@ -68,7 +69,7 @@ export class LibraryComponent implements OnInit {
     if (this.isHero(entry)) {
       return entry.avatar;
     }
-    return entry.imagePath || entry.icon || '/assets/images/dcs-game/items/formation_stone.png';
+    return entry.imagePath || entry.icon || '/assets/images/dcs-game/items/formation-stone.png';
   }
 
   getEntrySubtitle(entry: CatalogHero | CatalogItem): string {

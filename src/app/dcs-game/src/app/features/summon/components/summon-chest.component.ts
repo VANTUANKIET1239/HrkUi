@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { SummonCount, SummonPool } from '../../../core/models/summon.model';
 
 @Component({
-  selector: 'app-summon-chest', standalone: true, imports: [DecimalPipe],
+  selector: 'app-summon-chest', standalone: true, imports: [DecimalPipe, HrkImageDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="chest-panel" [class.premium]="pool.code === 'PREMIUM'" [class.active]="active">

@@ -1,5 +1,12 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkConfirmationModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
+import { GameTemplateCacheService } from '../../../../core/services/game-template-cache.service';
+import { GameModalConfigService } from '../../../../core/services/game-modal-config.service';
+import { HrkConfirmationService } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation.service';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { Component, OnInit , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -60,12 +67,18 @@ import { DungeonApiService } from '../../../../core/services/dungeon-api.service
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [HrkConfirmationModalComponent, CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent],
+  imports: [HrkImageDirective, HrkConfirmationModalComponent, CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
 export class GameHomeComponent implements OnInit {
   private readonly toast = inject(GameToastService);
+  private readonly templateCache = inject(GameTemplateCacheService);
+  private readonly modalConfigs = inject(GameModalConfigService);
+  private readonly confirmations = inject(HrkConfirmationService);
+  private readonly destroyRef = inject(DestroyRef);
+  canRefreshTemplates = false;
+  isRefreshingTemplates = false;
 
   isHeroManagementOpen = false;
   isFormationManagementOpen = false;
@@ -139,6 +152,10 @@ export class GameHomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.templateCache.capabilities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: response => this.canRefreshTemplates = response.data?.canRefresh === true,
+      error: () => this.canRefreshTemplates = false
+    });
     const resolvedData = this.route.snapshot.data['homeData'] as GameHomeInitialData | undefined;
     if (resolvedData) {
       this.applyHomeData(resolvedData);
@@ -156,8 +173,34 @@ export class GameHomeComponent implements OnInit {
     });
   }
 
+  async refreshTemplates(): Promise<void> {
+    if (!this.canRefreshTemplates || this.isRefreshingTemplates) return;
+    this.isRefreshingTemplates = true;
+    const confirmed = await this.confirmations.confirm('TEMPLATE_CACHE_REFRESH', {
+      kind: 'CONFIRMATION', title: 'Đồng bộ template', tone: 'WARNING', iconKey: 'warning',
+      messageTemplate: 'Nạp lại template từ database? Các thao tác mới sẽ sử dụng dữ liệu vừa đồng bộ.',
+      confirmText: 'Đồng bộ', cancelText: 'Hủy'
+    });
+    if (!confirmed || this.destroyRef.destroyed) {
+      this.isRefreshingTemplates = false;
+      return;
+    }
+    this.templateCache.refresh().pipe(
+      takeUntilDestroyed(this.destroyRef), finalize(() => this.isRefreshingTemplates = false)
+    ).subscribe({
+      next: response => {
+        if (!response.success || !response.data) return;
+        this.loadFeatureConfigs();
+        this.modalConfigs.load(true);
+        this.refreshPower();
+        this.toast.success(`Đã đồng bộ ${response.data.tableCount} bảng template (${response.data.rowCount} dòng).`);
+      },
+      error: error => this.toast.fromError(error, 'Không thể đồng bộ template. Vui lòng thử lại.')
+    });
+  }
+
   private loadFeatureConfigs(): void {
-    this.gameFeatureConfigService.getFeatures().subscribe({
+    this.gameFeatureConfigService.getFeatures().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: response => {
         if (!response?.success || !response.data) return;
         const toFeature = (item: GameFeatureConfig): FeatureItem => ({
@@ -214,7 +257,7 @@ export class GameHomeComponent implements OnInit {
   }
 
   refreshPower(): void {
-    this.playerService.getGameInfo('none').subscribe({
+    this.playerService.getGameInfo('none').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res?.success && res.data) {
           const power = res.data.formationPower ?? res.data.profile?.power ?? 0;
@@ -332,6 +375,10 @@ export class GameHomeComponent implements OnInit {
   onFeatureClick(feature: FeatureItem): void {
     // Navigation is driven by ActionCode from HRK_GameFeatureConfigs, not display text.
     switch (feature.actionCode) {
+      case 'CHECK_IN':
+        if (!feature.locked) this.router.navigate(['/dcs-game/check-in']);
+        else this.toast.warning('Điểm danh hiện đang bị khóa.');
+        return;
       case 'SUMMON':
         if (feature.locked) this.toast.warning('Chiêu mộ hiện đang bị khóa.');
         else this.router.navigate(['/dcs-game/summon']);

@@ -106,12 +106,14 @@ describe('Five Epic Heroes VFX Components & Registry Spec', () => {
       fixture.detectChanges();
 
       expect(comp.phase).toBe('scan');
-      expect(comp.vitalOrbAssetUrl).toContain('vital-scan-orb.png');
+      expect(fixture.nativeElement.querySelector('.vital-orb-fallback')).not.toBeNull();
     });
 
-    it('should activate fallback when asset fails', () => {
-      comp.onAssetError();
-      expect(comp.assetFailed).toBeTrue();
+    it('renders CSS artwork without requesting a missing bitmap', () => {
+      comp.actorActive = true;
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.vital-orb-fallback')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('img')).toBeNull();
     });
 
     it('should cleanup all timers on ngOnDestroy', () => {
@@ -159,7 +161,7 @@ describe('Five Epic Heroes VFX Components & Registry Spec', () => {
       const container = el.querySelector('.truong-kiet-vfx-container');
       expect(container?.classList.contains('caster-right')).toBeTrue();
       expect(comp.hasPanic).toBeTrue();
-      expect(comp.sealAssetUrl).toContain('resonance-kiss-seal.png');
+      expect(fixture.nativeElement.querySelector('img')).toBeNull();
     });
   });
 
@@ -192,7 +194,7 @@ describe('Five Epic Heroes VFX Components & Registry Spec', () => {
 
       expect(comp.phase).toBe('open');
       expect(comp.hasActionBarReduction).toBeTrue();
-      expect(comp.panelAssetUrl).toContain('holo-call-panel.png');
+      expect(fixture.nativeElement.querySelector('img')).toBeNull();
     });
   });
 
@@ -213,12 +215,12 @@ describe('Five Epic Heroes VFX Components & Registry Spec', () => {
       fixture.destroy();
     });
 
-    it('should initialize split phase and mask asset URL', () => {
+    it('should initialize split phase without a missing mask bitmap', () => {
       comp.actorActive = true;
       fixture.detectChanges();
 
       expect(comp.phase).toBe('split');
-      expect(comp.maskAssetUrl).toContain('phantom-mask.png');
+      expect(fixture.nativeElement.querySelector('img')).toBeNull();
     });
   });
 
@@ -244,7 +246,8 @@ describe('Five Epic Heroes VFX Components & Registry Spec', () => {
       fixture.detectChanges();
 
       expect(comp.phase).toBe('chime');
-      expect(comp.bellAssetUrl).toContain('jade-guard-bell.png');
+      expect(fixture.nativeElement.querySelector('.bell-fallback')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('img')).toBeNull();
     });
   });
 });

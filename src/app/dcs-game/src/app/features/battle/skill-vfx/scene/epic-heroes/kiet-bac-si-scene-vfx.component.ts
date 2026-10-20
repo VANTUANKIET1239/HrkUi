@@ -37,13 +37,7 @@ interface TargetCoord {
           [style.left.px]="actorPos.x"
           [style.top.px]="actorPos.y - 70"
         >
-          <img
-            [src]="vitalOrbAssetUrl"
-            alt="Vital Scan Orb"
-            class="orb-image"
-            (error)="onAssetError()"
-          />
-          @if (assetFailed) {
+          @if (useCssArtwork) {
             <div class="vital-orb-fallback">
               <div class="orb-core"></div>
               <div class="orb-ecg-ring"></div>
@@ -288,8 +282,8 @@ export class KietBacSiSceneVfxComponent implements OnInit, OnChanges, OnDestroy 
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly vitalOrbAssetUrl = '/assets/images/dcs-game/skills/kiet-bac-si/vital-scan-orb.png';
-  assetFailed = false;
+  // This scene uses its native CSS artwork; no missing bitmap request is needed.
+  readonly useCssArtwork = true;
 
   phase: 'idle' | 'scan' | 'pulse' | 'heal' = 'idle';
   actorPos = { x: 0, y: 0 };
@@ -323,11 +317,6 @@ export class KietBacSiSceneVfxComponent implements OnInit, OnChanges, OnDestroy 
 
   ngOnDestroy(): void {
     this.clearAll();
-  }
-
-  onAssetError(): void {
-    this.assetFailed = true;
-    this.cdr.markForCheck();
   }
 
   private clearAll(): void {

@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-tien-dung-xuan-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -249,7 +250,7 @@ export class TienDungXuanSceneVfxComponent implements OnInit, OnChanges, OnDestr
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly sealAssetUrl = '/assets/images/dcs-game/skills/tien-dung-xuan/spring-calligraphy-seal.png';
+  readonly sealAssetUrl = '/assets/images/dcs-game/skill-vfx/tien-dung-xuan/spring-calligraphy-seal.png';
   assetFailed = false;
 
   phase: 'idle' | 'draw' | 'spread' | 'stamp' = 'idle';

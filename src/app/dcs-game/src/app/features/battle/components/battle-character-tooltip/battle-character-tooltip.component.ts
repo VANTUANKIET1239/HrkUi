@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input } from '@angular/core';
 import { HERO_STAR_COLORS } from '../../../../core/configs/hero-star-colors';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,7 @@ import { Hero, BattleStatusEffectViewModel } from '../../../../core/models/hero.
 @Component({
   selector: 'app-battle-character-tooltip',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './battle-character-tooltip.component.html',
   styleUrl: './battle-character-tooltip.component.scss'
 })

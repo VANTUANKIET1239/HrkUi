@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-trong-chua-no-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -254,7 +255,7 @@ export class TrongChuaNoSceneVfxComponent implements OnInit, OnChanges, OnDestro
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly chargeAssetUrl = '/assets/images/dcs-game/skills/trong-chua-no/timed-charge.png';
+  readonly chargeAssetUrl = '/assets/images/dcs-game/skill-vfx/trong-chua-no/timed-charge.png';
   assetFailed = false;
 
   phase: 'idle' | 'throw' | 'armed' | 'detonate' = 'idle';

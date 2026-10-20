@@ -4,7 +4,7 @@
   [style.--theme-primary]="currentTheme.primaryColor"
   [style.--theme-secondary]="currentTheme.secondaryColor"
   [style.--theme-glow]="currentTheme.accentGlow"
-  [style.background-image]="map ? 'radial-gradient(circle at 50% 30%, rgba(10, 16, 28, 0.75) 0%, rgba(4, 7, 14, 0.95) 90%), url(' + (map.backgroundPath || map.imagePath) + ')' : ''"
+  [style.background-image]="map ? 'radial-gradient(circle at 50% 30%, rgba(10, 16, 28, 0.75) 0%, rgba(4, 7, 14, 0.95) 90%), ' + assets.background(map.backgroundPath || map.imagePath) : ''"
 >
   <!-- Floating Atmosphere Effects -->
   <app-campaign-atmosphere

@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DungeonStage } from '../../../../core/models/dungeon.model';
@@ -5,7 +6,7 @@ import { DungeonStage } from '../../../../core/models/dungeon.model';
 @Component({
   selector: 'app-campaign-boss-node',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './campaign-boss-node.component.html',
   styleUrl: './campaign-boss-node.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -43,19 +44,12 @@ export class CampaignBossNodeComponent {
     if (bossEnemy?.imagePath) return bossEnemy.imagePath;
     if (this.stage.enemies?.[2]?.imagePath) return this.stage.enemies[2].imagePath;
     if (this.stage.enemies?.[0]?.imagePath) return this.stage.enemies[0].imagePath;
-    return '/assets/images/dcs-game/dungeon/monsters/monster-5.png';
+    return '/assets/images/dcs-game/dungeons/shared/monsters/monster-5.png';
   }
 
   get bossName(): string {
     const bossEnemy = this.stage.enemies?.find(e => e.isBoss);
     return bossEnemy?.name || this.stage.name;
-  }
-
-  onImgError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    if (target && !target.src.includes('monster-5.png')) {
-      target.src = '/assets/images/dcs-game/dungeon/monsters/monster-5.png';
-    }
   }
 
   onBossClick(): void {

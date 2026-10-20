@@ -511,7 +511,7 @@ $color-common: #9ca3af;
   height: 360px;
   min-height: 360px;
   background: radial-gradient(circle, rgba(139, 0, 0, 0.18) 0%, rgba(10, 8, 5, 0.98) 100%),
-    url(/assets/images/dcs-game/lobby_bg.png) no-repeat center center;
+    var(--hrk-lobby-background) no-repeat center center;
   background-size: cover;
   border-bottom: 2.5px solid $gold-border;
   display: flex;

@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
@@ -11,7 +12,7 @@ import { ProcessRealtimeService } from '../../../../core/services/process-realti
 @Component({
   selector: 'app-tower-quick-climb-modal',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './tower-quick-climb-modal.component.html',
   styleUrl: './tower-quick-climb-modal.component.scss'
 })

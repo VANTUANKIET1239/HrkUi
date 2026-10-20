@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -46,7 +47,7 @@ export interface BrokenMoraleTargetMarker {
 @Component({
   selector: 'app-nghia-phuc-prime-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './nghia-phuc-prime-scene-vfx.component.html',
   styleUrl: './nghia-phuc-prime-scene-vfx.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,13 +1,15 @@
 import { Component, Input } from '@angular/core';
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 
 @Component({
   selector: 'app-dark-knowledge-scene-vfx',
   standalone: true,
+  imports: [HrkImageDirective],
   template: `
     <div class="dark-knowledge-scene-fx">
       <div class="sky-rift-slit" [class.active]="actorActive"></div>
       <div class="falling-dark-book-container" [class.active]="actorActive">
-        <img src="/assets/images/dcs-game/sach-bongtoi.png" class="falling-dark-book" alt="Dark Knowledge" />
+        <img src="/assets/images/dcs-game/skill-vfx/shared/dark-book.png" class="falling-dark-book" alt="Dark Knowledge" />
       </div>
       <div class="center-explosion" [class.active]="impactActive">
         <div class="exp-shockwave"></div>

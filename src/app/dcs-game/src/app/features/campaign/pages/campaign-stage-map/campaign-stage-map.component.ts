@@ -1,3 +1,5 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
+import { AssetUrlService } from '../../../../../../../../libs/core/assets/asset-url.service';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, inject, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
@@ -20,7 +22,7 @@ import { CampaignThemeService, CampaignTheme } from '../../services/campaign-the
 @Component({
   selector: 'app-campaign-stage-map',
   standalone: true,
-  imports: [HrkModalComponent,
+  imports: [HrkImageDirective, HrkModalComponent,
     CommonModule,
     CampaignAtmosphereComponent,
     CampaignRoadComponent,
@@ -33,6 +35,7 @@ import { CampaignThemeService, CampaignTheme } from '../../services/campaign-the
   styleUrl: './campaign-stage-map.component.scss'
 })
 export class CampaignStageMapComponent implements OnInit, AfterViewInit {
+  protected readonly assets = inject(AssetUrlService);
   private readonly toast = inject(GameToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

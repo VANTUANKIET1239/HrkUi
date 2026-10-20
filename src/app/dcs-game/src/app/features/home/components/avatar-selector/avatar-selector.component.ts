@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, inject, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
@@ -8,7 +9,7 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-avatar-selector',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './avatar-selector.component.html',
   styleUrl: './avatar-selector.component.scss'
 })

@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
@@ -98,7 +99,7 @@ export interface StatCardDisplay {
 @Component({
   selector: 'app-hero-management',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './hero-management.component.html',
   styleUrl: './hero-management.component.scss',
 })
@@ -119,7 +120,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
   selectedHero: RPGHero = {
     id: 1,
     name: 'Võ Tướng',
-    avatar: '/assets/images/dcs-game/kiet.png',
+    avatar: '/assets/images/dcs-game/heroes/kiet.png',
     rarity: 'Legendary',
     level: 1,
     stars: 1,
@@ -652,7 +653,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     return {
       id: hero.id,
       name: hero.name,
-      avatar: hero.avatar || '/assets/images/dcs-game/kiet.png',
+      avatar: hero.avatar || '',
       rarity: this.toRarity(hero.rarityId, hero.rarityCode, hero.rarityName),
       rarityCode: hero.rarityCode,
       level: hero.level,
@@ -1028,13 +1029,6 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
       slots[5].item = equipment.artifact ?? null;
     }
     this.equipmentSlots = slots;
-  }
-
-  onAvatarError(event: Event): void {
-    const target = event.target as HTMLImageElement;
-    if (target) {
-      target.src = '/assets/images/dcs-game/kiet.png';
-    }
   }
 
   // Equip Gear from Inventory (Real API Transaction)

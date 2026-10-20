@@ -109,7 +109,7 @@
           
           <!-- Avatar Frame -->
           <div class="hero-avatar-frame position-relative me-2">
-            <img [src]="hero.avatar" class="hero-avatar" [alt]="hero.name" (error)="onAvatarError($event)" />
+            <img [src]="hero.avatar" class="hero-avatar" imageKind="hero" [alt]="hero.name" />
             <span class="hero-level-badge">Lv.{{ hero.level }}</span>
             <i class="bi bi-lock-fill hero-lock-badge" *ngIf="hero.locked"></i>
             <i class="bi bi-star-fill hero-fav-badge" *ngIf="hero.favorite"></i>

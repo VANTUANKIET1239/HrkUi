@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 
@@ -5,12 +6,12 @@ import { Component, Input, OnChanges } from '@angular/core';
 @Component({
   selector: 'app-item-image',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   template: `
     <span class="artwork" [class.hero-stone]="!!item.heroStonePortrait" role="img" [attr.aria-label]="item.name">
       <img *ngIf="item.heroStonePortrait && !portraitFailed" class="portrait"
-        [src]="item.heroStonePortrait" alt="" (error)="portraitFailed = true">
-      <img *ngIf="source && !imageFailed; else fallback" [src]="source" alt="" (error)="imageFailed = true">
+        [src]="item.heroStonePortrait" imageKind="hero" alt="" (hrkImageFailed)="portraitFailed = true">
+      <img *ngIf="source && !imageFailed; else fallback" [src]="source" imageKind="item" alt="" (hrkImageFailed)="imageFailed = true">
       <ng-template #fallback><i [class]="'bi ' + (item.icon || 'bi-gem')"></i></ng-template>
     </span>
   `,

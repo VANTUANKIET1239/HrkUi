@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -23,7 +24,7 @@ export interface ChainSegment {
 @Component({
   selector: 'app-van-trong-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -242,7 +243,7 @@ export class VanTrongSceneVfxComponent implements OnInit, OnChanges, OnDestroy {
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly mascotOrbAssetUrl = '/assets/images/dcs-game/skills/van-trong-dien-vang/electric-mascot-orb.png';
+  readonly mascotOrbAssetUrl = '/assets/images/dcs-game/skill-vfx/van-trong-dien-vang/electric-mascot-orb.png';
   assetFailed = false;
 
   phase: 'idle' | 'charge' | 'strike' = 'idle';

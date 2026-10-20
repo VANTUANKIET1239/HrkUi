@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { reportAppError, reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
@@ -20,7 +21,7 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-formation-management',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './formation-management.component.html',
   styleUrl: './formation-management.component.scss'
 })
@@ -390,7 +391,7 @@ export class FormationManagementComponent implements OnInit {
     return {
       id: rpgHero.id,
       name: rpgHero.name,
-      avatar: rpgHero.avatar || '/assets/images/dcs-game/kiet.png',
+      avatar: rpgHero.avatar || '',
       hp: rpgHero.stats?.hp || 1000,
       maxHp: rpgHero.stats?.hp || 1000,
       mana: 50,

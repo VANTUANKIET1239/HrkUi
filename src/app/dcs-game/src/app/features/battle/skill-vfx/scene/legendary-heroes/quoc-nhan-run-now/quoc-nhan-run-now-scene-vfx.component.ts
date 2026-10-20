@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -28,7 +29,7 @@ export interface WaxTargetNode {
 @Component({
   selector: 'app-quoc-nhan-run-now-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './quoc-nhan-run-now-scene-vfx.component.html',
   styleUrl: './quoc-nhan-run-now-scene-vfx.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

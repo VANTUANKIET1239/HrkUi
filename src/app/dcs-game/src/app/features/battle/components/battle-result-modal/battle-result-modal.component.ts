@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, inject, HostListener } from '@angular/core';
@@ -61,7 +62,7 @@ export interface ProcessedHeroStat {
 @Component({
   selector: 'app-battle-result-modal',
   standalone: true,
-  imports: [EquipmentTooltipComponent, HrkModalComponent, CommonModule, EquipmentRollDetailsComponent],
+  imports: [HrkImageDirective, EquipmentTooltipComponent, HrkModalComponent, CommonModule, EquipmentRollDetailsComponent],
   templateUrl: './battle-result-modal.component.html',
   styleUrl: './battle-result-modal.component.scss'
 })
@@ -201,7 +202,7 @@ export class BattleResultModalComponent implements OnInit, OnDestroy {
         sourceHeroId: h.sourceHeroId,
         team: h.team,
         heroName: h.heroName || 'Võ Tướng',
-        avatar: h.avatar || '/assets/images/dcs-game/heroes/default.png',
+        avatar: h.avatar || '/assets/images/dcs-game/placeholders/hero.svg',
 
         physicalDamageDealt: h.physicalDamageDealt,
         magicDamageDealt: h.magicDamageDealt,

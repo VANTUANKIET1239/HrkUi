@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HERO_STAR_COLORS } from '../../../../../core/configs/hero-star-colors';
 import { ItemImageComponent } from '../../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
@@ -8,7 +9,7 @@ import { HeroFeatureTabContext } from './hero-feature-tab.models';
 @Component({
   selector: 'app-hero-star-upgrade-tab',
   standalone: true,
-  imports: [CommonModule, ItemImageComponent],
+  imports: [HrkImageDirective, CommonModule, ItemImageComponent],
   template: `
     <section class="star-feature-panel">
       <div class="star-summary-card">

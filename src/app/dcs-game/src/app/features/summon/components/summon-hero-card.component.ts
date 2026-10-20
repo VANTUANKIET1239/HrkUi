@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { SummonHero } from '../../../core/models/summon.model';
 
 @Component({
-  selector: 'app-summon-hero-card', standalone: true,
+  selector: 'app-summon-hero-card', standalone: true, imports: [HrkImageDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <figure class="hero-card" [style.--rarity]="hero.rarityColorHex || '#b6a77f'">
       <div class="portrait">
-        <img [src]="hero.avatar" [alt]="hero.name" draggable="false" (error)="onImageError($event)" />
+        <img [src]="hero.avatar" imageKind="hero" [alt]="hero.name" draggable="false" />
         @if (isNew) { <span class="new-tag">MỚI</span> }
         <span class="rarity">{{ hero.rarityName }}</span>
       </div>
@@ -32,9 +33,4 @@ export class SummonHeroCardComponent {
   @Input() isNew = false;
   @Input() stoneQuantity = 0;
   @Input() stoneName?: string | null;
-  onImageError(event: Event): void {
-    const image = event.target as HTMLImageElement;
-    if (image.src.endsWith('/summon/normal-chest.png')) return;
-    image.src = '/assets/images/dcs-game/summon/normal-chest.png';
-  }
 }

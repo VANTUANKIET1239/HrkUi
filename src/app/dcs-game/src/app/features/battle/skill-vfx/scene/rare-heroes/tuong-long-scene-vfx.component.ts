@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-tuong-long-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -256,7 +257,7 @@ export class TuongLongSceneVfxComponent implements OnInit, OnChanges, OnDestroy 
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly bellAssetUrl = '/assets/images/dcs-game/skills/tuong-long-cap-3/school-bell.png';
+  readonly bellAssetUrl = '/assets/images/dcs-game/skill-vfx/tuong-long-cap-3/school-bell.png';
   assetFailed = false;
 
   phase: 'idle' | 'lift' | 'strike' | 'chime' | 'heal' = 'idle';

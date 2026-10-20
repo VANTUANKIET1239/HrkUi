@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -8,7 +9,7 @@ import { EquipmentTooltipService } from '../../../../shared/components/equipment
 @Component({
   selector: 'app-campaign-stage-detail-modal',
   standalone: true,
-  imports: [HrkModalComponent, CommonModule],
+  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './campaign-stage-detail-modal.component.html',
   styleUrl: './campaign-stage-detail-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

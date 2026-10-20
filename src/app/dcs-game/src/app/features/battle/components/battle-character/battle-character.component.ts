@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BattlePresentationEffect, BattleStatusEffectViewModel, Hero } from '../../../../core/models/hero.model';
@@ -19,7 +20,7 @@ import { AuraResourceComponent } from './aura-resource/aura-resource.component';
 @Component({
   selector: 'app-battle-character',
   standalone: true,
-  imports: [
+  imports: [HrkImageDirective,
     CommonModule, 
     HpBarComponent, 
     ManaBarComponent,

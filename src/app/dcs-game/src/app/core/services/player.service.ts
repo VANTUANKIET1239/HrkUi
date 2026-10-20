@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { AssetUrlService } from '../../../../../../libs/core/assets/asset-url.service';
 import { Observable } from 'rxjs';
 import { HrkApiService } from '../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { ApiMethod } from '../../../../../../libs/shared/common/constants/ApiMethod.constants';
@@ -10,6 +11,7 @@ import { LoadingMode, withLoading } from '../../../../../../libs/core/loading/lo
   providedIn: 'root'
 })
 export class PlayerService {
+  private readonly assets = inject(AssetUrlService);
   private readonly playerApi = ApiEndpoints.Player;
 
   constructor(private hrkApiService: HrkApiService) {}
@@ -78,6 +80,6 @@ export class PlayerService {
     if (profile.avatarType === 'CUSTOM') {
       return `${this.hrkApiService.ResolveUrl(this.playerApi.CustomAvatarImage(profile.id))}?v=${profile.avatarVersion || Date.now()}`;
     }
-    return profile.avatarUrl || '';
+    return this.assets.resolve(profile.avatarUrl);
   }
 }

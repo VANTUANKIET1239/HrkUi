@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -23,7 +24,7 @@ import {
 @Component({
   selector: 'app-long-le-cat-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './long-le-cat-scene-vfx.component.html',
   styleUrl: './long-le-cat-scene-vfx.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

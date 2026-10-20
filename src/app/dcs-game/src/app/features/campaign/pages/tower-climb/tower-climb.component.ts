@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkConfirmationService } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation.service';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { BattleSceneComponent } from '../../../battle/components/battle-scene/battle-scene.component';
@@ -25,7 +26,7 @@ import { BattleHeroStatisticsDto } from '../../../../core/models/battle.model';
 @Component({
   selector: 'app-tower-climb',
   standalone: true,
-  imports: [
+  imports: [HrkImageDirective,
     CommonModule,
     CampaignAtmosphereComponent,
     CampaignStageDetailModalComponent,

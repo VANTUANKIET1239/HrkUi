@@ -37,13 +37,7 @@ interface TargetCoord {
           [style.left.px]="actorPos.x"
           [style.top.px]="actorPos.y - 75"
         >
-          <img
-            [src]="panelAssetUrl"
-            alt="Holo Call Panel"
-            class="panel-image"
-            (error)="onAssetError()"
-          />
-          @if (assetFailed) {
+          @if (useCssArtwork) {
             <div class="panel-fallback">
               <div class="holo-tile tile-1"></div>
               <div class="holo-tile tile-2"></div>
@@ -306,8 +300,8 @@ export class TienDungTongDaiSceneVfxComponent implements OnInit, OnChanges, OnDe
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly panelAssetUrl = '/assets/images/dcs-game/skills/tien-dung-tong-dai/holo-call-panel.png';
-  assetFailed = false;
+  // This scene uses its native CSS artwork; no missing bitmap request is needed.
+  readonly useCssArtwork = true;
 
   phase: 'idle' | 'open' | 'lock' | 'beams' = 'idle';
   actorPos = { x: 0, y: 0 };
@@ -342,11 +336,6 @@ export class TienDungTongDaiSceneVfxComponent implements OnInit, OnChanges, OnDe
 
   ngOnDestroy(): void {
     this.clearAll();
-  }
-
-  onAssetError(): void {
-    this.assetFailed = true;
-    this.cdr.markForCheck();
   }
 
   private clearAll(): void {

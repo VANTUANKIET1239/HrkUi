@@ -81,7 +81,7 @@
 
           <!-- Lead Hero Figure (Highest CP hero of active formation) -->
           <div class="hero-figure-container" *ngIf="progress.leadHero as hero">
-            <img [src]="hero.avatar || '/assets/images/dcs-game/heroes/default.png'" [alt]="hero.name" class="hero-full-art" />
+            <img [src]="hero.avatar || '/assets/images/dcs-game/placeholders/hero.svg'" [alt]="hero.name" class="hero-full-art" />
             <div class="hero-floating-badge">
               <span class="hero-name">{{ hero.name }}</span>
               <span class="hero-level">Lv.{{ hero.level }} · {{ hero.stars }}★</span>
@@ -251,7 +251,7 @@
           <!-- Representative Enemy Art & Power -->
           <div class="island-enemy-box">
             <img
-              [src]="f.representativeEnemyAvatar || '/assets/images/dcs-game/heroes/default.png'"
+              [src]="f.representativeEnemyAvatar || '/assets/images/dcs-game/placeholders/hero.svg'"
               [alt]="f.representativeEnemyName || 'Địch'"
               class="enemy-avatar-img"
             />

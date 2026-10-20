@@ -40,6 +40,11 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": ".generated/legacy-assets",
+                "output": "assets"
               }
             ],
             "styles": [
@@ -116,6 +121,16 @@
                 "glob": "index.html",
                 "input": "src/app/shell",
                 "output": "."
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": ".generated/legacy-assets",
+                "output": "assets"
               }
             ],
             "styles": [

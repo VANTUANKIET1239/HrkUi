@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -12,7 +13,7 @@ export interface DebrisPiece {
 @Component({
   selector: 'app-skill-ricardo-milos',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   templateUrl: './skill-ricardo-milos.component.html',
   styleUrl: './skill-ricardo-milos.component.scss'
 })

@@ -9,7 +9,7 @@
           (click)="isAvatarSelectorOpen = true" (keydown.enter)="isAvatarSelectorOpen = true">
           <!-- Stylized Avatar (using SVG or clean letters/icon since we want it visual) -->
           <img *ngIf="playerInfo.avatarUrl" class="player-avatar-image" [src]="playerInfo.avatarUrl"
-            (error)="playerInfo.avatarUrl = ''" alt="Ảnh đại diện" />
+            imageKind="hero" alt="Ảnh đại diện" />
           <div *ngIf="!playerInfo.avatarUrl" class="avatar-img-placeholder d-flex align-items-center justify-content-center">
             <i class="bi bi-person-circle text-warning fs-1"></i>
           </div>
@@ -30,6 +30,12 @@
           <span>EXP {{playerInfo.exp | number}} / {{playerInfo.maxExp | number}}</span>
         </div>
         <div class="player-actions d-flex mt-1">
+          <button *ngIf="canRefreshTemplates" type="button" class="btn btn-sm btn-template-sync me-1"
+            [disabled]="isRefreshingTemplates" [attr.aria-busy]="isRefreshingTemplates"
+            (click)="refreshTemplates()" title="Nạp lại dữ liệu template từ database vào cache">
+            <i class="bi bi-arrow-repeat me-1" [class.sync-spinning]="isRefreshingTemplates"></i>
+            {{ isRefreshingTemplates ? 'Đang đồng bộ…' : 'Đồng bộ template' }}
+          </button>
           <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">Nạp</button>
           <button class="btn btn-sm btn-achievement d-flex align-items-center me-1"
             (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">

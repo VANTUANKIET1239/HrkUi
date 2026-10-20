@@ -43,13 +43,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
           [style.left.px]="projPos.x"
           [style.top.px]="projPos.y"
         >
-          <img
-            [src]="sealAssetUrl"
-            alt="Resonance Kiss Seal"
-            class="seal-image"
-            (error)="onAssetError()"
-          />
-          @if (assetFailed) {
+          @if (useCssArtwork) {
             <div class="seal-fallback">
               <div class="seal-arc seal-arc-top"></div>
               <div class="seal-arc seal-arc-bottom"></div>
@@ -280,8 +274,8 @@ export class TruongKietSceneVfxComponent implements OnInit, OnChanges, OnDestroy
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly sealAssetUrl = '/assets/images/dcs-game/skills/truong-kiet-chu-mo/resonance-kiss-seal.png';
-  assetFailed = false;
+  // This scene uses its native CSS artwork; no missing bitmap request is needed.
+  readonly useCssArtwork = true;
 
   phase: 'idle' | 'charge' | 'travel' | 'impact' = 'idle';
   actorPos = { x: 0, y: 0 };
@@ -317,11 +311,6 @@ export class TruongKietSceneVfxComponent implements OnInit, OnChanges, OnDestroy
 
   ngOnDestroy(): void {
     this.clearAll();
-  }
-
-  onAssetError(): void {
-    this.assetFailed = true;
-    this.cdr.markForCheck();
   }
 
   private clearAll(): void {

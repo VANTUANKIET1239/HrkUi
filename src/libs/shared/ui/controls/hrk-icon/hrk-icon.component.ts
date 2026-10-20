@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, input, OnInit } from '@angular/core';
+import { HrkImageDirective } from '../hrk-image/hrk-image.directive';
 
 @Component({
   selector: 'hrk-icon',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HrkImageDirective],
   templateUrl: './hrk-icon.component.html',
   styleUrls: ['./hrk-icon.component.scss']
 })

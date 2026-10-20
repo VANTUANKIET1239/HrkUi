@@ -1,0 +1,47 @@
+<main class="check-in-page">
+  <header class="page-header">
+    <a routerLink="/dcs-game/home" class="back-link"><i class="bi bi-arrow-left"></i> Sảnh chính</a>
+    <button type="button" class="refresh" (click)="load()" [disabled]="loading() || claiming()" aria-label="Tải lại lịch"><i class="bi bi-arrow-clockwise"></i></button>
+  </header>
+  <section class="calendar-panel" aria-labelledby="check-in-title">
+    <div class="heading"><i class="bi bi-calendar-check"></i><div><span class="eyebrow">QUÀ MỖI NGÀY</span><h1 id="check-in-title">{{ calendar()?.name || 'Điểm danh tháng' }}</h1><p>Mỗi ngày một món quà. Đừng bỏ lỡ ngày hôm nay!</p></div></div>
+    @if (error()) { <div class="message error" role="alert">{{ error() }}</div> }
+    @if (receipt(); as result) {
+      <div class="message success" role="status">
+        <strong>{{ result.alreadyClaimed ? 'Bạn đã nhận phần thưởng này.' : 'Điểm danh thành công!' }}</strong>
+        <span>Ngày {{ result.checkInDate | date:'dd/MM/yyyy' }}</span>
+        @for (reward of result.rewards; track $index) { <span>{{ reward.name || reward.code || reward.type }} × {{ reward.quantity | number }}</span> }
+      </div>
+    }
+    @if (loading() && !calendar()) { <p class="empty" role="status">Đang tải lịch điểm danh…</p> }
+    @if (calendar(); as data) {
+      @if (data.isOpen) {
+        <div class="calendar-summary"><span>Đã nhận <strong>{{ data.claimedDays }}/{{ data.days.length }}</strong> ngày</span><span>Ngày mới sau <strong>{{ countdown }}</strong></span></div>
+        <div class="weekdays" aria-hidden="true">@for (name of weekdays; track name) { <span>{{ name }}</span> }</div>
+        <div class="days" aria-label="Lịch phần thưởng">
+          @for (empty of leadingDays; track empty) { <div class="spacer" aria-hidden="true"></div> }
+          @for (day of data.days; track day.dayOfMonth) {
+            <article class="day" [class.claimed]="day.status === 'CLAIMED'" [class.today]="day.status === 'CLAIMABLE'" [class.missed]="day.status === 'MISSED'">
+              <div class="day-number">{{ day.dayOfMonth }} @if (day.status === 'CLAIMED') { <i class="bi bi-check-circle-fill" aria-hidden="true"></i> }</div>
+              @for (reward of day.rewards; track $index) {
+                <div class="reward">
+                  @if (reward.imagePath) { <img [src]="reward.imagePath" [alt]="reward.name || reward.type" loading="lazy"> }
+                  @else { <i class="bi" [class.bi-coin]="reward.type === 'GOLD'" [class.bi-gem]="reward.type === 'DIAMOND'" [class.bi-gift]="reward.type !== 'GOLD' && reward.type !== 'DIAMOND'" aria-hidden="true"></i> }
+                  <span class="reward-name">{{ reward.name || reward.code || reward.type }}</span><strong>×{{ reward.quantity | number }}</strong>
+                </div>
+              }
+              <span class="day-status">{{ label(day) }}</span>
+            </article>
+          }
+        </div>
+        <div class="claim-area">
+          @if (data.reason) { <p>{{ data.reason }}</p> }
+          <button type="button" class="claim-button" (click)="claim()" [disabled]="!data.canClaim || loading() || claiming() || secondsUntilReset() === 0">
+            <i class="bi bi-gift"></i> {{ claimLabel }}
+          </button>
+          <p class="rules">Mỗi ngày nhận một lần theo lịch game. Ngày bỏ lỡ không được nhận bù.</p>
+        </div>
+      } @else { <p class="empty">{{ data.reason || 'Lịch điểm danh tháng này chưa mở.' }}</p> }
+    }
+  </section>
+</main>

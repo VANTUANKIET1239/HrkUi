@@ -18,7 +18,7 @@
     <!-- Inventory / Stamina Warning Bar -->
     <div *ngIf="isBagFull" class="warning-banner bag-warning">
       <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      <span>Hành trang đã đầy! Bạn vẫn có thể đánh nhưng sẽ không nhận được trang bị rơi.</span>
+      <span>Hành trang đã đầy! Vui lòng dọn bớt hoặc mở rộng túi đồ trước khi vào phó bản.</span>
     </div>
 
     <!-- Modal Body -->
@@ -382,7 +382,7 @@
           id="btn-start-dungeon-battle"
           class="btn-start-battle"
           (click)="onStartBattle()"
-          [disabled]="isStarting || isSavingDefault || isPreviewLoading || deployedCount === 0 || staminaCurrent < stage.staminaCost || (previewData && !previewData.isValid)"
+          [disabled]="isStarting || isSavingDefault || isPreviewLoading || isInventoryCapacityLoading || isBagFull || deployedCount === 0 || staminaCurrent < stage.staminaCost || (previewData && !previewData.isValid)"
         >
           <i class="bi"
              [class.bi-sword]="!isStarting && !isSavingDefault && !isPreviewLoading"

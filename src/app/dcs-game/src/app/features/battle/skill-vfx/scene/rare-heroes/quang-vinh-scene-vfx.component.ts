@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-quang-vinh-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -277,7 +278,7 @@ export class QuangVinhSceneVfxComponent implements OnInit, OnChanges, OnDestroy 
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly barrierAssetUrl = '/assets/images/dcs-game/skills/quang-vinh-thcs/school-barrier.png';
+  readonly barrierAssetUrl = '/assets/images/dcs-game/skill-vfx/quang-vinh-thcs/school-barrier.png';
   assetFailed = false;
 
   phase: 'idle' | 'slam' | 'wave' | 'barrier' = 'idle';

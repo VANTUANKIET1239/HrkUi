@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-nguyen-xam-lon-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -263,7 +264,7 @@ export class NguyenXamLonSceneVfxComponent implements OnInit, OnChanges, OnDestr
   @Input() activeTargetIds: number[] = [];
   @Input() castEvents: BattleEventDto[] = [];
 
-  readonly bossStampAssetUrl = '/assets/images/dcs-game/skills/nguyen-xam-lon/boss-stamp.png';
+  readonly bossStampAssetUrl = '/assets/images/dcs-game/skill-vfx/nguyen-xam-lon/boss-stamp.png';
   assetFailed = false;
 
   phase: 'idle' | 'windup' | 'stomp' | 'stamp' | 'buff' = 'idle';

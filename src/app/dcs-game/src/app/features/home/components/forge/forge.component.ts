@@ -1,3 +1,4 @@
+import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { reportAppError, reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
@@ -37,7 +38,7 @@ export interface CharmInventorySlot extends InventoryItemDto {
 @Component({
   selector: 'app-forge',
   standalone: true,
-  imports: [HrkModalComponent, ItemImageComponent, CommonModule, FormsModule],
+  imports: [HrkImageDirective, HrkModalComponent, ItemImageComponent, CommonModule, FormsModule],
   templateUrl: './forge.component.html',
   styleUrl: './forge.component.scss'
 })
