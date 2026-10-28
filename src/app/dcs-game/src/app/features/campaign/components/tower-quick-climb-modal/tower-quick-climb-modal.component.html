@@ -1,15 +1,15 @@
-<hrk-modal #modalShell modalCode="TOWER_QUICK_CLIMB" title="Leo tháp nhanh" [chrome]="false" [dismissible]="!!error || isJobFinished(job?.status)" [closeOnBackdrop]="false" [busy]="stopping" (closed)="onClose()">
+<hrk-modal #modalShell modalCode="TOWER_QUICK_CLIMB" [title]="'Leo tháp nhanh' | hrkTranslate" [chrome]="false" [dismissible]="!!error || isJobFinished(job?.status)" [closeOnBackdrop]="false" [busy]="stopping" (closed)="onClose()">
   <div class="modal-container" [style.max-width.%]="100" [class.is-finished]="isJobFinished(job?.status)">
 
     <!-- Header Section -->
     <header class="modal-header">
       <div class="header-title-box">
-        <span class="eyebrow">CHẾ ĐỘ TỰ ĐỘNG CHIẾN ĐẤU</span>
+        <span class="eyebrow">{{ 'CHẾ ĐỘ TỰ ĐỘNG CHIẾN ĐẤU' | hrkTranslate }}</span>
         <h2 class="title">
-          <i class="bi bi-lightning-charge-fill text-warning me-2"></i>{{ modalShell.resolved.title }}
+          <i class="bi bi-lightning-charge-fill text-warning me-2"></i>{{ (modalShell.resolved.title) | hrkTranslate }}
         </h2>
       </div>
-      <button type="button" class="btn-close" (click)="onClose()" [disabled]="stopping || (!error && !isJobFinished(job?.status))" aria-label="Đóng">
+      <button type="button" class="btn-close" (click)="onClose()" [disabled]="stopping || (!error && !isJobFinished(job?.status))" [aria-label]="'Đóng' | hrkTranslate">
         <i class="bi bi-x-lg"></i>
       </button>
     </header>
@@ -17,12 +17,12 @@
     <!-- Loading State -->
     <div class="loading-state" *ngIf="loading && !job">
       <span class="spinner-border text-warning" role="status"></span>
-      <span>Đang kết nối phiên leo nhanh...</span>
+      <span>{{ 'Đang kết nối phiên leo nhanh...' | hrkTranslate }}</span>
     </div>
 
     <!-- Error State -->
     <div class="error-banner" *ngIf="error">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error | hrkTranslate }}
     </div>
 
     <!-- Main Content Body -->
@@ -35,8 +35,8 @@
       >
         <div class="progress-heading">
           <div>
-            <span class="progress-eyebrow">TIẾN ĐỘ LEO THÁP</span>
-            <strong>{{ progressStateText }}</strong>
+            <span class="progress-eyebrow">{{ 'TIẾN ĐỘ LEO THÁP' | hrkTranslate }}</span>
+            <strong>{{ progressStateText | hrkTranslate }}</strong>
           </div>
           <span class="progress-percentage">{{ progressPercent }}%</span>
         </div>
@@ -44,7 +44,7 @@
         <div
           class="progress-track"
           role="progressbar"
-          aria-label="Tiến độ leo nhanh"
+          [aria-label]="'Tiến độ leo nhanh' | hrkTranslate"
           aria-valuemin="0"
           aria-valuemax="100"
           [attr.aria-valuenow]="progressPercent"
@@ -58,9 +58,9 @@
         </div>
 
         <div class="progress-caption">
-          <span>Tầng 1</span>
-          <span>Đã vượt {{ job.clearedFloorsCount }}/{{ job.targetFloor }} tầng</span>
-          <span>Tầng {{ job.targetFloor }}</span>
+          <span>{{ 'Tầng 1' | hrkTranslate }}</span>
+          <span>{{ 'Đã vượt {{p0}}/{{p1}} tầng' | hrkTranslate:{p0: (job.clearedFloorsCount), p1: (job.targetFloor)} }}</span>
+          <span>{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (job.targetFloor)} }}</span>
         </div>
       </section>
 
@@ -70,46 +70,46 @@
         <div class="status-pulse-bar">
           <span class="pulse-dot"></span>
           <span class="status-text">
-            Đang mô phỏng giao tranh thực tế Tầng <b>{{ job.currentFloor }}</b>...
+            {{ 'Đang mô phỏng giao tranh thực tế Tầng' | hrkTranslate }} <b>{{ job.currentFloor }}</b>...
           </span>
         </div>
 
         <!-- Metrics Grid -->
         <div class="metrics-grid">
           <div class="metric-card">
-            <span class="m-label"><i class="bi bi-layers-fill text-warning me-1"></i>Tầng hiện tại</span>
-            <span class="m-val">Tầng {{ job.currentFloor }}</span>
+            <span class="m-label"><i class="bi bi-layers-fill text-warning me-1"></i>{{ 'Tầng hiện tại' | hrkTranslate }}</span>
+            <span class="m-val">{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (job.currentFloor)} }}</span>
           </div>
           <div class="metric-card">
-            <span class="m-label"><i class="bi bi-trophy-fill text-success me-1"></i>Số tầng đã vượt</span>
+            <span class="m-label"><i class="bi bi-trophy-fill text-success me-1"></i>{{ 'Số tầng đã vượt' | hrkTranslate }}</span>
             <span class="m-val">{{ job.clearedFloorsCount }}</span>
           </div>
           <div class="metric-card">
-            <span class="m-label"><i class="bi bi-calendar-check-fill text-info me-1"></i>Lượt hôm nay</span>
-            <span class="m-val">Lượt {{ job.dailyRunNumber }}</span>
+            <span class="m-label"><i class="bi bi-calendar-check-fill text-info me-1"></i>{{ 'Lượt hôm nay' | hrkTranslate }}</span>
+            <span class="m-val">{{ 'Lượt {{p0}}' | hrkTranslate:{p0: (job.dailyRunNumber)} }}</span>
           </div>
         </div>
 
         <!-- Realtime Logs Stream -->
         <div class="logs-section">
-          <div class="logs-header"><i class="bi bi-terminal me-1 text-info"></i>Nhật Ký Từng Tầng:</div>
+          <div class="logs-header"><i class="bi bi-terminal me-1 text-info"></i>{{ 'Nhật Ký Từng Tầng:' | hrkTranslate }}</div>
           <div class="logs-container">
             <div *ngFor="let log of job.logs" class="log-entry">
               <span class="log-bullet">▸</span> {{ log }}
             </div>
             <div *ngIf="!job.logs || job.logs.length === 0" class="log-empty">
-              Đang chuẩn bị mô phỏng lượt giao tranh đầu tiên...
+              {{ 'Đang chuẩn bị mô phỏng lượt giao tranh đầu tiên...' | hrkTranslate }}
             </div>
           </div>
         </div>
 
         <!-- Accumulated Rewards -->
         <div class="accumulated-rewards-section" *ngIf="job.accumulatedRewards && job.accumulatedRewards.length > 0">
-          <div class="rewards-header"><i class="bi bi-gift-fill me-1 text-warning"></i>Phần Thưởng Tích Lũy Đã Nhận:</div>
+          <div class="rewards-header"><i class="bi bi-gift-fill me-1 text-warning"></i>{{ 'Phần Thưởng Tích Lũy Đã Nhận:' | hrkTranslate }}</div>
           <div class="rewards-chips-grid">
             <div *ngFor="let r of job.accumulatedRewards" class="reward-chip">
-              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="chip-img" />
-              <span class="chip-name">{{ r.name }}</span>
+              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="(r.name) | hrkTranslate" class="chip-img" />
+              <span class="chip-name">{{ (r.name) | hrkTranslate }}</span>
               <span class="chip-qty">x{{ r.quantity | number }}</span>
             </div>
           </div>
@@ -120,7 +120,7 @@
           <button type="button" class="btn-stop-climb" (click)="stopQuickClimb()" [disabled]="stopping">
             <span class="spinner-border spinner-border-sm me-2" *ngIf="stopping"></span>
             <i class="bi bi-stop-circle-fill me-2" *ngIf="!stopping"></i>
-            <span>{{ stopping ? 'Đang dừng phiên...' : 'DỪNG LEO NHANH NGAY' }}</span>
+            <span>{{ (stopping ? 'Đang dừng phiên...' : 'DỪNG LEO NHANH NGAY') | hrkTranslate }}</span>
           </button>
         </div>
       </div>
@@ -136,38 +136,38 @@
             'bi-clock-history': job.stopReason === 'PERIOD_EXPIRED',
             'bi-exclamation-octagon-fill': job.stopReason === 'ERROR'
           }"></i>
-          <span class="reason-title">{{ stopReasonText }}</span>
+          <span class="reason-title">{{ stopReasonText | hrkTranslate }}</span>
         </div>
 
         <!-- Journey Summary Matrix -->
         <div class="journey-matrix">
           <div class="j-card">
-            <span class="j-label">Tầng Khởi Hành</span>
-            <span class="j-val">Tầng {{ job.startFloor }}</span>
+            <span class="j-label">{{ 'Tầng Khởi Hành' | hrkTranslate }}</span>
+            <span class="j-val">{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (job.startFloor)} }}</span>
           </div>
           <div class="j-card highlight">
-            <span class="j-label">Tầng Đã Vượt Cuối</span>
-            <span class="j-val">Tầng {{ job.startFloor + job.clearedFloorsCount - 1 }}</span>
+            <span class="j-label">{{ 'Tầng Đã Vượt Cuối' | hrkTranslate }}</span>
+            <span class="j-val">{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (job.startFloor + job.clearedFloorsCount - 1)} }}</span>
           </div>
           <div class="j-card danger" *ngIf="job.failedFloor">
-            <span class="j-label">Tầng Thất Bại</span>
-            <span class="j-val">Tầng {{ job.failedFloor }}</span>
+            <span class="j-label">{{ 'Tầng Thất Bại' | hrkTranslate }}</span>
+            <span class="j-val">{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (job.failedFloor)} }}</span>
           </div>
           <div class="j-card">
-            <span class="j-label">Lượt Leo Trong Ngày</span>
-            <span class="j-val">Lượt {{ job.dailyRunNumber }}</span>
+            <span class="j-label">{{ 'Lượt Leo Trong Ngày' | hrkTranslate }}</span>
+            <span class="j-val">{{ 'Lượt {{p0}}' | hrkTranslate:{p0: (job.dailyRunNumber)} }}</span>
           </div>
         </div>
 
         <!-- Total Accumulated Rewards -->
         <div class="final-rewards-section" *ngIf="job.accumulatedRewards && job.accumulatedRewards.length > 0">
           <div class="rewards-header">
-            <i class="bi bi-box2-heart-fill me-2 text-warning"></i>Tổng Phần Thưởng Nhận Được:
+            <i class="bi bi-box2-heart-fill me-2 text-warning"></i>{{ 'Tổng Phần Thưởng Nhận Được:' | hrkTranslate }}
           </div>
           <div class="rewards-chips-grid">
             <div *ngFor="let r of job.accumulatedRewards" class="reward-chip">
-              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="chip-img" />
-              <span class="chip-name">{{ r.name }}</span>
+              <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="(r.name) | hrkTranslate" class="chip-img" />
+              <span class="chip-name">{{ (r.name) | hrkTranslate }}</span>
               <span class="chip-qty">x{{ r.quantity | number }}</span>
             </div>
           </div>
@@ -181,10 +181,10 @@
             *ngIf="job.lastBattleId"
             (click)="onViewBattleDetails()"
           >
-            <i class="bi bi-bar-chart-fill me-2"></i>Xem Chi Tiết Trận Cuối
+            <i class="bi bi-bar-chart-fill me-2"></i>{{ 'Xem Chi Tiết Trận Cuối' | hrkTranslate }}
           </button>
           <button type="button" class="btn-confirm-close" (click)="onClose()">
-            <i class="bi bi-check-lg me-2"></i>Đóng & Nhận Kết Quả
+            <i class="bi bi-check-lg me-2"></i>{{ 'Đóng & Nhận Kết Quả' | hrkTranslate }}
           </button>
         </div>
       </div>

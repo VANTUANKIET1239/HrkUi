@@ -2,6 +2,7 @@ import { GameToastService } from '../../../../core/services/game-toast.service';
 import { reportAppError, toAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { Component, EventEmitter, Output, signal , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
@@ -16,6 +17,7 @@ import { HrkIconComponent } from '../../../../../../../../libs/shared/ui/control
   selector: 'app-game-register',
   standalone: true,
   imports: [
+    HrkTranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,

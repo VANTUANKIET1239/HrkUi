@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { ChangeDetectionStrategy, Component, effect, forwardRef, Input, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 
@@ -6,6 +7,7 @@ import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR
   selector: 'hrk-input',
   standalone: true,
   imports: [
+    HrkTranslatePipe,
     CommonModule
   ],
   templateUrl: './hrk-input.component.html',

@@ -1,4 +1,4 @@
-<div class="battle-controls-bar" role="toolbar" aria-label="Thanh điều khiển trận đấu">
+<div class="battle-controls-bar" role="toolbar" [aria-label]="'Thanh điều khiển trận đấu' | hrkTranslate">
   <!-- 1. Play / Pause Button -->
   <button 
     type="button" 
@@ -6,15 +6,15 @@
     [class.is-paused]="!isPlaying" 
     [disabled]="isFinished"
     (click)="onTogglePlay.emit()" 
-    [title]="isPlaying ? 'Tạm dừng trận đấu' : 'Tiếp tục trận đấu'">
+    [title]="(isPlaying ? 'Tạm dừng trận đấu' : 'Tiếp tục trận đấu') | hrkTranslate">
     <i class="bi" [ngClass]="isPlaying ? 'bi-pause-fill' : 'bi-play-fill'"></i>
-    <span class="btn-label">{{ isPlaying ? 'Tạm dừng' : 'Tiếp tục' }}</span>
+    <span class="btn-label">{{ (isPlaying ? 'Tạm dừng' : 'Tiếp tục') | hrkTranslate }}</span>
   </button>
 
   <div class="divider"></div>
 
   <!-- 2. Speed Selector: x1, x2, x4 -->
-  <div class="speed-group" role="group" aria-label="Tốc độ trận đấu">
+  <div class="speed-group" role="group" [aria-label]="'Tốc độ trận đấu' | hrkTranslate">
     <button 
       *ngFor="let s of [1, 2, 4]" 
       type="button" 
@@ -34,9 +34,9 @@
     class="ctrl-btn skip-btn" 
     [disabled]="isFinished"
     (click)="onSkip.emit()" 
-    title="Bỏ qua phần diễn hoạt để xem ngay kết quả">
+    [title]="'Bỏ qua phần diễn hoạt để xem ngay kết quả' | hrkTranslate">
     <i class="bi bi-skip-forward-fill"></i>
-    <span class="btn-label">Bỏ qua</span>
+    <span class="btn-label">{{ 'Bỏ qua' | hrkTranslate }}</span>
   </button>
 
   <div class="divider"></div>
@@ -47,8 +47,8 @@
     class="ctrl-btn log-toggle-btn" 
     [class.active]="isLogOpen"
     (click)="onToggleLog.emit()" 
-    title="Bật/Tắt khung nhật ký chiến đấu">
+    [title]="'Bật/Tắt khung nhật ký chiến đấu' | hrkTranslate">
     <i class="bi bi-journal-text"></i>
-    <span class="btn-label">Nhật ký</span>
+    <span class="btn-label">{{ 'Nhật ký' | hrkTranslate }}</span>
   </button>
 </div>

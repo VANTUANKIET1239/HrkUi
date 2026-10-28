@@ -1,10 +1,11 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-battle-controls',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './battle-controls.component.html',
   styleUrl: './battle-controls.component.scss'
 })

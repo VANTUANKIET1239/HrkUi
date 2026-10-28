@@ -2,7 +2,7 @@
   [config]="{ title:'Bỏ qua trận đấu', messageTemplate:'Bạn có chắc muốn bỏ qua phần trình diễn và xem ngay kết quả trận đấu?', confirmText:'Bỏ qua', cancelText:'Tiếp tục xem', iconKey:'skip' }"
   (confirmed)="confirm()" (cancelled)="cancel()">
     <p class="modal-subtext">
-      Toàn bộ sát thương, kỹ năng và kết quả thắng/thua vẫn được tính toán chính xác theo dữ liệu máy chủ.
+      {{ 'Toàn bộ sát thương, kỹ năng và kết quả thắng/thua vẫn được tính toán chính xác theo dữ liệu máy chủ.' | hrkTranslate }}
     </p>
 
 </hrk-confirmation-modal>

@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GameLoginComponent } from '../../components/game-login/game-login.component';
 import { GameRegisterComponent } from '../../components/game-register/game-register.component';
@@ -10,6 +11,7 @@ import { AppAuthConfig, getAppAuthConfig } from '../../../../../../../../libs/co
   selector: 'app-game-auth',
   standalone: true,
   imports: [
+    HrkTranslatePipe,
     CommonModule,
     RouterModule,
     GameLoginComponent,

@@ -21,6 +21,8 @@ export interface CheckInCalendar {
   isOpen: boolean;
   canClaim: boolean;
   reason: string | null;
+  reasonKey?: string | null;
+  reasonArguments?: Record<string, number>;
   claimedDays: number;
   days: CheckInDay[];
 }

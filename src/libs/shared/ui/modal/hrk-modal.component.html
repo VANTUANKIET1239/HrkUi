@@ -5,13 +5,13 @@
   (pointerdown)="onPointerDown($event)" (pointerup)="onPointerUp($event)">
   @if (chrome) {
     <header class="hrk-modal-header">
-      <h2 [id]="titleId">{{ resolved.title }}</h2>
+      <h2 [id]="titleId">{{ resolved.title | hrkTranslate }}</h2>
       @if (dismissible) {
-        <button class="hrk-modal-close" type="button" aria-label="Đóng" [disabled]="busy" (click)="requestClose()">✕</button>
+        <button class="hrk-modal-close" type="button" [attr.aria-label]="'Đóng' | hrkTranslate" [disabled]="busy" (click)="requestClose()">✕</button>
       }
     </header>
   } @else {
-    <h2 class="visually-hidden" [id]="titleId">{{ resolved.title }}</h2>
+    <h2 class="visually-hidden" [id]="titleId">{{ resolved.title | hrkTranslate }}</h2>
   }
   <div class="hrk-modal-body"><ng-content /></div>
   <footer class="hrk-modal-footer"><ng-content select="[hrkModalFooter]" /></footer>

@@ -22,8 +22,8 @@
   <main class="page">
     <section class="card" role="form" aria-labelledby="loginTitle">
       <div class="brand">
-        <h1 id="loginTitle">HRM Portal</h1>
-        <p class="muted">Sign in to manage people, payroll & attendance</p>
+        <h1 id="loginTitle">{{ 'HRM Portal' | hrkTranslate }}</h1>
+        <p class="muted">{{ 'Sign in to manage people, payroll & attendance' | hrkTranslate }}</p>
       </div>
 
       <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
@@ -38,25 +38,25 @@
         </div>
 
         <div class="field">
-          <label for="password">Password</label>
+          <label for="password">{{ 'Password' | hrkTranslate }}</label>
           <div class="pwd-wrap">
             <input id="password" [type]="showPwd() ? 'text' : 'password'"
                    autocomplete="current-password"
                    formControlName="password" [class.invalid]="hasErr('password')"
-                   placeholder="Your password"/>
-            <button type="button" class="ghost" aria-label="Toggle password visibility"
+                   [placeholder]="'Your password' | hrkTranslate"/>
+            <button type="button" class="ghost" [aria-label]="'Toggle password visibility' | hrkTranslate"
                     (click)="toggleShowPwd()">{{ showPwd() ? 'Hide' : 'Show' }}</button>
           </div>
-          <small *ngIf="hasErr('password')">Password is required (min 6 chars).</small>
+          <small *ngIf="hasErr('password')">{{ 'Password is required (min 6 chars).' | hrkTranslate }}</small>
         </div>
 
         <div class="row">
           <label class="checkbox">
             <input type="checkbox" formControlName="remember"/>
-            <span>Remember me</span>
+            <span>{{ 'Remember me' | hrkTranslate }}</span>
           </label>
 
-          <a class="link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+          <a class="link" [routerLink]="['/auth/forgot-password']">{{ 'Forgot password?' | hrkTranslate }}</a>
         </div>
 
         <button class="primary" type="submit" [disabled]="dataForm.invalid || loading()">
@@ -65,23 +65,23 @@
         </button>
 
         <div class="divider">
-          <span>or</span>
+          <span>{{ 'or' | hrkTranslate }}</span>
         </div>
 
         <div class="sso">
-          <button type="button" class="outline" (click)="sso('google')" aria-label="Continue with Google">
-            Continue with Google
+          <button type="button" class="outline" (click)="sso('google')" [aria-label]="'Continue with Google' | hrkTranslate">
+            {{ 'Continue with Google' | hrkTranslate }}
           </button>
-          <button type="button" class="outline" (click)="sso('microsoft')" aria-label="Continue with Microsoft">
-            Continue with Microsoft
+          <button type="button" class="outline" (click)="sso('microsoft')" [aria-label]="'Continue with Microsoft' | hrkTranslate">
+            {{ 'Continue with Microsoft' | hrkTranslate }}
           </button>
         </div>
 
         <p class="muted center">
-          Don’t have an account?
-          <a class="link" [routerLink]="['/auth/register']">Create one</a>
+          {{ 'Don’t have an account?' | hrkTranslate }}
+          <a class="link" [routerLink]="['/auth/register']">{{ 'Create one' | hrkTranslate }}</a>
         </p>
       </form>
     </section>
-    <footer class="footer">© {{year}} HRM Suite — All rights reserved.</footer>
+    <footer class="footer">{{ '© {{p0}} HRM Suite — All rights reserved.' | hrkTranslate:{p0: (year)} }}</footer>
   </main>

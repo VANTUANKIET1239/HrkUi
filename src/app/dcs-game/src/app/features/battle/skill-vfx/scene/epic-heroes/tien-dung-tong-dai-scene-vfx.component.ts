@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -21,7 +22,7 @@ interface TargetCoord {
 @Component({
   selector: 'app-tien-dung-tong-dai-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -92,7 +93,7 @@ interface TargetCoord {
             <div class="digital-grid-burst"></div>
             @if (hasActionBarReduction) {
               <div class="action-bar-badge">
-                <span class="badge-text">-15 LƯỢT</span>
+                <span class="badge-text">{{ '-15 LƯỢT' | hrkTranslate }}</span>
               </div>
             }
           </div>

@@ -7,12 +7,12 @@
     <div class="header-left">
       <button type="button" class="btn-back" (click)="back()">
         <span class="back-arrow">←</span>
-        <span class="back-text">Sảnh Chính</span>
+        <span class="back-text">{{ 'Sảnh Chính' | hrkTranslate }}</span>
       </button>
       <div class="title-block">
-        <span class="eyebrow">CHẾ ĐỘ CHÍNH TUYẾN</span>
-        <h1 class="header-title">BẢN ĐỒ CHIẾN DỊCH</h1>
-        <p class="header-subtitle">Vượt từng khu vực phó bản để mở lối tới những miền đất thần bí mới</p>
+        <span class="eyebrow">{{ 'CHẾ ĐỘ CHÍNH TUYẾN' | hrkTranslate }}</span>
+        <h1 class="header-title">{{ 'BẢN ĐỒ CHIẾN DỊCH' | hrkTranslate }}</h1>
+        <p class="header-subtitle">{{ 'Vượt từng khu vực phó bản để mở lối tới những miền đất thần bí mới' | hrkTranslate }}</p>
       </div>
     </div>
 
@@ -21,7 +21,7 @@
       <div class="stamina-pill">
         <span class="stamina-icon">⚡</span>
         <div class="stamina-counts">
-          <span class="stamina-label">THỂ LỰC</span>
+          <span class="stamina-label">{{ 'THỂ LỰC' | hrkTranslate }}</span>
           <span class="stamina-values"><b>{{ stamina.current }}</b>/{{ stamina.max }}</span>
         </div>
       </div>
@@ -30,11 +30,11 @@
         class="btn-buy-stamina"
         (click)="buy()"
         [disabled]="purchasing || stamina.purchaseCount >= 10"
-        [title]="stamina.purchaseCount >= 10 ? 'Đã dùng hết 10 lần mua hôm nay' : 'Mua thêm ' + stamina.purchaseAmount + ' thể lực'"
+        [title]="(stamina.purchaseCount >= 10 ? 'Đã dùng hết 10 lần mua hôm nay' : 'Mua thêm ' + stamina.purchaseAmount + ' thể lực') | hrkTranslate"
       >
         <span class="spinner-border spinner-border-sm" *ngIf="purchasing" role="status" aria-hidden="true"></span>
         <span *ngIf="!purchasing">
-          {{ stamina.purchaseCount >= 10 ? 'Hết lượt mua' : '+ ' + stamina.nextPurchaseCost + ' 💎' }}
+          {{ (stamina.purchaseCount >= 10 ? 'Hết lượt mua' : '+ ' + stamina.nextPurchaseCost + ' 💎') | hrkTranslate }}
         </span>
       </button>
     </div>
@@ -44,15 +44,15 @@
   <div class="state-container" *ngIf="loading">
     <div class="state-spinner">
       <span class="spinner-border text-warning" role="status"></span>
-      <span>Đang mở bản đồ chiến dịch...</span>
+      <span>{{ 'Đang mở bản đồ chiến dịch...' | hrkTranslate }}</span>
     </div>
   </div>
 
   <div class="state-container state-error" *ngIf="!loading && error">
     <div class="error-box">
       <i class="bi bi-exclamation-triangle-fill"></i>
-      <span>{{ error }}</span>
-      <button type="button" class="btn-retry" (click)="fetchMaps()">Thử lại</button>
+      <span>{{ error | hrkTranslate }}</span>
+      <button type="button" class="btn-retry" (click)="fetchMaps()">{{ 'Thử lại' | hrkTranslate }}</button>
     </div>
   </div>
 

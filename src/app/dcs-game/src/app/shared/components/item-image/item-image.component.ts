@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
@@ -6,9 +7,9 @@ import { Component, Input, OnChanges } from '@angular/core';
 @Component({
   selector: 'app-item-image',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   template: `
-    <span class="artwork" [class.hero-stone]="!!item.heroStonePortrait" role="img" [attr.aria-label]="item.name">
+    <span class="artwork" [class.hero-stone]="!!item.heroStonePortrait" role="img" [attr.aria-label]="(item.name) | hrkTranslate">
       <img *ngIf="item.heroStonePortrait && !portraitFailed" class="portrait"
         [src]="item.heroStonePortrait" imageKind="hero" alt="" (hrkImageFailed)="portraitFailed = true">
       <img *ngIf="source && !imageFailed; else fallback" [src]="source" imageKind="item" alt="" (hrkImageFailed)="imageFailed = true">

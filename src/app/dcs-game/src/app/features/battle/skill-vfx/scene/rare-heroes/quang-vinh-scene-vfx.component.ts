@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
@@ -16,7 +17,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-quang-vinh-scene-vfx',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -74,7 +75,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
                 <span class="shard s3"></span>
                 <span class="shard s4"></span>
               </div>
-              <div class="shield-text">KHIÊN DANH DỰ</div>
+              <div class="shield-text">{{ 'KHIÊN DANH DỰ' | hrkTranslate }}</div>
             </div>
           }
         </div>

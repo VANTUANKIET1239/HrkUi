@@ -2,42 +2,40 @@
   [attr.inert]="phase() === 'reel' || phase() === 'result' || selectedPool() ? '' : null">
   <div class="summon-content">
     <header class="page-header">
-      <a class="back-link" routerLink="/dcs-game/home"><i class="bi bi-arrow-left"></i> Trở về</a>
+      <a class="back-link" routerLink="/dcs-game/home"><i class="bi bi-arrow-left"></i> {{ 'Trở về' | hrkTranslate }}</a>
       @if (configuration(); as config) {
-      <div class="wallet" aria-label="Tài nguyên hiện có"><span><i class="bi bi-coin"></i> {{ config.wallet.gold |
-          number }} <small>Vàng</small></span>
-        <span><i class="bi bi-gem"></i> {{ config.wallet.diamonds | number }} <small>Kim cương</small></span>
+      <div class="wallet" [aria-label]="'Tài nguyên hiện có' | hrkTranslate"><span><i class="bi bi-coin"></i> {{ config.wallet.gold |
+          number }} <small>{{ 'Vàng' | hrkTranslate }}</small></span>
+        <span><i class="bi bi-gem"></i> {{ config.wallet.diamonds | number }} <small>{{ 'Kim cương' | hrkTranslate }}</small></span>
       </div>
       }
     </header>
-    <section class="page-title"><span class="eyebrow">ĐIỆN TRIỆU HỒI</span>
-      <h1>Chiêu mộ võ tướng</h1>
-      <p>Một lời hiệu triệu. Một chiến hữu. Một hành trình mới.</p>
+    <section class="page-title"><span class="eyebrow">{{ 'ĐIỆN TRIỆU HỒI' | hrkTranslate }}</span>
+      <h1>{{ 'Chiêu mộ võ tướng' | hrkTranslate }}</h1>
+      <p>{{ 'Một lời hiệu triệu. Một chiến hữu. Một hành trình mới.' | hrkTranslate }}</p>
     </section>
-    @if (loading()) { <div class="page-state" role="status"><span class="spinner-border spinner-border-sm"></span> Đang
-      mở điện triệu hồi…</div> }
+    @if (loading()) { <div class="page-state" role="status"><span class="spinner-border spinner-border-sm"></span> {{ 'Đang mở điện triệu hồi…' | hrkTranslate }}</div> }
     @else if (loadError()) { <div class="page-state" role="alert">
-      <p>{{ loadError() }}</p><button type="button" (click)="loadConfiguration(true)">Thử lại</button>
+      <p>{{ loadError() | hrkTranslate }}</p><button type="button" (click)="loadConfiguration(true)">{{ 'Thử lại' | hrkTranslate }}</button>
     </div> }
     @else if (configuration(); as config) {
     @if (phase() === 'uncertain') {
     <div class="recovery-panel" role="status">
-      <div><strong>Kết quả chưa được xác nhận</strong>
-        <p>Kiểm tra lại lượt chiêu mộ trước khi bắt đầu lượt mới.</p>
-      </div><button type="button" (click)="recover()">Kiểm tra kết quả</button>
+      <div><strong>{{ 'Kết quả chưa được xác nhận' | hrkTranslate }}</strong>
+        <p>{{ 'Kiểm tra lại lượt chiêu mộ trước khi bắt đầu lượt mới.' | hrkTranslate }}</p>
+      </div><button type="button" (click)="recover()">{{ 'Kiểm tra kết quả' | hrkTranslate }}</button>
     </div>
     }
     @if (phase() === 'requesting') { <p class="request-state" role="status"><span
-        class="spinner-border spinner-border-sm"></span> Đang xác nhận chiêu mộ…</p> }
+        class="spinner-border spinner-border-sm"></span> {{ 'Đang xác nhận chiêu mộ…' | hrkTranslate }}</p> }
     <div class="chests-grid">
       @for (pool of config.pools; track pool.code) {
       <app-summon-chest [pool]="pool" [balance]="balance(pool)" [busy]="busy()"
         [active]="phase() === 'requesting' && activePoolCode() === pool.code" (open)="open(pool, $event)"
         (viewPool)="selectedPool.set(pool)" />
-      } @empty { <p class="page-state">Các rương chiêu mộ hiện chưa khả dụng.</p> }
+      } @empty { <p class="page-state">{{ 'Các rương chiêu mộ hiện chưa khả dụng.' | hrkTranslate }}</p> }
     </div>
-    <p class="page-note"><i class="bi bi-stars"></i> Tướng mới khởi đầu ở cấp 1, một sao. Tướng trùng chuyển thành đá để
-      tăng sao.</p>
+    <p class="page-note"><i class="bi bi-stars"></i> {{ 'Tướng mới khởi đầu ở cấp 1, một sao. Tướng trùng chuyển thành đá để tăng sao.' | hrkTranslate }}</p>
     }
   </div>
 </main>
@@ -50,13 +48,12 @@
   (closed)="closeResult()" (repeat)="repeat()" /> }
 }
 @if (selectedPool(); as pool) {
-<app-summon-dialog [title]="pool.name + ' · Tướng & tỷ lệ'" (closed)="selectedPool.set(null)">
-  <p class="pool-description">Tỷ lệ cho mỗi lượt chiêu mộ. Mở ×10 gồm 10 lượt độc lập, chưa có bảo hiểm phẩm chất. Tướng
-    trùng được đổi thành đá tướng.</p>
+<app-summon-dialog [title]="(pool.name + ' · Tướng & tỷ lệ') | hrkTranslate" (closed)="selectedPool.set(null)">
+  <p class="pool-description">{{ 'Tỷ lệ cho mỗi lượt chiêu mộ. Mở ×10 gồm 10 lượt độc lập, chưa có bảo hiểm phẩm chất. Tướng trùng được đổi thành đá tướng.' | hrkTranslate }}</p>
   <div class="pool-grid">@for (hero of pool.heroes; track hero.heroTemplateId) { <div><app-summon-hero-card
         [hero]="hero" />
       <p>{{ hero.probabilityPercent | number:'1.2-6' }}%</p>
     </div> }</div>
-  <div dialog-footer class="pool-footer"><button type="button" (click)="selectedPool.set(null)">Đã hiểu</button></div>
+  <div dialog-footer class="pool-footer"><button type="button" (click)="selectedPool.set(null)">{{ 'Đã hiểu' | hrkTranslate }}</button></div>
 </app-summon-dialog>
 }

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkModalComponent } from '../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import {
   AfterViewInit,
@@ -21,14 +22,14 @@ import { SummonHeroCardComponent } from './summon-hero-card.component';
 @Component({
   selector: 'app-summon-reel',
   standalone: true,
-  imports: [SummonHeroCardComponent, HrkModalComponent],
+  imports: [HrkTranslatePipe, SummonHeroCardComponent, HrkModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <hrk-modal modalCode="SUMMON_REEL" title="Chiêu mộ võ tướng" size="FULLSCREEN" [chrome]="false" [closeOnBackdrop]="false" (closed)="finish()">
+    <hrk-modal modalCode="SUMMON_REEL" [title]="'Chiêu mộ võ tướng' | hrkTranslate" size="FULLSCREEN" [chrome]="false" [closeOnBackdrop]="false" (closed)="finish()">
     <div class="reel-layout">
       <div class="reel-dialog" [style.--winner-color]="winner.rarityColorHex || '#f4d785'">
-        <span class="eyebrow">MỘT GIAO ƯỚC MỚI</span>
-        <h2 id="reel-title">Ai sẽ đồng hành cùng bạn?</h2>
+        <span class="eyebrow">{{ 'MỘT GIAO ƯỚC MỚI' | hrkTranslate }}</span>
+        <h2 id="reel-title">{{ 'Ai sẽ đồng hành cùng bạn?' | hrkTranslate }}</h2>
 
         <div class="reel-viewport" #viewport aria-hidden="true">
           <div class="reel-spotlight"></div>
@@ -46,14 +47,14 @@ import { SummonHeroCardComponent } from './summon-hero-card.component';
 
         @if (winnerRevealed()) {
           <p class="status-message winner-reveal">
-            <i class="bi bi-stars"></i> Đã nhận: <strong>{{ winner.name }}</strong> ({{ winner.rarityName }})
+            <i class="bi bi-stars"></i> {{ 'Đã nhận:' | hrkTranslate }} <strong>{{ winner.name }}</strong> ({{ (winner.rarityName) | hrkTranslate }})
           </p>
         } @else {
-          <p class="status-message">Vận mệnh đang hé mở…</p>
+          <p class="status-message">{{ 'Vận mệnh đang hé mở…' | hrkTranslate }}</p>
         }
 
         <button type="button" #skip (click)="finish()">
-          Bỏ qua hiệu ứng <i class="bi bi-chevron-double-right"></i>
+          {{ 'Bỏ qua hiệu ứng' | hrkTranslate }} <i class="bi bi-chevron-double-right"></i>
         </button>
       </div>
     </div>

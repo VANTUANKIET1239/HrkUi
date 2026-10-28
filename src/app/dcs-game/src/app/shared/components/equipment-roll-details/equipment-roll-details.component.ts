@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentRolledAttributeDto } from '../../../core/models/inventory.model';
@@ -5,7 +6,7 @@ import { EquipmentRolledAttributeDto } from '../../../core/models/inventory.mode
 @Component({
   selector: 'app-equipment-roll-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './equipment-roll-details.component.html',
   styleUrl: './equipment-roll-details.component.scss'
 })

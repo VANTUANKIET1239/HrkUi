@@ -1,4 +1,4 @@
-<section class="game-toast-stack" aria-label="Thông báo trò chơi">
+<section class="game-toast-stack" [aria-label]="'Thông báo trò chơi' | hrkTranslate">
   @for (toast of toasts(); track toast.id) {
     <article [class]="'game-toast game-toast--' + toast.type"
       [attr.role]="toast.type === 'error' ? 'alert' : 'status'" aria-atomic="true"
@@ -6,10 +6,10 @@
       (focusin)="pause(toast.id, 'focus')" (focusout)="resume(toast.id, 'focus')">
       <span class="game-toast__emblem" aria-hidden="true"><i [class]="'bi ' + icons[toast.type]"></i></span>
       <div class="game-toast__content">
-        <strong class="game-toast__title">{{ toast.title || titles[toast.type] }}</strong>
-        <p class="game-toast__message">{{ toast.message }}</p>
+        <strong class="game-toast__title">{{ (toast.title || titles[toast.type]) | hrkTranslate }}</strong>
+        <p class="game-toast__message">{{ toast.message | hrkTranslate }}</p>
       </div>
-      <button type="button" class="game-toast__close" (click)="dismiss(toast.id)" aria-label="Đóng thông báo">
+      <button type="button" class="game-toast__close" (click)="dismiss(toast.id)" [aria-label]="'Đóng thông báo' | hrkTranslate">
         <i class="bi bi-x-lg" aria-hidden="true"></i>
       </button>
     </article>

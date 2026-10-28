@@ -20,7 +20,8 @@ describe('Home template refresh', () => {
     refresh = new Subject();
     api = jasmine.createSpyObj('templateCache', ['refresh', 'capabilities']); api.refresh.and.returnValue(refresh);
     confirmation = jasmine.createSpyObj('confirmation', ['confirm']); confirmation.confirm.and.resolveTo(true);
-    toast = jasmine.createSpyObj('toast', ['success', 'fromError']);
+    toast = jasmine.createSpyObj('toast', ['success', 'fromError', 'text']);
+    toast.text.and.callFake(new GameToastService().text);
     modals = jasmine.createSpyObj('modals', ['load']);
     TestBed.configureTestingModule({ providers: [
       { provide: GameTemplateCacheService, useValue: api }, { provide: HrkConfirmationService, useValue: confirmation },

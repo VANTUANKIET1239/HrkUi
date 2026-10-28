@@ -2,6 +2,7 @@ import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/contro
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { CatalogGroup, CatalogHero, CatalogItem } from '../../../../core/models/catalog.model';
@@ -12,7 +13,7 @@ type LibraryTab = 'heroes' | 'items';
 @Component({
   selector: 'app-library',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './library.component.html',
   styleUrl: './library.component.scss'
 })

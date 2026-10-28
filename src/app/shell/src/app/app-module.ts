@@ -9,6 +9,9 @@ import { CoreModule } from '../../../../libs/core/core.module';
 import { GlobalLoadingComponent } from '../../../../libs/shared/ui/components/global-loading/global-loading.component';
 import { SessionExpiredModalComponent } from '../../../../libs/core/auth/components/session-expired-modal/session-expired-modal.component';
 import { AppAuthConfigService } from '../../../../libs/core/auth/services/app-auth-config.service';
+import { provideTranslateLoader, provideTranslateService } from '@ngx-translate/core';
+import { LanguageLoader } from '../../../../libs/core/localization/language-loader';
+import { LanguageService } from '../../../../libs/core/localization/language.service';
 
 function initializeAppAuthConfig(configService: AppAuthConfigService): () => Promise<void> {
   return () => configService.load();
@@ -35,6 +38,8 @@ var CoreModules = [
     ...AppModules
   ],
   providers: [
+    provideTranslateService({ loader: provideTranslateLoader(LanguageLoader) }),
+    { provide: APP_INITIALIZER, useFactory: (language: LanguageService) => () => language.initialize(), deps: [LanguageService], multi: true },
     provideBrowserGlobalErrorListeners(),
     {
       provide: APP_INITIALIZER,

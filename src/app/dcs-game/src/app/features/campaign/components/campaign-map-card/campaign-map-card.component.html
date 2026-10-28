@@ -8,11 +8,11 @@
   (click)="onCardClick()"
   tabindex="0"
   [attr.role]="isClickable ? 'button' : undefined"
-  [attr.aria-label]="map.name + ' - ' + map.state"
+  [attr.aria-label]="(map.name + ' - ' + map.state) | hrkTranslate"
 >
   <!-- Background Art with Aspect Ratio / Cover -->
   <div class="card-bg-wrapper">
-    <img [src]="map.imagePath || map.backgroundPath" imageKind="background" [alt]="map.name" class="card-bg-img" loading="lazy" />
+    <img [src]="map.imagePath || map.backgroundPath" imageKind="background" [alt]="(map.name) | hrkTranslate" class="card-bg-img" loading="lazy" />
     <div class="card-vignette"></div>
     <div class="card-gradient"></div>
     <div class="card-ambient-light"></div>
@@ -31,8 +31,8 @@
   <div class="lock-overlay" *ngIf="map.state === 'LEVEL_LOCKED'">
     <div class="lock-seal">
       <span class="lock-icon">🔒</span>
-      <span class="lock-title">PHONG ẤN CẤP ĐỘ</span>
-      <span class="lock-requirement">Yêu cầu cấp {{ map.requiredPlayerLevel }}</span>
+      <span class="lock-title">{{ 'PHONG ẤN CẤP ĐỘ' | hrkTranslate }}</span>
+      <span class="lock-requirement">{{ 'Yêu cầu cấp {{p0}}' | hrkTranslate:{p0: (map.requiredPlayerLevel)} }}</span>
     </div>
   </div>
 
@@ -40,8 +40,8 @@
   <div class="fog-overlay" *ngIf="map.state === 'NOT_REACHED'">
     <div class="fog-seal">
       <span class="fog-icon">🌫️</span>
-      <span class="fog-title">CHƯA KHAI MỞ</span>
-      <span class="fog-hint">Vượt chương trước để mở lối</span>
+      <span class="fog-title">{{ 'CHƯA KHAI MỞ' | hrkTranslate }}</span>
+      <span class="fog-hint">{{ 'Vượt chương trước để mở lối' | hrkTranslate }}</span>
     </div>
   </div>
 
@@ -51,32 +51,32 @@
     <div class="card-top">
       <div class="status-badge" *ngIf="map.state === 'AVAILABLE'">
         <span class="pulse-dot"></span>
-        <span class="badge-text">CÓ THỂ THÁM HIỂM</span>
+        <span class="badge-text">{{ 'CÓ THỂ THÁM HIỂM' | hrkTranslate }}</span>
       </div>
       <div class="status-badge completed" *ngIf="map.state === 'COMPLETED'">
         <span class="badge-icon">👑</span>
-        <span class="badge-text">HOÀN THÀNH</span>
+        <span class="badge-text">{{ 'HOÀN THÀNH' | hrkTranslate }}</span>
       </div>
       <div class="status-badge locked" *ngIf="map.state === 'LEVEL_LOCKED'">
         <span class="badge-icon">🔒</span>
-        <span class="badge-text">KHÓA CẤP {{ map.requiredPlayerLevel }}</span>
+        <span class="badge-text">{{ 'KHÓA CẤP {{p0}}' | hrkTranslate:{p0: (map.requiredPlayerLevel)} }}</span>
       </div>
       <div class="status-badge unreached" *ngIf="map.state === 'NOT_REACHED'">
         <span class="badge-icon">⏳</span>
-        <span class="badge-text">CHƯA TỚI</span>
+        <span class="badge-text">{{ 'CHƯA TỚI' | hrkTranslate }}</span>
       </div>
 
       <div class="stage-counter" [class.complete]="map.clearedStages === map.totalStages">
         <i class="bi bi-geo-alt-fill"></i>
-        <span>{{ map.clearedStages }}/{{ map.totalStages }} Màn</span>
+        <span>{{ '{{p0}}/{{p1}} Màn' | hrkTranslate:{p0: (map.clearedStages), p1: (map.totalStages)} }}</span>
       </div>
     </div>
 
     <!-- Middle/Bottom Info -->
     <div class="card-info">
       <span class="chapter-code">{{ map.code }}</span>
-      <h2 class="chapter-title">{{ map.name }}</h2>
-      <p class="chapter-desc">{{ map.description || 'Chinh phục các ải và đánh bại thủ lĩnh trấn giữ.' }}</p>
+      <h2 class="chapter-title">{{ (map.name) | hrkTranslate }}</h2>
+      <p class="chapter-desc">{{ (map.description || 'Chinh phục các ải và đánh bại thủ lĩnh trấn giữ.') | hrkTranslate }}</p>
 
       <!-- Progress Track -->
       <div class="progress-bar-container">
@@ -86,7 +86,7 @@
           </div>
         </div>
         <div class="progress-meta">
-          <span class="progress-label">Tiến trình</span>
+          <span class="progress-label">{{ 'Tiến trình' | hrkTranslate }}</span>
           <span class="progress-val">{{ progressPercent }}%</span>
         </div>
       </div>
@@ -96,7 +96,7 @@
         <button type="button" class="btn-explore" [class.btn-replay]="map.state === 'COMPLETED'">
           <span class="btn-shimmer"></span>
           <span class="btn-icon">{{ map.state === 'COMPLETED' ? '🔄' : '⚔️' }}</span>
-          <span class="btn-text">{{ map.state === 'COMPLETED' ? 'Vào Lại' : 'Khám Phá' }}</span>
+          <span class="btn-text">{{ (map.state === 'COMPLETED' ? 'Vào Lại' : 'Khám Phá') | hrkTranslate }}</span>
           <span class="btn-arrow">→</span>
         </button>
       </div>

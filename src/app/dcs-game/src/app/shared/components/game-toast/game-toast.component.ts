@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GameToast } from '../../../core/models/game-toast.model';
 import { GameToastService } from '../../../core/services/game-toast.service';
@@ -13,6 +14,7 @@ interface ToastClock {
 @Component({
   selector: 'app-game-toast',
   standalone: true,
+  imports: [HrkTranslatePipe],
   templateUrl: './game-toast.component.html',
   styleUrl: './game-toast.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

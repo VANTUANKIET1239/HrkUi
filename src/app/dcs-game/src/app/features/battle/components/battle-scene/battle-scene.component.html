@@ -21,7 +21,7 @@
   </app-battle-notification>
 
   <!-- 3. Primary Battlefield Area (Majority of Screen) -->
-  <main class="battlefield" [class.screen-shake]="isScreenShaking()" role="region" aria-label="Chiến trường">
+  <main class="battlefield" [class.screen-shake]="isScreenShaking()" role="region" [aria-label]="'Chiến trường' | hrkTranslate">
 
     <!-- Global Skill VFX Host (Z-index 30, pointer-events: none) -->
     <app-battle-skill-vfx-host
@@ -87,13 +87,13 @@
   <footer class="bottom-ui-wrapper">
     <!-- Turn Queue Strip -->
     <div class="action-timeline" *ngIf="battleEngine.turnQueue().length > 0">
-      <div class="timeline-header-text">LƯỢT KẾ TIẾP</div>
+      <div class="timeline-header-text">{{ 'LƯỢT KẾ TIẾP' | hrkTranslate }}</div>
       <div class="timeline-queue">
         <div *ngFor="let queueHero of battleEngine.turnQueue(); let first = first" 
           class="queue-item-frame"
           [ngClass]="{ 'active-highlight': first, 'team-left': queueHero.team === 'left', 'team-right': queueHero.team === 'right' }"
-          [title]="queueHero.name">
-          <img [src]="queueHero.avatar" class="queue-avatar" [alt]="queueHero.name" />
+          [title]="(queueHero.name) | hrkTranslate">
+          <img [src]="queueHero.avatar" class="queue-avatar" [alt]="(queueHero.name) | hrkTranslate" />
           <div class="queue-border-color" [ngClass]="queueHero.team"></div>
         </div>
       </div>

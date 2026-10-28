@@ -14,7 +14,7 @@
       <div class="item-visual-slot" [ngClass]="rarityClass">
         <img *ngIf="item.imagePath"
              [src]="item.imagePath"
-             [alt]="item.name"
+             [alt]="(item.name) | hrkTranslate"
              class="item-img" />
         <i *ngIf="!item.imagePath" class="bi {{ item.icon || 'bi-shield-shaded' }} item-fallback-icon"></i>
         
@@ -25,16 +25,16 @@
 
       <div class="item-meta">
         <div class="item-title-row">
-          <h4 class="item-name" [ngClass]="rarityClass">{{ item.name }}</h4>
-          <button *ngIf="isPinned()" class="btn-close-pinned" (click)="close()" title="Đóng">
+          <h4 class="item-name" [ngClass]="rarityClass">{{ (item.name) | hrkTranslate }}</h4>
+          <button *ngIf="isPinned()" class="btn-close-pinned" (click)="close()" [title]="'Đóng' | hrkTranslate">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
 
         <div class="badges-row">
-          <span class="rarity-tag" [ngClass]="rarityClass">{{ rarityDisplayName }}</span>
+          <span class="rarity-tag" [ngClass]="rarityClass">{{ (rarityDisplayName) | hrkTranslate }}</span>
           <span class="category-tag">{{ categoryDisplayName }}</span>
-          <span class="level-tag">Cấp {{ item.levelReq || 1 }}</span>
+          <span class="level-tag">{{ 'Cấp {{p0}}' | hrkTranslate:{p0: (item.levelReq || 1)} }}</span>
         </div>
 
         <!-- Star Rating -->
@@ -50,7 +50,7 @@
     <div *ngIf="powerDiff" class="power-diff-banner" [class.positive]="powerDiff.isPositive" [class.negative]="!powerDiff.isPositive">
       <span class="diff-label">
         <i class="bi" [class.bi-graph-up-arrow]="powerDiff.isPositive" [class.bi-graph-down-arrow]="!powerDiff.isPositive"></i>
-        So sánh lực chiến:
+        {{ 'So sánh lực chiến:' | hrkTranslate }}
       </span>
       <span class="diff-value">{{ powerDiff.text }} CP</span>
     </div>
@@ -60,8 +60,8 @@
     <!-- Main Stat Breakdown & Comparison -->
     <div class="stats-section">
       <div class="section-title">
-        <span><i class="bi bi-activity me-1"></i>Thuộc Tính Trang Bị</span>
-        <span *ngIf="activeComparedItem()" class="compare-mode-tag">So với đang trang bị</span>
+        <span><i class="bi bi-activity me-1"></i>{{ 'Thuộc Tính Trang Bị' | hrkTranslate }}</span>
+        <span *ngIf="activeComparedItem()" class="compare-mode-tag">{{ 'So với đang trang bị' | hrkTranslate }}</span>
       </div>
 
       <div class="stats-list">
@@ -69,7 +69,7 @@
           <div class="stat-row">
             <div class="stat-label">
               <i class="bi {{ row.icon }} stat-icon"></i>
-              <span>{{ row.label }}</span>
+              <span>{{ (row.label) | hrkTranslate }}</span>
             </div>
 
             <div class="stat-values">
@@ -93,7 +93,7 @@
           <!-- Rolled Instance Details -->
           <div *ngIf="row.baseRolledValue !== undefined && row.baseRolledValue !== null" class="stat-roll-details">
             <div class="roll-meta-line">
-              <span class="roll-sub-label">Chỉ số gốc: <strong>{{ row.baseRolledValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
+              <span class="roll-sub-label">{{ 'Chỉ số gốc:' | hrkTranslate }} <strong>{{ row.baseRolledValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
               <span *ngIf="row.comparedBaseRolledValue !== undefined && row.comparedBaseRolledValue !== null && row.comparedBaseRolledValue !== row.baseRolledValue"
                     class="roll-compare-tag"
                     [class.text-success]="row.baseRolledValue > row.comparedBaseRolledValue"
@@ -102,10 +102,10 @@
               </span>
             </div>
             <div *ngIf="row.rollMinValue !== undefined && row.rollMaxValue !== undefined && row.rollMinValue !== null && row.rollMaxValue !== null" class="roll-meta-line">
-              <span class="roll-sub-label">Khoảng có thể roll: <strong>{{ row.rollMinValue }}–{{ row.rollMaxValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
+              <span class="roll-sub-label">{{ 'Khoảng có thể roll:' | hrkTranslate }} <strong>{{ row.rollMinValue }}–{{ row.rollMaxValue }}{{ row.isPercent ? '%' : '' }}</strong></span>
             </div>
             <div *ngIf="row.rollQualityPercent !== undefined && row.rollQualityPercent !== null" class="roll-meta-line">
-              <span class="roll-sub-label">Chất lượng roll:</span>
+              <span class="roll-sub-label">{{ 'Chất lượng roll:' | hrkTranslate }}</span>
               <span class="roll-quality-badge" [class.high]="row.rollQualityPercent >= 75" [class.med]="row.rollQualityPercent >= 40 && row.rollQualityPercent < 75" [class.low]="row.rollQualityPercent < 40">
                 {{ row.rollQualityPercent }}%
               </span>
@@ -114,7 +114,7 @@
         </div>
 
         <div *ngIf="statRows.length === 0" class="empty-stats">
-          Không có thuộc tính cơ bản
+          {{ 'Không có thuộc tính cơ bản' | hrkTranslate }}
         </div>
       </div>
     </div>
@@ -124,10 +124,10 @@
       <div class="growth-row">
         <div class="growth-label">
           <i class="bi bi-graph-up-arrow me-1 text-warning"></i>
-          <span>Tăng trưởng cường hóa:</span>
+          <span>{{ 'Tăng trưởng cường hóa:' | hrkTranslate }}</span>
         </div>
         <div class="growth-values">
-          <span class="growth-current">+{{ growthPercent }}% / cấp</span>
+          <span class="growth-current">{{ '+{{p0}}% / cấp' | hrkTranslate:{p0: (growthPercent)} }}</span>
           <span *ngIf="comparedGrowthPercent !== null && comparedGrowthPercent !== growthPercent"
                 class="stat-diff"
                 [class.positive]="growthPercent > comparedGrowthPercent"
@@ -137,32 +137,32 @@
         </div>
       </div>
       <div *ngIf="growthRange" class="growth-range-sub">
-        Khoảng tăng trưởng {{ rarityDisplayName }}: {{ growthRange.min }}%–{{ growthRange.max }}%
+        {{ 'Khoảng tăng trưởng {{p0}}: {{p1}}%–{{p2}}%' | hrkTranslate:{p0: ((rarityDisplayName) | hrkTranslate), p1: (growthRange.min), p2: (growthRange.max)} }}
       </div>
     </div>
 
     <!-- Equipped By Hero Status -->
     <div *ngIf="item.equippedHeroName || item.isEquipped" class="equipped-status-banner">
       <i class="bi bi-person-fill-check me-1"></i>
-      <span>Đang trang bị cho: <strong>{{ item.equippedHeroName || 'Anh Hùng' }}</strong></span>
+      <span>{{ 'Đang trang bị cho:' | hrkTranslate }} <strong>{{ (item.equippedHeroName || 'Anh Hùng') | hrkTranslate }}</strong></span>
     </div>
 
     <!-- Lore / Description -->
     <div *ngIf="item.description || item.desc" class="description-section">
-      <p class="desc-text">{{ item.description || item.desc }}</p>
+      <p class="desc-text">{{ (item.description || item.desc) | hrkTranslate }}</p>
     </div>
 
     <!-- Footer Actions / Price -->
     <div class="tooltip-footer">
       <div class="price-tag" *ngIf="item.sellPrice">
         <i class="bi bi-coin text-gold me-1"></i>
-        <span>Giá bán: {{ item.sellPrice | number }}</span>
+        <span>{{ 'Giá bán: {{p0}}' | hrkTranslate:{p0: (item.sellPrice | number)} }}</span>
       </div>
       <div class="count-tag" *ngIf="item.count && item.count > 1">
-        <span>Số lượng: {{ item.count }}</span>
+        <span>{{ 'Số lượng: {{p0}}' | hrkTranslate:{p0: (item.count)} }}</span>
       </div>
       <div *ngIf="isPinned()" class="pinned-hint">
-        <small class="text-secondary"><i class="bi bi-pin-angle-fill me-1"></i>Đã ghim (Esc để đóng)</small>
+        <small class="text-secondary"><i class="bi bi-pin-angle-fill me-1"></i>{{ 'Đã ghim (Esc để đóng)' | hrkTranslate }}</small>
       </div>
     </div>
 

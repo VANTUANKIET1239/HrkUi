@@ -1,4 +1,4 @@
-<hrk-modal #forgeModal modalCode="FORGE" title="Lò rèn" [chrome]="false" size="FULLSCREEN" [busy]="isForging || isDowngrading" (closed)="close.emit()">
+<hrk-modal #forgeModal modalCode="FORGE" [title]="'Lò rèn' | hrkTranslate" [chrome]="false" size="FULLSCREEN" [busy]="isForging || isDowngrading" (closed)="close.emit()">
 <div class="forge-overlay">
   <div class="forge-container" (click)="$event.stopPropagation()">
     
@@ -6,7 +6,7 @@
     <div class="forge-top-bar d-flex justify-content-between align-items-center px-4 py-3">
       <div class="title-group d-flex align-items-center">
         <i class="bi bi-hammer title-icon text-warning fs-3 me-2"></i>
-        <h2 class="m-0 page-title font-title">{{ forgeModal.resolved.title }} <span class="subtitle">— The Ancient Forge</span></h2>
+        <h2 class="m-0 page-title font-title">{{ (forgeModal.resolved.title) | hrkTranslate }} <span class="subtitle">{{ '— The Ancient Forge' | hrkTranslate }}</span></h2>
       </div>
 
       <!-- Currency & Actions -->
@@ -14,10 +14,10 @@
         <div class="resource-gold d-flex align-items-center px-3 py-1 rounded-pill">
           <i class="bi bi-coin text-warning me-2 fs-5"></i>
           <span class="gold-val text-warning fw-bold">{{ playerGold | number }}</span>
-          <span class="gold-unit ms-1 text-muted">Vàng</span>
+          <span class="gold-unit ms-1 text-muted">{{ 'Vàng' | hrkTranslate }}</span>
         </div>
 
-        <button class="btn btn-close-forge" [disabled]="isForging || isDowngrading" (click)="close.emit()" title="Đóng lò rèn">
+        <button class="btn btn-close-forge" [disabled]="isForging || isDowngrading" (click)="close.emit()" [title]="'Đóng lò rèn' | hrkTranslate">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
@@ -29,13 +29,13 @@
         class="tab-btn font-title" 
         [class.active]="activeTab === 'enhance'" 
         (click)="activeTab = 'enhance'">
-        <i class="bi bi-fire me-1"></i> CƯỜNG HÓA
+        <i class="bi bi-fire me-1"></i> {{ 'CƯỜNG HÓA' | hrkTranslate }}
       </button>
       <button 
         class="tab-btn font-title" 
         [class.active]="activeTab === 'star'" 
         (click)="activeTab = 'star'">
-        <i class="bi bi-stars me-1"></i> TĂNG SAO
+        <i class="bi bi-stars me-1"></i> {{ 'TĂNG SAO' | hrkTranslate }}
       </button>
     </div>
 
@@ -45,14 +45,13 @@
         <div class="star-icon-pulsing mb-3">
           <i class="bi bi-stars text-warning display-2"></i>
         </div>
-        <h3 class="font-title text-warning mb-2">TÍNH NĂNG TĂNG SAO TRANG BỊ</h3>
-        <span class="badge bg-warning text-dark px-3 py-2 fs-6 mb-3 fw-bold">TÍNH NĂNG ĐANG ĐƯỢC PHÁT TRIỂN</span>
+        <h3 class="font-title text-warning mb-2">{{ 'TÍNH NĂNG TĂNG SAO TRANG BỊ' | hrkTranslate }}</h3>
+        <span class="badge bg-warning text-dark px-3 py-2 fs-6 mb-3 fw-bold">{{ 'TÍNH NĂNG ĐANG ĐƯỢC PHÁT TRIỂN' | hrkTranslate }}</span>
         <p class="text-light-subtle max-w-md mx-auto mb-4">
-          Hệ thống Tăng Sao rèn đúc Thần Binh đang được hoàn thiện. 
-          Các vị Tướng Quân vui lòng đón chờ trong bản cập nhật tiếp theo!
+          {{ 'Hệ thống Tăng Sao rèn đúc Thần Binh đang được hoàn thiện. Các vị Tướng Quân vui lòng đón chờ trong bản cập nhật tiếp theo!' | hrkTranslate }}
         </p>
         <button class="btn btn-outline-warning px-4 py-2" (click)="activeTab = 'enhance'">
-          <i class="bi bi-arrow-left me-1"></i> Quay Lại Cường Hóa
+          <i class="bi bi-arrow-left me-1"></i> {{ 'Quay Lại Cường Hóa' | hrkTranslate }}
         </button>
       </div>
     </div>
@@ -63,7 +62,7 @@
       <!-- Initial Loading -->
       <div *ngIf="isLoading" class="d-flex flex-column align-items-center justify-content-center py-5">
         <div class="spinner-border text-warning mb-3" role="status"></div>
-        <span class="text-warning font-title">Đang nhóm lửa lò rèn và nạp dữ liệu trang bị...</span>
+        <span class="text-warning font-title">{{ 'Đang nhóm lửa lò rèn và nạp dữ liệu trang bị...' | hrkTranslate }}</span>
       </div>
 
       <!-- Main Two-Column Layout (Left 45% Enhancement / Right 55% Equipment Browser) -->
@@ -86,18 +85,18 @@
             
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="section-label font-title text-warning">
-                <i class="bi bi-shield-shaded me-1"></i> Trang Bị Rèn Đúc
+                <i class="bi bi-shield-shaded me-1"></i> {{ 'Trang Bị Rèn Đúc' | hrkTranslate }}
               </span>
               <span class="drop-hint-pill text-muted small" *ngIf="selectedEquipment">
-                Kéo thả hoặc nhấp đôi để đổi
+                {{ 'Kéo thả hoặc nhấp đôi để đổi' | hrkTranslate }}
               </span>
             </div>
 
             <!-- Empty Drop Zone State -->
             <div *ngIf="!selectedEquipment" class="empty-drop-zone text-center py-4 rounded-3">
               <i class="bi bi-plus-circle-dotted display-4 text-warning mb-2 d-block drop-icon-pulse"></i>
-              <span class="text-warning fw-bold d-block">Kéo trang bị vào đây</span>
-              <span class="text-muted small">hoặc nhấp đôi trang bị ở danh sách bên phải</span>
+              <span class="text-warning fw-bold d-block">{{ 'Kéo trang bị vào đây' | hrkTranslate }}</span>
+              <span class="text-muted small">{{ 'hoặc nhấp đôi trang bị ở danh sách bên phải' | hrkTranslate }}</span>
             </div>
 
             <!-- Selected Equipment Target -->
@@ -109,7 +108,7 @@
                   *ngIf="selectedEquipment.imagePath; else fallbackIcon" 
                   [src]="selectedEquipment.imagePath" 
                   class="gear-img" 
-                  [alt]="selectedEquipment.name" />
+                  [alt]="(selectedEquipment.name) | hrkTranslate" />
                 <ng-template #fallbackIcon>
                   <i class="bi {{ selectedEquipment.icon || 'bi-shield' }} fs-1 text-warning"></i>
                 </ng-template>
@@ -118,15 +117,15 @@
 
               <div class="gear-meta flex-grow-1">
                 <h4 class="gear-name font-title m-0" [style.color]="selectedEquipment.rarityColorHex || '#ffd700'">
-                  {{ selectedEquipment.name }}
+                  {{ (selectedEquipment.name) | hrkTranslate }}
                 </h4>
                 <div class="gear-tags d-flex flex-wrap gap-2 mt-1">
                   <span class="badge-rarity" [style.background-color]="(selectedEquipment.rarityColorHex || '#b8860b') + '22'" [style.color]="selectedEquipment.rarityColorHex || '#ffd700'">
-                    {{ selectedEquipment.rarityName }}
+                    {{ (selectedEquipment.rarityName) | hrkTranslate }}
                   </span>
-                  <span class="badge-category">{{ selectedEquipment.categoryName }}</span>
-                  <span class="badge-req">Cấp {{ selectedEquipment.levelReq }}</span>
-                  <span *ngIf="selectedEquipment.isEquipped" class="badge bg-success-subtle text-success">Đang mang</span>
+                  <span class="badge-category">{{ (selectedEquipment.categoryName) | hrkTranslate }}</span>
+                  <span class="badge-req">{{ 'Cấp {{p0}}' | hrkTranslate:{p0: (selectedEquipment.levelReq)} }}</span>
+                  <span *ngIf="selectedEquipment.isEquipped" class="badge bg-success-subtle text-success">{{ 'Đang mang' | hrkTranslate }}</span>
                 </div>
               </div>
             </div>
@@ -134,7 +133,7 @@
             <!-- Max Level Banner -->
             <div *ngIf="selectedEquipment && isMaxLevel" class="max-level-banner mt-2 p-2 rounded text-center">
               <i class="bi bi-award-fill text-warning me-1"></i>
-              <span class="fw-bold text-warning">Trang bị đã đạt cấp tối đa (+15)</span>
+              <span class="fw-bold text-warning">{{ 'Trang bị đã đạt cấp tối đa (+15)' | hrkTranslate }}</span>
             </div>
           </div>
 
@@ -142,7 +141,7 @@
           <div class="stats-comparison-card p-3 rounded-3 border" *ngIf="selectedEquipment">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <span class="section-label font-title text-warning">
-                <i class="bi bi-graph-up-arrow me-1"></i> So Sánh Thuộc Tính
+                <i class="bi bi-graph-up-arrow me-1"></i> {{ 'So Sánh Thuộc Tính' | hrkTranslate }}
               </span>
               <div class="level-transition d-flex align-items-center gap-1 font-title">
                 <span class="badge bg-secondary">+{{ currentLevel }}</span>
@@ -153,10 +152,10 @@
 
             <div class="stats-table">
               <div class="stat-header-row d-flex justify-content-between text-muted border-bottom pb-1 mb-2">
-                <span>Thuộc tính</span>
+                <span>{{ 'Thuộc tính' | hrkTranslate }}</span>
                 <div class="d-flex gap-3">
-                  <span class="text-center" style="width: 75px;">Hiện tại</span>
-                  <span class="text-center" style="width: 75px;">Sau rèn</span>
+                  <span class="text-center" style="width: 75px;">{{ 'Hiện tại' | hrkTranslate }}</span>
+                  <span class="text-center" style="width: 75px;">{{ 'Sau rèn' | hrkTranslate }}</span>
                 </div>
               </div>
 
@@ -165,7 +164,7 @@
                 <div 
                   *ngFor="let key of getStatKeys(previewDetails?.currentStats)" 
                   class="stat-row d-flex justify-content-between align-items-center py-1">
-                  <span class="stat-name text-light-emphasis">{{ getStatDisplayName(key) }}</span>
+                  <span class="stat-name text-light-emphasis">{{ getStatDisplayName(key) | hrkTranslate }}</span>
                   <div class="d-flex gap-3">
                     <span class="current-stat text-center text-muted" style="width: 75px;">
                       {{ formatStatValue(key, previewDetails?.currentStats?.[key] || 0) }}
@@ -178,7 +177,7 @@
 
                 <div *ngIf="getStatKeys(previewDetails?.currentStats).length === 0" class="text-muted text-center py-2">
                   <span *ngIf="isLoadingPreview" class="spinner-border spinner-border-sm text-warning me-1"></span>
-                  {{ isLoadingPreview ? 'Đang tính toán thuộc tính...' : 'Không có chỉ số cơ bản.' }}
+                  {{ (isLoadingPreview ? 'Đang tính toán thuộc tính...' : 'Không có chỉ số cơ bản.') | hrkTranslate }}
                 </div>
               </div>
             </div>
@@ -232,16 +231,16 @@
 
               <!-- Animated Status Text -->
               <h4 class="font-title text-warning text-uppercase pulsing-text mt-3">
-                {{ currentAnimationTier === 3 ? 'ĐANG RÈN ĐÚC THẦN THOẠI (+11 → +15)...' : (currentAnimationTier === 2 ? 'ĐANG CƯỜNG HÓA CAO CẤP (+6 → +10)...' : 'ĐANG RÈN ĐÚC TRANG BỊ (+1 → +5)...') }}
+                {{ (currentAnimationTier === 3 ? 'ĐANG RÈN ĐÚC THẦN THOẠI (+11 → +15)...' : (currentAnimationTier === 2 ? 'ĐANG CƯỜNG HÓA CAO CẤP (+6 → +10)...' : 'ĐANG RÈN ĐÚC TRANG BỊ (+1 → +5)...')) | hrkTranslate }}
               </h4>
               <span class="text-light-subtle small">
-                {{ currentAnimationTier === 3 ? 'Khí thế ngút trời, pháp bảo chuẩn bị thăng hoa!' : 'Búa rèn giáng xuống đe ngập tràn tia lửa thần...' }}
+                {{ (currentAnimationTier === 3 ? 'Khí thế ngút trời, pháp bảo chuẩn bị thăng hoa!' : 'Búa rèn giáng xuống đe ngập tràn tia lửa thần...') | hrkTranslate }}
               </span>
             </div>
 
             <!-- Normal State: Success Rate Gauge -->
             <div class="rate-gauge-container mb-3" *ngIf="!isForging">
-              <span class="rate-label font-title text-uppercase text-muted">Tỷ Lệ Thành Công</span>
+              <span class="rate-label font-title text-uppercase text-muted">{{ 'Tỷ Lệ Thành Công' | hrkTranslate }}</span>
               <div 
                 class="rate-value-display font-title my-1" 
                 [class.text-success]="finalSuccessRate >= 0.7" 
@@ -252,11 +251,11 @@
 
               <!-- Rate Breakdown Badges -->
               <div class="rate-breakdown d-flex flex-wrap justify-content-center gap-2 mt-2">
-                <span class="badge badge-rate-item">Cơ bản: {{ (baseSuccessRate * 100) | number:'1.0-1' }}%</span>
-                <span class="badge badge-rate-item text-info" *ngIf="totalStoneBonus > 0">Đá: +{{ (totalStoneBonus * 100) | number:'1.0-1' }}%</span>
-                <span class="badge badge-rate-item text-warning" *ngIf="charmBonus > 0">Bùa: +{{ (charmBonus * 100) | number:'1.0-1' }}%</span>
+                <span class="badge badge-rate-item">{{ 'Cơ bản: {{p0}}%' | hrkTranslate:{p0: ((baseSuccessRate * 100) | number:'1.0-1')} }}</span>
+                <span class="badge badge-rate-item text-info" *ngIf="totalStoneBonus > 0">{{ 'Đá: +{{p0}}%' | hrkTranslate:{p0: ((totalStoneBonus * 100) | number:'1.0-1')} }}</span>
+                <span class="badge badge-rate-item text-warning" *ngIf="charmBonus > 0">{{ 'Bùa: +{{p0}}%' | hrkTranslate:{p0: ((charmBonus * 100) | number:'1.0-1')} }}</span>
                 <span class="badge badge-rate-item text-success" *ngIf="isProtectionCharmActive">
-                  <i class="bi bi-shield-check"></i> Chống tụt cấp
+                  <i class="bi bi-shield-check"></i> {{ 'Chống tụt cấp' | hrkTranslate }}
                 </span>
               </div>
             </div>
@@ -273,16 +272,16 @@
                   (click)="openStonePicker(i)">
                   <!-- Occupied Stone -->
                   <div *ngIf="stone" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
-                    <button class="btn btn-remove-slot" (click)="removeStone(i, $event)" title="Gỡ đá"><i class="bi bi-x"></i></button>
+                    <button class="btn btn-remove-slot" (click)="removeStone(i, $event)" [title]="'Gỡ đá' | hrkTranslate"><i class="bi bi-x"></i></button>
                     <app-item-image [item]="stone" style="width: 52px; height: 52px"></app-item-image>
-                    <span class="slot-item-name text-truncate px-1">{{ stone.name }}</span>
+                    <span class="slot-item-name text-truncate px-1">{{ (stone.name) | hrkTranslate }}</span>
                     <span class="slot-bonus text-success">+{{ (stone.bonus * 100) | number:'1.0-0' }}%</span>
                   </div>
 
                   <!-- Empty Stone Slot -->
                   <div *ngIf="!stone" class="slot-empty d-flex flex-column align-items-center justify-content-center h-100">
                     <i class="bi bi-plus-lg text-muted fs-3 mb-1"></i>
-                    <span class="slot-label text-muted">Đá {{ i + 1 }}</span>
+                    <span class="slot-label text-muted">{{ 'Đá {{p0}}' | hrkTranslate:{p0: (i + 1)} }}</span>
                   </div>
                 </div>
 
@@ -293,18 +292,18 @@
                   (click)="openCharmPicker()">
                   <!-- Occupied Charm -->
                   <div *ngIf="selectedCharm" class="slot-content d-flex flex-column align-items-center justify-content-center h-100 position-relative">
-                    <button class="btn btn-remove-slot" (click)="removeCharm($event)" title="Gỡ bùa"><i class="bi bi-x"></i></button>
+                    <button class="btn btn-remove-slot" (click)="removeCharm($event)" [title]="'Gỡ bùa' | hrkTranslate"><i class="bi bi-x"></i></button>
                     <app-item-image [item]="selectedCharm" style="width: 52px; height: 52px"></app-item-image>
-                    <span class="slot-item-name text-truncate px-1">{{ selectedCharm.name }}</span>
+                    <span class="slot-item-name text-truncate px-1">{{ (selectedCharm.name) | hrkTranslate }}</span>
                     <span class="slot-bonus" [class.text-success]="selectedCharm.preventsDrop" [class.text-warning]="!selectedCharm.preventsDrop">
-                      {{ selectedCharm.preventsDrop ? 'Hộ Mệnh' : '+' + (selectedCharm.bonus * 100) + '%' }}
+                      {{ (selectedCharm.preventsDrop ? 'Hộ Mệnh' : '+' + (selectedCharm.bonus * 100) + '%') | hrkTranslate }}
                     </span>
                   </div>
 
                   <!-- Empty Charm Slot -->
                   <div *ngIf="!selectedCharm" class="slot-empty d-flex flex-column align-items-center justify-content-center h-100">
                     <i class="bi bi-plus-lg text-muted fs-3 mb-1"></i>
-                    <span class="slot-label text-muted">Bùa</span>
+                    <span class="slot-label text-muted">{{ 'Bùa' | hrkTranslate }}</span>
                   </div>
                 </div>
               </div>
@@ -322,20 +321,20 @@
               [class.drop-danger]="failureDropLevels > 0 && !isProtectionCharmActive">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi {{ isProtectionCharmActive ? 'bi-shield-check text-success fs-5' : 'bi-exclamation-triangle-fill fs-5' }}"></i>
-                <span class="warning-title fw-bold">Nếu thất bại:</span>
+                <span class="warning-title fw-bold">{{ 'Nếu thất bại:' | hrkTranslate }}</span>
               </div>
-              <span class="consequence-text fw-bold">{{ failureConsequenceText }}</span>
+              <span class="consequence-text fw-bold">{{ failureConsequenceText | hrkTranslate }}</span>
             </div>
 
             <!-- Cost & Enhance Button -->
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div class="cost-details d-flex align-items-center gap-2 flex-wrap">
-                <span class="cost-label text-muted font-title">Chi Phí:</span>
+                <span class="cost-label text-muted font-title">{{ 'Chi Phí:' | hrkTranslate }}</span>
                 <span class="cost-amount fw-bold" [class.text-danger]="!hasEnoughGold" [class.text-warning]="hasEnoughGold">
-                  {{ goldCost | number }} Vàng
+                  {{ '{{p0}} Vàng' | hrkTranslate:{p0: (goldCost | number)} }}
                 </span>
-                <span *ngIf="!hasEnoughGold" class="badge bg-danger-subtle text-danger ms-1">Không đủ Vàng</span>
-                <span *ngIf="selectedEquipment?.isLocked" class="badge bg-warning-subtle text-warning ms-1"><i class="bi bi-lock-fill"></i> Đang Khóa</span>
+                <span *ngIf="!hasEnoughGold" class="badge bg-danger-subtle text-danger ms-1">{{ 'Không đủ Vàng' | hrkTranslate }}</span>
+                <span *ngIf="selectedEquipment?.isLocked" class="badge bg-warning-subtle text-warning ms-1"><i class="bi bi-lock-fill"></i> {{ 'Đang Khóa' | hrkTranslate }}</span>
               </div>
 
               <!-- Action Button -->
@@ -345,11 +344,11 @@
                   [disabled]="!canEnhance"
                   (click)="enhance()">
                   <i class="bi bi-hammer"></i>
-                  <span>{{ isMaxLevel ? 'ĐÃ ĐẠT CẤP TỐI ĐA' : (isForging ? 'ĐANG CƯỜNG HÓA...' : 'CƯỜNG HÓA') }}</span>
+                  <span>{{ (isMaxLevel ? 'ĐÃ ĐẠT CẤP TỐI ĐA' : (isForging ? 'ĐANG CƯỜNG HÓA...' : 'CƯỜNG HÓA')) | hrkTranslate }}</span>
                 </button>
-                <button class="btn btn-outline-warning mt-2 w-100" [disabled]="isForging || !selectedEquipment || selectedEquipment.enhancement <= 0" (click)="openDowngrade()"><i class="bi bi-arrow-down-circle me-1"></i>Hạ cấp</button>
+                <button class="btn btn-outline-warning mt-2 w-100" [disabled]="isForging || !selectedEquipment || selectedEquipment.enhancement <= 0" (click)="openDowngrade()"><i class="bi bi-arrow-down-circle me-1"></i>{{ 'Hạ cấp' | hrkTranslate }}</button>
                 <span *ngIf="!canEnhance && cannotEnhanceReason" class="text-warning mt-1 small d-flex align-items-center gap-1 fw-bold">
-                  <i class="bi bi-exclamation-circle-fill"></i> {{ cannotEnhanceReason }}
+                  <i class="bi bi-exclamation-circle-fill"></i> {{ (cannotEnhanceReason) | hrkTranslate }}
                 </span>
               </div>
             </div>
@@ -367,7 +366,7 @@
             <div class="browser-header d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
               <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-backpack4-fill text-warning fs-5"></i>
-                <h4 class="m-0 font-title text-warning">Hành Trang Trang Bị</h4>
+                <h4 class="m-0 font-title text-warning">{{ 'Hành Trang Trang Bị' | hrkTranslate }}</h4>
                 <span class="badge bg-dark-subtle text-muted border border-secondary-subtle">
                   {{ filteredEquipments.length }} / {{ forgeEquipments.length }}
                 </span>
@@ -379,7 +378,7 @@
                 <input 
                   type="text" 
                   class="form-control form-control-sm search-input ps-4" 
-                  placeholder="Tìm trang bị theo tên, mã..." 
+                  [placeholder]="'Tìm trang bị theo tên, mã...' | hrkTranslate"
                   [(ngModel)]="searchQuery" 
                   (ngModelChange)="onSearchChange()" />
                 <button 
@@ -401,7 +400,7 @@
                   class="btn btn-category-chip btn-sm"
                   [class.active]="selectedCategory === cat.code"
                   (click)="setCategoryFilter(cat.code)">
-                  {{ cat.name }}
+                  {{ (cat.name) | hrkTranslate }}
                 </button>
               </div>
 
@@ -413,9 +412,9 @@
                   class="form-select form-select-sm filter-select" 
                   [(ngModel)]="selectedEligibility" 
                   (ngModelChange)="setEligibilityFilter($event)">
-                  <option value="ALL">Tất cả trang bị</option>
-                  <option value="CAN_ENHANCE">Có thể cường hóa</option>
-                  <option value="CANNOT_ENHANCE">Không thể cường hóa</option>
+                  <option value="ALL">{{ 'Tất cả trang bị' | hrkTranslate }}</option>
+                  <option value="CAN_ENHANCE">{{ 'Có thể cường hóa' | hrkTranslate }}</option>
+                  <option value="CANNOT_ENHANCE">{{ 'Không thể cường hóa' | hrkTranslate }}</option>
                 </select>
 
                 <!-- Sort Options -->
@@ -423,13 +422,13 @@
                   class="form-select form-select-sm filter-select" 
                   [(ngModel)]="selectedSort" 
                   (ngModelChange)="setSortOption($event)">
-                  <option value="DEFAULT">Sắp xếp: Mặc định</option>
-                  <option value="RARITY_DESC">Phẩm chất: Cao → Thấp</option>
-                  <option value="RARITY_ASC">Phẩm chất: Thấp → Cao</option>
-                  <option value="ENHANCEMENT_DESC">Cường hóa: Cao → Thấp</option>
-                  <option value="ENHANCEMENT_ASC">Cường hóa: Thấp → Cao</option>
-                  <option value="NAME_ASC">Tên: A → Z</option>
-                  <option value="NAME_DESC">Tên: Z → A</option>
+                  <option value="DEFAULT">{{ 'Sắp xếp: Mặc định' | hrkTranslate }}</option>
+                  <option value="RARITY_DESC">{{ 'Phẩm chất: Cao → Thấp' | hrkTranslate }}</option>
+                  <option value="RARITY_ASC">{{ 'Phẩm chất: Thấp → Cao' | hrkTranslate }}</option>
+                  <option value="ENHANCEMENT_DESC">{{ 'Cường hóa: Cao → Thấp' | hrkTranslate }}</option>
+                  <option value="ENHANCEMENT_ASC">{{ 'Cường hóa: Thấp → Cao' | hrkTranslate }}</option>
+                  <option value="NAME_ASC">{{ 'Tên: A → Z' | hrkTranslate }}</option>
+                  <option value="NAME_DESC">{{ 'Tên: Z → A' | hrkTranslate }}</option>
                 </select>
               </div>
             </div>
@@ -451,13 +450,13 @@
                     (dragend)="onDragEnd($event)"
                     (click)="onCardClick(eq)"
                     (dblclick)="onEquipmentDoubleClick(eq)"
-                    [title]="eq.canEnhance ? (eq.name + ' - Nhấp đôi hoặc kéo thả để chọn') : (eq.enhancementBlockedMessage || 'Không thể cường hóa')">
+                    [title]="(eq.canEnhance ? (eq.name + ' - Nhấp đôi hoặc kéo thả để chọn') : (eq.enhancementBlockedMessage || 'Không thể cường hóa')) | hrkTranslate">
                     
                     <!-- Equipped Tag -->
-                    <span *ngIf="eq.isEquipped" class="badge-equipped-tag">Đang mang</span>
+                    <span *ngIf="eq.isEquipped" class="badge-equipped-tag">{{ 'Đang mang' | hrkTranslate }}</span>
 
                     <!-- Locked Tag -->
-                    <span *ngIf="eq.isLocked" class="badge-locked-tag" title="Trang bị đang bị khóa">
+                    <span *ngIf="eq.isLocked" class="badge-locked-tag" [title]="'Trang bị đang bị khóa' | hrkTranslate">
                       <i class="bi bi-lock-fill"></i>
                     </span>
 
@@ -467,7 +466,7 @@
                         *ngIf="eq.imagePath; else eqGridIconFallback" 
                         [src]="eq.imagePath" 
                         class="eq-grid-img" 
-                        [alt]="eq.name" />
+                        [alt]="(eq.name) | hrkTranslate" />
                       <ng-template #eqGridIconFallback>
                         <i class="bi {{ eq.icon || 'bi-shield' }} fs-2 text-warning"></i>
                       </ng-template>
@@ -479,12 +478,12 @@
                     <!-- Card Info -->
                     <div class="eq-grid-meta text-center">
                       <div class="eq-grid-name text-truncate font-title" [style.color]="eq.rarityColorHex || '#fff'">
-                        {{ eq.name }}
+                        {{ (eq.name) | hrkTranslate }}
                       </div>
                       <div class="eq-grid-sub d-flex justify-content-center gap-1 mt-1 small">
-                        <span class="text-muted">{{ eq.categoryName }}</span>
+                        <span class="text-muted">{{ (eq.categoryName) | hrkTranslate }}</span>
                         <span class="text-muted">•</span>
-                        <span class="text-muted">Cấp {{ eq.levelReq }}</span>
+                        <span class="text-muted">{{ 'Cấp {{p0}}' | hrkTranslate:{p0: (eq.levelReq)} }}</span>
                       </div>
                     </div>
 
@@ -492,7 +491,7 @@
                     <div class="disabled-card-overlay" *ngIf="!eq.canEnhance">
                       <span class="disabled-reason-badge">
                         <i class="bi {{ eq.isLocked ? 'bi-lock-fill' : 'bi-slash-circle' }} me-1"></i>
-                        {{ eq.enhancementBlockedReasonCode === 'MAX_ENHANCEMENT' ? '+15 MAX' : (eq.isLocked ? 'ĐÃ KHÓA' : 'KHÔNG THỂ RÈN') }}
+                        {{ (eq.enhancementBlockedReasonCode === 'MAX_ENHANCEMENT' ? '+15 MAX' : (eq.isLocked ? 'ĐÃ KHÓA' : 'KHÔNG THỂ RÈN')) | hrkTranslate }}
                       </span>
                     </div>
                   </div>
@@ -502,17 +501,17 @@
               <!-- Empty Filter State -->
               <div *ngIf="filteredEquipments.length === 0" class="empty-filter-state text-center py-5 text-muted">
                 <i class="bi bi-search display-5 text-muted mb-2 d-block"></i>
-                <p class="mb-1">Không tìm thấy trang bị phù hợp với bộ lọc.</p>
+                <p class="mb-1">{{ 'Không tìm thấy trang bị phù hợp với bộ lọc.' | hrkTranslate }}</p>
                 <button class="btn btn-sm btn-outline-warning mt-2" (click)="searchQuery = ''; selectedCategory = 'ALL'; selectedEligibility = 'ALL'; applyFilters()">
-                  Xóa bộ lọc
+                  {{ 'Xóa bộ lọc' | hrkTranslate }}
                 </button>
               </div>
             </div>
 
             <!-- Footer Quick Legend -->
             <div class="browser-footer-legend d-flex justify-content-between align-items-center text-muted small pt-2 border-top mt-2">
-              <span><i class="bi bi-mouse2 me-1"></i>Nhấp đôi hoặc kéo thả để chọn trang bị</span>
-              <span><i class="bi bi-info-circle me-1"></i>Trang bị mờ không thể cường hóa</span>
+              <span><i class="bi bi-mouse2 me-1"></i>{{ 'Nhấp đôi hoặc kéo thả để chọn trang bị' | hrkTranslate }}</span>
+              <span><i class="bi bi-info-circle me-1"></i>{{ 'Trang bị mờ không thể cường hóa' | hrkTranslate }}</span>
             </div>
           </div>
         </div>
@@ -521,10 +520,10 @@
   </div>
 
   <!-- MODAL: Stone Picker Drawer -->
-  <hrk-modal #stoneModal *ngIf="showStonePicker" modalCode="FORGE_STONE_PICKER" title="Chọn đá cường hóa" [chrome]="false" (closed)="showStonePicker = false">
+  <hrk-modal #stoneModal *ngIf="showStonePicker" modalCode="FORGE_STONE_PICKER" [title]="'Chọn đá cường hóa' | hrkTranslate" [chrome]="false" (closed)="showStonePicker = false">
     <div class="picker-card p-4 rounded-4" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-gem me-2"></i>{{ stoneModal.resolved.title }} (Ô {{ pickingStoneSlotIndex + 1 }})</h4>
+        <h4 class="m-0 font-title text-warning"><i class="bi bi-gem me-2"></i>{{ '{{p0}} (Ô {{p1}})' | hrkTranslate:{p0: ((stoneModal.resolved.title) | hrkTranslate), p1: (pickingStoneSlotIndex + 1)} }}</h4>
         <button class="btn btn-close-modal" (click)="showStonePicker = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
@@ -536,24 +535,24 @@
           (click)="getAvailableStoneCount(stone) > 0 ? selectStone(stone) : null">
           <app-item-image [item]="stone" style="width: 52px; height: 52px"></app-item-image>
           <div class="flex-grow-1">
-            <span class="d-block text-light fw-bold">{{ stone.name }}</span>
-            <span class="text-success small">+{{ (stone.bonus * 100) | number:'1.0-0' }}% Tỷ Lệ</span>
+            <span class="d-block text-light fw-bold">{{ (stone.name) | hrkTranslate }}</span>
+            <span class="text-success small">{{ '+{{p0}}% Tỷ Lệ' | hrkTranslate:{p0: ((stone.bonus * 100) | number:'1.0-0')} }}</span>
           </div>
-          <span class="badge bg-secondary">Còn: {{ getAvailableStoneCount(stone) }}</span>
+          <span class="badge bg-secondary">{{ 'Còn: {{p0}}' | hrkTranslate:{p0: (getAvailableStoneCount(stone))} }}</span>
         </div>
 
         <div *ngIf="playerStones.length === 0" class="text-muted text-center py-4 col-12">
-          Hành trang chưa có Đá Cường Hóa nào.
+          {{ 'Hành trang chưa có Đá Cường Hóa nào.' | hrkTranslate }}
         </div>
       </div>
     </div>
   </hrk-modal>
 
   <!-- MODAL: Charm Picker Drawer -->
-  <hrk-modal #charmModal *ngIf="showCharmPicker" modalCode="FORGE_CHARM_PICKER" title="Chọn bùa hộ mệnh / may mắn" [chrome]="false" (closed)="showCharmPicker = false">
+  <hrk-modal #charmModal *ngIf="showCharmPicker" modalCode="FORGE_CHARM_PICKER" [title]="'Chọn bùa hộ mệnh / may mắn' | hrkTranslate" [chrome]="false" (closed)="showCharmPicker = false">
     <div class="picker-card p-4 rounded-4" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-check me-2"></i>{{ charmModal.resolved.title }}</h4>
+        <h4 class="m-0 font-title text-warning"><i class="bi bi-shield-check me-2"></i>{{ (charmModal.resolved.title) | hrkTranslate }}</h4>
         <button class="btn btn-close-modal" (click)="showCharmPicker = false"><i class="bi bi-x-lg"></i></button>
       </div>
 
@@ -564,36 +563,36 @@
           (click)="selectCharm(charm)">
           <app-item-image [item]="charm" style="width: 52px; height: 52px"></app-item-image>
           <div class="flex-grow-1">
-            <span class="d-block text-light fw-bold">{{ charm.name }}</span>
+            <span class="d-block text-light fw-bold">{{ (charm.name) | hrkTranslate }}</span>
             <span [class.text-success]="charm.preventsDrop" [class.text-warning]="!charm.preventsDrop" class="small">
-              {{ charm.preventsDrop ? 'Bảo Vệ Cấp Độ (Không Giảm Cấp)' : '+' + (charm.bonus * 100) + '% Tỷ Lệ' }}
+              {{ (charm.preventsDrop ? 'Bảo Vệ Cấp Độ (Không Giảm Cấp)' : '+' + (charm.bonus * 100) + '% Tỷ Lệ') | hrkTranslate }}
             </span>
           </div>
-          <span class="badge bg-secondary">Còn: {{ charm.count }}</span>
+          <span class="badge bg-secondary">{{ 'Còn: {{p0}}' | hrkTranslate:{p0: (charm.count)} }}</span>
         </div>
 
         <div *ngIf="playerCharms.length === 0" class="text-muted text-center py-4 col-12">
-          Hành trang chưa có Bùa Cường Hóa nào.
+          {{ 'Hành trang chưa có Bùa Cường Hóa nào.' | hrkTranslate }}
         </div>
       </div>
     </div>
   </hrk-modal>
 
-  <hrk-modal #downgradeModal *ngIf="showDowngradeModal" modalCode="FORGE_DOWNGRADE" title="Hạ cấp trang bị" [chrome]="false" [busy]="isDowngrading" (closed)="showDowngradeModal = false">
+  <hrk-modal #downgradeModal *ngIf="showDowngradeModal" modalCode="FORGE_DOWNGRADE" [title]="'Hạ cấp trang bị' | hrkTranslate" [chrome]="false" [busy]="isDowngrading" (closed)="showDowngradeModal = false">
     <div class="result-card downgrade-card p-4 rounded-4 border" [style.max-width.%]="100" (click)="$event.stopPropagation()">
-      <h3 class="font-title text-warning">{{ downgradeModal.resolved.title }}</h3>
-      <label class="d-block text-start mb-2">Cấp đích</label>
+      <h3 class="font-title text-warning">{{ (downgradeModal.resolved.title) | hrkTranslate }}</h3>
+      <label class="d-block text-start mb-2">{{ 'Cấp đích' | hrkTranslate }}</label>
       <select class="form-select bg-dark text-light border-warning" [(ngModel)]="downgradeTarget" (change)="loadDowngradePreview()">
         <option *ngFor="let level of [].constructor(selectedEquipment?.enhancement || 0); let i=index" [ngValue]="i">+{{ i }}</option>
       </select>
       <div *ngIf="downgradePreview as p" class="text-start mt-3">
         <div class="level-transition-badge text-center">+{{ p.currentEnhancement }} → +{{ p.targetEnhancement }}</div>
-        <p>Lực chiến: {{ p.currentCombatPower | number }} → {{ p.nextCombatPower | number }}</p>
-        <p class="text-warning">Hoàn {{ p.refundedGold | number }} vàng</p>
-        <div *ngFor="let stone of p.refundedStones" class="d-flex align-items-center gap-2"><img [src]="stone.imagePath" imageKind="item" width="36" height="36" style="object-fit:contain"><span>{{ stone.name }} × {{ stone.quantity }}</span></div>
-        <p class="small text-danger mt-2">Không hoàn lại 100% tài nguyên. Không hoàn bùa và tài nguyên của lần cường hóa thất bại.</p>
+        <p>{{ 'Lực chiến: {{p0}} → {{p1}}' | hrkTranslate:{p0: (p.currentCombatPower | number), p1: (p.nextCombatPower | number)} }}</p>
+        <p class="text-warning">{{ 'Hoàn {{p0}} vàng' | hrkTranslate:{p0: (p.refundedGold | number)} }}</p>
+        <div *ngFor="let stone of p.refundedStones" class="d-flex align-items-center gap-2"><img [src]="stone.imagePath" imageKind="item" width="36" height="36" style="object-fit:contain"><span>{{ (stone.name) | hrkTranslate }} × {{ stone.quantity }}</span></div>
+        <p class="small text-danger mt-2">{{ 'Không hoàn lại 100% tài nguyên. Không hoàn bùa và tài nguyên của lần cường hóa thất bại.' | hrkTranslate }}</p>
       </div>
-      <div class="d-flex justify-content-end gap-2 mt-3"><button class="btn btn-outline-secondary" (click)="showDowngradeModal=false" [disabled]="isDowngrading">Hủy</button><button class="btn btn-warning" [disabled]="!downgradePreview?.canDowngrade || isDowngrading" (click)="confirmDowngrade()">Xác nhận</button></div>
+      <div class="d-flex justify-content-end gap-2 mt-3"><button class="btn btn-outline-secondary" (click)="showDowngradeModal=false" [disabled]="isDowngrading">{{ 'Hủy' | hrkTranslate }}</button><button class="btn btn-warning" [disabled]="!downgradePreview?.canDowngrade || isDowngrading" (click)="confirmDowngrade()">{{ 'Xác nhận' | hrkTranslate }}</button></div>
     </div>
   </hrk-modal>
 
@@ -612,7 +611,7 @@
 
       <!-- Result Heading -->
       <h2 class="font-title mb-2 text-uppercase" [class.text-success]="lastResult?.success" [class.text-warning]="!lastResult?.success && lastResult?.wasLevelProtected" [class.text-danger]="!lastResult?.success && !lastResult?.wasLevelProtected">
-        {{ lastResult?.success ? 'CƯỜNG HÓA THÀNH CÔNG!' : (lastResult?.wasLevelProtected ? 'THẤT BẠI - BÙA ĐÃ BẢO VỆ CẤP' : 'CƯỜNG HÓA THẤT BẠI!') }}
+        {{ (lastResult?.success ? 'CƯỜNG HÓA THÀNH CÔNG!' : (lastResult?.wasLevelProtected ? 'THẤT BẠI - BÙA ĐÃ BẢO VỆ CẤP' : 'CƯỜNG HÓA THẤT BẠI!')) | hrkTranslate }}
       </h2>
 
       <!-- Level Transition Display -->
@@ -626,11 +625,11 @@
 
       <!-- Subtitle Message -->
       <p class="text-light-emphasis mb-4">
-        {{ lastResult?.message }}
+        {{ lastResult?.message | hrkTranslate:lastResult?.messageArguments:lastResult?.messageKey }}
       </p>
 
       <button class="btn btn-outline-warning px-5 py-2 font-title fw-bold" (click)="closeResultModal()">
-        TIẾP TỤC
+        {{ 'TIẾP TỤC' | hrkTranslate }}
       </button>
     </div>
   </hrk-modal>

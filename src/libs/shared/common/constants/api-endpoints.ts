@@ -1,4 +1,7 @@
 export const ApiEndpoints = {
+  Localization: {
+    Bundle: (group: string, culture: string) => `language/bundles/${encodeURIComponent(group)}/${encodeURIComponent(culture)}`
+  },
   CheckIn: { Calendar: 'dcs-game/check-in', Claim: 'dcs-game/check-in/claim' },
   Summon: {
     Configuration: 'dcs-game/summon/configuration',

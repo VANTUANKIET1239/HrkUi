@@ -19,15 +19,15 @@
     <div class="header-left">
       <button type="button" class="btn-back" (click)="back()">
         <span class="arrow">←</span>
-        <span class="text">Bản Đồ</span>
+        <span class="text">{{ 'Bản Đồ' | hrkTranslate }}</span>
       </button>
 
       <div class="map-meta" *ngIf="map">
         <div class="title-row">
-          <h1 class="map-title">{{ map.name }}</h1>
-          <span class="progress-badge">{{ map.clearedStages }}/{{ map.totalStages }} Màn Hoàn Thành</span>
+          <h1 class="map-title">{{ (map.name) | hrkTranslate }}</h1>
+          <span class="progress-badge">{{ '{{p0}}/{{p1}} Màn Hoàn Thành' | hrkTranslate:{p0: (map.clearedStages), p1: (map.totalStages)} }}</span>
         </div>
-        <p class="map-desc">{{ map.description || 'Chinh phục từng ải trên con đường phiêu lưu uốn lượn.' }}</p>
+        <p class="map-desc">{{ (map.description || 'Chinh phục từng ải trên con đường phiêu lưu uốn lượn.') | hrkTranslate }}</p>
       </div>
     </div>
 
@@ -37,10 +37,10 @@
         type="button"
         class="btn-focus-current"
         (click)="focusCurrentStage()"
-        title="Cuộn nhanh tới ải đang khiêu chiến"
+        [title]="'Cuộn nhanh tới ải đang khiêu chiến' | hrkTranslate"
       >
         <span class="focus-icon">🎯</span>
-        <span class="focus-text">Tới Ải Hiện Tại</span>
+        <span class="focus-text">{{ 'Tới Ải Hiện Tại' | hrkTranslate }}</span>
       </button>
 
       <!-- Stamina Pill -->
@@ -56,9 +56,9 @@
     <div class="milestone-summary">
       <div class="stars-counter">
         <i class="bi bi-star-fill text-gold star-icon"></i>
-        <span class="counter-text">Tổng Sao Bản Đồ: <strong>{{ map.totalStars || 0 }}</strong>/45</span>
+        <span class="counter-text">{{ 'Tổng Sao Bản Đồ:' | hrkTranslate }} <strong>{{ map.totalStars || 0 }}</strong>/45</span>
       </div>
-      <span class="milestone-hint">Đạt đủ sao để mở rương báu phó bản chứa Vàng, Kim Cương & Trang Bị!</span>
+      <span class="milestone-hint">{{ 'Đạt đủ sao để mở rương báu phó bản chứa Vàng, Kim Cương & Trang Bị!' | hrkTranslate }}</span>
     </div>
 
     <div class="milestone-track-container">
@@ -85,9 +85,9 @@
 
           <div class="chest-info-pill">
             <span class="req-stars"><i class="bi bi-star-fill text-gold me-1"></i>{{ chest.requiredStars }}</span>
-            <span *ngIf="chest.state === 'CLAIMABLE'" class="status-btn claim-now">Nhận</span>
-            <span *ngIf="chest.state === 'CLAIMED'" class="status-btn claimed-lbl">Đã nhận</span>
-            <span *ngIf="chest.state === 'LOCKED'" class="status-btn locked-lbl">Khóa</span>
+            <span *ngIf="chest.state === 'CLAIMABLE'" class="status-btn claim-now">{{ 'Nhận' | hrkTranslate }}</span>
+            <span *ngIf="chest.state === 'CLAIMED'" class="status-btn claimed-lbl">{{ 'Đã nhận' | hrkTranslate }}</span>
+            <span *ngIf="chest.state === 'LOCKED'" class="status-btn locked-lbl">{{ 'Khóa' | hrkTranslate }}</span>
           </div>
         </div>
       </div>
@@ -105,14 +105,14 @@
     </div>
     <div class="skeleton-loading-text">
       <span class="spinner-border spinner-border-sm text-warning" role="status"></span>
-      <span>Đang tải hành trình phó bản...</span>
+      <span>{{ 'Đang tải hành trình phó bản...' | hrkTranslate }}</span>
     </div>
   </div>
 
   <div class="state-panel error-panel" *ngIf="!loading && error">
     <i class="bi bi-exclamation-triangle-fill"></i>
-    <span>{{ error }}</span>
-    <button type="button" class="btn-retry" (click)="loadMap(map?.id || 1)">Thử Lại</button>
+    <span>{{ error | hrkTranslate }}</span>
+    <button type="button" class="btn-retry" (click)="loadMap(map?.id || 1)">{{ 'Thử Lại' | hrkTranslate }}</button>
   </div>
 
   <!-- S-Curve Road & Stages Canvas -->
@@ -168,11 +168,11 @@
   ></app-battle-formation-setup-modal>
 
   <!-- Chest Preview Modal -->
-  <hrk-modal #previewModal *ngIf="previewChest" modalCode="CAMPAIGN_CHEST_PREVIEW" title="Rương báu" [chrome]="false" [busy]="claimingChestId !== null" (closed)="closePreviewChest()">
+  <hrk-modal #previewModal *ngIf="previewChest" modalCode="CAMPAIGN_CHEST_PREVIEW" [title]="'Rương báu' | hrkTranslate" [chrome]="false" [busy]="claimingChestId !== null" (closed)="closePreviewChest()">
     <div class="chest-dialog-card" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="chest-dialog-header">
         <h3 class="dialog-title">
-          <i class="bi bi-gift-fill text-gold me-2"></i>{{ previewModal.resolved.title }} {{ previewChest.requiredStars }} SAO
+          <i class="bi bi-gift-fill text-gold me-2"></i>{{ (previewModal.resolved.title) | hrkTranslate }} {{ previewChest.requiredStars }} SAO
         </h3>
         <button class="btn-close-dialog" [disabled]="claimingChestId !== null" (click)="closePreviewChest()"><i class="bi bi-x-lg"></i></button>
       </div>
@@ -180,59 +180,59 @@
       <div class="chest-dialog-body">
         <div class="status-summary">
           <span class="status-badge" [class.claimed]="previewChest.state === 'CLAIMED'" [class.claimable]="previewChest.state === 'CLAIMABLE'" [class.locked]="previewChest.state === 'LOCKED'">
-            {{ previewChest.state === 'CLAIMED' ? 'ĐÃ NHẬN' : (previewChest.state === 'CLAIMABLE' ? 'ĐÃ ĐẠT - CÓ THỂ NHẬN' : 'CHƯA ĐẠT (' + (map?.totalStars || 0) + '/' + previewChest.requiredStars + ' Sao)') }}
+            {{ (previewChest.state === 'CLAIMED' ? 'ĐÃ NHẬN' : (previewChest.state === 'CLAIMABLE' ? 'ĐÃ ĐẠT - CÓ THỂ NHẬN' : 'CHƯA ĐẠT (' + (map?.totalStars || 0) + '/' + previewChest.requiredStars + ' Sao)')) | hrkTranslate }}
           </span>
         </div>
 
-        <p class="dialog-desc">{{ previewChest.description || 'Hoàn thành các ải để đạt mốc sao và nhận quà giá trị.' }}</p>
+        <p class="dialog-desc">{{ (previewChest.description || 'Hoàn thành các ải để đạt mốc sao và nhận quà giá trị.') | hrkTranslate }}</p>
 
         <div class="rewards-preview-grid">
           <div class="reward-item-box" *ngIf="previewChest.goldReward > 0">
             <span class="box-icon">🪙</span>
             <span class="box-val">+{{ previewChest.goldReward | number }}</span>
-            <span class="box-lbl">Vàng</span>
+            <span class="box-lbl">{{ 'Vàng' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box" *ngIf="previewChest.diamondReward > 0">
             <span class="box-icon">💎</span>
             <span class="box-val">+{{ previewChest.diamondReward | number }}</span>
-            <span class="box-lbl">Kim Cương</span>
+            <span class="box-lbl">{{ 'Kim Cương' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box" *ngIf="previewChest.upgradeMaterialsReward > 0">
             <span class="box-icon">🔮</span>
             <span class="box-val">+{{ previewChest.upgradeMaterialsReward | number }}</span>
-            <span class="box-lbl">Đá Cường Hóa</span>
+            <span class="box-lbl">{{ 'Đá Cường Hóa' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box item-guaranteed" *ngIf="previewChest.guaranteedItem">
-            <img *ngIf="previewChest.guaranteedItem.imagePath" [src]="previewChest.guaranteedItem.imagePath" class="box-img" [alt]="previewChest.guaranteedItem.name" />
-            <span class="box-val">{{ previewChest.guaranteedItem.name }}</span>
-            <span class="box-lbl text-gold">Trang Bị Đảm Bảo</span>
+            <img *ngIf="previewChest.guaranteedItem.imagePath" [src]="previewChest.guaranteedItem.imagePath" class="box-img" [alt]="(previewChest.guaranteedItem.name) | hrkTranslate" />
+            <span class="box-val">{{ (previewChest.guaranteedItem.name) | hrkTranslate }}</span>
+            <span class="box-lbl text-gold">{{ 'Trang Bị Đảm Bảo' | hrkTranslate }}</span>
           </div>
         </div>
       </div>
 
       <div class="chest-dialog-footer">
-        <button class="btn-dialog-close" (click)="closePreviewChest()">Đóng</button>
+        <button class="btn-dialog-close" (click)="closePreviewChest()">{{ 'Đóng' | hrkTranslate }}</button>
         <button *ngIf="previewChest.state === 'CLAIMABLE'"
                 class="btn-dialog-claim"
                 [disabled]="claimingChestId !== null"
                 (click)="onChestClick(previewChest)">
           <span *ngIf="claimingChestId !== null" class="spinner-border spinner-border-sm me-1"></span>
-          <span>Nhận Thưởng</span>
+          <span>{{ 'Nhận Thưởng' | hrkTranslate }}</span>
         </button>
       </div>
     </div>
   </hrk-modal>
 
   <!-- Claimed Reward Celebration Modal -->
-  <hrk-modal #rewardModal *ngIf="claimedReward" modalCode="CAMPAIGN_CHEST_REWARD" title="Nhận thưởng rương báu thành công" [chrome]="false" (closed)="closeClaimedReward()">
+  <hrk-modal #rewardModal *ngIf="claimedReward" modalCode="CAMPAIGN_CHEST_REWARD" [title]="'Nhận thưởng rương báu thành công' | hrkTranslate" [chrome]="false" (closed)="closeClaimedReward()">
     <div class="chest-dialog-card celebration-card" [style.max-width.%]="100" (click)="$event.stopPropagation()">
       <div class="celebration-rays"></div>
       <div class="chest-dialog-header">
         <h3 class="dialog-title text-gold">
-          <i class="bi bi-stars text-warning me-2"></i>{{ rewardModal.resolved.title }}
+          <i class="bi bi-stars text-warning me-2"></i>{{ (rewardModal.resolved.title) | hrkTranslate }}
         </h3>
         <button class="btn-close-dialog" (click)="closeClaimedReward()"><i class="bi bi-x-lg"></i></button>
       </div>
@@ -241,37 +241,37 @@
         <div class="chest-open-animation mb-3">
           <i class="bi bi-box2-heart-fill fs-1 text-gold"></i>
         </div>
-        <p class="celebration-subtitle">Bạn đã nhận được tất cả phần thưởng mốc {{ claimedReward.requiredStars }} Sao:</p>
+        <p class="celebration-subtitle">{{ 'Bạn đã nhận được tất cả phần thưởng mốc {{p0}} Sao:' | hrkTranslate:{p0: (claimedReward.requiredStars)} }}</p>
 
         <div class="rewards-preview-grid">
           <div class="reward-item-box" *ngIf="claimedReward.goldGained > 0">
             <span class="box-icon">🪙</span>
             <span class="box-val text-success">+{{ claimedReward.goldGained | number }}</span>
-            <span class="box-lbl">Vàng</span>
+            <span class="box-lbl">{{ 'Vàng' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box" *ngIf="claimedReward.diamondsGained > 0">
             <span class="box-icon">💎</span>
             <span class="box-val text-info">+{{ claimedReward.diamondsGained | number }}</span>
-            <span class="box-lbl">Kim Cương</span>
+            <span class="box-lbl">{{ 'Kim Cương' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box" *ngIf="claimedReward.upgradeMaterialsGained > 0">
             <span class="box-icon">🔮</span>
             <span class="box-val text-warning">+{{ claimedReward.upgradeMaterialsGained | number }}</span>
-            <span class="box-lbl">Đá Cường Hóa</span>
+            <span class="box-lbl">{{ 'Đá Cường Hóa' | hrkTranslate }}</span>
           </div>
 
           <div class="reward-item-box item-guaranteed epic" *ngIf="claimedReward.droppedEquipment">
-            <img *ngIf="claimedReward.droppedEquipment.imagePath" [src]="claimedReward.droppedEquipment.imagePath" class="box-img" [alt]="claimedReward.droppedEquipment.name" />
-            <span class="box-val text-warning">{{ claimedReward.droppedEquipment.name }}</span>
-            <span class="box-lbl text-gold">Trang Bị Nhận Được</span>
+            <img *ngIf="claimedReward.droppedEquipment.imagePath" [src]="claimedReward.droppedEquipment.imagePath" class="box-img" [alt]="(claimedReward.droppedEquipment.name) | hrkTranslate" />
+            <span class="box-val text-warning">{{ (claimedReward.droppedEquipment.name) | hrkTranslate }}</span>
+            <span class="box-lbl text-gold">{{ 'Trang Bị Nhận Được' | hrkTranslate }}</span>
           </div>
         </div>
       </div>
 
       <div class="chest-dialog-footer justify-content-center">
-        <button class="btn-dialog-claim px-5" (click)="closeClaimedReward()">Tuyệt Vời</button>
+        <button class="btn-dialog-claim px-5" (click)="closeClaimedReward()">{{ 'Tuyệt Vời' | hrkTranslate }}</button>
       </div>
     </div>
   </hrk-modal>

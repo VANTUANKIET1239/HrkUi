@@ -10,13 +10,13 @@
     <div class="header-left">
       <button type="button" class="btn-back" (click)="backToCampaign()">
         <span class="back-arrow">←</span>
-        <span class="back-text">Chiến Dịch</span>
+        <span class="back-text">{{ 'Chiến Dịch' | hrkTranslate }}</span>
       </button>
       <div class="title-block">
-        <span class="eyebrow">SỰ KIỆN HẰNG NGÀY</span>
-        <h1 class="header-title">LEO THÁP VÔ TẬN</h1>
+        <span class="eyebrow">{{ 'SỰ KIỆN HẰNG NGÀY' | hrkTranslate }}</span>
+        <h1 class="header-title">{{ 'LEO THÁP VÔ TẬN' | hrkTranslate }}</h1>
         <p class="header-subtitle">
-          Chinh phục {{ progress?.maxFloor ?? '…' }} tầng tháp · Kỳ tiếp theo: {{ progress?.resetTimeUtc | date:'HH:mm dd/MM' }}
+          {{ 'Chinh phục {{p0}} tầng tháp · Kỳ tiếp theo: {{p1}}' | hrkTranslate:{p0: (progress?.maxFloor ?? '…'), p1: (progress?.resetTimeUtc | date:'HH:mm dd/MM')} }}
         </p>
       </div>
     </div>
@@ -32,13 +32,13 @@
         [disabled]="claimingPendingId !== null"
       >
         <i class="bi bi-gift-fill text-warning me-1"></i>
-        <span>Nhận Quà Kỳ Trước ({{ pendingRewards.length }})</span>
+        <span>{{ 'Nhận Quà Kỳ Trước ({{p0}})' | hrkTranslate:{p0: (pendingRewards.length)} }}</span>
       </button>
 
       <!-- Reset Countdown Pill -->
       <div class="reset-timer-pill">
         <i class="bi bi-hourglass-split text-warning me-1"></i>
-        <span>Làm mới: <b>{{ formatCountdown(progress.secondsUntilReset) }}</b></span>
+        <span>{{ 'Làm mới:' | hrkTranslate }} <b>{{ formatCountdown(progress.secondsUntilReset) }}</b></span>
       </div>
     </div>
   </header>
@@ -47,7 +47,7 @@
   <div class="state-container" *ngIf="loading && !progress">
     <div class="state-spinner">
       <span class="spinner-border text-warning" role="status"></span>
-      <span>Đang triệu hồi chiến trường Leo Tháp...</span>
+      <span>{{ 'Đang triệu hồi chiến trường Leo Tháp...' | hrkTranslate }}</span>
     </div>
   </div>
 
@@ -55,8 +55,8 @@
   <div class="state-container state-error" *ngIf="!loading && error">
     <div class="error-box">
       <i class="bi bi-exclamation-triangle-fill"></i>
-      <span>{{ error }}</span>
-      <button type="button" class="btn-retry" (click)="fetchTowerData()">Thử lại</button>
+      <span>{{ error | hrkTranslate }}</span>
+      <button type="button" class="btn-retry" (click)="fetchTowerData()">{{ 'Thử lại' | hrkTranslate }}</button>
     </div>
   </div>
 
@@ -81,7 +81,7 @@
 
           <!-- Lead Hero Figure (Highest CP hero of active formation) -->
           <div class="hero-figure-container" *ngIf="progress.leadHero as hero">
-            <img [src]="hero.avatar || '/assets/images/dcs-game/placeholders/hero.svg'" [alt]="hero.name" class="hero-full-art" />
+            <img [src]="hero.avatar || '/assets/images/dcs-game/placeholders/hero.svg'" [alt]="(hero.name) | hrkTranslate" class="hero-full-art" />
             <div class="hero-floating-badge">
               <span class="hero-name">{{ hero.name }}</span>
               <span class="hero-level">Lv.{{ hero.level }} · {{ hero.stars }}★</span>
@@ -94,10 +94,10 @@
           <!-- Empty Formation Guide Fallback -->
           <div class="empty-formation-guide" *ngIf="!progress.leadHero">
             <i class="bi bi-people-fill text-warning mb-2" style="font-size: 36px;"></i>
-            <h4>Chưa có đội hình hợp lệ</h4>
-            <p>Vui lòng xếp tướng vào đội hình để bắt đầu khiêu chiến tháp.</p>
+            <h4>{{ 'Chưa có đội hình hợp lệ' | hrkTranslate }}</h4>
+            <p>{{ 'Vui lòng xếp tướng vào đội hình để bắt đầu khiêu chiến tháp.' | hrkTranslate }}</p>
             <button type="button" class="btn-setup-now" (click)="openFormationModal()">
-              <i class="bi bi-sliders me-1"></i>Xếp Đội Hình Ngay
+              <i class="bi bi-sliders me-1"></i>{{ 'Xếp Đội Hình Ngay' | hrkTranslate }}
             </button>
           </div>
 
@@ -112,19 +112,19 @@
       <div class="team-stats-card">
         <!-- Team CP Big Metric -->
         <div class="team-cp-row">
-          <div class="cp-label"><i class="bi bi-shield-shaded text-warning me-1"></i>LỰC CHIẾN ĐỘI HÌNH:</div>
+          <div class="cp-label"><i class="bi bi-shield-shaded text-warning me-1"></i>{{ 'LỰC CHIẾN ĐỘI HÌNH:' | hrkTranslate }}</div>
           <div class="cp-value">{{ progress.playerPower | number }}</div>
         </div>
 
         <!-- Current Floor & Lives Matrix -->
         <div class="tower-metrics-grid">
           <div class="tower-metric-item">
-            <span class="t-label">Tầng Hiện Tại</span>
-            <span class="t-value">Tầng <b>{{ progress.currentFloor }}</b> / {{ progress.maxFloor }}</span>
+            <span class="t-label">{{ 'Tầng Hiện Tại' | hrkTranslate }}</span>
+            <span class="t-value">{{ 'Tầng' | hrkTranslate }} <b>{{ progress.currentFloor }}</b> / {{ progress.maxFloor }}</span>
           </div>
 
           <div class="tower-metric-item lives-item" [class.danger]="progress.remainingLives <= 1">
-            <span class="t-label">Số Mạng Còn Lại</span>
+            <span class="t-label">{{ 'Số Mạng Còn Lại' | hrkTranslate }}</span>
             <div class="lives-hearts-row">
               <i *ngFor="let i of lifeIcons"
                  class="bi bi-heart-fill heart-icon"
@@ -134,13 +134,13 @@
           </div>
 
           <div class="tower-metric-item">
-            <span class="t-label">Kỷ Lục Hôm Nay</span>
-            <span class="t-value">Tầng <b>{{ progress.highestFloorInPeriod }}</b></span>
+            <span class="t-label">{{ 'Kỷ Lục Hôm Nay' | hrkTranslate }}</span>
+            <span class="t-value">{{ 'Tầng' | hrkTranslate }} <b>{{ progress.highestFloorInPeriod }}</b></span>
           </div>
 
           <div class="tower-metric-item">
-            <span class="t-label">Kỷ Lục Mọi Thời Đại</span>
-            <span class="t-value">Tầng <b>{{ progress.highestFloorAllTime }}</b></span>
+            <span class="t-label">{{ 'Kỷ Lục Mọi Thời Đại' | hrkTranslate }}</span>
+            <span class="t-value">{{ 'Tầng' | hrkTranslate }} <b>{{ progress.highestFloorAllTime }}</b></span>
           </div>
         </div>
 
@@ -148,17 +148,17 @@
         <div class="out-of-lives-box" *ngIf="progress.remainingLives <= 0">
           <div class="out-of-lives-msg">
             <i class="bi bi-heartbreak-fill text-danger me-2"></i>
-            <span>Bạn đã hết 3 mạng! Bắt đầu lượt leo mới để thử sức lại từ Tầng 1 (thưởng đã nhận trong ngày không bị reset).</span>
+            <span>{{ 'Bạn đã hết 3 mạng! Bắt đầu lượt leo mới để thử sức lại từ Tầng 1 (thưởng đã nhận trong ngày không bị reset).' | hrkTranslate }}</span>
           </div>
           <button type="button" class="btn-new-run" (click)="startNewRun()">
-            <i class="bi bi-arrow-clockwise me-2"></i>BẮT ĐẦU LƯỢT LEO MỚI
+            <i class="bi bi-arrow-clockwise me-2"></i>{{ 'BẮT ĐẦU LƯỢT LEO MỚI' | hrkTranslate }}
           </button>
         </div>
 
         <!-- Action Buttons: Formation Setup & Quick Climb -->
         <div class="tower-action-buttons">
           <button type="button" class="btn-formation-setup" (click)="openFormationModal()">
-            <i class="bi bi-sliders me-2"></i>Chỉnh Đội Hình
+            <i class="bi bi-sliders me-2"></i>{{ 'Chỉnh Đội Hình' | hrkTranslate }}
           </button>
           <button
             type="button"
@@ -168,7 +168,7 @@
           >
             <span class="btn-shimmer"></span>
             <i class="bi bi-lightning-charge-fill me-2"></i>
-            Leo Nhanh ({{ progress.quickClimbRunsRemaining }}/{{ progress.quickClimbDailyLimit }})
+            {{ 'Leo Nhanh ({{p0}}/{{p1}})' | hrkTranslate:{p0: (progress.quickClimbRunsRemaining), p1: (progress.quickClimbDailyLimit)} }}
           </button>
         </div>
 
@@ -188,32 +188,32 @@
           [class.active]="activeChunkIndex === i"
           (click)="selectChunk(i)"
         >
-          <span class="tab-label">{{ tab.label }}</span>
+          <span class="tab-label">{{ (tab.label) | hrkTranslate }}</span>
           <span *ngIf="tab.chestFloor" class="tab-chest-badge" title="Rương mốc tầng {{ tab.chestFloor }}">
-            🎁 T{{ tab.chestFloor }}
+            {{ '🎁 T{{p0}}' | hrkTranslate:{p0: (tab.chestFloor)} }}
           </span>
         </button>
       </div>
 
       <!-- Milestone Chest Bar -->
       <div class="milestone-chests-bar" *ngIf="progress.milestoneChests && progress.milestoneChests.length > 0">
-        <div class="chest-bar-title"><i class="bi bi-gift text-warning me-1"></i>Rương Mốc Kỳ Này:</div>
+        <div class="chest-bar-title"><i class="bi bi-gift text-warning me-1"></i>{{ 'Rương Mốc Kỳ Này:' | hrkTranslate }}</div>
         <div class="chests-row">
           <div
             *ngFor="let chest of progress.milestoneChests"
             class="milestone-chest-chip"
             [ngClass]="chest.state.toLowerCase()"
             (click)="claimMilestoneChest(chest)"
-            [title]="chest.description || chest.chestName"
+            [title]="(chest.description || chest.chestName) | hrkTranslate"
           >
             <i class="bi" [ngClass]="{
               'bi-gift-fill': chest.state === 'UNLOCKED',
               'bi-box2-fill': chest.state === 'LOCKED',
               'bi-check-circle-fill': chest.state === 'CLAIMED'
             }"></i>
-            <span class="chest-name">Tầng {{ chest.floorNumber }}</span>
+            <span class="chest-name">{{ 'Tầng {{p0}}' | hrkTranslate:{p0: (chest.floorNumber)} }}</span>
             <span class="chest-state-tag">
-              {{ chest.state === 'CLAIMED' ? 'Đã nhận' : chest.state === 'UNLOCKED' ? 'Nhận ngay!' : 'Khóa' }}
+              {{ (chest.state === 'CLAIMED' ? 'Đã nhận' : chest.state === 'UNLOCKED' ? 'Nhận ngay!' : 'Khóa') | hrkTranslate }}
             </span>
           </div>
         </div>
@@ -239,12 +239,12 @@
 
           <!-- Island Header Badges -->
           <div class="island-header">
-            <span class="floor-num-badge">TẦNG {{ f.floorNumber }}</span>
+            <span class="floor-num-badge">{{ 'TẦNG {{p0}}' | hrkTranslate:{p0: (f.floorNumber)} }}</span>
             <span class="floor-type-badge" [ngClass]="f.floorType.toLowerCase()">
-              {{ f.floorType === 'BOSS' ? 'BOSS' : f.floorType === 'ELITE' ? 'TINH ANH' : 'THƯỜNG' }}
+              {{ (f.floorType === 'BOSS' ? 'BOSS' : f.floorType === 'ELITE' ? 'TINH ANH' : 'THƯỜNG') | hrkTranslate }}
             </span>
-            <span class="milestone-indicator" *ngIf="f.isMilestone" title="Có rương mốc!">
-              🎁 RƯƠNG
+            <span class="milestone-indicator" *ngIf="f.isMilestone" [title]="'Có rương mốc!' | hrkTranslate">
+              {{ '🎁 RƯƠNG' | hrkTranslate }}
             </span>
           </div>
 
@@ -252,12 +252,12 @@
           <div class="island-enemy-box">
             <img
               [src]="f.representativeEnemyAvatar || '/assets/images/dcs-game/placeholders/hero.svg'"
-              [alt]="f.representativeEnemyName || 'Địch'"
+              [alt]="(f.representativeEnemyName || 'Địch') | hrkTranslate"
               class="enemy-avatar-img"
             />
             <div class="enemy-info-overlay">
-              <span class="enemy-name">{{ f.representativeEnemyName || 'Thủ vệ Tầng ' + f.floorNumber }}</span>
-              <span class="enemy-cp">⚔️ Đề nghị: {{ f.recommendedPower | number }}</span>
+              <span class="enemy-name">{{ (f.representativeEnemyName || 'Thủ vệ Tầng ' + f.floorNumber) | hrkTranslate }}</span>
+              <span class="enemy-cp">{{ '⚔️ Đề nghị: {{p0}}' | hrkTranslate:{p0: (f.recommendedPower | number)} }}</span>
             </div>
           </div>
 
@@ -265,15 +265,15 @@
           <div class="island-status-bar">
             <ng-container *ngIf="f.isCleared">
               <i class="bi bi-check-circle-fill text-success me-1"></i>
-              <span class="text-success">Đã Vượt Qua</span>
+              <span class="text-success">{{ 'Đã Vượt Qua' | hrkTranslate }}</span>
             </ng-container>
             <ng-container *ngIf="f.isCurrent">
               <span class="pulse-challenge-dot"></span>
-              <span class="challenge-text">KHIÊU CHIẾN NGAY</span>
+              <span class="challenge-text">{{ 'KHIÊU CHIẾN NGAY' | hrkTranslate }}</span>
             </ng-container>
             <ng-container *ngIf="f.isLocked">
               <i class="bi bi-lock-fill text-muted me-1"></i>
-              <span class="text-muted">Chưa Mở Khóa</span>
+              <span class="text-muted">{{ 'Chưa Mở Khóa' | hrkTranslate }}</span>
             </ng-container>
           </div>
         </article>

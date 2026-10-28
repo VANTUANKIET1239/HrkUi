@@ -1,10 +1,11 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, Input, ViewChild, ElementRef, AfterViewChecked, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-battle-log-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './battle-log-panel.component.html',
   styleUrl: './battle-log-panel.component.scss'
 })

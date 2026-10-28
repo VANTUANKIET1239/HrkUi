@@ -1,6 +1,7 @@
 import { reportAppError, toAppError } from '../../../../../../../../libs/core/http/hrk-api/app-error';
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
@@ -19,6 +20,7 @@ import { getAppAuthConfig, isSafeInternalReturnUrl } from '../../../../../../../
   selector: 'app-game-login',
   standalone: true,
   imports: [
+    HrkTranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,

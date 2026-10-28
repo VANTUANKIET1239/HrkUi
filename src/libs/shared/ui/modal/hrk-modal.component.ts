@@ -2,11 +2,13 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmi
 import { HRK_MODAL_CONFIG_SOURCE, HrkModalConfig } from './modal-config';
 import { ModalStackService } from './modal-stack.service';
 import { DOCUMENT } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 
 let nextModalId = 0;
 
 @Component({
   selector: 'hrk-modal', standalone: true, changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [HrkTranslatePipe],
   templateUrl: './hrk-modal.component.html', styleUrl: './hrk-modal.component.scss'
 })
 export class HrkModalComponent implements AfterViewInit, OnDestroy {

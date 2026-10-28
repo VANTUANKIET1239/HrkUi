@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BattleEngineService } from '../../../../core/services/battle-engine.service';
@@ -8,7 +9,7 @@ import { BattleSceneComponent } from '../../components/battle-scene/battle-scene
 @Component({
   selector: 'app-battle-page',
   standalone: true,
-  imports: [CommonModule, BattleSceneComponent],
+  imports: [HrkTranslatePipe, CommonModule, BattleSceneComponent],
   templateUrl: './battle-page.component.html',
   styleUrl: './battle-page.component.scss',
 })

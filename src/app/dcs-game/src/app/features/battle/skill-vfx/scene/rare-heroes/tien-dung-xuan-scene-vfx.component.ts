@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
@@ -16,7 +17,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-tien-dung-xuan-scene-vfx',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -65,7 +66,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
               </div>
               @if (phase === 'stamp') {
                 <div class="ink-shockwave"></div>
-                <div class="mres-debuff-badge">GIẢM KHÁNG PHÉP</div>
+                <div class="mres-debuff-badge">{{ 'GIẢM KHÁNG PHÉP' | hrkTranslate }}</div>
               }
             </div>
           }

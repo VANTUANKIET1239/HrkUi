@@ -9,7 +9,7 @@
 >
   <!-- Downward Indicator for Current Stage -->
   <div class="current-indicator" *ngIf="stage.state === 'AVAILABLE'">
-    <span class="indicator-badge">HIỆN TẠI</span>
+    <span class="indicator-badge">{{ 'HIỆN TẠI' | hrkTranslate }}</span>
     <span class="indicator-arrow">▼</span>
   </div>
 
@@ -23,7 +23,7 @@
     class="node-seal"
     [disabled]="stage.state === 'LOCKED'"
     (click)="onNodeClick()"
-    [attr.aria-label]="'Ải ' + stage.stageNumber + ': ' + stage.name"
+    [attr.aria-label]="('Ải ' + stage.stageNumber + ': ' + stage.name) | hrkTranslate"
   >
     <!-- Outer Runic Ring -->
     <span class="seal-rim"></span>
@@ -42,8 +42,8 @@
 
   <!-- Stage Label Below Medallion -->
   <div class="node-label">
-    <span class="label-number">Ải {{ stage.stageNumber }}</span>
-    <span class="label-name">{{ stage.name }}</span>
+    <span class="label-number">{{ 'Ải {{p0}}' | hrkTranslate:{p0: (stage.stageNumber)} }}</span>
+    <span class="label-name">{{ (stage.name) | hrkTranslate }}</span>
     <div class="stage-stars" *ngIf="stage.bestStars !== undefined && stage.bestStars > 0">
       <i *ngFor="let s of [1, 2, 3]; let i = index"
          class="bi bi-star-fill star-glyph"
@@ -54,11 +54,11 @@
   <!-- Hover / Focus Tooltip -->
   <div class="node-tooltip">
     <div class="tooltip-header">
-      <strong>{{ stage.name }}</strong>
+      <strong>{{ (stage.name) | hrkTranslate }}</strong>
       <span class="tooltip-stamina">⚡ {{ stage.staminaCost }}</span>
     </div>
     <div class="tooltip-power">
-      <span>Đề nghị: <b>{{ stage.recommendedPower | number }}</b></span>
+      <span>{{ 'Đề nghị:' | hrkTranslate }} <b>{{ stage.recommendedPower | number }}</b></span>
     </div>
   </div>
 </div>

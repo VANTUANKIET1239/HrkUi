@@ -1,10 +1,10 @@
-<hrk-modal #inventoryModal modalCode="INVENTORY" title="Hành trang" [chrome]="false" size="FULLSCREEN" [busy]="isSellingSingleItem" (closed)="close.emit()">
+<hrk-modal #inventoryModal modalCode="INVENTORY" [title]="'Hành trang' | hrkTranslate" [chrome]="false" size="FULLSCREEN" [busy]="isSellingSingleItem" (closed)="close.emit()">
 <div class="inventory-overlay">
   <!-- TOP BAR: Title, Gold, Diamonds, and Close Button -->
   <div class="inventory-top-bar d-flex justify-content-between align-items-center">
     <div class="title-section d-flex align-items-center">
       <i class="bi bi-briefcase-fill title-icon me-2 text-warning fs-3"></i>
-      <h1 class="m-0 page-title">{{ inventoryModal.resolved.title }} <span class="subtitle">— Inventory Bag</span></h1>
+      <h1 class="m-0 page-title">{{ (inventoryModal.resolved.title) | hrkTranslate }} <span class="subtitle">{{ '— Inventory Bag' | hrkTranslate }}</span></h1>
     </div>
 
     <!-- Resource Counters -->
@@ -13,7 +13,7 @@
         class="btn btn-sm btn-outline-warning border-0 d-flex align-items-center justify-content-center p-1 text-warning" 
         [disabled]="isLoading" 
         (click)="refreshData()" 
-        title="Làm mới hành trang từ máy chủ">
+        [title]="'Làm mới hành trang từ máy chủ' | hrkTranslate">
         <i class="bi fs-5" [class.bi-arrow-clockwise]="!isLoading" [class.bi-arrow-repeat]="isLoading" [class.spin-icon]="isLoading"></i>
       </button>
 
@@ -27,7 +27,7 @@
       </div>
       <div class="resource-item d-flex align-items-center">
         <i class="bi bi-lightning-charge-fill text-danger me-1"></i>
-        <span class="value">{{ upgradeMaterialsCount | number }} Đá</span>
+        <span class="value">{{ '{{p0}} Đá' | hrkTranslate:{p0: (upgradeMaterialsCount | number)} }}</span>
       </div>
     </div>
 
@@ -43,12 +43,12 @@
     <!-- LEFT PANEL: Category Filter Panel          -->
     <!-- ========================================== -->
     <div class="left-panel">
-      <div class="panel-header">Danh Mục Hành Trang</div>
+      <div class="panel-header">{{ 'Danh Mục Hành Trang' | hrkTranslate }}</div>
       
       <div class="category-list">
         <div class="category-item" [class.active]="selectedCategory === 'all'" (click)="selectCategory('all')">
           <i class="bi bi-grid-fill category-icon"></i>
-          <span class="category-name">Tất cả</span>
+          <span class="category-name">{{ 'Tất cả' | hrkTranslate }}</span>
           <span class="item-count-badge">{{ getCategoryItemCount('all') }}</span>
         </div>
         <div 
@@ -57,7 +57,7 @@
           [class.active]="selectedCategory === cat.code"
           (click)="selectCategory(cat.code)">
           <i class="bi {{ cat.icon || 'bi-box-seam' }} category-icon"></i>
-          <span class="category-name">{{ cat.name }}</span>
+          <span class="category-name">{{ (cat.name) | hrkTranslate }}</span>
           <span class="item-count-badge">{{ getCategoryItemCount(cat.code) }}</span>
         </div>
       </div>
@@ -67,7 +67,7 @@
     <!-- CENTER PANEL: Inventory Item Grid          -->
     <!-- ========================================== -->
     <div class="center-panel">
-      <div class="panel-header">Danh Sách Vật Phẩm</div>
+      <div class="panel-header">{{ 'Danh Sách Vật Phẩm' | hrkTranslate }}</div>
 
       <!-- Filters & Search Bar -->
       <div class="filter-section">
@@ -76,30 +76,30 @@
           <input 
             type="text" 
             class="form-control form-control-sm bg-dark text-white border-warning-subtle" 
-            placeholder="Tìm kiếm vật phẩm..." 
+            [placeholder]="'Tìm kiếm vật phẩm...' | hrkTranslate"
             [(ngModel)]="searchQuery">
         </div>
 
         <div class="filters-row">
           <!-- Rarity Filter -->
           <select class="form-select form-select-sm" [(ngModel)]="filterRarity">
-            <option value="All">Phẩm chất (Tất cả)</option>
-            <option *ngFor="let rarity of rarities" [value]="rarity.code">{{ rarity.name }}</option>
+            <option value="All">{{ 'Phẩm chất (Tất cả)' | hrkTranslate }}</option>
+            <option *ngFor="let rarity of rarities" [value]="rarity.code">{{ (rarity.name) | hrkTranslate }}</option>
           </select>
 
           <!-- Equipped/Unequipped Filter -->
           <select class="form-select form-select-sm" [(ngModel)]="filterEquipped">
-            <option value="All">Trạng thái (Tất cả)</option>
-            <option value="Equipped">Đang trang bị</option>
-            <option value="Unequipped">Trong túi đồ</option>
+            <option value="All">{{ 'Trạng thái (Tất cả)' | hrkTranslate }}</option>
+            <option value="Equipped">{{ 'Đang trang bị' | hrkTranslate }}</option>
+            <option value="Unequipped">{{ 'Trong túi đồ' | hrkTranslate }}</option>
           </select>
 
           <!-- Level Requirements Filter -->
           <select class="form-select form-select-sm" [(ngModel)]="filterLevel">
-            <option value="All">Cấp yêu cầu (Tất cả)</option>
-            <option value="1-10">Cấp 1 - 10</option>
-            <option value="11-30">Cấp 11 - 30</option>
-            <option value="31+">Cấp 31 trở lên</option>
+            <option value="All">{{ 'Cấp yêu cầu (Tất cả)' | hrkTranslate }}</option>
+            <option value="1-10">{{ 'Cấp 1 - 10' | hrkTranslate }}</option>
+            <option value="11-30">{{ 'Cấp 11 - 30' | hrkTranslate }}</option>
+            <option value="31+">{{ 'Cấp 31 trở lên' | hrkTranslate }}</option>
           </select>
         </div>
       </div>
@@ -109,7 +109,7 @@
         <!-- Loading Indicator -->
         <div *ngIf="isLoading" class="d-flex align-items-center justify-content-center py-4 text-warning gap-2">
           <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
-          <span class="fs-6 font-title">Đang đồng bộ dữ liệu hành trang từ máy chủ...</span>
+          <span class="fs-6 font-title">{{ 'Đang đồng bộ dữ liệu hành trang từ máy chủ...' | hrkTranslate }}</span>
         </div>
 
         <div class="item-grid" *ngIf="!isLoading">
@@ -130,8 +130,8 @@
 
               <!-- Equipped Status Badge -->
               <div *ngIf="item.isEquipped" class="equipped-tag"
-                [title]="'Đang được ' + (item.equippedHeroName || 'một tướng') + ' sử dụng'">
-                {{ item.equippedHeroName || 'Đang mặc' }}
+                [title]="('Đang được ' + (item.equippedHeroName || 'một tướng') + ' sử dụng') | hrkTranslate">
+                {{ (item.equippedHeroName || 'Đang mặc') | hrkTranslate }}
               </div>
 
               <!-- Enhancement Level Badge (+10) -->
@@ -153,7 +153,7 @@
         </div>
 
         <div *ngIf="filteredItems.length === 0" class="text-center py-5 text-muted">
-          Không tìm thấy vật phẩm nào phù hợp!
+          {{ 'Không tìm thấy vật phẩm nào phù hợp!' | hrkTranslate }}
         </div>
 
       </div>
@@ -163,7 +163,7 @@
     <!-- RIGHT PANEL: Item Details Panel            -->
     <!-- ========================================== -->
     <div class="right-panel">
-      <div class="panel-header">Chi Tiết Vật Phẩm</div>
+      <div class="panel-header">{{ 'Chi Tiết Vật Phẩm' | hrkTranslate }}</div>
 
       <div class="details-wrapper">
         <!-- If item selected -->
@@ -172,7 +172,7 @@
             <div class="details-header">
               <!-- Equipped tag -->
               <span *ngIf="selectedItem.isEquipped" class="equipped-status-banner">
-                ĐANG ĐƯỢC {{ selectedItem.equippedHeroName || 'TƯỚNG' }} TRANG BỊ
+                {{ 'ĐANG ĐƯỢC {{p0}} TRANG BỊ' | hrkTranslate:{p0: ((selectedItem.equippedHeroName || 'TƯỚNG') | hrkTranslate)} }}
               </span>
               
               <!-- Large Icon Box -->
@@ -182,26 +182,26 @@
               </div>
 
               <!-- Item Name -->
-              <h2 class="item-name-large font-title">{{ selectedItem.name }}</h2>
+              <h2 class="item-name-large font-title">{{ (selectedItem.name) | hrkTranslate }}</h2>
 
               <!-- Meta Badges -->
               <div class="item-meta-tags">
-                <span class="badge-rarity" [style.color]="selectedItem.rarityColorHex || null">{{ selectedItem.rarityName }}</span>
-                <span class="badge-info">{{ selectedItem.categoryName }}</span>
-                <span class="badge-info">Y/c: Cấp {{ selectedItem.levelReq }}</span>
+                <span class="badge-rarity" [style.color]="selectedItem.rarityColorHex || null">{{ (selectedItem.rarityName) | hrkTranslate }}</span>
+                <span class="badge-info">{{ (selectedItem.categoryName) | hrkTranslate }}</span>
+                <span class="badge-info">{{ 'Y/c: Cấp {{p0}}' | hrkTranslate:{p0: (selectedItem.levelReq)} }}</span>
                 <span class="badge-info text-warning" *ngIf="selectedItem.combatPower"><i class="bi bi-shield-fill-check me-1"></i>CP {{ selectedItem.combatPower }}</span>
-                <span class="badge-info text-info" *ngIf="selectedItem.overallRollPercent"><i class="bi bi-stars me-1"></i>Chất lượng: {{ selectedItem.overallRollPercent }}%</span>
+                <span class="badge-info text-info" *ngIf="selectedItem.overallRollPercent"><i class="bi bi-stars me-1"></i>{{ 'Chất lượng: {{p0}}%' | hrkTranslate:{p0: (selectedItem.overallRollPercent)} }}</span>
                 <span class="badge-info text-success" *ngIf="selectedItem.enhancementGrowthPercent"><i class="bi bi-graph-up me-1"></i>+{{ selectedItem.enhancementGrowthPercent }}%</span>
               </div>
             </div>
 
             <!-- Description & Stats Body -->
             <div class="details-body">
-              <p class="description-box">{{ selectedItem.description || 'Không có mô tả.' }}</p>
+              <p class="description-box">{{ (selectedItem.description || 'Không có mô tả.') | hrkTranslate }}</p>
 
               <!-- EQUIPMENT STATS -->
               <div *ngIf="isEquipment(selectedItem)">
-                <div class="stat-group-title">Thuộc Tính Trang Bị</div>
+                <div class="stat-group-title">{{ 'Thuộc Tính Trang Bị' | hrkTranslate }}</div>
                 <div *ngIf="selectedItem.rolledAttributes && selectedItem.rolledAttributes.length > 0">
                   <app-equipment-roll-details 
                     [attributes]="selectedItem.rolledAttributes" 
@@ -228,7 +228,7 @@
               <button class="btn btn-detail-action btn-primary-action"
                 [disabled]="selectedItem.isEquipped || selectedItem.isLocked"
                 (click)="enhanceEquipment(selectedItem)">
-                <i class="bi bi-hammer"></i> Cường Hóa (+{{ selectedItem.enhancement }})
+                <i class="bi bi-hammer"></i> {{ 'Cường Hóa (+{{p0}})' | hrkTranslate:{p0: (selectedItem.enhancement)} }}
               </button>
 
               <div class="double-btn-row">
@@ -238,14 +238,14 @@
                   (click)="toggleLockItem(selectedItem)">
                   <span *ngIf="lockingItemId === selectedItem.id" class="spinner-border spinner-border-sm me-1"></span>
                   <i *ngIf="lockingItemId !== selectedItem.id" class="bi" [class.bi-lock-fill]="selectedItem.isLocked" [class.bi-unlock-fill]="!selectedItem.isLocked"></i>
-                  {{ selectedItem.isLocked ? 'Mở Khóa' : 'Khóa Đồ' }}
+                  {{ (selectedItem.isLocked ? 'Mở Khóa' : 'Khóa Đồ') | hrkTranslate }}
                 </button>
                 <button 
                   class="btn btn-detail-action btn-danger-action"
                   [disabled]="selectedItem.isEquipped || selectedItem.isLocked || isSellingSingleItem"
                   (click)="sellItem(selectedItem)">
                   <span *ngIf="isSellingSingleItem" class="spinner-border spinner-border-sm me-1"></span>
-                  <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> Bán
+                  <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> {{ 'Bán' | hrkTranslate }}
                 </button>
               </div>
             </div>
@@ -253,7 +253,7 @@
               [disabled]="selectedItem.isLocked || selectedItem.isEquipped || isSellingSingleItem"
               (click)="sellItem(selectedItem)">
               <span *ngIf="isSellingSingleItem" class="spinner-border spinner-border-sm me-1"></span>
-              <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> Bán
+              <i *ngIf="!isSellingSingleItem" class="bi bi-coin"></i> {{ 'Bán' | hrkTranslate }}
             </button>
 
           </div>
@@ -262,7 +262,7 @@
         <!-- If no item selected -->
         <div *ngIf="!selectedItem" class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-4 text-center">
           <i class="bi bi-info-circle fs-1 mb-3 text-warning-subtle"></i>
-          <span>Vui lòng chọn một vật phẩm trong túi đồ để xem thông tin chi tiết.</span>
+          <span>{{ 'Vui lòng chọn một vật phẩm trong túi đồ để xem thông tin chi tiết.' | hrkTranslate }}</span>
         </div>
       </div>
     </div>
@@ -278,14 +278,14 @@
     <div class="capacity-stats d-flex align-items-center">
       <!-- Capacity tab -->
       <div class="stat-group d-flex align-items-center gap-1">
-        <span class="lbl">Sức chứa:</span>
+        <span class="lbl">{{ 'Sức chứa:' | hrkTranslate }}</span>
         <span class="val">{{ items.length }} / {{ maxCapacity }}</span>
         <button 
           class="btn btn-sm btn-outline-warning ms-1 px-1 py-0 d-flex align-items-center justify-content-center" 
           style="font-size: 0.75rem; height: 22px; width: 22px; border-radius: 4px;"
           [disabled]="isExpandingCapacity"
           (click)="expandCapacityAction(10)" 
-          title="Mở rộng thêm 10 ô chứa">
+          [title]="'Mở rộng thêm 10 ô chứa' | hrkTranslate">
           <span *ngIf="isExpandingCapacity" class="spinner-border spinner-border-sm"></span>
           <i *ngIf="!isExpandingCapacity" class="bi bi-plus-lg"></i>
         </button>
@@ -293,28 +293,28 @@
 
       <!-- Gold tab -->
       <div class="stat-group">
-        <span class="lbl">Vàng hiện có:</span>
-        <span class="val gold"><i class="bi bi-coin text-warning me-1"></i>{{ gold | number }} xu</span>
+        <span class="lbl">{{ 'Vàng hiện có:' | hrkTranslate }}</span>
+        <span class="val gold"><i class="bi bi-coin text-warning me-1"></i>{{ '{{p0}} xu' | hrkTranslate:{p0: (gold | number)} }}</span>
       </div>
 
       <!-- Materials tab -->
       <div class="stat-group">
-        <span class="lbl">Đá thần binh:</span>
-        <span class="val mats"><i class="bi bi-lightning-charge-fill text-danger me-1"></i>{{ upgradeMaterialsCount }} viên</span>
+        <span class="lbl">{{ 'Đá thần binh:' | hrkTranslate }}</span>
+        <span class="val mats"><i class="bi bi-lightning-charge-fill text-danger me-1"></i>{{ '{{p0}} viên' | hrkTranslate:{p0: (upgradeMaterialsCount)} }}</span>
       </div>
     </div>
 
     <!-- Quick Action Buttons -->
     <div class="quick-actions-bar d-flex">
       <button class="btn btn-quick-action" (click)="sortItems('rarity')">
-        Sắp xếp: Phẩm chất
+        {{ 'Sắp xếp: Phẩm chất' | hrkTranslate }}
       </button>
       <button class="btn btn-quick-action" (click)="sortItems('type')">
-        Sắp xếp: Chủng loại
+        {{ 'Sắp xếp: Chủng loại' | hrkTranslate }}
       </button>
       <button class="btn btn-quick-action" [disabled]="isBatchSelling" (click)="batchSellItems()">
         <span *ngIf="isBatchSelling" class="spinner-border spinner-border-sm me-1"></span>
-        Bán nhanh phẩm chất thấp nhất
+        {{ 'Bán nhanh phẩm chất thấp nhất' | hrkTranslate }}
       </button>
     </div>
 

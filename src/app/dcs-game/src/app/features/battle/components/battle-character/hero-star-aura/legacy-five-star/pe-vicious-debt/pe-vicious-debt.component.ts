@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Hero } from '../../../../../../../core/models/hero.model';
@@ -5,7 +6,7 @@ import { Hero } from '../../../../../../../core/models/hero.model';
 @Component({
   selector: 'app-pe-vicious-debt',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './pe-vicious-debt.component.html',
   styleUrl: './pe-vicious-debt.component.scss'
 })

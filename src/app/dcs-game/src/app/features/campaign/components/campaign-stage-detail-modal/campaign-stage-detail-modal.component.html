@@ -1,25 +1,25 @@
 <hrk-modal modalCode="CAMPAIGN_STAGE_DETAIL" [chrome]="false" [busy]="isStarting" (closed)="close.emit()">
   <section class="stage-modal" [style.max-width.%]="100">
     <!-- Close Button -->
-    <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" aria-label="Đóng cửa sổ">
+    <button type="button" class="btn-close-modal" (click)="close.emit()" [disabled]="isStarting" [aria-label]="'Đóng cửa sổ' | hrkTranslate">
       <i class="bi bi-x-lg"></i>
     </button>
 
     <!-- Modal Header -->
     <header class="modal-header">
       <div class="header-badges">
-        <span class="badge-stage-num">{{ mode === 'TOWER' ? 'TẦNG ' + (towerFloor?.floorNumber || 1) : 'ẢI ' + stage?.stageNumber }}</span>
-        <span class="badge-stage-type" [class.type-boss]="(mode === 'TOWER' ? towerFloor?.floorType : stage?.stageType) !== 'NORMAL'">{{ challengeTypeLabel }}</span>
-        <span class="badge-stamina" *ngIf="mode === 'DUNGEON' && stage">⚡ {{ stage.staminaCost }} Thể Lực</span>
-        <span class="badge-stamina bg-danger" *ngIf="mode === 'TOWER'">❤️ {{ remainingLives }} Mạng Còn Lại</span>
+        <span class="badge-stage-num">{{ (mode === 'TOWER' ? 'TẦNG ' + (towerFloor?.floorNumber || 1) : 'ẢI ' + stage?.stageNumber) | hrkTranslate }}</span>
+        <span class="badge-stage-type" [class.type-boss]="(mode === 'TOWER' ? towerFloor?.floorType : stage?.stageType) !== 'NORMAL'">{{ (challengeTypeLabel) | hrkTranslate }}</span>
+        <span class="badge-stamina" *ngIf="mode === 'DUNGEON' && stage">{{ '⚡ {{p0}} Thể Lực' | hrkTranslate:{p0: (stage.staminaCost)} }}</span>
+        <span class="badge-stamina bg-danger" *ngIf="mode === 'TOWER'">{{ '❤️ {{p0}} Mạng Còn Lại' | hrkTranslate:{p0: (remainingLives)} }}</span>
       </div>
-      <h2 class="modal-title">{{ modalTitle }}</h2>
+      <h2 class="modal-title">{{ (modalTitle) | hrkTranslate }}</h2>
     </header>
 
     <!-- Combat Power Comparison Matrix -->
     <div class="power-matrix">
       <div class="power-card player-power">
-        <span class="power-label">Lực Chiến Của Bạn</span>
+        <span class="power-label">{{ 'Lực Chiến Của Bạn' | hrkTranslate }}</span>
         <span class="power-value">{{ effectivePlayerPower | number }}</span>
         <i class="bi bi-shield-shaded power-icon"></i>
       </div>
@@ -27,18 +27,18 @@
       <div class="power-vs-divider">
         <span class="vs-text">VS</span>
         <div class="power-status-tag" [ngClass]="powerStatus.class">
-          <span>{{ powerStatus.icon }} {{ powerStatus.label }}</span>
+          <span>{{ powerStatus.icon }} {{ (powerStatus.label) | hrkTranslate }}</span>
         </div>
       </div>
 
       <div class="power-card enemy-power">
-        <span class="power-label">Tổng Lực Chiến Địch</span>
+        <span class="power-label">{{ 'Tổng Lực Chiến Địch' | hrkTranslate }}</span>
         <span class="power-value">{{ effectiveEnemyPower | number }}</span>
         <i class="bi bi-crosshair power-icon"></i>
       </div>
 
       <div class="power-card recommended-power">
-        <span class="power-label">Lực Chiến Đề Nghị</span>
+        <span class="power-label">{{ 'Lực Chiến Đề Nghị' | hrkTranslate }}</span>
         <span class="power-value">{{ effectiveRecommendedPower | number }}</span>
         <i class="bi bi-bullseye power-icon"></i>
       </div>
@@ -47,20 +47,20 @@
     <!-- 3-Star Rating Conditions (Dungeon Mode) -->
     <div class="star-rating-block" *ngIf="mode === 'DUNGEON' && stage">
       <div class="star-rating-header">
-        <span class="rating-title"><i class="bi bi-star-fill text-gold me-1"></i>ĐIỀU KIỆN ĐÁNH GIÁ SAO (Kỷ lục: {{ stage.bestStars || 0 }}★)</span>
+        <span class="rating-title"><i class="bi bi-star-fill text-gold me-1"></i>{{ 'ĐIỀU KIỆN ĐÁNH GIÁ SAO (Kỷ lục: {{p0}}★)' | hrkTranslate:{p0: (stage.bestStars || 0)} }}</span>
       </div>
       <div class="star-rules-list">
         <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 1">
           <span class="star-badge">★</span>
-          <span class="rule-text">Chiến thắng vượt ải</span>
+          <span class="rule-text">{{ 'Chiến thắng vượt ải' | hrkTranslate }}</span>
         </div>
         <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 2">
           <span class="star-badge">★★</span>
-          <span class="rule-text">HP toàn quân còn lại ≥ 40%</span>
+          <span class="rule-text">{{ 'HP toàn quân còn lại ≥ 40%' | hrkTranslate }}</span>
         </div>
         <div class="star-rule-item" [class.achieved]="(stage.bestStars || 0) >= 3">
           <span class="star-badge">★★★</span>
-          <span class="rule-text">HP toàn quân còn lại ≥ 70%</span>
+          <span class="rule-text">{{ 'HP toàn quân còn lại ≥ 70%' | hrkTranslate }}</span>
         </div>
       </div>
     </div>
@@ -68,20 +68,20 @@
     <!-- Tower Rules Block (Tower Mode) -->
     <div class="star-rating-block tower-rules-card" *ngIf="mode === 'TOWER'">
       <div class="star-rating-header">
-        <span class="rating-title"><i class="bi bi-shield-fill-check text-warning me-1"></i>QUY TẮC LEO THÁP & MẠNG</span>
+        <span class="rating-title"><i class="bi bi-shield-fill-check text-warning me-1"></i>{{ 'QUY TẮC LEO THÁP & MẠNG' | hrkTranslate }}</span>
       </div>
       <div class="star-rules-list">
         <div class="star-rule-item achieved">
           <span class="star-badge">⚔️</span>
-          <span class="rule-text"><b>Chiến thắng:</b> Tiến lên tầng tiếp theo, <b>không tiêu hao mạng</b>.</span>
+          <span class="rule-text"><b>{{ 'Chiến thắng:' | hrkTranslate }}</b> {{ 'Tiến lên tầng tiếp theo,' | hrkTranslate }} <b>{{ 'không tiêu hao mạng' | hrkTranslate }}</b>.</span>
         </div>
         <div class="star-rule-item">
           <span class="star-badge text-danger">💔</span>
-          <span class="rule-text"><b>Thất bại:</b> Bị trừ đúng 1 mạng, giữ nguyên tầng để khiêu chiến lại.</span>
+          <span class="rule-text"><b>{{ 'Thất bại:' | hrkTranslate }}</b> {{ 'Bị trừ đúng 1 mạng, giữ nguyên tầng để khiêu chiến lại.' | hrkTranslate }}</span>
         </div>
         <div class="star-rule-item">
           <span class="star-badge text-warning">🔄</span>
-          <span class="rule-text"><b>Hết mạng (0):</b> Lượt leo kết thúc, quay về tầng 1 để bắt đầu lại (không mất thưởng đã nhận).</span>
+          <span class="rule-text"><b>{{ 'Hết mạng (0):' | hrkTranslate }}</b> {{ 'Lượt leo kết thúc, quay về tầng 1 để bắt đầu lại (không mất thưởng đã nhận).' | hrkTranslate }}</span>
         </div>
       </div>
     </div>
@@ -89,14 +89,14 @@
     <!-- Error Alert if Any -->
     <div class="error-banner" *ngIf="lockOrErrorText">
       <i class="bi bi-exclamation-triangle-fill"></i>
-      <span>{{ lockOrErrorText }}</span>
+      <span>{{ lockOrErrorText | hrkTranslate }}</span>
     </div>
 
     <!-- Enemy Lineup Section -->
     <div class="section-block">
       <div class="section-title">
         <i class="bi bi-people-fill"></i>
-        <span>ĐỘI HÌNH ĐỐI THỦ ({{ displayEnemies.length }} TƯỚNG)</span>
+        <span>{{ 'ĐỘI HÌNH ĐỐI THỦ ({{p0}} TƯỚNG)' | hrkTranslate:{p0: (displayEnemies.length)} }}</span>
       </div>
       <div class="enemy-grid">
         <article
@@ -105,7 +105,7 @@
           [class.is-boss-card]="enemy.isBoss"
         >
           <div class="enemy-art-box">
-            <img [src]="enemy.imagePath" [alt]="enemy.name" class="enemy-avatar" loading="lazy" />
+            <img [src]="enemy.imagePath" [alt]="(enemy.name) | hrkTranslate" class="enemy-avatar" loading="lazy" />
             <span class="boss-corner-badge" *ngIf="enemy.isBoss">BOSS</span>
             <span class="position-badge">#{{ enemy.position }}</span>
           </div>
@@ -120,7 +120,7 @@
     <div class="section-block drops-block" *ngIf="mode === 'DUNGEON' && stage && stage.possibleDrops && stage.possibleDrops.length > 0">
       <div class="section-title">
         <i class="bi bi-shield-shaded text-warning"></i>
-        <span>TRANG BỊ CÓ THỂ RƠI (BOSS STAGE)</span>
+        <span>{{ 'TRANG BỊ CÓ THỂ RƠI (BOSS STAGE)' | hrkTranslate }}</span>
       </div>
       <div class="drops-grid">
         <div *ngFor="let drop of stage.possibleDrops"
@@ -129,13 +129,13 @@
              (mouseenter)="onDropHover($event, drop)"
              (mouseleave)="onDropLeave()">
           <div class="drop-icon-box">
-            <img *ngIf="drop.imagePath" [src]="drop.imagePath" [alt]="drop.name" class="drop-img" />
+            <img *ngIf="drop.imagePath" [src]="drop.imagePath" [alt]="(drop.name) | hrkTranslate" class="drop-img" />
             <i *ngIf="!drop.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
           </div>
           <div class="drop-info">
-            <strong class="drop-name">{{ drop.name }}</strong>
+            <strong class="drop-name">{{ (drop.name) | hrkTranslate }}</strong>
             <div class="drop-sub">
-              <span class="drop-rarity">{{ drop.rarityName }}</span>
+              <span class="drop-rarity">{{ (drop.rarityName) | hrkTranslate }}</span>
               <span class="drop-rate">{{ drop.dropRatePercent }}%</span>
             </div>
           </div>
@@ -147,14 +147,14 @@
     <div class="section-block rewards-block" *ngIf="mode === 'DUNGEON' && stage">
       <div class="section-title">
         <i class="bi bi-gift-fill"></i>
-        <span>PHẦN THƯỞNG CHIẾN THẮNG</span>
+        <span>{{ 'PHẦN THƯỞNG CHIẾN THẮNG' | hrkTranslate }}</span>
       </div>
       <div class="rewards-grid">
         <div class="reward-pill gold-pill">
           <span class="reward-icon">🪙</span>
           <div class="reward-info">
             <span class="reward-val">+{{ stage.goldReward | number }}</span>
-            <span class="reward-name">Vàng</span>
+            <span class="reward-name">{{ 'Vàng' | hrkTranslate }}</span>
           </div>
         </div>
 
@@ -162,7 +162,7 @@
           <span class="reward-icon">👤</span>
           <div class="reward-info">
             <span class="reward-val">+{{ stage.playerExpReward | number }}</span>
-            <span class="reward-name">EXP Người chơi</span>
+            <span class="reward-name">{{ 'EXP Người chơi' | hrkTranslate }}</span>
           </div>
         </div>
 
@@ -170,7 +170,7 @@
           <span class="reward-icon">🛡️</span>
           <div class="reward-info">
             <span class="reward-val">+{{ stage.heroExpReward | number }}</span>
-            <span class="reward-name">EXP Mỗi tướng</span>
+            <span class="reward-name">{{ 'EXP Mỗi tướng' | hrkTranslate }}</span>
           </div>
         </div>
 
@@ -178,7 +178,7 @@
           <span class="reward-icon">🎁</span>
           <div class="reward-info">
             <span class="reward-val">+{{ stage.firstClearGoldReward | number }}</span>
-            <span class="reward-name">Quà Vượt Ải Đầu</span>
+            <span class="reward-name">{{ 'Quà Vượt Ải Đầu' | hrkTranslate }}</span>
           </div>
         </div>
       </div>
@@ -188,22 +188,22 @@
     <div class="section-block rewards-block" *ngIf="mode === 'TOWER' && towerFloor">
       <div class="section-title">
         <i class="bi bi-gift-fill"></i>
-        <span>PHẦN THƯỞNG VƯỢT TẦNG {{ towerFloor.floorNumber }}</span>
+        <span>{{ 'PHẦN THƯỞNG VƯỢT TẦNG {{p0}}' | hrkTranslate:{p0: (towerFloor.floorNumber)} }}</span>
       </div>
       <div class="rewards-grid">
         <div class="reward-pill gold-pill" *ngFor="let reward of towerFloor.rewards">
-          <img *ngIf="reward.imagePath" [src]="reward.imagePath" [alt]="reward.name" class="reward-icon-img" style="width: 24px; height: 24px; object-fit: contain; margin-right: 6px;" />
+          <img *ngIf="reward.imagePath" [src]="reward.imagePath" [alt]="(reward.name) | hrkTranslate" class="reward-icon-img" style="width: 24px; height: 24px; object-fit: contain; margin-right: 6px;" />
           <span class="reward-icon" *ngIf="!reward.imagePath">🎁</span>
           <div class="reward-info">
             <span class="reward-val">+{{ reward.quantity | number }}</span>
-            <span class="reward-name">{{ reward.name }}</span>
+            <span class="reward-name">{{ (reward.name) | hrkTranslate }}</span>
           </div>
         </div>
         <div class="reward-pill player-exp-pill" *ngIf="towerFloor.playerExpReward > 0">
           <span class="reward-icon">👤</span>
           <div class="reward-info">
             <span class="reward-val">+{{ towerFloor.playerExpReward }}</span>
-            <span class="reward-name">EXP Người chơi</span>
+            <span class="reward-name">{{ 'EXP Người chơi' | hrkTranslate }}</span>
           </div>
         </div>
       </div>
@@ -221,9 +221,9 @@
         <span class="spinner-border spinner-border-sm" *ngIf="isStarting" role="status" aria-hidden="true"></span>
         <span class="fight-icon" *ngIf="!isStarting">⚔️</span>
         <span class="fight-text">
-          <ng-container *ngIf="isStarting">Đang Khởi Tạo Trận Đấu...</ng-container>
-          <ng-container *ngIf="!isStarting && mode === 'TOWER'">KHIÊU CHIẾN TẦNG {{ towerFloor?.floorNumber }}</ng-container>
-          <ng-container *ngIf="!isStarting && mode !== 'TOWER'">BẮT ĐẦU CHIẾN ĐẤU</ng-container>
+          <ng-container *ngIf="isStarting">{{ 'Đang Khởi Tạo Trận Đấu...' | hrkTranslate }}</ng-container>
+          <ng-container *ngIf="!isStarting && mode === 'TOWER'">{{ 'KHIÊU CHIẾN TẦNG {{p0}}' | hrkTranslate:{p0: (towerFloor?.floorNumber)} }}</ng-container>
+          <ng-container *ngIf="!isStarting && mode !== 'TOWER'">{{ 'BẮT ĐẦU CHIẾN ĐẤU' | hrkTranslate }}</ng-container>
         </span>
         <span class="fight-cost" *ngIf="!isStarting && mode === 'DUNGEON' && stage">(⚡ {{ stage.staminaCost }})</span>
       </button>

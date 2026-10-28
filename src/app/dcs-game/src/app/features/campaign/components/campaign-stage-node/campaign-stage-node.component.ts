@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DungeonStage } from '../../../../core/models/dungeon.model';
@@ -5,7 +6,7 @@ import { DungeonStage } from '../../../../core/models/dungeon.model';
 @Component({
   selector: 'app-campaign-stage-node',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './campaign-stage-node.component.html',
   styleUrl: './campaign-stage-node.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

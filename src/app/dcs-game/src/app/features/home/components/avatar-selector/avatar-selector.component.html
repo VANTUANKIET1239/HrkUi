@@ -1,40 +1,40 @@
-<hrk-modal #modalShell modalCode="AVATAR_SELECTOR" title="Ảnh đại diện" [chrome]="false" [busy]="saving" (closed)="close.emit()">
+<hrk-modal #modalShell modalCode="AVATAR_SELECTOR" [title]="'Ảnh đại diện' | hrkTranslate" [chrome]="false" [busy]="saving" (closed)="close.emit()">
   <section class="avatar-modal" [style.max-width.%]="100" (click)="$event.stopPropagation()">
     <header>
-      <div><span>TÙY CHỈNH HỒ SƠ</span><h2>{{ modalShell.resolved.title }}</h2></div>
-      <button type="button" [disabled]="saving" (click)="close.emit()" aria-label="Đóng"><i class="bi bi-x-lg"></i></button>
+      <div><span>{{ 'TÙY CHỈNH HỒ SƠ' | hrkTranslate }}</span><h2>{{ (modalShell.resolved.title) | hrkTranslate }}</h2></div>
+      <button type="button" [disabled]="saving" (click)="close.emit()" [aria-label]="'Đóng' | hrkTranslate"><i class="bi bi-x-lg"></i></button>
     </header>
 
     <nav>
-      <button type="button" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'"><i class="bi bi-grid-fill"></i> Kho ảnh</button>
-      <button type="button" [class.active]="tab === 'upload'" (click)="tab = 'upload'"><i class="bi bi-cloud-arrow-up-fill"></i> Tải ảnh lên</button>
+      <button type="button" [class.active]="tab === 'gallery'" (click)="tab = 'gallery'"><i class="bi bi-grid-fill"></i> {{ 'Kho ảnh' | hrkTranslate }}</button>
+      <button type="button" [class.active]="tab === 'upload'" (click)="tab = 'upload'"><i class="bi bi-cloud-arrow-up-fill"></i> {{ 'Tải ảnh lên' | hrkTranslate }}</button>
     </nav>
 
     <div class="modal-content" *ngIf="tab === 'gallery'">
-      <div *ngIf="loading" class="state"><span class="spinner-border text-warning"></span>Đang tải kho ảnh...</div>
+      <div *ngIf="loading" class="state"><span class="spinner-border text-warning"></span>{{ 'Đang tải kho ảnh...' | hrkTranslate }}</div>
       <div class="avatar-grid" *ngIf="!loading">
         <button *ngFor="let avatar of avatars" type="button" [class.selected]="selectedId === avatar.id" (click)="chooseTemplate(avatar.id)">
-          <img [src]="avatar.imagePath" [alt]="avatar.name" />
-          <span>{{ avatar.name }}</span><i *ngIf="selectedId === avatar.id" class="bi bi-check-circle-fill"></i>
+          <img [src]="avatar.imagePath" [alt]="(avatar.name) | hrkTranslate" />
+          <span>{{ (avatar.name) | hrkTranslate }}</span><i *ngIf="selectedId === avatar.id" class="bi bi-check-circle-fill"></i>
         </button>
       </div>
       <button class="primary-action" type="button" [disabled]="!selectedId || saving" (click)="saveTemplate()">
-        <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ saving ? 'Đang lưu...' : 'Sử dụng ảnh đã chọn' }}
+        <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ (saving ? 'Đang lưu...' : 'Sử dụng ảnh đã chọn') | hrkTranslate }}
       </button>
     </div>
 
     <div class="modal-content upload-content" *ngIf="tab === 'upload'">
-      <div class="preview-ring"><img *ngIf="previewUrl || currentAvatarUrl" [src]="previewUrl || currentAvatarUrl" alt="Xem trước" /><i *ngIf="!previewUrl && !currentAvatarUrl" class="bi bi-person-fill"></i></div>
+      <div class="preview-ring"><img *ngIf="previewUrl || currentAvatarUrl" [src]="previewUrl || currentAvatarUrl" [alt]="'Xem trước' | hrkTranslate" /><i *ngIf="!previewUrl && !currentAvatarUrl" class="bi bi-person-fill"></i></div>
       <label class="drop-zone">
-        <i class="bi bi-image-fill"></i><strong>Chọn ảnh từ thiết bị</strong>
-        <span>JPEG, PNG hoặc WebP · tối đa 1 MB · tối đa 1024×1024</span>
+        <i class="bi bi-image-fill"></i><strong>{{ 'Chọn ảnh từ thiết bị' | hrkTranslate }}</strong>
+        <span>{{ 'JPEG, PNG hoặc WebP · tối đa 1 MB · tối đa 1024×1024' | hrkTranslate }}</span>
         <input type="file" accept="image/jpeg,image/png,image/webp" (change)="onFileSelected($event)" />
       </label>
       <div class="upload-actions">
-        <button *ngIf="profile.avatarType === 'CUSTOM'" class="remove-action" type="button" [disabled]="saving" (click)="removeCustom()"><i class="bi bi-trash3"></i> Xóa ảnh cá nhân</button>
-        <button class="primary-action" type="button" [disabled]="!selectedFile || saving" (click)="upload()"><span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ saving ? 'Đang tải...' : 'Tải lên và sử dụng' }}</button>
+        <button *ngIf="profile.avatarType === 'CUSTOM'" class="remove-action" type="button" [disabled]="saving" (click)="removeCustom()"><i class="bi bi-trash3"></i> {{ 'Xóa ảnh cá nhân' | hrkTranslate }}</button>
+        <button class="primary-action" type="button" [disabled]="!selectedFile || saving" (click)="upload()"><span *ngIf="saving" class="spinner-border spinner-border-sm"></span>{{ (saving ? 'Đang tải...' : 'Tải lên và sử dụng') | hrkTranslate }}</button>
       </div>
     </div>
-    <div *ngIf="error" class="error-message"><i class="bi bi-exclamation-triangle-fill"></i>{{ error }}</div>
+    <div *ngIf="error" class="error-message"><i class="bi bi-exclamation-triangle-fill"></i>{{ error | hrkTranslate }}</div>
   </section>
 </hrk-modal>

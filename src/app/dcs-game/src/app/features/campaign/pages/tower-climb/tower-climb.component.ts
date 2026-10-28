@@ -26,7 +26,7 @@ import { BattleHeroStatisticsDto } from '../../../../core/models/battle.model';
 @Component({
   selector: 'app-tower-climb',
   standalone: true,
-  imports: [HrkImageDirective,
+  imports: [HrkTranslatePipe, HrkImageDirective,
     CommonModule,
     CampaignAtmosphereComponent,
     CampaignStageDetailModalComponent,
@@ -193,7 +193,7 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
       next: res => {
         if (res.success && res.data) {
           chest.state = 'CLAIMED';
-          this.toast.success(`Nhận thành công ${chest.chestName}!`);
+          this.toast.success(this.toast.text`Nhận thành công ${chest.chestName}!`);
           this.fetchTowerData(false);
         } else {
           this.toast.warning(res.message || 'Không thể nhận rương.');
@@ -298,7 +298,7 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
   async openQuickClimb(): Promise<void> {
     if (!this.progress) return;
     if (!this.progress.canStartQuickClimb) {
-      this.toast.warning(`Bạn đã sử dụng hết ${this.progress.quickClimbDailyLimit} lượt leo nhanh hôm nay.`);
+      this.toast.warning(this.toast.text`Bạn đã sử dụng hết ${this.progress.quickClimbDailyLimit} lượt leo nhanh hôm nay.`);
       return;
     }
 
@@ -443,3 +443,4 @@ export class TowerClimbComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dcs-game/campaign']);
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
@@ -16,7 +17,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-tuong-long-scene-vfx',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -71,7 +72,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
               <div class="heal-glow"></div>
               <div class="heal-sparkle s1">✦</div>
               <div class="heal-sparkle s2">✦</div>
-              <div class="spd-buff-badge">TĂNG TỐC +10%</div>
+              <div class="spd-buff-badge">{{ 'TĂNG TỐC +10%' | hrkTranslate }}</div>
             </div>
           }
         </div>

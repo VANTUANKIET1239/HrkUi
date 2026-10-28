@@ -5,6 +5,7 @@ import { reportAppError, reportAppWarning } from '../../../../../../../../libs/c
 import { Component, inject, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { FormsModule } from '@angular/forms';
 import { InventoryItemDto } from '../../../../core/models/inventory.model';
 import {
@@ -38,7 +39,7 @@ export interface CharmInventorySlot extends InventoryItemDto {
 @Component({
   selector: 'app-forge',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, ItemImageComponent, CommonModule, FormsModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, ItemImageComponent, CommonModule, FormsModule],
   templateUrl: './forge.component.html',
   styleUrl: './forge.component.scss'
 })

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,7 @@ import { DungeonMap } from '../../../../core/models/dungeon.model';
 @Component({
   selector: 'app-campaign-map-card',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   templateUrl: './campaign-map-card.component.html',
   styleUrl: './campaign-map-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

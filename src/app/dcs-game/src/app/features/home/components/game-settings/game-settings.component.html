@@ -1,0 +1,13 @@
+<hrk-modal modalCode="GAME_SETTINGS" title="Cài đặt" size="SM" [busy]="language.busy()" (closed)="close.emit()">
+  <section class="settings-section">
+    <div class="language-heading">
+      <i class="bi bi-globe2" aria-hidden="true"></i>
+      <p>{{ 'Chọn ngôn ngữ hiển thị trong game.' | hrkTranslate }}</p>
+    </div>
+    <hrk-language-selector />
+  </section>
+  <p class="settings-note">
+    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+    {{ 'Ngôn ngữ được lưu tự động trên trình duyệt này.' | hrkTranslate }}
+  </p>
+</hrk-modal>

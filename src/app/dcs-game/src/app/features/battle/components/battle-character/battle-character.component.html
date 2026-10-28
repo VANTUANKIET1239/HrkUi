@@ -17,7 +17,7 @@
   [style.--visual-speed]="visualSpeed"
   tabindex="0"
   role="region"
-  [attr.aria-label]="character.name + ' - HP ' + character.hp + '/' + character.maxHp"
+  [attr.aria-label]="(character.name + ' - HP ' + character.hp + '/' + character.maxHp) | hrkTranslate"
   (mouseenter)="onMouseEnter()"
   (mouseleave)="onMouseLeave()"
   (focus)="onFocus()"
@@ -322,7 +322,7 @@
   <!-- Orange grid plate highlight (Vinh Barber swap) -->
   <div class="position-snipping-grid-plate" *ngIf="activeSkillId === 'DOI_NGOI_DAU_DOC'">
     <div class="plate-border"></div>
-    <div class="plate-text">{{ getRowLabel() }}</div>
+    <div class="plate-text">{{ (getRowLabel()) | hrkTranslate }}</div>
   </div>
 
   <!-- Sprite area -->
@@ -348,7 +348,7 @@
       [hasMoneyEffect]="hasMoneyEffect()" [hasDarkShield]="hasDarkShieldEffect()" [isHit]="isHit">
     </app-passive-effect>
 
-    <img [src]="character.avatar" [alt]="character.name" class="character-sprite"
+    <img [src]="character.avatar" [alt]="(character.name) | hrkTranslate" class="character-sprite"
       [class.sprite-flipped]="shouldFlipSprite()"
       [class.tao-la-nhat]="isTaoLaNhat()" />
 
@@ -365,16 +365,16 @@
         [class.aura-tier-4]="effect.code === 'AURA_DAMAGE_BONUS' && effect.tier === 4"
         [class.is-full-aura]="effect.code === 'AURA_DAMAGE_BONUS' && (effect.tier === 4 || (effect.stacks ?? 0) >= 100)"
         [style.--status-color]="effect.color" tabindex="0">
-        <img [src]="effect.icon" [alt]="effect.name" />
+        <img [src]="effect.icon" [alt]="(effect.name) | hrkTranslate" />
         <span class="status-turns" *ngIf="effect.remainingTurns && effect.remainingTurns > 0">{{ effect.remainingTurns }}</span>
         <span class="status-stacks" *ngIf="effect.sourceType === 'STATUS' && ((effect.stacks ?? 0) > 1 || effect.code === 'RICARDO')">{{ effect.stacks || 1 }}</span>
-        <span class="ricardo-rage-badge" *ngIf="effect.code === 'RICARDO' && isStatusFullyStacked(effect)">CUỒNG NỘ!</span>
+        <span class="ricardo-rage-badge" *ngIf="effect.code === 'RICARDO' && isStatusFullyStacked(effect)">{{ 'CUỒNG NỘ!' | hrkTranslate }}</span>
         <span class="full-aura-badge" *ngIf="effect.code === 'AURA_DAMAGE_BONUS' && (effect.tier === 4 || (effect.stacks ?? 0) >= 100)">MAX!</span>
         <div class="status-tooltip" [class.aura-tooltip]="effect.code === 'AURA_DAMAGE_BONUS'">
-          <strong>{{ effect.name }}</strong>
-          <span class="status-description" *ngIf="effect.description">{{ effect.description }}</span>
+          <strong>{{ (effect.name) | hrkTranslate }}</strong>
+          <span class="status-description" *ngIf="effect.description">{{ (effect.description) | hrkTranslate }}</span>
           <span class="status-valueline" *ngFor="let line of effect.valueLines">{{ line }}</span>
-          <small *ngIf="effect.remainingTurns && effect.remainingTurns > 0">Còn lại {{ effect.remainingTurns }} lượt</small>
+          <small *ngIf="effect.remainingTurns && effect.remainingTurns > 0">{{ 'Còn lại {{p0}} lượt' | hrkTranslate:{p0: (effect.remainingTurns)} }}</small>
         </div>
       </div>
       <span class="status-more" *ngIf="presentationEffects.length > 6">
@@ -408,7 +408,7 @@
           <div class="aura-marker marker-75"></div>
         </div>
         <div class="aura-bar-label">
-          <span class="aura-title" *ngIf="!aura.isFull && aura.currentValue < 100">BÁ KHÍ</span>
+          <span class="aura-title" *ngIf="!aura.isFull && aura.currentValue < 100">{{ 'BÁ KHÍ' | hrkTranslate }}</span>
           <span class="aura-full-title" *ngIf="aura.isFull || aura.currentValue >= 100">FULL AURA</span>
           <span class="aura-value">{{ aura.currentValue }}/{{ aura.maxValue || 100 }}</span>
         </div>

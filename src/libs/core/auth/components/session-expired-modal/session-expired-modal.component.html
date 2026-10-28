@@ -1,4 +1,4 @@
-<hrk-modal *ngIf="sessionExpiredService.isOpen()" title="Phiên đăng nhập đã hết hạn" size="SM" [chrome]="false" [dismissible]="false">
+<hrk-modal *ngIf="sessionExpiredService.isOpen()" [title]="'Phiên đăng nhập đã hết hạn' | hrkTranslate" size="SM" [chrome]="false" [dismissible]="false">
   <div class="session-modal-card">
     <div class="modal-icon-container">
       <div class="icon-pulse"></div>
@@ -9,11 +9,11 @@
       </svg>
     </div>
 
-    <h2 id="session-expired-title" class="modal-title">Phiên đăng nhập đã hết hạn</h2>
+    <h2 id="session-expired-title" class="modal-title">{{ 'Phiên đăng nhập đã hết hạn' | hrkTranslate }}</h2>
 
     <p class="modal-message">
-      Phiên làm việc của bạn đã kết thúc.<br />
-      Vui lòng đăng nhập lại để tiếp tục.
+      {{ 'Phiên làm việc của bạn đã kết thúc.' | hrkTranslate }}<br />
+      {{ 'Vui lòng đăng nhập lại để tiếp tục.' | hrkTranslate }}
     </p>
 
     <div class="modal-actions">
@@ -23,7 +23,7 @@
         class="btn-relogin"
         (click)="onConfirmLogin()"
       >
-        <span class="btn-text">Đăng nhập lại</span>
+        <span class="btn-text">{{ 'Đăng nhập lại' | hrkTranslate }}</span>
         <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>

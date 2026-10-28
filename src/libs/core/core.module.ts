@@ -2,10 +2,12 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './http/hrk-api/interceptors/auth.interceptor';
 import { LoadingInterceptor } from './loading/loading.interceptor';
+import { LanguageInterceptor } from './localization/language.interceptor';
 
 @NgModule({
   imports: [HttpClientModule],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: LanguageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],

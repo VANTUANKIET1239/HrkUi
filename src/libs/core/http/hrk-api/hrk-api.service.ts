@@ -72,7 +72,7 @@ export class HrkApiService {
         : options) as CallOptions) ?? {};
     const body = this.isWithBodyMethod(method) ? optionsOrBody : null;
 
-    const baseHeaders = body instanceof FormData ? new HttpHeaders() : this.defaultHeaders;
+    const baseHeaders = body == null || body instanceof FormData ? new HttpHeaders() : this.defaultHeaders;
     const mergedHeaders = this.mergeHeaders(
       baseHeaders,
       currentOptions.headers

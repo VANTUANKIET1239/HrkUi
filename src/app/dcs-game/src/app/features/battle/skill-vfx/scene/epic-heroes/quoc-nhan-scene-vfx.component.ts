@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -21,7 +22,7 @@ interface TargetCoord {
 @Component({
   selector: 'app-quoc-nhan-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -87,7 +88,7 @@ interface TargetCoord {
         >
           <div class="crit-aura-ring"></div>
           <div class="crit-buff-badge">
-            <span class="badge-text">CHÍ MẠNG +15%</span>
+            <span class="badge-text">{{ 'CHÍ MẠNG +15%' | hrkTranslate }}</span>
           </div>
         </div>
       }

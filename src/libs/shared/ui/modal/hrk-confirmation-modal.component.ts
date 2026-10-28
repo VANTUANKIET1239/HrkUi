@@ -1,21 +1,22 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { HrkModalComponent } from './hrk-modal.component';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HRK_MODAL_CONFIG_SOURCE, HrkModalConfig, MODAL_ICONS } from './modal-config';
 
 @Component({
-  selector: 'hrk-confirmation-modal', standalone: true, imports: [HrkModalComponent],
+  selector: 'hrk-confirmation-modal', standalone: true, imports: [HrkModalComponent, HrkTranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (open) {
       <hrk-modal [modalCode]="modalCode" [config]="fallback" [parameters]="parameters" [busy]="busy" (closed)="cancel()">
         <div class="confirmation-icon"><i class="bi" [class]="icon"></i></div>
-        <p class="confirmation-message">{{ resolved.messageTemplate }}</p>
+        <p class="confirmation-message">{{ resolved.messageTemplate | hrkTranslate:parameters }}</p>
         <ng-content />
         <div hrkModalFooter class="confirmation-actions">
-          <button type="button" class="cancel" autofocus [disabled]="busy" (click)="cancel()">{{ resolved.cancelText }}</button>
+          <button type="button" class="cancel" autofocus [disabled]="busy" (click)="cancel()">{{ resolved.cancelText | hrkTranslate }}</button>
           <button type="button" class="confirm" [disabled]="busy" (click)="confirm()">
             @if (busy) { <span class="spinner-border spinner-border-sm" aria-hidden="true"></span> }
-            {{ resolved.confirmText }}
+            {{ resolved.confirmText | hrkTranslate }}
           </button>
         </div>
       </hrk-modal>

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { HeroFeatureTabContext } from './hero-feature-tab.models';
@@ -5,17 +6,17 @@ import { HeroFeatureTabContext } from './hero-feature-tab.models';
 @Component({
   selector: 'app-hero-aura-tab',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   template: `
     <section class="aura-panel">
-      <div class="panel-title">Hệ Thống Thức Tỉnh Hào Quang</div>
-      <p class="panel-description">Chọn cấp hào quang để xem hiệu ứng đang áp dụng cho võ tướng.</p>
+      <div class="panel-title">{{ 'Hệ Thống Thức Tỉnh Hào Quang' | hrkTranslate }}</div>
+      <p class="panel-description">{{ 'Chọn cấp hào quang để xem hiệu ứng đang áp dụng cho võ tướng.' | hrkTranslate }}</p>
       <div class="aura-grid">
         <button *ngFor="let aura of auras" class="aura-card" [class.active]="context.hero.auraTier === aura.tier" (click)="context.setAuraTier(aura.tier)">
           <span class="aura-tier" [style.background]="aura.color">Tier {{ aura.tier }}</span><span>{{ aura.name }}</span><i class="aura-dot" [style.background]="aura.color" [style.box-shadow]="'0 0 8px ' + aura.color"></i>
         </button>
       </div>
-      <div class="aura-description"><i class="bi bi-info-circle"></i><div><b>{{ activeAura.name }}</b><span>{{ activeAura.description }}</span></div></div>
+      <div class="aura-description"><i class="bi bi-info-circle"></i><div><b>{{ activeAura.name }}</b><span>{{ (activeAura.description) | hrkTranslate }}</span></div></div>
     </section>
   `,
   styleUrl: './hero-feature-tab.component.scss',

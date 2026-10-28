@@ -4,7 +4,7 @@
   role="alert"
   aria-live="assertive"
   aria-busy="true"
-  aria-label="Đang tải dữ liệu game"
+  [attr.aria-label]="'Đang tải dữ liệu game' | hrkTranslate"
   (click)="$event.stopPropagation()"
   (mousedown)="$event.stopPropagation()"
   (touchstart)="$event.stopPropagation()"
@@ -20,8 +20,8 @@
     </div>
 
     <div class="text-group">
-      <h2 class="loading-title">ĐANG TẢI DỮ LIỆU GAME</h2>
-      <p class="loading-subtitle">Đang chuẩn bị thế giới chiến đấu...</p>
+      <h2 class="loading-title">{{ 'ĐANG TẢI DỮ LIỆU GAME' | hrkTranslate }}</h2>
+      <p class="loading-subtitle">{{ 'Đang chuẩn bị thế giới chiến đấu...' | hrkTranslate }}</p>
       
       <div class="loading-bar-track">
         <div class="loading-bar-thumb"></div>

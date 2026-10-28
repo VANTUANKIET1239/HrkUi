@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -14,7 +15,7 @@ import { Hero } from '../../../../../../core/models/hero.model';
 @Component({
   selector: 'app-skill-hai-last-laugh',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './skill-hai-last-laugh.component.html',
   styleUrl: './skill-hai-last-laugh.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,10 +1,11 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-battle-notification',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   templateUrl: './battle-notification.component.html',
   styleUrl: './battle-notification.component.scss'
 })

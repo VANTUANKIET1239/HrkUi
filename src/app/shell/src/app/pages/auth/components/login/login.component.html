@@ -7,15 +7,15 @@
     <hrk-multi-select
     [(ngModel)]="selectedRoles"
     [items]="roles"
-    placeholder="Select roles">
+    [placeholder]="'Select roles' | hrkTranslate">
   </hrk-multi-select>
     <div class="brand">
-      <h1 id="loginTitle">HRM Portal</h1>
-      <p class="muted">Sign in to manage people, payroll & attendance</p>
+      <h1 id="loginTitle">{{ 'HRM Portal' | hrkTranslate }}</h1>
+      <p class="muted">{{ 'Sign in to manage people, payroll & attendance' | hrkTranslate }}</p>
     </div>
 
     <form [formGroup]="dataForm" (ngSubmit)="submit()" novalidate>
-      <p class="error" role="alert" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+      <p class="error" role="alert" *ngIf="errorMessage()">{{ errorMessage() | hrkTranslate }}</p>
 
       <div class="field">
         <label for="email">Email</label>
@@ -24,37 +24,37 @@
       </div>
 
       <div class="field">
-        <label for="password">Password</label>
+        <label for="password">{{ 'Password' | hrkTranslate }}</label>
         <div class="pwd-wrap">
           <hrk-input formControlName="password" [type]="showPwd() ? 'text' : 'password'"
             [autocomplete]="'current-password'"></hrk-input>
-          <button type="button" class="ghost" aria-label="Toggle password visibility" (click)="toggleShowPwd()">
+          <button type="button" class="ghost" [aria-label]="'Toggle password visibility' | hrkTranslate" (click)="toggleShowPwd()">
               <hrk-icon [biIconName]="showPwd() ? 'bi-eye' : 'bi-eye-slash'" size="medium" color="black"></hrk-icon>
           </button>
         </div>
-        <small *ngIf="hasErr('password')">Password is required (min 6 chars).</small>
+        <small *ngIf="hasErr('password')">{{ 'Password is required (min 6 chars).' | hrkTranslate }}</small>
       </div>
 
       <div class="row-auth">
         <label class="checkbox">
           <hrk-checkbox formControlName="remember" [backgroundColor]="'rgb(255, 123, 0)'"> </hrk-checkbox>
-          <span>Remember me</span>
+          <span>{{ 'Remember me' | hrkTranslate }}</span>
         </label>
 
-        <a class="link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+        <a class="link" [routerLink]="['/auth/forgot-password']">{{ 'Forgot password?' | hrkTranslate }}</a>
       </div>
 
-      <hrk-button [style]="{color: 'black'}" ngClasses="hrk-orange" [loading]="loading()" buttonName="Sign in"></hrk-button>
+      <hrk-button [style]="{color: 'black'}" ngClasses="hrk-orange" [loading]="loading()" [buttonName]="'Sign in' | hrkTranslate"></hrk-button>
 
       <div class="divider">
-        <span>or</span>
+        <span>{{ 'or' | hrkTranslate }}</span>
       </div>
 
       <div class="sso">
-        <hrk-button type="button" ngClasses="outline" (click)="sso('google')" buttonName="Continue with Google" aria-label="Continue with Google">
+        <hrk-button type="button" ngClasses="outline" (click)="sso('google')" [buttonName]="'Continue with Google' | hrkTranslate" [aria-label]="'Continue with Google' | hrkTranslate">
             <hrk-icon [useSvg]="true" svgIconName="google" size="medium"></hrk-icon>
         </hrk-button>
-        <hrk-button type="button" ngClasses="outline" (click)="sso('microsoft')" buttonName="Continue with Microsoft" aria-label="Continue with Microsoft">
+        <hrk-button type="button" ngClasses="outline" (click)="sso('microsoft')" [buttonName]="'Continue with Microsoft' | hrkTranslate" [aria-label]="'Continue with Microsoft' | hrkTranslate">
           <hrk-icon [useSvg]="true" svgIconName="microsoft" size="medium"></hrk-icon>
         </hrk-button>
       </div>

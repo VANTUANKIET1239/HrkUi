@@ -10,6 +10,7 @@ import { CampaignAtmosphereComponent } from '../../components/campaign-atmospher
   selector: 'app-campaign-map-list',
   standalone: true,
   imports: [
+    HrkTranslatePipe,
     CommonModule,
     CampaignMapCardComponent,
     CampaignAtmosphereComponent
@@ -91,3 +92,4 @@ export class CampaignMapListComponent implements OnInit {
     this.router.navigate(['/dcs-game/home']);
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

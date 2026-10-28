@@ -3,13 +3,14 @@ import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { Component, inject, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { PlayerAvatarTemplateDto, PlayerProfileDto } from '../../../../core/models/player.model';
 import { PlayerService } from '../../../../core/services/player.service';
 
 @Component({
   selector: 'app-avatar-selector',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './avatar-selector.component.html',
   styleUrl: './avatar-selector.component.scss'
 })
@@ -66,7 +67,7 @@ export class AvatarSelectorComponent implements OnInit, OnDestroy {
       const dimensions = await this.readDimensions(url);
       if (dimensions.width > 1024 || dimensions.height > 1024 || dimensions.width * dimensions.height > 1024 * 1024) {
         URL.revokeObjectURL(url);
-        this.error = `Ảnh ${dimensions.width}×${dimensions.height} vượt giới hạn 1024×1024.`;
+        this.error = this.toast.text`Ảnh ${dimensions.width}×${dimensions.height} vượt giới hạn 1024×1024.`;
         input.value = ''; return;
       }
       this.selectedFile = file; this.previewUrl = url;

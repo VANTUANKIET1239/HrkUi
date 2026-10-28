@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
@@ -99,7 +100,7 @@ export interface StatCardDisplay {
 @Component({
   selector: 'app-hero-management',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './hero-management.component.html',
   styleUrl: './hero-management.component.scss',
 })
@@ -1007,7 +1008,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         this.applyEquipmentData(response.data.equipment);
         this.loadWallet();
         this.loadUpgradePreview(updated.id);
-        this.toast.success(`Nâng ${levels} cấp cho ${updated.name} thành công.`);
+        this.toast.success(this.toast.text`Nâng ${levels} cấp cho ${updated.name} thành công.`);
       },
       error: (error) => {
         this.isUpgradingHero = false;
@@ -1058,7 +1059,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
 
             // Update inventory unequipped list
             this.loadInventoryEquipments();
-            this.toast.success(`Mặc thành công ${item.name} cho ${this.selectedHero.name}!`);
+            this.toast.success(this.toast.text`Mặc thành công ${item.name} cho ${this.selectedHero.name}!`);
           } else {
             this.toast.warning(res?.message || 'Không thể mặc trang bị.');
           }
@@ -1072,7 +1073,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
   // Slot Click: If has item, open action dialog to unequip
   onSlotClick(slot: HeroEquipmentSlot): void {
     if (!slot.item) {
-      this.toast.info(`Ô ${slot.displayName}: Chưa trang bị.`);
+      this.toast.info(this.toast.text`Ô ${slot.displayName}: Chưa trang bị.`);
       return;
     }
     this.selectedSlotForAction = slot;
@@ -1130,7 +1131,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.applyEquipmentData(res.data.equipment);
 
             this.loadInventoryEquipments();
-            this.toast.info(`Đã tháo ${itemName} khỏi ${this.selectedHero.name}!`);
+            this.toast.info(this.toast.text`Đã tháo ${itemName} khỏi ${this.selectedHero.name}!`);
           } else {
             this.toast.warning(res?.message || 'Không thể tháo trang bị.');
           }
@@ -1202,7 +1203,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (!response?.success || !response.data) return;
           this.selectedHero.locked = response.data.isLocked;
-          this.toast.info(`${this.selectedHero.locked ? 'Khóa' : 'Mở khóa'} võ tướng ${this.selectedHero.name} thành công!`);
+          this.toast.info(this.selectedHero.locked ? this.toast.text`Khóa võ tướng ${this.selectedHero.name} thành công!` : this.toast.text`Mở khóa võ tướng ${this.selectedHero.name} thành công!`);
         },
         error: (error) =>
           this.toast.fromError(error, 'Không thể cập nhật trạng thái khóa.'),
@@ -1217,7 +1218,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (!response?.success || !response.data) return;
           this.selectedHero.favorite = response.data.isFavorite;
-          this.toast.info(`${this.selectedHero.favorite ? 'Đã thêm vào yêu thích' : 'Đã bỏ yêu thích'} võ tướng ${this.selectedHero.name}!`);
+          this.toast.info(this.selectedHero.favorite ? this.toast.text`Đã thêm vào yêu thích võ tướng ${this.selectedHero.name}!` : this.toast.text`Đã bỏ yêu thích võ tướng ${this.selectedHero.name}!`);
         },
         error: (error) =>
           this.toast.fromError(error, 'Không thể cập nhật trạng thái yêu thích.'),
@@ -1250,7 +1251,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     this.selectedHero.exp = 0;
     this.selectedHero.maxExp = this.selectedHero.level * 100 + 400;
 
-    this.toast.success(`Nâng cấp ${this.selectedHero.name} lên cấp ${this.selectedHero.level}!`);
+    this.toast.success(this.toast.text`Nâng cấp ${this.selectedHero.name} lên cấp ${this.selectedHero.level}!`);
   }
 
   autoUpgrade(): void {
@@ -1285,7 +1286,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     if (upgradeCount === 0) {
       this.toast.warning('Không đủ Vàng hoặc Nguyên liệu nâng cấp!');
     } else {
-      this.toast.success(`Đột phá nhanh ${upgradeCount} cấp! Cấp hiện tại: ${this.selectedHero.level}. Lực chiến +${totalPowerGained}!`);
+      this.toast.success(this.toast.text`Đột phá nhanh ${upgradeCount} cấp! Cấp hiện tại: ${this.selectedHero.level}. Lực chiến +${totalPowerGained}!`);
     }
   }
 
@@ -1297,7 +1298,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
     if (tier === 3) tierName = 'Hào Quang Kim Hoàng Kim';
     if (tier === 4) tierName = 'Lôi Quang Xích Thần (Sét Đỏ)';
 
-    this.toast.success(`Đã thức tỉnh Aura cấp ${tier}: ${tierName}!`);
+    this.toast.success(this.toast.text`Đã thức tỉnh Aura cấp ${tier}: ${tierName}!`);
   }
 
   // Drag and Drop (Two-way: Inventory <-> Equipped Slot)
@@ -1389,7 +1390,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
 
     const expectedCode = categoryMapping[targetSlot.slot];
     if ((this.draggedItem.categoryCode || '').toUpperCase() !== expectedCode) {
-      this.toast.warning(`Trang bị không phù hợp! Ô này cần: ${targetSlot.displayName}`);
+      this.toast.warning(this.toast.text`Trang bị không phù hợp! Ô này cần: ${targetSlot.displayName}`);
       this.onDragEnd();
       return;
     }
@@ -1447,7 +1448,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero = mappedHero;
             this.applyEquipmentData(res.data.equipment);
             this.loadInventoryEquipments();
-            this.toast.info(`Đã tháo trang bị khỏi ${this.selectedHero.name}!`);
+            this.toast.info(this.toast.text`Đã tháo trang bị khỏi ${this.selectedHero.name}!`);
           } else {
             this.toast.warning(res?.message || 'Không thể tháo trang bị.');
           }
@@ -1520,7 +1521,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero = mappedHero;
             this.applyEquipmentData(res.data.equipment);
             this.loadInventoryEquipments();
-            this.toast.success(`Đã tháo toàn bộ trang bị của ${this.selectedHero.name}!`);
+            this.toast.success(this.toast.text`Đã tháo toàn bộ trang bị của ${this.selectedHero.name}!`);
           } else {
             this.toast.warning(res?.message || 'Không thể tháo toàn bộ trang bị.');
           }
@@ -1636,7 +1637,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             if (tgtIdx >= 0) this.heroes[tgtIdx] = mappedTarget;
 
             this.loadInventoryEquipments();
-            this.toast.success(`Đã đổi toàn bộ bộ trang bị giữa ${sourceName} và ${targetName}!`);
+            this.toast.success(this.toast.text`Đã đổi toàn bộ bộ trang bị giữa ${sourceName} và ${targetName}!`);
           } else {
             this.toast.warning(res?.message || 'Không thể hoán đổi trang bị.');
           }
@@ -1684,7 +1685,7 @@ export class HeroManagementComponent implements OnInit, OnDestroy {
             this.selectedHero.stars = r.data.currentStar;
             this.selectedHero.power = r.data.currentCombatPower;
             this.selectHero(this.selectedHero);
-            this.toast.success(`Tăng lên ${r.data.currentStar} sao thành công!`);
+            this.toast.success(this.toast.text`Tăng lên ${r.data.currentStar} sao thành công!`);
           } else
             this.toast.warning(r?.message || 'Không thể tăng sao.');
         },

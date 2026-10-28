@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -21,7 +22,7 @@ interface TargetCoord {
 @Component({
   selector: 'app-cau-vang-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -78,7 +79,7 @@ interface TargetCoord {
             <div class="barrier-dome-shell"></div>
             <div class="barrier-light-sheen"></div>
             <div class="barrier-buff-badge">
-              <span class="badge-text">KHIÊN & GIẢM ST 12%</span>
+              <span class="badge-text">{{ 'KHIÊN & GIẢM ST 12%' | hrkTranslate }}</span>
             </div>
           </div>
         }

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
 import { ItemImageComponent } from '../../../../shared/components/item-image/item-image.component';
@@ -15,7 +16,7 @@ import { EquipmentRollDetailsComponent } from '../../../../shared/components/equ
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [HrkModalComponent, ItemImageComponent, CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
+  imports: [HrkTranslatePipe, HrkModalComponent, ItemImageComponent, CommonModule, FormsModule, ForgeComponent, EquipmentRollDetailsComponent],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
 })
@@ -94,7 +95,7 @@ export class InventoryComponent implements OnInit {
         this.categories = (categories.data ?? []).sort((a, b) => a.displayOrder - b.displayOrder);
         this.rarities = (rarities.data ?? []).sort((a, b) => b.displayOrder - a.displayOrder);
         this.ensureValidSelection();
-        if (showSuccess) this.toast.success(`Đã đồng bộ ${this.items.length} vật phẩm.`);
+        if (showSuccess) this.toast.success(this.toast.text`Đã đồng bộ ${this.items.length} vật phẩm.`);
       },
       error: (error) => this.toast.fromError(error, 'Không thể tải hành trang từ máy chủ.')
     });
@@ -190,7 +191,7 @@ export class InventoryComponent implements OnInit {
         }
         this.gold = response.data.currentGold;
         this.applySoldCount(item, 1);
-        this.toast.success(`Đã bán “${item.name}”, nhận ${response.data.earnedGold} vàng.`);
+        this.toast.success(this.toast.text`Đã bán “${item.name}”, nhận ${response.data.earnedGold} vàng.`);
       },
       error: (error) => this.toast.fromError(error, 'Không thể bán vật phẩm trên máy chủ.')
     });
@@ -218,7 +219,7 @@ export class InventoryComponent implements OnInit {
         const ids = new Set(candidates.map(item => item.id));
         this.items = this.items.filter(item => !ids.has(item.id));
         this.ensureValidSelection();
-        this.toast.success(`Đã bán ${response.data.soldItemsCount} vật phẩm, nhận ${response.data.earnedGold} vàng.`);
+        this.toast.success(this.toast.text`Đã bán ${response.data.soldItemsCount} vật phẩm, nhận ${response.data.earnedGold} vàng.`);
       },
       error: (error) => this.toast.fromError(error, 'Không thể bán nhanh vật phẩm trên máy chủ.')
     });
@@ -235,7 +236,7 @@ export class InventoryComponent implements OnInit {
         }
         this.diamonds = response.data.diamonds;
         this.maxCapacity = response.data.maxCapacity;
-        this.toast.success(`Đã mở rộng thêm ${slots} ô hành trang.`);
+        this.toast.success(this.toast.text`Đã mở rộng thêm ${slots} ô hành trang.`);
       },
       error: (error) => this.toast.fromError(error, 'Không thể mở rộng hành trang trên máy chủ.')
     });

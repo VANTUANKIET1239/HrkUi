@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
@@ -24,7 +25,7 @@ export interface ChainSegment {
 @Component({
   selector: 'app-van-trong-scene-vfx',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -77,7 +78,7 @@ export interface ChainSegment {
           <div class="spark-core"></div>
           <div class="spark-burst"></div>
           @if (impact.stunned) {
-            <div class="stun-badge">TÊ LIỆT ⚡</div>
+            <div class="stun-badge">{{ 'TÊ LIỆT ⚡' | hrkTranslate }}</div>
           }
         </div>
       }

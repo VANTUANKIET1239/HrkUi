@@ -5,10 +5,13 @@ import { ApiEndpoints } from '../../../../../../libs/shared/common/constants/api
 import { HrkModalConfig, HrkModalConfigSource, modalDefaults, MODAL_ICONS } from '../../../../../../libs/shared/ui/modal/modal-config';
 import { GAME_MODAL_PRESETS } from '../configs/game-modal-presets';
 import { BaseResponse } from '../models/player.model';
+import { TranslateService } from '@ngx-translate/core';
+import { textKey } from '@hrk/localization/text-key';
 
 @Injectable({ providedIn:'root' })
 export class GameModalConfigService implements HrkModalConfigSource {
   private readonly api = inject(HrkApiService);
+  private readonly translate = inject(TranslateService, { optional: true });
   private readonly presets = signal<Record<string, Partial<HrkModalConfig>>>({});
   private loading = false;
   private reloadAfterCurrent = false;
@@ -55,6 +58,12 @@ export class GameModalConfigService implements HrkModalConfigSource {
     const local = modalDefaults(code, { ...GAME_MODAL_PRESETS[code], ...fallback });
     const remote = this.presets()[code];
     const result = { ...local, ...(remote?.kind === local.kind ? remote : {}) };
+    // Translate before replacing {used}/{limit}; otherwise the literal key changes with every run.
+    for (const field of ['title','messageTemplate','confirmText','cancelText'] as const) {
+      const key = textKey(result[field]);
+      const translated = this.translate?.instant(key);
+      if (typeof translated === 'string' && translated !== key) result[field] = translated;
+    }
     for (const field of ['title','messageTemplate'] as const) {
       const render = (text: string) => text.replace(/\{([a-zA-Z][a-zA-Z0-9_]*)\}/g,
         (token, key: string) => Object.hasOwn(parameters, key) ? String(parameters[key]) : token);

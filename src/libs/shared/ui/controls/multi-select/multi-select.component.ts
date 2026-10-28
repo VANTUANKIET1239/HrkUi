@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -23,7 +24,7 @@ export interface MultiSelectItem {
   templateUrl: './multi-select.component.html',
   styleUrls: ['./multi-select.component.scss'],
   standalone: true,
-  imports: [FormsModule, HrkCheckboxComponent],
+  imports: [HrkTranslatePipe, FormsModule, HrkCheckboxComponent],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

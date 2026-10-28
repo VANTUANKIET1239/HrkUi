@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -13,7 +14,7 @@ export interface DebrisPiece {
 @Component({
   selector: 'app-skill-ricardo-milos',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   templateUrl: './skill-ricardo-milos.component.html',
   styleUrl: './skill-ricardo-milos.component.scss'
 })

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, Output, EventEmitter, ViewEncapsulation, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,7 +20,7 @@ import { EquipmentTooltipComponent } from '../../../../shared/components/equipme
 @Component({
   selector: 'app-battle-scene',
   standalone: true,
-  imports: [HrkImageDirective,
+  imports: [HrkTranslatePipe, HrkImageDirective,
     CommonModule,
     BattleCharacterComponent,
     BattleResultModalComponent,

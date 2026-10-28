@@ -12,7 +12,7 @@
 >
   <!-- Downward Pointer for Current Boss -->
   <div class="current-indicator" *ngIf="stage.state === 'AVAILABLE'">
-    <span class="indicator-badge">⚔️ KHIÊU CHIẾN</span>
+    <span class="indicator-badge">{{ '⚔️ KHIÊU CHIẾN' | hrkTranslate }}</span>
     <span class="indicator-arrow">▼</span>
   </div>
 
@@ -26,7 +26,7 @@
     class="boss-crest"
     [disabled]="stage.state === 'LOCKED'"
     (click)="onBossClick()"
-    [attr.aria-label]="bossTierLabel + ' Ải ' + stage.stageNumber + ': ' + stage.name"
+    [attr.aria-label]="(bossTierLabel + ' Ải ' + stage.stageNumber + ': ' + stage.name) | hrkTranslate"
   >
     <!-- Background Frame Glow -->
     <div class="crest-frame-glow"></div>
@@ -39,7 +39,7 @@
 
     <!-- Portrait Area -->
     <div class="portrait-container">
-      <img [src]="bossImage" imageKind="hero" [alt]="bossName" class="boss-portrait" loading="lazy" />
+      <img [src]="bossImage" imageKind="hero" [alt]="(bossName) | hrkTranslate" class="boss-portrait" loading="lazy" />
       <div class="portrait-shade"></div>
     </div>
 
@@ -56,13 +56,13 @@
 
     <!-- Boss Type Label Ribbon -->
     <div class="boss-ribbon">
-      <span class="ribbon-text">{{ bossTierLabel }}</span>
+      <span class="ribbon-text">{{ (bossTierLabel) | hrkTranslate }}</span>
     </div>
   </button>
 
   <!-- Name & Level Label Below -->
   <div class="boss-meta">
-    <span class="boss-title">{{ stage.name }}</span>
+    <span class="boss-title">{{ (stage.name) | hrkTranslate }}</span>
     <span class="boss-enemy-name">{{ bossName }}</span>
     <div class="boss-stars" *ngIf="stage.bestStars !== undefined && stage.bestStars > 0">
       <i *ngFor="let s of [1, 2, 3]; let i = index"
@@ -74,13 +74,13 @@
   <!-- Hover Tooltip -->
   <div class="boss-tooltip">
     <div class="tooltip-header">
-      <span class="tooltip-tag">{{ bossTierLabel }}</span>
+      <span class="tooltip-tag">{{ (bossTierLabel) | hrkTranslate }}</span>
       <span class="tooltip-stamina">⚡ {{ stage.staminaCost }}</span>
     </div>
-    <strong class="tooltip-name">{{ stage.name }}</strong>
+    <strong class="tooltip-name">{{ (stage.name) | hrkTranslate }}</strong>
     <div class="tooltip-power">
-      <span>Lực chiến đối thủ: <b>{{ stage.enemyPower | number }}</b></span>
-      <span>Đề nghị: <b>{{ stage.recommendedPower | number }}</b></span>
+      <span>{{ 'Lực chiến đối thủ:' | hrkTranslate }} <b>{{ stage.enemyPower | number }}</b></span>
+      <span>{{ 'Đề nghị:' | hrkTranslate }} <b>{{ stage.recommendedPower | number }}</b></span>
     </div>
   </div>
 </div>

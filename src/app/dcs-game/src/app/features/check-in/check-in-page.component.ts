@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -10,7 +11,7 @@ import { CheckInService } from '../../core/services/check-in.service';
 
 @Component({
   selector: 'app-check-in-page', standalone: true,
-  imports: [CommonModule, RouterLink, HrkImageDirective],
+  imports: [CommonModule, RouterLink, HrkImageDirective, HrkTranslatePipe],
   templateUrl: './check-in-page.component.html', styleUrl: './check-in-page.component.scss'
 })
 export class CheckInPageComponent implements OnInit {

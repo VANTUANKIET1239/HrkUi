@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
@@ -21,7 +22,7 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-formation-management',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule, FormsModule, BattleCharacterComponent],
   templateUrl: './formation-management.component.html',
   styleUrl: './formation-management.component.scss'
 })
@@ -228,7 +229,7 @@ export class FormationManagementComponent implements OnInit {
       this.selectedPoolHero = null;
     } else {
       this.selectedPoolHero = hero;
-      this.toast.info(`Đã chọn [${hero.name}]. Nhấp vào một ô để xếp trận!`);
+      this.toast.info(this.toast.text`Đã chọn [${hero.name}]. Nhấp vào một ô để xếp trận!`);
     }
   }
 
@@ -318,7 +319,7 @@ export class FormationManagementComponent implements OnInit {
         this.formations.forEach((f) => {
           f.isSelected = f.code === this.currentFormationCode;
         });
-        this.toast.success(`Đã chọn [${this.formationDetail?.name}] làm trận hình xuất chiến!`);
+        this.toast.success(this.toast.text`Đã chọn [${this.formationDetail?.name}] làm trận hình xuất chiến!`);
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -362,7 +363,7 @@ export class FormationManagementComponent implements OnInit {
             summary.totalPower = res.data.totalPower;
           }
         }
-        this.toast.success(`Nâng cấp trận pháp lên Cấp ${res.data?.newLevel} thành công!`);
+        this.toast.success(this.toast.text`Nâng cấp trận pháp lên Cấp ${res.data?.newLevel} thành công!`);
         this.cdr.markForCheck();
       },
       error: (err) => {

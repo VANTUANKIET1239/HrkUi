@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -15,7 +16,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-truong-kiet-scene-vfx',
   standalone: true,
-  imports: [CommonModule],
+  imports: [HrkTranslatePipe, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -69,7 +70,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 
           @if (hasPanic) {
             <div class="panic-burst-badge">
-              <span class="badge-text">HOẢNG LOẠN!</span>
+              <span class="badge-text">{{ 'HOẢNG LOẠN!' | hrkTranslate }}</span>
             </div>
           }
         </div>

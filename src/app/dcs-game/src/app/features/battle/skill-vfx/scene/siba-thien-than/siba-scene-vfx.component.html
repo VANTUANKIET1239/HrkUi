@@ -148,7 +148,7 @@
           />
           <!-- Variant Banner Indicator -->
           <div class="encouragement-tag" [class.defense]="target.isFrontRow" [class.offense]="!target.isFrontRow">
-            {{ target.isFrontRow ? '🛡️ CỔ VŨ THỦ' : '⚔️ CỔ VŨ CÔNG' }}
+            {{ (target.isFrontRow ? '🛡️ CỔ VŨ THỦ' : '⚔️ CỔ VŨ CÔNG') | hrkTranslate }}
           </div>
         </div>
       }
@@ -176,7 +176,7 @@
         <div class="energy-stream-container" [style.top.px]="target.centerOffsetY">
           <div class="energy-orb-stream"></div>
           <div class="energy-amount-badge">
-            {{ isBasicSkill ? '+10 NĂNG LƯỢNG' : '+15 NĂNG LƯỢNG' }}
+            {{ (isBasicSkill ? '+10 NĂNG LƯỢNG' : '+15 NĂNG LƯỢNG') | hrkTranslate }}
           </div>
         </div>
       }

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HrkConfirmationModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation-modal.component';
@@ -5,7 +6,7 @@ import { HrkConfirmationModalComponent } from '../../../../../../../../libs/shar
 @Component({
   selector: 'app-battle-skip-confirm-modal',
   standalone: true,
-  imports: [CommonModule, HrkConfirmationModalComponent],
+  imports: [HrkTranslatePipe, CommonModule, HrkConfirmationModalComponent],
   templateUrl: './battle-skip-confirm-modal.component.html',
   styleUrl: './battle-skip-confirm-modal.component.scss'
 })

@@ -36,6 +36,8 @@ export interface EnhanceEquipmentResult {
   currentStatsJson?: string;
   consumed: ConsumedResources;
   message: string;
+  messageKey?: string | null;
+  messageArguments?: Record<string, number>;
 }
 
 export interface EnhancementLevelConfig {

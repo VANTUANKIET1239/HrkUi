@@ -11,7 +11,7 @@ import { GameEventItem } from '../../../../core/models/event.model';
 @Component({
   selector: 'app-campaign-event-list',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule, CampaignAtmosphereComponent],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule, CampaignAtmosphereComponent],
   templateUrl: './campaign-event-list.component.html',
   styleUrl: './campaign-event-list.component.scss'
 })
@@ -95,3 +95,4 @@ export class CampaignEventListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/dcs-game/home']);
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

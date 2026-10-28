@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { Component, DestroyRef, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -15,7 +16,7 @@ import { BattleSceneComponent } from '../../components/battle-scene/battle-scene
 
 @Component({
   selector: 'app-demo-battle-page', standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, BattleSceneComponent],
+  imports: [HrkTranslatePipe, CommonModule, FormsModule, RouterLink, BattleSceneComponent],
   templateUrl: './demo-battle-page.component.html', styleUrl: './demo-battle-page.component.scss'
 })
 export class DemoBattlePageComponent implements OnInit, OnDestroy {

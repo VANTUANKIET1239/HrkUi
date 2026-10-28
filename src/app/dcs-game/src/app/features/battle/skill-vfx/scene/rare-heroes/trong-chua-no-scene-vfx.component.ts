@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import {
   Component,
@@ -16,7 +17,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
 @Component({
   selector: 'app-trong-chua-no-scene-vfx',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -66,7 +67,7 @@ import { BattleEventDto } from '../../../../../core/models/battle.model';
           <div class="smoke-puff puff-2"></div>
           <div class="smoke-puff puff-3"></div>
           @if (hasPanic) {
-            <div class="panic-banner">HOẢNG LOẠN</div>
+            <div class="panic-banner">{{ 'HOẢNG LOẠN' | hrkTranslate }}</div>
           }
         </div>
       }

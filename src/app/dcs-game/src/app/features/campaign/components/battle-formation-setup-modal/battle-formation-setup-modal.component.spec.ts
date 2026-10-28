@@ -31,7 +31,8 @@ describe('Battle formation inventory capacity', () => {
     formation = jasmine.createSpyObj('formation', ['updatePositions', 'selectFormation']);
     formation.updatePositions.and.returnValue(of(success(null) as any));
     formation.selectFormation.and.returnValue(of(success(null) as any));
-    toast = jasmine.createSpyObj('toast', ['info', 'warning', 'fromError']);
+    toast = jasmine.createSpyObj('toast', ['info', 'warning', 'fromError', 'text']);
+    toast.text.and.callFake(new GameToastService().text);
     TestBed.configureTestingModule({ imports: [BattleFormationSetupModalComponent], providers: [
       { provide: InventoryService, useValue: inventory }, { provide: PlayerService, useValue: player },
       { provide: FormationService, useValue: formation }, { provide: PlayerHeroService, useValue: {} },

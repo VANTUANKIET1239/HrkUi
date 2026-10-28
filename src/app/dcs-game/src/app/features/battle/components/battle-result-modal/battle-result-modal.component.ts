@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { EquipmentTooltipComponent } from '../../../../shared/components/equipment-tooltip/equipment-tooltip.component';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
@@ -62,7 +63,7 @@ export interface ProcessedHeroStat {
 @Component({
   selector: 'app-battle-result-modal',
   standalone: true,
-  imports: [HrkImageDirective, EquipmentTooltipComponent, HrkModalComponent, CommonModule, EquipmentRollDetailsComponent],
+  imports: [HrkTranslatePipe, HrkImageDirective, EquipmentTooltipComponent, HrkModalComponent, CommonModule, EquipmentRollDetailsComponent],
   templateUrl: './battle-result-modal.component.html',
   styleUrl: './battle-result-modal.component.scss'
 })

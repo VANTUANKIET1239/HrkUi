@@ -5,11 +5,11 @@
     <!-- A. Player Profile (Top-Left UI) -->
     <div class="player-profile d-flex align-items-center">
       <div class="avatar-container position-relative">
-        <div class="avatar-frame editable-avatar" role="button" tabindex="0" title="Đổi ảnh đại diện"
+        <div class="avatar-frame editable-avatar" role="button" tabindex="0" [title]="'Đổi ảnh đại diện' | hrkTranslate"
           (click)="isAvatarSelectorOpen = true" (keydown.enter)="isAvatarSelectorOpen = true">
           <!-- Stylized Avatar (using SVG or clean letters/icon since we want it visual) -->
           <img *ngIf="playerInfo.avatarUrl" class="player-avatar-image" [src]="playerInfo.avatarUrl"
-            imageKind="hero" alt="Ảnh đại diện" />
+            imageKind="hero" [alt]="'Ảnh đại diện' | hrkTranslate" />
           <div *ngIf="!playerInfo.avatarUrl" class="avatar-img-placeholder d-flex align-items-center justify-content-center">
             <i class="bi bi-person-circle text-warning fs-1"></i>
           </div>
@@ -20,33 +20,40 @@
       </div>
 
       <div class="player-details ms-2">
-        <div class="player-name text-truncate">{{ playerInfo.name }}</div>
+        <div class="profile-heading">
+          <div class="player-name text-truncate">{{ playerInfo.name }}</div>
+          <button type="button" class="btn-settings" [title]="'Cài đặt' | hrkTranslate"
+            [attr.aria-label]="'Cài đặt' | hrkTranslate" aria-haspopup="dialog" [attr.aria-expanded]="isSettingsOpen"
+            (click)="isSettingsOpen = true">
+            <i class="bi bi-gear-fill" aria-hidden="true"></i>
+          </button>
+        </div>
         <div class="player-power d-flex align-items-center">
-          <span class="label">C.Lực</span>
+          <span class="label">{{ 'C.Lực' | hrkTranslate }}</span>
           <span class="value">{{ playerInfo.power }}</span>
         </div>
-        <div class="player-exp" title="Kinh nghiệm người chơi">
+        <div class="player-exp" [title]="'Kinh nghiệm người chơi' | hrkTranslate">
           <div class="player-exp-fill" [style.width.%]="playerInfo.exp / playerInfo.maxExp * 100"></div>
           <span>EXP {{playerInfo.exp | number}} / {{playerInfo.maxExp | number}}</span>
         </div>
         <div class="player-actions d-flex mt-1">
           <button *ngIf="canRefreshTemplates" type="button" class="btn btn-sm btn-template-sync me-1"
             [disabled]="isRefreshingTemplates" [attr.aria-busy]="isRefreshingTemplates"
-            (click)="refreshTemplates()" title="Nạp lại dữ liệu template từ database vào cache">
+            (click)="refreshTemplates()" [title]="'Nạp lại dữ liệu template từ database vào cache' | hrkTranslate">
             <i class="bi bi-arrow-repeat me-1" [class.sync-spinning]="isRefreshingTemplates"></i>
-            {{ isRefreshingTemplates ? 'Đang đồng bộ…' : 'Đồng bộ template' }}
+            {{ (isRefreshingTemplates ? 'Đang đồng bộ…' : 'Đồng bộ template') | hrkTranslate }}
           </button>
-          <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">Nạp</button>
+          <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">{{ 'Nạp' | hrkTranslate }}</button>
           <button class="btn btn-sm btn-achievement d-flex align-items-center me-1"
             (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">
             <i class="bi bi-trophy-fill text-warning me-1"></i>
-            <span class="ach-text">Thành tựu</span>
+            <span class="ach-text">{{ 'Thành tựu' | hrkTranslate }}</span>
           </button>
           <button class="btn btn-sm btn-logout d-flex align-items-center"
             (click)="openLogoutConfirm()"
-            title="Đăng xuất khỏi trò chơi">
+            [title]="'Đăng xuất khỏi trò chơi' | hrkTranslate">
             <i class="bi bi-box-arrow-right text-danger me-1"></i>
-            <span class="logout-text">Đăng xuất</span>
+            <span class="logout-text">{{ 'Đăng xuất' | hrkTranslate }}</span>
           </button>
         </div>
       </div>
@@ -91,7 +98,7 @@
         <div class="event-icon-circle d-flex align-items-center justify-content-center">
           <i class="bi {{ item.icon }} text-white"></i>
         </div>
-        <span class="event-name">{{ item.name }}</span>
+        <span class="event-name">{{ (item.name) | hrkTranslate }}</span>
         <!-- Pulse notification badge -->
         <span *ngIf="item.hasNotification" class="notification-badge"></span>
       </div>
@@ -101,7 +108,7 @@
         <div class="event-icon-circle more-btn d-flex align-items-center justify-content-center">
           <i class="bi" [ngClass]="showMoreMenu ? 'bi-dash' : 'bi-plus'"></i>
         </div>
-        <span class="event-name">THÊM</span>
+        <span class="event-name">{{ 'THÊM' | hrkTranslate }}</span>
         <span class="notification-badge"></span>
       </div>
     </div>
@@ -130,7 +137,7 @@
             'bi-heart-fill': i === 4
           }"></i>
         </div>
-        <div class="hero-role-tag">{{ hero.role }}</div>
+        <div class="hero-role-tag">{{ (hero.role) | hrkTranslate }}</div>
       </div>
 
       <!-- Hero Pedestal / Reflection Shadow -->
@@ -157,7 +164,7 @@
           <div class="nav-icon-box d-flex align-items-center justify-content-center">
             <i class="bi {{ item.icon }}"></i>
           </div>
-          <span class="nav-name">{{ item.name }}</span>
+          <span class="nav-name">{{ (item.name) | hrkTranslate }}</span>
           <span *ngIf="item.hasNotification" class="notification-badge"></span>
         </div>
       </div>
@@ -170,7 +177,7 @@
           <div class="nav-icon-box d-flex align-items-center justify-content-center">
             <i class="bi {{ item.icon }}"></i>
           </div>
-          <span class="nav-name">{{ item.name }}</span>
+          <span class="nav-name">{{ (item.name) | hrkTranslate }}</span>
           <span *ngIf="item.hasNotification" class="notification-badge"></span>
         </div>
 
@@ -178,7 +185,7 @@
         <div class="combat-group d-flex flex-column align-items-center me-2 position-relative">
           <div class="arena-btn position-relative"
             (click)="onFeatureClick({name: 'Đấu Trường', icon: '', hasNotification: false})">
-            <span class="arena-text">Đấu Trường</span>
+            <span class="arena-text">{{ 'Đấu Trường' | hrkTranslate }}</span>
           </div>
 
           <!-- Highlighted Button (Chính Tuyến / Vượt Ải) -->
@@ -186,7 +193,7 @@
             <div class="focus-btn-pulse"></div>
             <div class="focus-btn-pulse pulse-delay"></div>
             <button class="btn btn-chinh-tuyen d-flex flex-column align-items-center justify-content-center">
-              <span class="chinh-tuyen-label">Chính Tuyến</span>
+              <span class="chinh-tuyen-label">{{ 'Chính Tuyến' | hrkTranslate }}</span>
             </button>
             <!-- Guide Hand pointer -->
             <div class="pointer-hand">
@@ -197,6 +204,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Player settings -->
+  <app-game-settings *ngIf="isSettingsOpen" (close)="isSettingsOpen = false"></app-game-settings>
 
   <!-- Hero Management Popup/Modal -->
   <app-hero-management *ngIf="isHeroManagementOpen" (close)="onHeroManagementClosed()"></app-hero-management>

@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,7 @@ import { DungeonStage } from '../../../../core/models/dungeon.model';
 @Component({
   selector: 'app-campaign-boss-node',
   standalone: true,
-  imports: [HrkImageDirective, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, CommonModule],
   templateUrl: './campaign-boss-node.component.html',
   styleUrl: './campaign-boss-node.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -9,7 +9,7 @@ import { EquipmentTooltipService } from '../../../../shared/components/equipment
 @Component({
   selector: 'app-campaign-stage-detail-modal',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './campaign-stage-detail-modal.component.html',
   styleUrl: './campaign-stage-detail-modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -141,3 +141,4 @@ export class CampaignStageDetailModalComponent {
     this.startBattle.emit(this.mode === 'TOWER' ? this.towerFloor : this.stage);
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

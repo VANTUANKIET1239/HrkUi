@@ -1,19 +1,20 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HrkImageDirective } from '../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { SummonHero } from '../../../core/models/summon.model';
 
 @Component({
-  selector: 'app-summon-hero-card', standalone: true, imports: [HrkImageDirective],
+  selector: 'app-summon-hero-card', standalone: true, imports: [HrkTranslatePipe, HrkImageDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <figure class="hero-card" [style.--rarity]="hero.rarityColorHex || '#b6a77f'">
       <div class="portrait">
-        <img [src]="hero.avatar" imageKind="hero" [alt]="hero.name" draggable="false" />
-        @if (isNew) { <span class="new-tag">MỚI</span> }
-        <span class="rarity">{{ hero.rarityName }}</span>
+        <img [src]="hero.avatar" imageKind="hero" [alt]="(hero.name) | hrkTranslate" draggable="false" />
+        @if (isNew) { <span class="new-tag">{{ 'MỚI' | hrkTranslate }}</span> }
+        <span class="rarity">{{ (hero.rarityName) | hrkTranslate }}</span>
       </div>
       <figcaption>{{ hero.name }}</figcaption>
-      @if (stoneQuantity > 0) { <span class="stones" [title]="stoneName || 'Đá tướng'">Trùng · +{{ stoneQuantity }} đá tướng</span> }
+      @if (stoneQuantity > 0) { <span class="stones" [title]="(stoneName || 'Đá tướng') | hrkTranslate">{{ 'Trùng · +{{p0}} đá tướng' | hrkTranslate:{p0: (stoneQuantity)} }}</span> }
     </figure>`,
   styles: [`
     :host { display:block; min-width:0; }

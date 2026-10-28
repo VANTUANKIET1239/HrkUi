@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
@@ -30,7 +31,7 @@ import { PlayerService } from '../../../../core/services/player.service';
 @Component({
   selector: 'app-battle-formation-setup-modal',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule, FormsModule],
   templateUrl: './battle-formation-setup-modal.component.html',
   styleUrl: './battle-formation-setup-modal.component.scss'
 })
@@ -475,7 +476,7 @@ export class BattleFormationSetupModalComponent implements OnInit {
     }
 
     if (this.staminaCurrent < this.stage.staminaCost) {
-      this.toast.warning(`Không đủ thể lực! Cần ${this.stage.staminaCost}, hiện có ${this.staminaCurrent}.`);
+      this.toast.warning(this.toast.text`Không đủ thể lực! Cần ${this.stage.staminaCost}, hiện có ${this.staminaCurrent}.`);
       return;
     }
 

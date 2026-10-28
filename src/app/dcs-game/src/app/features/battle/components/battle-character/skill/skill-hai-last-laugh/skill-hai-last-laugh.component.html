@@ -73,8 +73,8 @@
   <!-- ======================================================== -->
   <div class="quote-callout-bubble" *ngIf="quoteState !== 'hidden' && !isDashingOut">
     <div class="bubble-frame">
-      <span class="quote-text" *ngIf="quoteState === 'quote1'">“Cười đi…”</span>
-      <span class="quote-text" *ngIf="quoteState === 'quote2'">“Vì sắp hết lượt rồi.”</span>
+      <span class="quote-text" *ngIf="quoteState === 'quote1'">{{ '“Cười đi…”' | hrkTranslate }}</span>
+      <span class="quote-text" *ngIf="quoteState === 'quote2'">{{ '“Vì sắp hết lượt rồi.”' | hrkTranslate }}</span>
     </div>
   </div>
 

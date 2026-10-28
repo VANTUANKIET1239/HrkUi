@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import {
   Component,
   Input,
@@ -54,7 +55,7 @@ export interface SibaTargetNode {
 @Component({
   selector: 'app-siba-scene-vfx',
   standalone: true,
-  imports: [
+  imports: [HrkTranslatePipe,
     CommonModule,
     SibaHaloComponent,
     SibaCelestialBeamComponent,

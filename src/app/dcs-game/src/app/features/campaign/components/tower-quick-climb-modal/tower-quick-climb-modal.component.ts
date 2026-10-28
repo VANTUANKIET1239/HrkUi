@@ -12,7 +12,7 @@ import { ProcessRealtimeService } from '../../../../core/services/process-realti
 @Component({
   selector: 'app-tower-quick-climb-modal',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent, CommonModule],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent, CommonModule],
   templateUrl: './tower-quick-climb-modal.component.html',
   styleUrl: './tower-quick-climb-modal.component.scss'
 })
@@ -170,3 +170,4 @@ export class TowerQuickClimbModalComponent implements OnInit, OnDestroy {
     this.close.emit();
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

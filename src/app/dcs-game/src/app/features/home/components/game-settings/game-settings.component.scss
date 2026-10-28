@@ -1,0 +1,37 @@
+:host { display: contents; }
+
+.settings-section {
+  padding: 18px;
+  border: 1px solid #a1844d44;
+  border-radius: 10px;
+  background: #080d1780;
+}
+
+.language-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #c9c3b6;
+  font-size: 14px;
+  line-height: 1.6;
+
+  i { color: #e3c57e; font-size: 24px; line-height: 1.2; }
+  p { margin: 0; }
+}
+
+.settings-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 18px 0 0;
+  color: #aba99f;
+  font-size: 12px;
+  line-height: 1.6;
+
+  i { color: #a7bd8c; }
+}
+
+@media (max-width: 480px) {
+  .settings-section { padding: 14px; }
+}

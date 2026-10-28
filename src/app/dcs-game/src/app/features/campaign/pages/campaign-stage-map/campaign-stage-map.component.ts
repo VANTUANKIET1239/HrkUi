@@ -22,7 +22,7 @@ import { CampaignThemeService, CampaignTheme } from '../../services/campaign-the
 @Component({
   selector: 'app-campaign-stage-map',
   standalone: true,
-  imports: [HrkImageDirective, HrkModalComponent,
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkModalComponent,
     CommonModule,
     CampaignAtmosphereComponent,
     CampaignRoadComponent,
@@ -239,3 +239,4 @@ export class CampaignStageMapComponent implements OnInit, AfterViewInit {
   }
 }
 
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

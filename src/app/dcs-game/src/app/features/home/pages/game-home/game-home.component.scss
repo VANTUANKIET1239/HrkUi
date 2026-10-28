@@ -141,6 +141,32 @@ $text-shadow-glow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 .player-details {
+  .profile-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .btn-settings {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid rgba(255, 215, 0, .35);
+    border-radius: 6px;
+    color: #e3c57e;
+    background: rgba(30, 20, 10, .7);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease;
+
+    &:hover { background: rgba(80, 57, 21, .75); border-color: $gold-primary; }
+    &:focus-visible { outline: 2px solid #f4d785; outline-offset: 3px; }
+  }
+
   .player-exp {
     position: relative;
     width: 150px;

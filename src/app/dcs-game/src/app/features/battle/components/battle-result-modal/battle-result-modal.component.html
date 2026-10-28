@@ -5,10 +5,10 @@
     <div class="modal-header-section">
       <div class="result-title">
         <ng-container *ngIf="mode === 'TOWER'">
-          {{ isVictory ? 'VƯỢT TẦNG ' + towerFloor + ' THÀNH CÔNG!' : 'THẤT BẠI TẦNG ' + towerFloor }}
+          {{ (isVictory ? 'VƯỢT TẦNG ' + towerFloor + ' THÀNH CÔNG!' : 'THẤT BẠI TẦNG ' + towerFloor) | hrkTranslate }}
         </ng-container>
         <ng-container *ngIf="mode !== 'TOWER'">
-          {{ isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI' }}
+          {{ (isVictory ? 'CHIẾN THẮNG' : 'THẤT BẠI') | hrkTranslate }}
         </ng-container>
       </div>
 
@@ -20,7 +20,7 @@
              [class.active]="i < displayedStars"></i>
         </div>
         <div class="star-record-badge" *ngIf="dungeonResult?.isNewStarRecord">
-          <i class="bi bi-award-fill me-1"></i>KỶ LỤC SAO MỚI!
+          <i class="bi bi-award-fill me-1"></i>{{ 'KỶ LỤC SAO MỚI!' | hrkTranslate }}
         </div>
       </div>
 
@@ -28,34 +28,34 @@
       <div class="tower-status-banner-row" *ngIf="mode === 'TOWER'">
         <div class="tower-lives-pill" [class.danger]="towerLivesAfter <= 1">
           <i class="bi bi-heart-fill text-danger me-1"></i>
-          <span>Mạng: <b>{{ towerLivesBefore }}</b> → <b [class.text-danger]="towerLivesAfter < towerLivesBefore">{{ towerLivesAfter }}</b></span>
+          <span>{{ 'Mạng:' | hrkTranslate }} <b>{{ towerLivesBefore }}</b> → <b [class.text-danger]="towerLivesAfter < towerLivesBefore">{{ towerLivesAfter }}</b></span>
         </div>
         <div class="tower-milestone-pill" *ngIf="unlockedMilestoneChest">
           <i class="bi bi-gift-fill text-warning me-1"></i>
-          <span>Mở khóa <b>{{ unlockedMilestoneChest.chestName }}</b> (Tầng {{ unlockedMilestoneChest.floorNumber }})</span>
+          <span>{{ 'Mở khóa' | hrkTranslate }} <b>{{ unlockedMilestoneChest.chestName }}</b> {{ '(Tầng {{p0}})' | hrkTranslate:{p0: (unlockedMilestoneChest.floorNumber)} }}</span>
         </div>
         <div class="tower-completed-pill" *ngIf="isTowerCompleted">
           <i class="bi bi-trophy-fill text-warning me-1"></i>
-          <span>CHINH PHỤC THÀNH CÔNG ĐỈNH THÁP 60 TẦNG!</span>
+          <span>{{ 'CHINH PHỤC THÀNH CÔNG ĐỈNH THÁP 60 TẦNG!' | hrkTranslate }}</span>
         </div>
         <div class="tower-ended-pill" *ngIf="isTowerRunEnded">
           <i class="bi bi-heartbreak-fill text-danger me-1"></i>
-          <span>HẾT MẠNG - LƯỢT LEO KẾT THÚC (VỀ TẦNG 1)</span>
+          <span>{{ 'HẾT MẠNG - LƯỢT LEO KẾT THÚC (VỀ TẦNG 1)' | hrkTranslate }}</span>
         </div>
       </div>
 
       <!-- 2. Combat Overview Summary Panel -->
       <div class="stats-overview-panel">
         <div class="stat-pill">
-          <span class="stat-label"><i class="bi bi-hourglass-split me-1 text-warning"></i>Số lượt:</span>
+          <span class="stat-label"><i class="bi bi-hourglass-split me-1 text-warning"></i>{{ 'Số lượt:' | hrkTranslate }}</span>
           <span class="stat-value">{{ totalTurns }}</span>
         </div>
         <div class="stat-pill">
-          <span class="stat-label"><i class="bi bi-people-fill me-1 text-info"></i>Đội hình sống sót:</span>
+          <span class="stat-label"><i class="bi bi-people-fill me-1 text-info"></i>{{ 'Đội hình sống sót:' | hrkTranslate }}</span>
           <span class="stat-value">{{ aliveCount }}/{{ totalCount }}</span>
         </div>
         <div class="stat-pill">
-          <span class="stat-label"><i class="bi bi-heart-pulse-fill me-1 text-danger"></i>Sinh lực còn lại:</span>
+          <span class="stat-label"><i class="bi bi-heart-pulse-fill me-1 text-danger"></i>{{ 'Sinh lực còn lại:' | hrkTranslate }}</span>
           <span class="stat-value">{{ totalRemainingHp | number }} HP <b class="text-success" *ngIf="dungeonResult">({{ remainingHpPercent }}%)</b></span>
         </div>
       </div>
@@ -68,24 +68,24 @@
       <section class="combat-statistics-section" *ngIf="hasHeroStatistics">
         <div class="section-header-row">
           <div class="section-title">
-            <i class="bi bi-bar-chart-fill me-2 text-warning"></i>Thống Kê Chiến Đấu
+            <i class="bi bi-bar-chart-fill me-2 text-warning"></i>{{ 'Thống Kê Chiến Đấu' | hrkTranslate }}
           </div>
 
           <!-- Team Switch Tabs -->
           <div class="team-tabs" *ngIf="hasEnemyTeamStats">
             <button class="team-tab-btn" [class.active]="selectedStatsTeam === 0" (click)="setStatsTeam(0)">
-              <i class="bi bi-shield-shaded me-1"></i>Đội Ta
+              <i class="bi bi-shield-shaded me-1"></i>{{ 'Đội Ta' | hrkTranslate }}
             </button>
             <button class="team-tab-btn" [class.active]="selectedStatsTeam === 1" (click)="setStatsTeam(1)">
-              <i class="bi bi-skull me-1"></i>Đội Địch
+              <i class="bi bi-skull me-1"></i>{{ 'Đội Địch' | hrkTranslate }}
             </button>
           </div>
 
           <!-- Color Legends -->
           <div class="stats-legend">
-            <span class="legend-item"><span class="legend-dot color-phys"></span>Vật lý</span>
-            <span class="legend-item"><span class="legend-dot color-magic"></span>Phép</span>
-            <span class="legend-item"><span class="legend-dot color-heal"></span>Hồi máu</span>
+            <span class="legend-item"><span class="legend-dot color-phys"></span>{{ 'Vật lý' | hrkTranslate }}</span>
+            <span class="legend-item"><span class="legend-dot color-magic"></span>{{ 'Phép' | hrkTranslate }}</span>
+            <span class="legend-item"><span class="legend-dot color-heal"></span>{{ 'Hồi máu' | hrkTranslate }}</span>
           </div>
         </div>
 
@@ -94,8 +94,8 @@
           <div *ngFor="let hero of processedTeamStats" class="hero-chart-cluster">
             <!-- Hero Header -->
             <div class="cluster-hero-info">
-              <img [src]="hero.avatar" [alt]="hero.heroName" class="cluster-hero-avatar" />
-              <div class="cluster-hero-name" [title]="hero.heroName">{{ hero.heroName }}</div>
+              <img [src]="hero.avatar" [alt]="(hero.heroName) | hrkTranslate" class="cluster-hero-avatar" />
+              <div class="cluster-hero-name" [title]="(hero.heroName) | hrkTranslate">{{ hero.heroName }}</div>
             </div>
 
             <!-- 3 Bars Area -->
@@ -107,7 +107,7 @@
                 <div class="bar-track"
                      tabindex="0"
                      role="button"
-                     [attr.aria-label]="'Sát thương gây ra của ' + hero.heroName"
+                     [attr.aria-label]="('Sát thương gây ra của ' + hero.heroName) | hrkTranslate"
                      (mouseenter)="showTooltip(hero.combatantId, 'dealt')"
                      (mouseleave)="hideTooltip()"
                      (focus)="showTooltip(hero.combatantId, 'dealt')"
@@ -120,28 +120,28 @@
 
                   <!-- Tooltip: Gây sát thương -->
                   <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'dealt')">
-                    <div class="tooltip-title">SÁT THƯƠNG GÂY RA</div>
+                    <div class="tooltip-title">{{ 'SÁT THƯƠNG GÂY RA' | hrkTranslate }}</div>
                     <div class="tooltip-row total-row">
-                      <span>Tổng:</span>
+                      <span>{{ 'Tổng:' | hrkTranslate }}</span>
                       <b>{{ formatFullNumber(hero.totalDamageDealt) }}</b>
                     </div>
                     <div class="tooltip-row phys-row">
-                      <span>Vật lý:</span>
+                      <span>{{ 'Vật lý:' | hrkTranslate }}</span>
                       <span>{{ formatFullNumber(hero.physicalDamageDealt) }} ({{ hero.damageDealtPhysicalPercent | number:'1.1-1' }}%)</span>
                     </div>
                     <div class="tooltip-row magic-row">
-                      <span>Phép:</span>
+                      <span>{{ 'Phép:' | hrkTranslate }}</span>
                       <span>{{ formatFullNumber(hero.magicDamageDealt) }} ({{ hero.damageDealtMagicPercent | number:'1.1-1' }}%)</span>
                     </div>
                     <div class="tooltip-row team-row">
-                      <span>Đóng góp toàn đội:</span>
+                      <span>{{ 'Đóng góp toàn đội:' | hrkTranslate }}</span>
                       <b class="text-warning">{{ hero.damageDealtTeamPercent | number:'1.1-1' }}%</b>
                     </div>
                   </div>
                 </div>
                 <div class="bar-bottom-label">
                   <span class="bar-icon">⚔️</span>
-                  <span class="label-text">Gây dmg</span>
+                  <span class="label-text">{{ 'Gây dmg' | hrkTranslate }}</span>
                 </div>
               </div>
 
@@ -151,7 +151,7 @@
                 <div class="bar-track"
                      tabindex="0"
                      role="button"
-                     [attr.aria-label]="'Hồi máu thực tế của ' + hero.heroName"
+                     [attr.aria-label]="('Hồi máu thực tế của ' + hero.heroName) | hrkTranslate"
                      (mouseenter)="showTooltip(hero.combatantId, 'heal')"
                      (mouseleave)="hideTooltip()"
                      (focus)="showTooltip(hero.combatantId, 'heal')"
@@ -163,16 +163,16 @@
 
                   <!-- Tooltip: Hồi máu -->
                   <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'heal')">
-                    <div class="tooltip-title">HỒI MÁU</div>
+                    <div class="tooltip-title">{{ 'HỒI MÁU' | hrkTranslate }}</div>
                     <div class="tooltip-row total-row">
-                      <span>Hồi máu thực tế:</span>
+                      <span>{{ 'Hồi máu thực tế:' | hrkTranslate }}</span>
                       <b class="text-success">{{ formatFullNumber(hero.healingDone) }}</b>
                     </div>
                   </div>
                 </div>
                 <div class="bar-bottom-label">
                   <span class="bar-icon">💚</span>
-                  <span class="label-text">Hồi máu</span>
+                  <span class="label-text">{{ 'Hồi máu' | hrkTranslate }}</span>
                 </div>
               </div>
 
@@ -182,7 +182,7 @@
                 <div class="bar-track"
                      tabindex="0"
                      role="button"
-                     [attr.aria-label]="'Sát thương nhận vào của ' + hero.heroName"
+                     [attr.aria-label]="('Sát thương nhận vào của ' + hero.heroName) | hrkTranslate"
                      (mouseenter)="showTooltip(hero.combatantId, 'taken')"
                      (mouseleave)="hideTooltip()"
                      (focus)="showTooltip(hero.combatantId, 'taken')"
@@ -195,28 +195,28 @@
 
                   <!-- Tooltip: Nhận sát thương -->
                   <div class="stat-tooltip" [class.show]="isTooltipActive(hero.combatantId, 'taken')">
-                    <div class="tooltip-title">SÁT THƯƠNG NHẬN</div>
+                    <div class="tooltip-title">{{ 'SÁT THƯƠNG NHẬN' | hrkTranslate }}</div>
                     <div class="tooltip-row total-row">
-                      <span>Tổng:</span>
+                      <span>{{ 'Tổng:' | hrkTranslate }}</span>
                       <b>{{ formatFullNumber(hero.totalDamageTaken) }}</b>
                     </div>
                     <div class="tooltip-row phys-row">
-                      <span>Vật lý:</span>
+                      <span>{{ 'Vật lý:' | hrkTranslate }}</span>
                       <span>{{ formatFullNumber(hero.physicalDamageTaken) }} ({{ hero.damageTakenPhysicalPercent | number:'1.1-1' }}%)</span>
                     </div>
                     <div class="tooltip-row magic-row">
-                      <span>Phép:</span>
+                      <span>{{ 'Phép:' | hrkTranslate }}</span>
                       <span>{{ formatFullNumber(hero.magicDamageTaken) }} ({{ hero.damageTakenMagicPercent | number:'1.1-1' }}%)</span>
                     </div>
                     <div class="tooltip-row team-row">
-                      <span>Tỷ trọng toàn đội:</span>
+                      <span>{{ 'Tỷ trọng toàn đội:' | hrkTranslate }}</span>
                       <b class="text-warning">{{ hero.damageTakenTeamPercent | number:'1.1-1' }}%</b>
                     </div>
                   </div>
                 </div>
                 <div class="bar-bottom-label">
                   <span class="bar-icon">🛡️</span>
-                  <span class="label-text">Nhận dmg</span>
+                  <span class="label-text">{{ 'Nhận dmg' | hrkTranslate }}</span>
                 </div>
               </div>
 
@@ -232,21 +232,21 @@
         <div class="rewards-left-column">
           <!-- Tower Rewards Card -->
           <div class="resource-rewards-card tower-rewards-card" *ngIf="mode === 'TOWER'">
-            <h4 class="card-title"><i class="bi bi-gift-fill text-warning me-2"></i>Phần Thưởng Tầng {{ towerFloor }}</h4>
+            <h4 class="card-title"><i class="bi bi-gift-fill text-warning me-2"></i>{{ 'Phần Thưởng Tầng {{p0}}' | hrkTranslate:{p0: (towerFloor)} }}</h4>
             <div class="tower-rewards-grid" *ngIf="towerEarnedRewards.length > 0">
               <div *ngFor="let r of towerEarnedRewards" class="tower-reward-chip">
-                <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="r.name" class="reward-chip-img" />
-                <span class="reward-chip-name">{{ r.name }}</span>
+                <img *ngIf="r.imagePath" [src]="r.imagePath" [alt]="(r.name) | hrkTranslate" class="reward-chip-img" />
+                <span class="reward-chip-name">{{ (r.name) | hrkTranslate }}</span>
                 <span class="reward-chip-qty">x{{ r.quantity | number }}</span>
               </div>
             </div>
             <div class="text-muted small py-2" *ngIf="towerEarnedRewards.length === 0">
-              <i class="bi bi-info-circle me-1"></i>(Đã nhận thưởng tầng này trong kỳ hôm nay)
+              <i class="bi bi-info-circle me-1"></i>{{ '(Đã nhận thưởng tầng này trong kỳ hôm nay)' | hrkTranslate }}
             </div>
             <!-- Pending rewards notification if bag was full -->
             <div class="bag-full-warning mt-2" *ngIf="towerPendingRewards.length > 0">
               <i class="bi bi-exclamation-triangle-fill me-1"></i>
-              <span>Túi đầy: {{ towerPendingRewards.length }} vật phẩm đã chuyển vào Phần Thưởng Chờ Nhận!</span>
+              <span>{{ 'Túi đầy: {{p0}} vật phẩm đã chuyển vào Phần Thưởng Chờ Nhận!' | hrkTranslate:{p0: (towerPendingRewards.length)} }}</span>
             </div>
           </div>
 
@@ -260,19 +260,19 @@
             
             <div class="card-top-row">
               <div class="card-icon-box">
-                <img *ngIf="equip.imagePath" [src]="equip.imagePath" [alt]="equip.name" class="equip-img" />
+                <img *ngIf="equip.imagePath" [src]="equip.imagePath" [alt]="(equip.name) | hrkTranslate" class="equip-img" />
                 <i *ngIf="!equip.imagePath" class="bi bi-shield-shaded fallback-icon"></i>
               </div>
               <div class="card-info">
                 <div class="d-flex align-items-center justify-content-between">
-                  <span class="card-tag"><i class="bi bi-gift-fill me-1"></i>TRANG BỊ MỚI RƠI!</span>
+                  <span class="card-tag"><i class="bi bi-gift-fill me-1"></i>{{ 'TRANG BỊ MỚI RƠI!' | hrkTranslate }}</span>
                   <span class="card-cp" *ngIf="equip.combatPower">CP +{{ equip.combatPower }}</span>
                 </div>
-                <h4 class="card-name">{{ equip.name }}</h4>
+                <h4 class="card-name">{{ (equip.name) | hrkTranslate }}</h4>
                 <div class="card-sub-meta">
-                  <span class="card-rarity" [style.color]="equip.rarityColorHex">{{ equip.rarityName }}</span>
-                  <span class="card-growth" *ngIf="equip.enhancementGrowthPercent">Tăng trưởng: +{{ equip.enhancementGrowthPercent }}%/cấp</span>
-                  <span class="card-quality" *ngIf="equip.overallRollPercent">Chất lượng: {{ equip.overallRollPercent }}%</span>
+                  <span class="card-rarity" [style.color]="equip.rarityColorHex">{{ (equip.rarityName) | hrkTranslate }}</span>
+                  <span class="card-growth" *ngIf="equip.enhancementGrowthPercent">{{ 'Tăng trưởng: +{{p0}}%/cấp' | hrkTranslate:{p0: (equip.enhancementGrowthPercent)} }}</span>
+                  <span class="card-quality" *ngIf="equip.overallRollPercent">{{ 'Chất lượng: {{p0}}%' | hrkTranslate:{p0: (equip.overallRollPercent)} }}</span>
                 </div>
               </div>
             </div>
@@ -283,24 +283,24 @@
             </div>
 
             <div class="card-hint">
-              <i class="bi bi-info-circle me-1"></i>Rê chuột để so sánh và xem chi tiết
+              <i class="bi bi-info-circle me-1"></i>{{ 'Rê chuột để so sánh và xem chi tiết' | hrkTranslate }}
             </div>
           </div>
 
           <!-- Dungeon Bag Full Warning -->
           <div class="bag-full-warning" *ngIf="mode !== 'TOWER' && dungeonResult?.isBagFull">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
-            <span>Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.</span>
+            <span>{{ 'Túi đồ đã đầy! Không thể chứa thêm trang bị rơi từ Boss.' | hrkTranslate }}</span>
           </div>
 
           <!-- Dungeon Resource Rewards Section -->
           <div class="resource-rewards-card" *ngIf="mode !== 'TOWER' && dungeonResult">
-            <h4 class="card-title"><i class="bi bi-trophy-fill text-warning me-2"></i>Phần Thưởng Vượt Ải</h4>
+            <h4 class="card-title"><i class="bi bi-trophy-fill text-warning me-2"></i>{{ 'Phần Thưởng Vượt Ải' | hrkTranslate }}</h4>
             <div class="rewards-pills">
-              <span>🪙 +{{ dungeonResult.goldGained | number }} Vàng</span>
+              <span>{{ '🪙 +{{p0}} Vàng' | hrkTranslate:{p0: (dungeonResult.goldGained | number)} }}</span>
               <span>👤 +{{ dungeonResult.playerExpGained }} EXP</span>
-              <span>⚡ -{{ dungeonResult.staminaSpent }} Thể lực</span>
-              <span class="first-clear" *ngIf="dungeonResult.isFirstClear">🎁 Thưởng Lần Đầu</span>
+              <span>{{ '⚡ -{{p0}} Thể lực' | hrkTranslate:{p0: (dungeonResult.staminaSpent)} }}</span>
+              <span class="first-clear" *ngIf="dungeonResult.isFirstClear">{{ '🎁 Thưởng Lần Đầu' | hrkTranslate }}</span>
             </div>
           </div>
         </div>
@@ -308,11 +308,11 @@
         <!-- Column Right: Hero EXP Gain Progress -->
         <div class="exp-right-column">
           <div class="heroes-exp-card">
-            <h4 class="card-title"><i class="bi bi-arrow-up-circle-fill text-success me-2"></i>Kinh Nghiệm Võ Tướng</h4>
+            <h4 class="card-title"><i class="bi bi-arrow-up-circle-fill text-success me-2"></i>{{ 'Kinh Nghiệm Võ Tướng' | hrkTranslate }}</h4>
             <div class="heroes-exp-list">
               <article *ngFor="let h of animatedHeroes" class="hero-exp-item" [class.flash-level-up]="h.isLevelUpFlash">
                 <div class="hero-avatar-wrapper">
-                  <img [src]="h.avatar || '/assets/images/dcs-game/placeholders/hero.svg'" [alt]="h.heroName" class="hero-avatar-img" />
+                  <img [src]="h.avatar || '/assets/images/dcs-game/placeholders/hero.svg'" [alt]="(h.heroName) | hrkTranslate" class="hero-avatar-img" />
                   <span class="hero-level-badge" [class.badge-leveled]="h.showLevelUpBadge">Lv.{{ h.displayedLevel }}</span>
                 </div>
 
@@ -351,7 +351,7 @@
 
       <!-- 6. Outcome Message -->
       <div class="outcome-message">
-        {{ isVictory ? 'Đội hình đã xuất sắc vượt qua thử thách và mở khóa chặng đường tiếp theo!' : 'Hãy củng cố đội hình, rèn luyện trang bị và thử lại lần nữa!' }}
+        {{ (isVictory ? 'Đội hình đã xuất sắc vượt qua thử thách và mở khóa chặng đường tiếp theo!' : 'Hãy củng cố đội hình, rèn luyện trang bị và thử lại lần nữa!') | hrkTranslate }}
       </div>
 
     </div>
@@ -360,7 +360,7 @@
     <div class="modal-footer-actions">
       <!-- Replay Button (always available) -->
       <button class="action-btn replay" (click)="onReplay.emit()">
-        <i class="bi bi-arrow-counterclockwise me-1"></i>XEM LẠI
+        <i class="bi bi-arrow-counterclockwise me-1"></i>{{ 'XEM LẠI' | hrkTranslate }}
       </button>
 
       <!-- Tower Action Buttons -->
@@ -368,47 +368,47 @@
         <!-- Victory & Not Completed -->
         <ng-container *ngIf="isVictory && !isTowerCompleted">
           <button class="action-btn next-floor" (click)="onContinueClimb.emit()">
-            <i class="bi bi-arrow-up-circle-fill me-1"></i>TIẾP TỤC LEO (TẦNG {{ nextTowerFloor || towerFloor + 1 }})
+            <i class="bi bi-arrow-up-circle-fill me-1"></i>{{ 'TIẾP TỤC LEO (TẦNG {{p0}})' | hrkTranslate:{p0: (nextTowerFloor || towerFloor + 1)} }}
           </button>
           <button class="action-btn exit" (click)="onExit.emit()">
-            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+            <i class="bi bi-box-arrow-right me-1"></i>{{ 'VỀ THÁP' | hrkTranslate }}
           </button>
         </ng-container>
 
         <!-- Victory & Completed -->
         <ng-container *ngIf="isVictory && isTowerCompleted">
           <button class="action-btn exit" (click)="onExit.emit()">
-            <i class="bi bi-check-circle-fill me-1"></i>HOÀN THÀNH (VỀ THÁP)
+            <i class="bi bi-check-circle-fill me-1"></i>{{ 'HOÀN THÀNH (VỀ THÁP)' | hrkTranslate }}
           </button>
         </ng-container>
 
         <!-- Defeat & Remaining Lives > 0 -->
         <ng-container *ngIf="!isVictory && towerLivesAfter > 0">
           <button class="action-btn retry" (click)="onRetryClimb.emit()">
-            <i class="bi bi-arrow-repeat me-1"></i>THỬ LẠI (CÒN {{ towerLivesAfter }} MẠNG)
+            <i class="bi bi-arrow-repeat me-1"></i>{{ 'THỬ LẠI (CÒN {{p0}} MẠNG)' | hrkTranslate:{p0: (towerLivesAfter)} }}
           </button>
           <button class="action-btn edit-formation" (click)="onEditFormation.emit()">
-            <i class="bi bi-sliders me-1"></i>CHỈNH ĐỘI HÌNH
+            <i class="bi bi-sliders me-1"></i>{{ 'CHỈNH ĐỘI HÌNH' | hrkTranslate }}
           </button>
           <button class="action-btn exit" (click)="onExit.emit()">
-            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+            <i class="bi bi-box-arrow-right me-1"></i>{{ 'VỀ THÁP' | hrkTranslate }}
           </button>
         </ng-container>
 
         <!-- Defeat & Run Ended (0 lives) -->
         <ng-container *ngIf="!isVictory && towerLivesAfter <= 0">
           <button class="action-btn new-run" (click)="onStartNewRun.emit()">
-            <i class="bi bi-arrow-clockwise me-1"></i>BẮT ĐẦU LƯỢT MỚI
+            <i class="bi bi-arrow-clockwise me-1"></i>{{ 'BẮT ĐẦU LƯỢT MỚI' | hrkTranslate }}
           </button>
           <button class="action-btn exit" (click)="onExit.emit()">
-            <i class="bi bi-box-arrow-right me-1"></i>VỀ THÁP
+            <i class="bi bi-box-arrow-right me-1"></i>{{ 'VỀ THÁP' | hrkTranslate }}
           </button>
         </ng-container>
       </ng-container>
 
       <!-- Standard Dungeon Exit Button -->
       <button class="action-btn exit" *ngIf="mode !== 'TOWER'" (click)="onExit.emit()">
-        <i class="bi bi-box-arrow-right me-1"></i>THOÁT
+        <i class="bi bi-box-arrow-right me-1"></i>{{ 'THOÁT' | hrkTranslate }}
       </button>
     </div>
 

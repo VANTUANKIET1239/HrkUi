@@ -3,7 +3,7 @@
 
   @if(label){
   <span class="ci-label">
-    {{ label }} <span *ngIf="required" class="ci-required">*</span>
+    {{ label | hrkTranslate }} <span *ngIf="required" class="ci-required">*</span>
   </span>
   }
 
@@ -12,7 +12,7 @@
     <input class="ci-input"
       [attr.type]="type"
       [attr.name]="name || null"
-      [attr.placeholder]="placeholder || null"
+      [attr.placeholder]="(placeholder || null) | hrkTranslate"
       [attr.autocomplete]="autocomplete || null"
       [attr.minlength]="minlength ?? null"
       [attr.maxlength]="maxlength ?? null"
@@ -24,23 +24,23 @@
   </div>
 
   @if(hint && !showErrors()){
-  <div class="ci-hint">{{ hint }}</div>
+  <div class="ci-hint">{{ hint | hrkTranslate }}</div>
   }
 
 
   @if (showErrors()) {
   <div class="ci-error">
     @if (errors?.['required']) {
-    <span>This field is required.</span>
+    <span>{{ 'This field is required.' | hrkTranslate }}</span>
     }
     @if (errors?.['minlength']) {
-    <span>Minimum length is {{ minlength }}.</span>
+    <span>{{ 'Minimum length is {{length}}.' | hrkTranslate:{length: errors?.['minlength']?.requiredLength ?? minlength ?? 0} }}</span>
     }
     @if (errors?.['maxlength']) {
-    <span>Maximum length is {{ maxlength }}.</span>
+    <span>{{ 'Maximum length is {{length}}.' | hrkTranslate:{length: errors?.['maxlength']?.requiredLength ?? maxlength ?? 0} }}</span>
     }
     @if (errors?.['custom']) {
-    <span>{{ errors?.['custom'] }}</span>
+    <span>{{ errors?.['custom'] | hrkTranslate }}</span>
     }
   </div>
   }

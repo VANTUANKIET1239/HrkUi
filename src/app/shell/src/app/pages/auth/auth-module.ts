@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './components/login/login.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,6 +20,7 @@ import { MultiSelectComponent } from "../../../../../../libs/shared/ui/controls/
     RegisterComponent
   ],
   imports: [
+    HrkTranslatePipe,
     CommonModule,
     FormsModule,
     AuthRoutingModule,

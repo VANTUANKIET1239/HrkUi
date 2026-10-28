@@ -16,7 +16,7 @@ type Phase = 'idle' | 'requesting' | 'reel' | 'result' | 'uncertain';
 
 @Component({
   selector: 'app-summon-page', standalone: true,
-  imports: [DecimalPipe, RouterLink, SummonChestComponent, SummonReelComponent, SummonResultModalComponent, SummonDialogComponent, SummonHeroCardComponent],
+  imports: [HrkTranslatePipe, DecimalPipe, RouterLink, SummonChestComponent, SummonReelComponent, SummonResultModalComponent, SummonDialogComponent, SummonHeroCardComponent],
   templateUrl: './summon-page.component.html', styleUrl: './summon-page.component.scss'
 })
 export class SummonPageComponent implements OnInit {
@@ -180,3 +180,4 @@ export class SummonPageComponent implements OnInit {
     try { sessionStorage.removeItem(this.storageKey); } catch { /* In-memory state still clears. */ }
   }
 }
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';

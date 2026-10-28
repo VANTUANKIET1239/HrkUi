@@ -1,3 +1,4 @@
+import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { HrkImageDirective } from '../../../../../../../../libs/shared/ui/controls/hrk-image/hrk-image.directive';
 import { HrkConfirmationModalComponent } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation-modal.component';
 import { GameToastService } from '../../../../core/services/game-toast.service';
@@ -18,6 +19,7 @@ import { ForgeComponent } from '../../components/forge/forge.component';
 import { LibraryComponent } from '../../components/library/library.component';
 import { PlayerLevelBadgeComponent } from '../../components/player-level-badge/player-level-badge.component';
 import { AvatarSelectorComponent } from '../../components/avatar-selector/avatar-selector.component';
+import { GameSettingsComponent } from '../../components/game-settings/game-settings.component';
 import { PlayerProfileDto } from '../../../../core/models/player.model';
 
 interface PlayerInfo {
@@ -67,7 +69,7 @@ import { DungeonApiService } from '../../../../core/services/dungeon-api.service
 @Component({
   selector: 'app-game-home',
   standalone: true,
-  imports: [HrkImageDirective, HrkConfirmationModalComponent, CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent],
+  imports: [HrkTranslatePipe, HrkImageDirective, HrkConfirmationModalComponent, CommonModule, HeroManagementComponent, FormationManagementComponent, InventoryComponent, ForgeComponent, LibraryComponent, PlayerLevelBadgeComponent, AvatarSelectorComponent, GameSettingsComponent],
   templateUrl: './game-home.component.html',
   styleUrl: './game-home.component.scss'
 })
@@ -86,6 +88,7 @@ export class GameHomeComponent implements OnInit {
   isForgeOpen = false;
   isLibraryOpen = false;
   isAvatarSelectorOpen = false;
+  isSettingsOpen = false;
   playerProfile?: PlayerProfileDto;
   private rawGold = 0;
   playerInfo: PlayerInfo = {
@@ -193,7 +196,7 @@ export class GameHomeComponent implements OnInit {
         this.loadFeatureConfigs();
         this.modalConfigs.load(true);
         this.refreshPower();
-        this.toast.success(`Đã đồng bộ ${response.data.tableCount} bảng template (${response.data.rowCount} dòng).`);
+        this.toast.success(this.toast.text`Đã đồng bộ ${response.data.tableCount} bảng template (${response.data.rowCount} dòng).`);
       },
       error: error => this.toast.fromError(error, 'Không thể đồng bộ template. Vui lòng thử lại.')
     });
@@ -407,9 +410,9 @@ export class GameHomeComponent implements OnInit {
     } else if (feature.name === 'Rèn' || feature.name === 'Forge') {
       this.isForgeOpen = true;
     } else if (feature.locked) {
-      this.toast.warning(`Tính năng "${feature.name}" đang bị khóa!`);
+      this.toast.warning(this.toast.text`Tính năng "${feature.name}" đang bị khóa!`);
     } else {
-      this.toast.info(`Đang chuyển đến tính năng: ${feature.name}`);
+      this.toast.info(this.toast.text`Đang chuyển đến tính năng: ${feature.name}`);
     }
   }
 

@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { textKey } from '@hrk/localization/text-key';
 import { Subject } from 'rxjs';
 import { toAppError } from '../../../../../../libs/core/http/hrk-api/app-error';
 import { GameToastEvent, GameToastOptions, GameToastType } from '../models/game-toast.model';
@@ -12,6 +14,17 @@ export class GameToastService {
   readonly events$ = this.eventsSubject.asObservable();
   private readonly recent = new Map<string, { id: string; time: number }>();
   private sequence = 0;
+  constructor(@Optional() @Inject(TranslateService) private readonly translate: TranslateService | null = null) {}
+
+  /** Tagged template preserves dynamic notification values without losing the translation key. */
+  text(parts: TemplateStringsArray, ...values: unknown[]): string {
+    const template = parts.reduce((text, part, index) => text + (index ? `{{p${index - 1}}}` : '') + part, '');
+    const key = textKey(template);
+    const parameters = Object.fromEntries(values.map((value, index) => [`p${index}`, String(value ?? '')]));
+    const translated = this.translate?.instant(key, parameters);
+    if (typeof translated === 'string' && translated !== key) return translated;
+    return template.replace(/\{\{p(\d+)\}\}/g, (_, index) => String(values[Number(index)] ?? ''));
+  }
 
   show(message: string, type: GameToastType = 'info', options: GameToastOptions = {}): string {
     const now = Date.now();
