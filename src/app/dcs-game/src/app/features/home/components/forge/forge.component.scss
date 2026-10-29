@@ -1,16 +1,16 @@
 // Forge SCSS (Ancient Forge & Equipment Enhancement Theme)
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Spectral:wght@600;800&display=swap');
+// Font centralized in _game-tokens.scss & shell/src/styles.scss
 
-$gold-primary: #ffd700;
+$gold-primary: #bcf27b;
 $gold-dark: #b8860b;
-$gold-border: #8e6e3c;
+$gold-border: rgba(167, 182, 195, 0.24);
 $gold-glow: rgba(255, 215, 0, 0.4);
 $crimson-red: #ef4444;
 $success-green: #22c55e;
-$dark-bg: #0d0b09;
-$panel-bg: rgba(22, 18, 15, 0.96);
-$card-bg: rgba(30, 25, 20, 0.88);
+$dark-bg: #10151b;
+$panel-bg: rgba(25, 33, 42, 0.96);
+$card-bg: rgba(34, 45, 56, 0.9);
 
 .font-title {
   font-family: 'Spectral', serif;
@@ -970,5 +970,68 @@ $card-bg: rgba(30, 25, 20, 0.88);
     .equipment-grid-scroll {
       max-height: 340px;
     }
+  }
+}
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR (SCOPED TOKEN OVERRIDES)
+// ============================================================================
+.forge-overlay {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-overlay, rgba(9, 13, 18, 0.82));
+  backdrop-filter: blur(4px);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .font-title,
+  .page-title {
+    font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+    text-shadow: none !important;
+  }
+
+  .forge-container {
+    background: var(--dcs-surface, #19212a);
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+    border-radius: var(--dcs-radius-lg, 14px);
+    box-shadow: var(--dcs-shadow-lg);
+  }
+
+  .forge-top-bar {
+    background: rgba(16, 21, 27, 0.65);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+
+    .page-title {
+      color: var(--dcs-text-primary, #f0f4f7);
+
+      .subtitle {
+        color: var(--dcs-text-secondary, #a7b6c3);
+        font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+      }
+    }
+  }
+
+  .forge-tabs {
+    background: rgba(16, 21, 27, 0.4);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+  }
+
+  .anvil-pedestal-card,
+  .inventory-browser-card,
+  .forge-item-slot {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border-color: var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-md, 10px) !important;
+  }
+
+  .forge-item-slot.selected {
+    border-color: var(--dcs-accent, #bcf27b) !important;
+    box-shadow: var(--dcs-shadow-accent) !important;
+  }
+
+  .btn-enhance-action {
+    background: var(--dcs-accent, #bcf27b) !important;
+    border-color: var(--dcs-accent-hover, #ccf796) !important;
+    color: var(--dcs-accent-contrast, #0b1305) !important;
+    font-weight: 800 !important;
   }
 }

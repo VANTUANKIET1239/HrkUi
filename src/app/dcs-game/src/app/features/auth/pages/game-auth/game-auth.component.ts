@@ -10,6 +10,9 @@ import { AppAuthConfig, getAppAuthConfig } from '../../../../../../../../libs/co
 @Component({
   selector: 'app-game-auth',
   standalone: true,
+  host: {
+    class: 'dcs-game-theme'
+  },
   imports: [
     HrkTranslatePipe,
     CommonModule,

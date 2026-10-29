@@ -1,0 +1,217 @@
+// =============================================================================
+// HRK GAME DESIGN TOKENS
+// Theme: "ĐÔ THỊ HIỆN ĐẠI — BIỆT ĐỘI ANH HÙNG" (Modern Urban — Hero Squad)
+// =============================================================================
+// Centralized font import (Vietnamese diacritics support + tactical numeric mono)
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@500;600;700;800&display=swap');
+
+:root,
+.dcs-game-theme {
+  // ---------------------------------------------------------------------------
+  // 1. BACKGROUND & SURFACE PALETTE (Graphite / Charcoal Urban Slate)
+  // ---------------------------------------------------------------------------
+  --dcs-bg-deep: #0b0f14;
+  --dcs-bg-base: #10151B;
+  --dcs-bg-elevated: #141B23;
+  --dcs-surface: #19212A;
+  --dcs-surface-raised: #222D38;
+  --dcs-surface-hover: #2A3744;
+  --dcs-surface-active: #31404F;
+  --dcs-surface-sunken: #0D1217;
+  --dcs-surface-glass: rgba(25, 33, 42, 0.88);
+  --dcs-surface-raised-glass: rgba(34, 45, 56, 0.92);
+  --dcs-backdrop: rgba(9, 13, 18, 0.78);
+
+  // ---------------------------------------------------------------------------
+  // 2. TEXT HIERARCHY (High Contrast, Accessible on Slate)
+  // ---------------------------------------------------------------------------
+  --dcs-text-primary: #F0F4F7;
+  --dcs-text-secondary: #A7B6C3;
+  --dcs-text-muted: #6E8091;
+  --dcs-text-disabled: #4D5D6C;
+  --dcs-text-on-accent: #0F160A;
+  --dcs-text-on-secondary: #061824;
+  --dcs-text-on-danger: #FFFFFF;
+
+  // ---------------------------------------------------------------------------
+  // 3. ACCENT & PRIMARY/SECONDARY ACTIONS (Lime Tactical + Electric Cyan)
+  // ---------------------------------------------------------------------------
+  --dcs-accent: #BCF27B;
+  --dcs-accent-hover: #CCF796;
+  --dcs-accent-active: #A4E05E;
+  --dcs-accent-subtle: rgba(188, 242, 123, 0.14);
+  --dcs-accent-border: rgba(188, 242, 123, 0.45);
+  --dcs-accent-glow: rgba(188, 242, 123, 0.24);
+
+  --dcs-secondary: #38BDF8;
+  --dcs-secondary-hover: #7DD3FC;
+  --dcs-secondary-active: #0EA5E9;
+  --dcs-secondary-subtle: rgba(56, 189, 248, 0.14);
+  --dcs-secondary-border: rgba(56, 189, 248, 0.42);
+
+  // ---------------------------------------------------------------------------
+  // 4. SEMANTIC STATES (Success, Warning, Danger, Info, Selected, Locked, Disabled)
+  // ---------------------------------------------------------------------------
+  --dcs-success: #34D399;
+  --dcs-success-subtle: rgba(52, 211, 153, 0.14);
+  --dcs-success-border: rgba(52, 211, 153, 0.42);
+
+  --dcs-warning: #FBBF24;
+  --dcs-warning-subtle: rgba(251, 191, 36, 0.14);
+  --dcs-warning-border: rgba(251, 191, 36, 0.42);
+
+  --dcs-danger: #F87171;
+  --dcs-danger-strong: #EF4444;
+  --dcs-danger-subtle: rgba(248, 113, 113, 0.14);
+  --dcs-danger-border: rgba(248, 113, 113, 0.45);
+
+  --dcs-info: #38BDF8;
+  --dcs-info-subtle: rgba(56, 189, 248, 0.14);
+  --dcs-info-border: rgba(56, 189, 248, 0.42);
+
+  --dcs-selected-bg: rgba(188, 242, 123, 0.14);
+  --dcs-selected-border: #BCF27B;
+  --dcs-locked-bg: rgba(16, 21, 27, 0.72);
+  --dcs-locked-border: rgba(110, 128, 145, 0.28);
+  --dcs-disabled-bg: #161D25;
+  --dcs-disabled-border: #25303C;
+
+  // ---------------------------------------------------------------------------
+  // 5. BORDERS & DIVIDERS (Thin, crisp structural lines)
+  // ---------------------------------------------------------------------------
+  --dcs-border-subtle: rgba(167, 182, 195, 0.12);
+  --dcs-border-default: rgba(167, 182, 195, 0.20);
+  --dcs-border-strong: rgba(167, 182, 195, 0.34);
+  --dcs-border-focus: #BCF27B;
+
+  // ---------------------------------------------------------------------------
+  // 6. RARITY TOKENS (Hero & Item Quality Tiers)
+  // ---------------------------------------------------------------------------
+  --dcs-rarity-common: #94A3B8;
+  --dcs-rarity-common-bg: rgba(148, 163, 184, 0.12);
+
+  --dcs-rarity-uncommon: #4ADE80;
+  --dcs-rarity-uncommon-bg: rgba(74, 222, 128, 0.12);
+
+  --dcs-rarity-rare: #38BDF8;
+  --dcs-rarity-rare-bg: rgba(56, 189, 248, 0.14);
+
+  --dcs-rarity-epic: #C084FC;
+  --dcs-rarity-epic-bg: rgba(192, 132, 252, 0.14);
+
+  --dcs-rarity-legendary: #FACC15;
+  --dcs-rarity-legendary-bg: rgba(250, 204, 21, 0.14);
+
+  --dcs-rarity-mythic: #FB7185;
+  --dcs-rarity-mythic-bg: rgba(251, 113, 133, 0.16);
+
+  // ---------------------------------------------------------------------------
+  // 7. RESOURCE / BAR TOKENS (HP, MP, Stamina, EXP, Currency)
+  // ---------------------------------------------------------------------------
+  --dcs-hp-high: #34D399;
+  --dcs-hp-mid: #FBBF24;
+  --dcs-hp-low: #EF4444;
+  --dcs-mp-color: #38BDF8;
+  --dcs-exp-color: #BCF27B;
+  --dcs-stamina-color: #38BDF8;
+  --dcs-gold-color: #FACC15;
+  --dcs-diamond-color: #38BDF8;
+
+  // ---------------------------------------------------------------------------
+  // 8. TYPOGRAPHY TOKENS
+  // ---------------------------------------------------------------------------
+  --dcs-font-sans: 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --dcs-font-display: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  --dcs-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --dcs-text-2xs: 0.6875rem; // 11px
+  --dcs-text-xs: 0.75rem;    // 12px
+  --dcs-text-sm: 0.8125rem;  // 13px
+  --dcs-text-base: 0.875rem; // 14px
+  --dcs-text-md: 1rem;       // 16px
+  --dcs-text-lg: 1.125rem;   // 18px
+  --dcs-text-xl: 1.375rem;   // 22px
+  --dcs-text-2xl: 1.75rem;   // 28px
+  --dcs-text-3xl: 2.25rem;   // 36px
+
+  --dcs-leading-tight: 1.2;
+  --dcs-leading-snug: 1.35;
+  --dcs-leading-normal: 1.5;
+
+  // ---------------------------------------------------------------------------
+  // 9. SPACING SCALE
+  // ---------------------------------------------------------------------------
+  --dcs-space-1: 4px;
+  --dcs-space-2: 8px;
+  --dcs-space-3: 12px;
+  --dcs-space-4: 16px;
+  --dcs-space-5: 20px;
+  --dcs-space-6: 24px;
+  --dcs-space-8: 32px;
+  --dcs-space-10: 40px;
+  --dcs-space-12: 48px;
+
+  // ---------------------------------------------------------------------------
+  // 10. BORDER RADIUS
+  // ---------------------------------------------------------------------------
+  --dcs-radius-xs: 6px;
+  --dcs-radius-sm: 8px;
+  --dcs-radius-md: 12px;
+  --dcs-radius-lg: 16px;
+  --dcs-radius-xl: 20px;
+  --dcs-radius-pill: 9999px;
+
+  // ---------------------------------------------------------------------------
+  // 11. SHADOWS (Subtle depth, crisp 1px inner highlights, no heavy blur)
+  // ---------------------------------------------------------------------------
+  --dcs-shadow-xs: 0 2px 6px rgba(0, 0, 0, 0.28);
+  --dcs-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.36);
+  --dcs-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --dcs-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.58);
+  --dcs-shadow-accent: 0 4px 16px rgba(188, 242, 123, 0.24);
+  --dcs-shadow-secondary: 0 4px 16px rgba(56, 189, 248, 0.24);
+  --dcs-shadow-inset: inset 0 1px 0 rgba(240, 244, 247, 0.06);
+
+  // ---------------------------------------------------------------------------
+  // 12. Z-INDEX SCALE
+  // ---------------------------------------------------------------------------
+  --dcs-z-base: 1;
+  --dcs-z-hud: 20;
+  --dcs-z-sticky: 40;
+  --dcs-z-drawer: 80;
+  --dcs-z-modal: 500;
+  --dcs-z-popover: 800;
+  --dcs-z-tooltip: 1200;
+  --dcs-z-toast: 1500;
+
+  // ---------------------------------------------------------------------------
+  // 13. MOTION & TRANSITIONS
+  // ---------------------------------------------------------------------------
+  --dcs-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dcs-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dcs-duration-fast: 140ms;
+  --dcs-duration-normal: 200ms;
+  --dcs-duration-slow: 300ms;
+  --dcs-transition-fast: 140ms cubic-bezier(0.4, 0, 0.2, 1);
+  --dcs-transition-normal: 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  // ---------------------------------------------------------------------------
+  // 14. CONTROL SIZES & BREAKPOINTS
+  // ---------------------------------------------------------------------------
+  --dcs-ctrl-xs: 28px;
+  --dcs-ctrl-sm: 34px;
+  --dcs-ctrl-md: 40px;
+  --dcs-ctrl-lg: 48px;
+  --dcs-slot-size: 64px;
+  --dcs-slot-size-sm: 52px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  .dcs-game-theme {
+    --dcs-duration-fast: 0ms;
+    --dcs-duration-normal: 0ms;
+    --dcs-duration-slow: 0ms;
+  }
+}
+

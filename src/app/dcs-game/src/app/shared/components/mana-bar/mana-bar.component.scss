@@ -1,35 +1,32 @@
-.mana-bar-container {
+.bar-container {
   position: relative;
   width: 100%;
-  height: 12px;
-  background: rgba(8, 8, 16, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 3px;
+  height: 8px;
+  background-color: var(--dcs-bar-track, rgba(10, 14, 19, 0.85));
+  border-radius: var(--dcs-radius-pill, 9999px);
   overflow: hidden;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(167, 182, 195, 0.18);
+  margin-top: 2px;
 }
 
-.mana-bar-active {
-  position: absolute;
-  left: 0;
-  top: 0;
+.bar-fill.mana-fill {
   height: 100%;
-  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
-  box-shadow: 0 0 6px rgba(59, 130, 246, 0.6);
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #0284c7, var(--dcs-mp-fill, #38bdf8));
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: var(--dcs-radius-pill, 9999px);
 }
 
-.mana-text {
+.bar-text {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9.5px;
-  font-weight: 850;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+  font-size: 8px;
+  font-weight: 700;
   color: #ffffff;
-  text-shadow: 0 1px 2px #000000, 0 0 3px rgba(0, 0, 0, 0.95), 0 0 5px #000000;
-  z-index: 2;
-  letter-spacing: 0.1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
 }

@@ -4,7 +4,8 @@ import { Component, EventEmitter, Output, signal , inject } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { HrkTranslatePipe } from '@hrk/localization/hrk-translate.pipe';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { getAppAuthConfig } from '../../../../../../../../libs/core/auth/config/app-auth.config';
 import { HrkApiService } from '../../../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { NavigationService } from '../../../../../../../../libs/core/services/navigation.service';
 import { ApiMethod } from '../../../../../../../../libs/shared/common/constants/ApiMethod.constants';
@@ -30,6 +31,7 @@ import { HrkIconComponent } from '../../../../../../../../libs/shared/ui/control
 })
 export class GameRegisterComponent {
   private readonly toast = inject(GameToastService);
+  private readonly route = inject(ActivatedRoute);
 
   @Output() navigateToLogin = new EventEmitter<void>();
 
@@ -51,7 +53,9 @@ export class GameRegisterComponent {
   public initRegisterForm(): void {
     this.dataForm = this.fb.group(
       {
-        username: ['', [Validators.required, Validators.minLength(3)]],
+        username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(60),
+          (control: AbstractControl) => typeof control.value === 'string' && control.value.trim().length >= 3
+            ? null : { displayNameLength: true }]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required]],
@@ -89,6 +93,7 @@ export class GameRegisterComponent {
   }
 
   submit(): void {
+    if (this.loading()) return;
     if (this.dataForm.invalid) {
       this.dataForm.markAllAsTouched();
       return;
@@ -100,8 +105,9 @@ export class GameRegisterComponent {
       ApiMethod.POST,
       this.authApi.Register,
       {
-        username: this.dataForm.value.username,
-        email: this.dataForm.value.email,
+        fullName: this.dataForm.value.username.trim(),
+        appCode: getAppAuthConfig(this.route.snapshot.queryParamMap.get('app')).appCode,
+        email: this.dataForm.value.email.trim(),
         password: this.dataForm.value.password
       },
       { withCredentials: true }

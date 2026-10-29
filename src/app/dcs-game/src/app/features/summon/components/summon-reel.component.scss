@@ -1,7 +1,18 @@
-.reel-layout { min-height:100dvh; display:grid; place-items:center; padding:16px; background:#06080f; }
+.reel-layout {
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: 16px;
+  background: var(--dcs-bg-base, #10151b);
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+}
 
 .reel-dialog {
-  width: min(960px, 96vw);
+  width: min(960px, 100%);
+  min-width: 0;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -9,19 +20,19 @@
 }
 
 .eyebrow {
-  color: #caab6d;
+  color: var(--dcs-accent, #bcf27b);
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 4px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 h2 {
-  color: #f3e5c9;
-  font-family: 'Spectral', Georgia, serif;
-  font-size: clamp(22px, 4vw, 34px);
-  margin: 14px 0 28px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  color: var(--dcs-text-primary, #f0f4f7);
+  font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif);
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 800;
+  margin: 12px 0 24px;
 }
 
 .reel-viewport {
@@ -29,12 +40,11 @@ h2 {
   width: 100%;
   overflow: hidden;
   padding: 24px 0;
-  border-block: 1px solid rgba(184, 155, 85, 0.35);
-  background: radial-gradient(ellipse at center, #1c1a27 0%, #10111a 60%, #070911 100%);
-  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.9), 0 10px 30px rgba(0, 0, 0, 0.6);
-  border-radius: 4px;
+  border-block: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  background: radial-gradient(ellipse at center, var(--dcs-surface-raised, #222d38) 0%, var(--dcs-surface, #19212a) 60%, var(--dcs-bg-base, #10151b) 100%);
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.8), var(--dcs-shadow-lg);
+  border-radius: var(--dcs-radius-md, 10px);
 
-  /* Left and right vignette gradients creating depth without obscuring center */
   &::before,
   &::after {
     content: '';
@@ -49,12 +59,12 @@ h2 {
 
   &::before {
     left: 0;
-    background: linear-gradient(90deg, #070911 0%, rgba(7, 9, 17, 0.85) 40%, rgba(7, 9, 17, 0.3) 75%, transparent 100%);
+    background: linear-gradient(90deg, #10151b 0%, rgba(16, 21, 27, 0.85) 40%, rgba(16, 21, 27, 0.3) 75%, transparent 100%);
   }
 
   &::after {
     right: 0;
-    background: linear-gradient(-90deg, #070911 0%, rgba(7, 9, 17, 0.85) 40%, rgba(7, 9, 17, 0.3) 75%, transparent 100%);
+    background: linear-gradient(-90deg, #10151b 0%, rgba(16, 21, 27, 0.85) 40%, rgba(16, 21, 27, 0.3) 75%, transparent 100%);
   }
 }
 
@@ -67,7 +77,7 @@ h2 {
   width: 160px;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(244, 215, 133, 0.08) 0%, transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(188, 242, 123, 0.12) 0%, transparent 75%);
 }
 
 .reel-track {
@@ -86,33 +96,16 @@ h2 {
       position: relative;
       z-index: 5;
       transform: scale(1.08);
-      filter: drop-shadow(0 0 14px var(--winner-color, #ffd700));
+      filter: drop-shadow(0 0 14px var(--winner-color, #bcf27b));
 
       ::ng-deep .hero-card {
-        border-color: var(--rarity, #ffd700) !important;
-        box-shadow: 0 0 25px var(--rarity, #ffd700),
-                    0 0 45px color-mix(in srgb, var(--rarity, #ffd700), transparent 30%),
-                    inset 0 0 16px var(--rarity, #ffd700) !important;
-        animation: winner-glow-pulse 1.2s ease-in-out infinite alternate;
+        border-color: var(--rarity, #bcf27b) !important;
+        box-shadow: 0 0 22px var(--rarity, #bcf27b) !important;
       }
     }
   }
 }
 
-@keyframes winner-glow-pulse {
-  0% {
-    box-shadow: 0 0 20px var(--rarity, #ffd700),
-                0 0 35px color-mix(in srgb, var(--rarity, #ffd700), transparent 50%),
-                inset 0 0 12px var(--rarity, #ffd700);
-  }
-  100% {
-    box-shadow: 0 0 32px var(--rarity, #ffd700),
-                0 0 55px color-mix(in srgb, var(--rarity, #ffd700), transparent 25%),
-                inset 0 0 20px var(--rarity, #ffd700);
-  }
-}
-
-/* Needle / Pointer */
 .reel-pointer {
   position: absolute;
   z-index: 4;
@@ -121,10 +114,9 @@ h2 {
   left: 50%;
   transform: translateX(-50%);
   width: 2px;
-  background: linear-gradient(180deg, #ffd700 0%, #f4d785 50%, #d4a340 100%);
-  box-shadow: 0 0 10px #f4d785b3, 0 0 20px rgba(244, 215, 133, 0.35);
+  background: var(--dcs-accent, #bcf27b);
+  box-shadow: 0 0 10px rgba(188, 242, 123, 0.7);
   pointer-events: none;
-  transition: box-shadow 0.3s ease;
 
   &::before {
     content: '';
@@ -133,8 +125,7 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
     border: 8px solid transparent;
-    border-top: 10px solid #ffd700;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
+    border-top: 10px solid var(--dcs-accent, #bcf27b);
   }
 
   &::after {
@@ -144,55 +135,47 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
     border: 8px solid transparent;
-    border-bottom: 10px solid #ffd700;
-    filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.8));
-  }
-
-  &.winner-active {
-    box-shadow: 0 0 16px var(--winner-color, #ffd700), 0 0 30px var(--winner-color, #ffd700);
+    border-bottom: 10px solid var(--dcs-accent, #bcf27b);
   }
 }
 
 .status-message {
-  color: #a7a3b3;
+  color: var(--dcs-text-secondary, #a7b6c3);
   font-size: 13px;
-  margin: 24px 0 18px;
+  margin: 22px 0 16px;
   min-height: 20px;
-  transition: all 0.3s ease;
 
   &.winner-reveal {
-    color: #f4d785;
+    color: var(--dcs-accent, #bcf27b);
     font-size: 14px;
-    font-weight: 500;
-    text-shadow: 0 0 12px rgba(244, 215, 133, 0.6);
+    font-weight: 700;
 
     strong {
-      color: #fff;
+      color: var(--dcs-text-primary, #f0f4f7);
     }
   }
 }
 
 button {
-  color: #d8c6a5;
-  background: #201e29;
-  border: 1px solid #80704e;
-  border-radius: 5px;
-  padding: 12px 24px;
+  color: var(--dcs-text-primary, #f0f4f7);
+  background: var(--dcs-surface-raised, #222d38);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  border-radius: var(--dcs-radius-sm, 6px);
+  padding: 10px 22px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 140ms ease;
 
   &:hover {
-    background: #2a2736;
-    border-color: #caab6d;
-    color: #fff;
-    transform: translateY(-1px);
+    background: var(--dcs-surface-hover, #283542);
+    border-color: var(--dcs-accent, #bcf27b);
+    color: var(--dcs-accent, #bcf27b);
   }
 
   &:focus-visible {
-    outline: 2px solid #f4d785;
-    outline-offset: 3px;
+    outline: 2px solid var(--dcs-accent, #bcf27b);
+    outline-offset: 2px;
   }
 }
 
@@ -201,11 +184,44 @@ button {
     width: 104px;
     flex-basis: 104px;
   }
+
   .reel-viewport {
     padding: 18px 0;
   }
+
   h2 {
     margin: 10px 0 20px;
   }
 }
 
+@media (max-height: 480px) {
+  .reel-layout {
+    padding: 8px 16px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+  }
+
+  h2 {
+    font-size: 22px;
+    margin: 6px 0 10px;
+  }
+
+  .reel-track app-summon-hero-card {
+    width: 104px;
+    flex-basis: 104px;
+  }
+
+  .reel-viewport {
+    padding: 12px 0;
+  }
+
+  .status-message {
+    margin: 10px 0;
+  }
+
+  button {
+    padding: 8px 18px;
+  }
+}

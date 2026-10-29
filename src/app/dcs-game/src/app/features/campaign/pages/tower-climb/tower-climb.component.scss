@@ -871,3 +871,73 @@
 }
 
 .tower-live-battle { position: fixed; inset: 0; z-index: 900; background: #080b13; overflow: auto; }
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR
+// ============================================================================
+.tower-climb-shell {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-base, #10151b);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .tower-header {
+    background: rgba(25, 33, 42, 0.92);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    box-shadow: var(--dcs-shadow-sm);
+
+    .btn-back {
+      background: var(--dcs-surface-raised, #222d38);
+      border-color: var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+      color: var(--dcs-text-primary, #f0f4f7);
+
+      &:hover {
+        border-color: var(--dcs-accent, #bcf27b);
+        color: var(--dcs-accent, #bcf27b);
+      }
+    }
+
+    .title-group .title {
+      font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+      color: var(--dcs-text-primary, #f0f4f7) !important;
+    }
+
+    .title-group .eyebrow {
+      color: var(--dcs-accent, #bcf27b) !important;
+    }
+  }
+
+  .floor-card,
+  .floor-detail-panel {
+    background: var(--dcs-surface, #19212a) !important;
+    border-color: var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-lg, 14px) !important;
+  }
+
+  .floor-card.is-current,
+  .floor-card.is-selected {
+    border-color: var(--dcs-accent, #bcf27b) !important;
+    box-shadow: var(--dcs-shadow-accent) !important;
+  }
+
+  .btn-challenge {
+    background: var(--dcs-accent, #bcf27b) !important;
+    border-color: var(--dcs-accent-hover, #ccf796) !important;
+    color: var(--dcs-accent-contrast, #0b1305) !important;
+    font-weight: 800 !important;
+  }
+}
+
+
+// ============================================================================
+// URBAN HERO HQ SKYSCRAPER SPIRE ENVIRONMENT BACKDROP
+// ============================================================================
+.tower-climb-shell {
+  background-color: var(--dcs-bg-base, #10151b) !important;
+  background-image:
+    linear-gradient(180deg, rgba(11, 15, 20, 0.8) 0%, rgba(16, 21, 27, 0.65) 45%, rgba(11, 15, 20, 0.94) 100%),
+    url('/assets/images/dcs-game/backgrounds/tower-hq-bg.png') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-attachment: fixed !important;
+}

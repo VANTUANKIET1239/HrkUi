@@ -1,22 +1,20 @@
 <div class="lobby-container">
   <!-- Top Bar: Player Profile and Currencies -->
-  <div class="top-bar d-flex justify-content-between align-items-start">
+  <header class="top-bar d-flex justify-content-between align-items-start">
 
-    <!-- A. Player Profile (Top-Left UI) -->
+    <!-- A. Player Profile (Top-Left Command HUD) -->
     <div class="player-profile d-flex align-items-center">
       <div class="avatar-container position-relative">
         <div class="avatar-frame editable-avatar" role="button" tabindex="0" [title]="'Đổi ảnh đại diện' | hrkTranslate"
           (click)="isAvatarSelectorOpen = true" (keydown.enter)="isAvatarSelectorOpen = true">
-          <!-- Stylized Avatar (using SVG or clean letters/icon since we want it visual) -->
           <img *ngIf="playerInfo.avatarUrl" class="player-avatar-image" [src]="playerInfo.avatarUrl"
             imageKind="hero" [alt]="'Ảnh đại diện' | hrkTranslate" />
           <div *ngIf="!playerInfo.avatarUrl" class="avatar-img-placeholder d-flex align-items-center justify-content-center">
-            <i class="bi bi-person-circle text-warning fs-1"></i>
+            <i class="bi bi-person-circle"></i>
           </div>
           <span class="avatar-edit-hint"><i class="bi bi-pencil-fill"></i></span>
           <app-player-level-badge [level]="playerInfo.level"></app-player-level-badge>
         </div>
-        <!-- <div class="vip-badge">VIP {{ playerInfo.vipLevel }}</div> -->
       </div>
 
       <div class="player-details ms-2">
@@ -29,8 +27,9 @@
           </button>
         </div>
         <div class="player-power d-flex align-items-center">
+          <i class="bi bi-lightning-charge-fill power-icon" aria-hidden="true"></i>
           <span class="label">{{ 'C.Lực' | hrkTranslate }}</span>
-          <span class="value">{{ playerInfo.power }}</span>
+          <span class="value">{{ playerInfo.power | number }}</span>
         </div>
         <div class="player-exp" [title]="'Kinh nghiệm người chơi' | hrkTranslate">
           <div class="player-exp-fill" [style.width.%]="playerInfo.exp / playerInfo.maxExp * 100"></div>
@@ -44,120 +43,143 @@
             {{ (isRefreshingTemplates ? 'Đang đồng bộ…' : 'Đồng bộ template') | hrkTranslate }}
           </button>
           <button class="btn btn-sm btn-nap me-1" (click)="buyDiamonds()">{{ 'Nạp' | hrkTranslate }}</button>
-          <button class="btn btn-sm btn-achievement d-flex align-items-center me-1"
+          <button class="btn btn-sm btn-achievement d-flex align-items-center"
             (click)="onFeatureClick({name: 'Thành tựu', icon: '', hasNotification: false})">
-            <i class="bi bi-trophy-fill text-warning me-1"></i>
+            <i class="bi bi-trophy-fill me-1"></i>
             <span class="ach-text">{{ 'Thành tựu' | hrkTranslate }}</span>
           </button>
-          <button class="btn btn-sm btn-logout d-flex align-items-center"
-            (click)="openLogoutConfirm()"
-            [title]="'Đăng xuất khỏi trò chơi' | hrkTranslate">
-            <i class="bi bi-box-arrow-right text-danger me-1"></i>
-            <span class="logout-text">{{ 'Đăng xuất' | hrkTranslate }}</span>
-          </button>
         </div>
       </div>
     </div>
 
-    <!-- B. Currency & Resources (Top-Right UI) -->
-    <div class="currency-group d-flex align-items-center">
-      <!-- Stamina (Bread) -->
-      <div class="currency-item d-flex align-items-center me-2">
-        <div class="icon-bg d-flex align-items-center justify-content-center">
-          <i class="bi bi-egg-fried text-warning"></i>
+    <!-- B. Right Command Stack: Currency Resources + Event Rail -->
+    <div class="top-right-command d-flex flex-column align-items-end gap-2">
+      <div class="currency-group d-flex align-items-center">
+        <!-- Stamina -->
+        <div class="currency-item d-flex align-items-center">
+          <div class="icon-bg d-flex align-items-center justify-content-center">
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+          </div>
+          <span class="currency-value">{{ playerInfo.stamina }}/{{ playerInfo.maxStamina }}</span>
+          <button class="btn btn-add" type="button" (click)="buyStamina()">+</button>
         </div>
-        <span class="currency-value">{{ playerInfo.stamina }}/{{ playerInfo.maxStamina }}</span>
-        <button class="btn btn-add" (click)="buyStamina()">+</button>
+
+        <!-- Gold -->
+        <div class="currency-item d-flex align-items-center">
+          <div class="icon-bg d-flex align-items-center justify-content-center">
+            <i class="bi bi-coin text-warning"></i>
+          </div>
+          <span class="currency-value">{{ playerInfo.gold }}</span>
+          <button class="btn btn-add" type="button" (click)="buyGold()">+</button>
+        </div>
+
+        <!-- Diamond -->
+        <div class="currency-item d-flex align-items-center">
+          <div class="icon-bg d-flex align-items-center justify-content-center">
+            <i class="bi bi-gem text-info"></i>
+          </div>
+          <span class="currency-value">{{ playerInfo.diamond }}</span>
+          <button class="btn btn-add" type="button" (click)="buyDiamonds()">+</button>
+        </div>
       </div>
 
-      <!-- Gold (Xu) -->
-      <div class="currency-item d-flex align-items-center me-2">
-        <div class="icon-bg d-flex align-items-center justify-content-center">
-          <i class="bi bi-coin text-warning"></i>
-        </div>
-        <span class="currency-value">{{ playerInfo.gold }}</span>
-        <button class="btn btn-add" (click)="buyGold()">+</button>
-      </div>
+      <!-- C. Events & Operations Rail -->
+      <div class="event-bar-container d-flex flex-column align-items-end" *ngIf="topEvents.length > 0">
+        <div class="event-bar d-flex align-items-center">
+          <div *ngFor="let item of topEvents" class="event-btn position-relative d-flex flex-column align-items-center"
+            (click)="onFeatureClick(item)">
+            <div class="event-icon-circle d-flex align-items-center justify-content-center">
+              <i class="bi {{ item.icon }}"></i>
+            </div>
+            <span class="event-name">{{ (item.name) | hrkTranslate }}</span>
+            <span *ngIf="item.hasNotification" class="notification-badge"></span>
+          </div>
 
-      <!-- Diamond (KNB) -->
-      <div class="currency-item d-flex align-items-center">
-        <div class="icon-bg d-flex align-items-center justify-content-center">
-          <i class="bi bi-gem text-info"></i>
+          <div class="event-btn d-flex flex-column align-items-center" (click)="toggleMoreMenu()">
+            <div class="event-icon-circle more-btn d-flex align-items-center justify-content-center">
+              <i class="bi" [ngClass]="showMoreMenu ? 'bi-dash' : 'bi-plus'"></i>
+            </div>
+            <span class="event-name">{{ 'THÊM' | hrkTranslate }}</span>
+          </div>
         </div>
-        <span class="currency-value">{{ playerInfo.diamond }}</span>
-        <button class="btn btn-add" (click)="buyDiamonds()">+</button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- C. Events & Benefits (Under Currency Group - Top Right events) -->
-  <div class="event-bar-container d-flex flex-column align-items-end">
-    <div class="event-bar d-flex align-items-center">
-      <div *ngFor="let item of topEvents" class="event-btn position-relative d-flex flex-column align-items-center"
-        (click)="onFeatureClick(item)">
-        <div class="event-icon-circle d-flex align-items-center justify-content-center">
-          <i class="bi {{ item.icon }} text-white"></i>
-        </div>
-        <span class="event-name">{{ (item.name) | hrkTranslate }}</span>
-        <!-- Pulse notification badge -->
-        <span *ngIf="item.hasNotification" class="notification-badge"></span>
+  <!-- D. Center Urban HQ Rooftop Stage & Deployed Squad -->
+  <section class="hq-stage-wrapper d-flex flex-column justify-content-end align-items-center">
+    <!-- Tactical Squad Command Header Bar -->
+    <div class="squad-command-bar d-flex align-items-center justify-content-between">
+      <div class="squad-formation-pill d-flex align-items-center gap-2" role="button" tabindex="0"
+        (click)="isFormationManagementOpen = true" (keydown.enter)="isFormationManagementOpen = true">
+        <i class="bi bi-diagram-3-fill text-info"></i>
+        <span class="formation-label">{{ selectedFormationName }}</span>
+        <span class="formation-divider">•</span>
+        <span class="formation-count">{{ mainTeam.length }}/5</span>
       </div>
 
-      <!-- Open/close more button -->
-      <div class="event-btn d-flex flex-column align-items-center" (click)="toggleMoreMenu()">
-        <div class="event-icon-circle more-btn d-flex align-items-center justify-content-center">
-          <i class="bi" [ngClass]="showMoreMenu ? 'bi-dash' : 'bi-plus'"></i>
-        </div>
-        <span class="event-name">{{ 'THÊM' | hrkTranslate }}</span>
-        <span class="notification-badge"></span>
+      <div class="squad-quick-actions d-flex align-items-center gap-2">
+        <button type="button" class="btn-stage-action" (click)="isHeroManagementOpen = true">
+          <i class="bi bi-people-fill"></i>
+          <span>{{ 'Võ Tướng' | hrkTranslate }}</span>
+        </button>
+        <button type="button" class="btn-stage-action primary" (click)="isFormationManagementOpen = true">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+          <span>{{ 'Đội Ngũ' | hrkTranslate }}</span>
+        </button>
       </div>
     </div>
-  </div>
 
-  <!-- D. Showcase Team (Center Area) -->
-  <div class="showcase-team d-flex justify-content-center align-items-end">
-    <div *ngFor="let hero of mainTeam; let i = index"
-      class="hero-showcase position-relative d-flex flex-column align-items-center hero-float-{{i % 3}}">
+    <!-- Showcase Team (5-Slot Rooftop Helipad Formation) -->
+    <div class="showcase-team d-flex justify-content-center align-items-end">
+      <div *ngFor="let hero of mainTeam; let i = index"
+        class="hero-showcase position-relative d-flex flex-column align-items-center"
+        [class.hero-slot-center]="i === 2 || i === 1"
+        (click)="onHeroSlotClick(hero)">
 
-      <!-- Hover Card Information -->
-      <div class="hero-header-tag text-center">
-        <span class="hero-level">Lv{{ hero.level }}</span>
-        <span class="hero-name">{{ hero.name }}</span>
-      </div>
-
-      <!-- Hero Body Illustration (Stylized using CSS gradients and glowing effects representing heroes) -->
-      <div class="hero-character-body" [style.background]="'linear-gradient(to top, ' + hero.color + ', transparent)'">
-        <div class="hero-silhouette d-flex align-items-center justify-content-center">
-          <!-- Icon representing hero character type -->
-          <i class="bi" [ngClass]="{
-            'bi-shield-fill-check': i === 0,
-            'bi-swords': i === 1,
-            'bi-lightning-fill': i === 2,
-            'bi-fire': i === 3,
-            'bi-heart-fill': i === 4
-          }"></i>
+        <!-- Hover Card Information -->
+        <div class="hero-header-tag text-center">
+          <span class="hero-level">Lv.{{ hero.level }}</span>
+          <span class="hero-name">{{ hero.name }}</span>
         </div>
-        <div class="hero-role-tag">{{ (hero.role) | hrkTranslate }}</div>
+
+        <!-- Star Rating Strip -->
+        <div class="hero-stars-row" *ngIf="hero.stars">
+          <i *ngFor="let s of getStarArray(hero.stars)" class="bi bi-star-fill"></i>
+        </div>
+
+        <!-- Hero Character Card & Portrait -->
+        <div class="hero-character-body" [style.--hero-accent]="hero.color">
+          <div class="slot-index-badge">#{{ hero.slot || (i + 1) }}</div>
+          <img *ngIf="hero.avatar" class="hero-character-art" [src]="hero.avatar" imageKind="hero" [alt]="hero.name" />
+          <div *ngIf="!hero.avatar" class="hero-silhouette d-flex align-items-center justify-content-center">
+            <i class="bi" [ngClass]="{
+              'bi-shield-fill-check': i === 0,
+              'bi-swords': i === 1,
+              'bi-lightning-fill': i === 2,
+              'bi-fire': i === 3,
+              'bi-heart-fill': i === 4
+            }"></i>
+          </div>
+          <div class="hero-role-tag">
+            <span class="role-text">{{ (hero.role) | hrkTranslate }}</span>
+          </div>
+        </div>
+
+        <!-- Tactical Urban Helipad Pedestal Ring -->
+        <div class="hero-pedestal">
+          <div class="pedestal-ring"></div>
+          <div class="hero-shadow"></div>
+        </div>
       </div>
-
-      <!-- Hero Pedestal / Reflection Shadow -->
-      <div class="hero-shadow"></div>
     </div>
-  </div>
+  </section>
 
-  <!-- Side buttons (Chat / 18+ badge) -->
-  <div class="side-badges position-absolute">
-    <div class="age-badge d-flex align-items-center justify-content-center mb-2">18+</div>
-    <button class="btn btn-chat d-flex align-items-center justify-content-center">
-      <i class="bi bi-chat-dots-fill text-white fs-4"></i>
-    </button>
-  </div>
+  <!-- E. Bottom Command Dock & Primary Mission Control -->
+  <footer class="bottom-navigation-container">
+    <div class="bottom-navigation d-flex justify-content-between align-items-end">
 
-  <!-- E. Bottom Navigation Menu (Bottom UI) -->
-  <div class="bottom-navigation-container">
-    <div class="bottom-navigation d-flex justify-content-between align-items-end px-3 pb-2">
-
-      <!-- Left Features Section -->
+      <!-- Left Features Section: Squad, Gear & Base Dock -->
       <div class="nav-group-left d-flex flex-wrap align-items-center">
         <div *ngFor="let item of bottomFeaturesLeft"
           class="nav-item position-relative d-flex flex-column align-items-center" (click)="onFeatureClick(item)">
@@ -169,11 +191,10 @@
         </div>
       </div>
 
-      <!-- Right Feature and Focused "Chính Tuyến" Button -->
+      <!-- Right Features & Mission Control Combat Hub -->
       <div class="nav-group-right d-flex align-items-end">
-        <!-- Regular right features -->
         <div *ngFor="let item of bottomFeaturesRight"
-          class="nav-item position-relative d-flex flex-column align-items-center me-2" (click)="onFeatureClick(item)">
+          class="nav-item position-relative d-flex flex-column align-items-center" (click)="onFeatureClick(item)">
           <div class="nav-icon-box d-flex align-items-center justify-content-center">
             <i class="bi {{ item.icon }}"></i>
           </div>
@@ -181,32 +202,34 @@
           <span *ngIf="item.hasNotification" class="notification-badge"></span>
         </div>
 
-        <!-- Combat / Arena minor button -->
-        <div class="combat-group d-flex flex-column align-items-center me-2 position-relative">
-          <div class="arena-btn position-relative"
+        <div class="combat-group d-flex align-items-end gap-2 position-relative">
+          <!-- Secondary Combat Mode: Arena / Campaign Hub -->
+          <div class="arena-btn d-flex align-items-center gap-2 position-relative"
             (click)="onFeatureClick({name: 'Đấu Trường', icon: '', hasNotification: false})">
+            <i class="bi bi-shield-shaded"></i>
             <span class="arena-text">{{ 'Đấu Trường' | hrkTranslate }}</span>
           </div>
 
-          <!-- Highlighted Button (Chính Tuyến / Vượt Ải) -->
+          <!-- Primary Play CTA (Chính Tuyến) -->
           <div class="focus-btn-container" *ngIf="focusFeature" (click)="goToBattle()">
             <div class="focus-btn-pulse"></div>
             <div class="focus-btn-pulse pulse-delay"></div>
-            <button class="btn btn-chinh-tuyen d-flex flex-column align-items-center justify-content-center">
-              <span class="chinh-tuyen-label">{{ 'Chính Tuyến' | hrkTranslate }}</span>
+            <button type="button" class="btn btn-chinh-tuyen d-flex align-items-center justify-content-center gap-2">
+              <div class="cta-icon-circle d-flex align-items-center justify-content-center">
+                <i class="bi bi-crosshair2 chinh-tuyen-icon" aria-hidden="true"></i>
+              </div>
+              <div class="cta-text-col d-flex flex-column align-items-start">
+                <span class="chinh-tuyen-label">{{ 'Chính Tuyến' | hrkTranslate }}</span>
+              </div>
             </button>
-            <!-- Guide Hand pointer -->
-            <div class="pointer-hand">
-              <i class="bi bi-hand-index-thumb-fill text-warning fs-3"></i>
-            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </footer>
 
   <!-- Player settings -->
-  <app-game-settings *ngIf="isSettingsOpen" (close)="isSettingsOpen = false"></app-game-settings>
+  <app-game-settings *ngIf="isSettingsOpen" (close)="isSettingsOpen = false" (logoutRequested)="openLogoutConfirm()"></app-game-settings>
 
   <!-- Hero Management Popup/Modal -->
   <app-hero-management *ngIf="isHeroManagementOpen" (close)="onHeroManagementClosed()"></app-hero-management>

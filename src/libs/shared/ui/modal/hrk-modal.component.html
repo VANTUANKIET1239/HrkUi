@@ -1,4 +1,4 @@
-<dialog #dialog role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" [attr.aria-busy]="busy"
+<dialog #dialog class="dcs-game-theme" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" [attr.aria-busy]="busy"
   [class.framed]="chrome" [attr.data-size]="size || resolved.size" [attr.data-tone]="resolved.tone"
   (cancel)="onCancel($event)" (keydown.escape)="$event.stopPropagation()"
   (click)="$event.stopPropagation()"

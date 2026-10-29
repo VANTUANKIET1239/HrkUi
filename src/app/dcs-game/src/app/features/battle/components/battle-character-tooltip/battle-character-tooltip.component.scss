@@ -348,3 +348,16 @@
     transform: translateY(-50%) scale(1);
   }
 }
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR
+// ============================================================================
+.character-tooltip-card {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-surface, #19212a);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  border-radius: var(--dcs-radius-md, 10px);
+  box-shadow: var(--dcs-shadow-lg);
+  color: var(--dcs-text-primary, #f0f4f7);
+}

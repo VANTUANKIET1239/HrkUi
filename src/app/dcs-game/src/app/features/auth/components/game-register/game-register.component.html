@@ -1,9 +1,9 @@
 <form [formGroup]="dataForm" (ngSubmit)="submit()" class="game-form" novalidate>
   <p class="error-msg" role="alert" *ngIf="errorMessage()">{{ errorMessage() | hrkTranslate }}</p>
-  <!-- Username Field -->
+  <!-- Display name; the account signs in with its email address. -->
   <div class="form-group">
     <label class="field-label" for="reg-username">
-      <i class="bi bi-person-badge-fill icon-gold"></i> {{ 'Tên Tướng Quân / Username' | hrkTranslate }}
+      <i class="bi bi-person-badge-fill icon-gold"></i> {{ 'Tên hiển thị' | hrkTranslate }}
     </label>
     <div class="input-container" [class.error-border]="hasErr('username')">
       <hrk-input
@@ -11,11 +11,11 @@
         type="text"
         formControlName="username"
         [invalid]="hasErr('username')"
-        [placeholder]="'Nhập tên nhân vật hoặc tài khoản' | hrkTranslate"
+        [placeholder]="'Nhập tên hiển thị' | hrkTranslate"
       ></hrk-input>
     </div>
     <small class="error-msg" *ngIf="hasErr('username')">
-      <i class="bi bi-exclamation-triangle-fill"></i> {{ 'Tên tài khoản yêu cầu từ 3 ký tự trở lên.' | hrkTranslate }}
+      <i class="bi bi-exclamation-triangle-fill"></i> {{ 'Tên hiển thị cần từ 3 đến 60 ký tự.' | hrkTranslate }}
     </small>
   </div>
 
@@ -48,12 +48,13 @@
       <hrk-input
         id="reg-password"
         formControlName="password"
+        [invalid]="hasErr('password')"
         [type]="showPwd() ? 'text' : 'password'"
         autocomplete="new-password"
         placeholder="••••••••"
       ></hrk-input>
-      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" (click)="toggleShowPwd()">
-        <hrk-icon [biIconName]="showPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium" color="#ffd700"></hrk-icon>
+      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" [attr.aria-pressed]="showPwd()" (click)="toggleShowPwd()">
+        <hrk-icon [biIconName]="showPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium" color="currentColor"></hrk-icon>
       </button>
     </div>
     <small class="error-msg" *ngIf="hasErr('password')">
@@ -70,12 +71,13 @@
       <hrk-input
         id="reg-confirm-pwd"
         formControlName="confirmPassword"
+        [invalid]="hasPasswordMismatch() || hasErr('confirmPassword')"
         [type]="showConfirmPwd() ? 'text' : 'password'"
         autocomplete="new-password"
         placeholder="••••••••"
       ></hrk-input>
-      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" (click)="toggleShowConfirmPwd()">
-        <hrk-icon [biIconName]="showConfirmPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium" color="#ffd700"></hrk-icon>
+      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" [attr.aria-pressed]="showConfirmPwd()" (click)="toggleShowConfirmPwd()">
+        <hrk-icon [biIconName]="showConfirmPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium" color="currentColor"></hrk-icon>
       </button>
     </div>
     <small class="error-msg" *ngIf="hasPasswordMismatch()">
@@ -85,10 +87,9 @@
 
   <!-- Terms Checkbox -->
   <div class="form-actions-row">
-    <label class="checkbox-label">
-      <hrk-checkbox formControlName="agreeTerms" backgroundColor="#ffd700"></hrk-checkbox>
-      <span class="remember-text">{{ 'Tôi đồng ý với' | hrkTranslate }} <a href="#" class="game-link" (click)="$event.preventDefault()">{{ 'Điều khoản Chinh Phạt' | hrkTranslate }}</a></span>
-    </label>
+    <hrk-checkbox formControlName="agreeTerms">
+      <span class="remember-text">{{ 'Tôi đồng ý với' | hrkTranslate }} <a href="#" class="game-link" (click)="$event.preventDefault(); $event.stopPropagation()">{{ 'Điều khoản Chinh Phạt' | hrkTranslate }}</a></span>
+    </hrk-checkbox>
   </div>
 
   <!-- Submit Register Button -->

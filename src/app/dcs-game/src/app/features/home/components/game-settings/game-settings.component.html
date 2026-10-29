@@ -10,4 +10,10 @@
     <i class="bi bi-check2-circle" aria-hidden="true"></i>
     {{ 'Ngôn ngữ được lưu tự động trên trình duyệt này.' | hrkTranslate }}
   </p>
+  <div class="settings-account-actions">
+    <button type="button" class="btn-settings-logout" (click)="requestLogout()" [title]="'Đăng xuất khỏi trò chơi' | hrkTranslate">
+      <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+      <span>{{ 'Đăng xuất' | hrkTranslate }}</span>
+    </button>
+  </div>
 </hrk-modal>

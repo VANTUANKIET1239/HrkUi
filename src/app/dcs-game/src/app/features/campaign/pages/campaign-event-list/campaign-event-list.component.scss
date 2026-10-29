@@ -499,3 +499,77 @@
     padding: 20px 16px;
   }
 }
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR
+// ============================================================================
+.campaign-events-shell {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-base, #10151b);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .events-header {
+    background: rgba(25, 33, 42, 0.92);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    box-shadow: var(--dcs-shadow-sm);
+
+    .btn-back {
+      background: var(--dcs-surface-raised, #222d38);
+      border-color: var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+      color: var(--dcs-text-primary, #f0f4f7);
+
+      &:hover {
+        border-color: var(--dcs-accent, #bcf27b);
+        color: var(--dcs-accent, #bcf27b);
+      }
+    }
+
+    .title-group .title {
+      font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+      color: var(--dcs-text-primary, #f0f4f7);
+    }
+
+    .title-group .eyebrow {
+      color: var(--dcs-accent, #bcf27b);
+    }
+  }
+
+  .event-card {
+    background: var(--dcs-surface, #19212a) !important;
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-lg, 14px) !important;
+    box-shadow: var(--dcs-shadow-md) !important;
+
+    &:hover:not(.is-locked) {
+      border-color: var(--dcs-accent, #bcf27b) !important;
+      box-shadow: var(--dcs-shadow-lg), var(--dcs-shadow-accent) !important;
+    }
+
+    .card-title {
+      font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+      color: var(--dcs-text-primary, #f0f4f7) !important;
+    }
+
+    .btn-enter {
+      background: var(--dcs-accent, #bcf27b) !important;
+      border-color: var(--dcs-accent-hover, #ccf796) !important;
+      color: var(--dcs-accent-contrast, #0b1305) !important;
+      font-weight: 800 !important;
+    }
+  }
+}
+
+
+// ============================================================================
+// URBAN HERO HQ ENVIRONMENT BACKDROP
+// ============================================================================
+.campaign-events-shell {
+  background-color: var(--dcs-bg-base, #10151b) !important;
+  background-image:
+    linear-gradient(180deg, rgba(11, 15, 20, 0.84) 0%, rgba(16, 21, 27, 0.72) 50%, rgba(11, 15, 20, 0.94) 100%),
+    url('/assets/images/dcs-game/backgrounds/campaign-district-bg.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+}

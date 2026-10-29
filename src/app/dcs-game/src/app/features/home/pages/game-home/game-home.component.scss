@@ -1,927 +1,783 @@
-// Game Lobby Stylesheet
-
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Spectral:wght@500;700&display=swap');
-
-$gold-primary: #ffd700;
-$gold-dark: #b8860b;
-$gold-light: #fffacd;
-$border-color: rgba(255, 215, 0, 0.45);
-$bg-glass: rgba(20, 15, 10, 0.65);
-$glow-orange: 0 0 15px rgba(255, 140, 0, 0.8);
-$glow-gold: 0 0 15px rgba(255, 215, 0, 0.8);
-$text-shadow-glow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 5px rgba(255, 215, 0, 0.5);
-
 .lobby-container {
-  font-family: 'Outfit', sans-serif;
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  min-height: 562px;
   overflow: hidden;
-
-  background-size: cover;
-  color: #fff;
-  user-select: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: radial-gradient(circle, rgba(16, 24, 48, 0.3) 0%, rgba(5, 8, 16, 0.9) 100%), var(--hrk-lobby-background) no-repeat center center;
+  background-color: var(--dcs-bg-base, #10151b);
+  background-image:
+    radial-gradient(circle at 50% 62%, rgba(56, 189, 248, 0.14) 0%, transparent 52%),
+    linear-gradient(180deg, rgba(11, 15, 20, 0.72) 0%, rgba(16, 21, 27, 0.24) 46%, rgba(11, 15, 20, 0.9) 100%),
+    url('/assets/images/dcs-game/backgrounds/urban-hq-home.png');
   background-size: cover;
+  background-position: center 55%;
+  color: var(--dcs-text-primary, #f0f4f7);
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  user-select: none;
 }
 
-// Global Notification Pulsing Red Badge
-.notification-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 12px;
-  height: 12px;
-  background-color: #ff3838;
-  border: 1.5px solid #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #ff3838;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 0 rgba(255, 56, 56, 0.7);
-  }
-
-  70% {
-    transform: scale(1.1);
-    box-shadow: 0 0 0 8px rgba(255, 56, 56, 0);
-  }
-
-  100% {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 0 rgba(255, 56, 56, 0);
-  }
-}
-
-// -------------------------------------------------------------
-// A. Top-Left Player Profile
-// -------------------------------------------------------------
+// ============================================================================
+// A. TOP BAR: PLAYER HUD & CURRENCY RESOURCES
+// ============================================================================
 .top-bar {
-  padding: 15px 25px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
-  z-index: 10;
+  position: relative;
+  z-index: var(--dcs-z-hud, 20);
+  padding: 14px 22px 8px;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .player-profile {
-  background: $bg-glass;
-  border: 1px solid $border-color;
-  border-radius: 40px 15px 15px 40px;
-  padding: 8px 18px 8px 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 215, 0, 0.1);
-  backdrop-filter: blur(8px);
-  min-width: 250px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: $gold-primary;
-    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2), inset 0 0 15px rgba(255, 215, 0, 0.2);
-  }
+  background: rgba(25, 33, 42, 0.92);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  border-left: 3px solid var(--dcs-accent, #bcf27b);
+  border-radius: var(--dcs-radius-lg, 14px);
+  padding: 10px 14px;
+  box-shadow: var(--dcs-shadow-md, 0 8px 24px rgba(0, 0, 0, 0.48));
+  backdrop-filter: blur(10px);
+  gap: 12px;
 }
 
 .avatar-container {
-  width: 70px;
-  height: 70px;
+  flex-shrink: 0;
 }
 
 .avatar-frame {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 3.5px solid #ffd700;
-  box-shadow: $glow-gold, inset 0 0 10px rgba(0, 0, 0, 0.8);
-  background: radial-gradient(circle, #4a3c2c 0%, #1e150b 100%);
   position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--dcs-radius-md, 10px);
+  background: var(--dcs-surface-raised, #222d38);
+  border: 2px solid var(--dcs-accent, #bcf27b);
+  box-shadow: var(--dcs-shadow-sm);
   overflow: visible;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease;
 
-  .avatar-img-placeholder {
-    width: 100%;
-    height: 100%;
-  }
-
-  .level-badge {
-    position: absolute;
-    bottom: -5px;
-    left: -5px;
-    background: #ff4500;
-    border: 1.5px solid #ffd700;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 1px 4px;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  &:hover {
+    transform: translateY(-1px);
+    border-color: var(--dcs-accent-hover, #ccf796);
   }
 }
 
-.editable-avatar { cursor: pointer; }
-.player-avatar-image { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; }
-.avatar-edit-hint { position: absolute; top: -3px; right: -3px; width: 22px; height: 22px; display: grid; place-items: center; color: #fff7d6; background: #7c3f13; border: 1.5px solid #ffd76a; border-radius: 50%; font-size: 9px; opacity: 0; transform: scale(.75); transition: .2s ease; box-shadow: 0 2px 6px #000; }
-.editable-avatar:hover .avatar-edit-hint, .editable-avatar:focus .avatar-edit-hint { opacity: 1; transform: scale(1); }
+.player-avatar-image,
+.avatar-img-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--dcs-radius-md, 10px) - 2px);
+  object-fit: cover;
+}
 
-.vip-badge {
+.avatar-img-placeholder {
+  color: var(--dcs-accent, #bcf27b);
+  font-size: 1.8rem;
+  background: var(--dcs-surface-raised, #222d38);
+}
+
+.avatar-edit-hint {
   position: absolute;
-  top: -10px;
-  right: -10px;
-  background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
-  border: 1.5px solid #fff;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--dcs-surface-raised, #222d38);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  color: var(--dcs-text-secondary, #a7b6c3);
+  font-size: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .player-details {
-  .profile-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 196px;
+}
+
+.profile-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.player-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--dcs-text-primary, #f0f4f7);
+  max-width: 164px;
+}
+
+.btn-settings {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--dcs-radius-sm, 6px);
+  border: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+  background: var(--dcs-surface-raised, #222d38);
+  color: var(--dcs-text-secondary, #a7b6c3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 140ms ease;
+
+  &:hover {
+    color: var(--dcs-accent, #bcf27b);
+    border-color: var(--dcs-accent-border, rgba(188, 242, 123, 0.38));
+    background: var(--dcs-surface-hover, #283542);
+  }
+}
+
+.player-power {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--dcs-radius-xs, 4px);
+  background: rgba(188, 242, 123, 0.12);
+  border: 1px solid var(--dcs-accent-border, rgba(188, 242, 123, 0.38));
+  width: fit-content;
+
+  .power-icon {
+    font-size: 0.72rem;
+    color: var(--dcs-accent, #bcf27b);
+  }
+
+  .label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--dcs-text-secondary, #a7b6c3);
+  }
+
+  .value {
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--dcs-accent, #bcf27b);
+  }
+}
+
+.player-exp {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  border-radius: var(--dcs-radius-pill, 9999px);
+  background: rgba(11, 15, 20, 0.85);
+  border: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+  overflow: hidden;
+
+  .player-exp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0284c7, var(--dcs-secondary, #38bdf8));
+    transition: width 220ms ease;
+  }
+
+  span {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    justify-content: center;
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--dcs-text-primary, #f0f4f7);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
   }
+}
 
-  .btn-settings {
-    display: grid;
-    place-items: center;
-    flex-shrink: 0;
-    width: 28px;
-    height: 26px;
-    padding: 0;
-    border: 1px solid rgba(255, 215, 0, .35);
-    border-radius: 6px;
-    color: #e3c57e;
-    background: rgba(30, 20, 10, .7);
-    font-size: 14px;
-    cursor: pointer;
-    transition: background .2s ease, border-color .2s ease;
+.player-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 
-    &:hover { background: rgba(80, 57, 21, .75); border-color: $gold-primary; }
-    &:focus-visible { outline: 2px solid #f4d785; outline-offset: 3px; }
-  }
+  .btn {
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: var(--dcs-radius-xs, 4px);
+    border: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    background: var(--dcs-surface-raised, #222d38);
+    color: var(--dcs-text-primary, #f0f4f7);
+    transition: all 140ms ease;
 
-  .player-exp {
-    position: relative;
-    width: 150px;
-    height: 13px;
-    margin-top: 4px;
-    overflow: hidden;
-    border: 1px solid rgba(125, 211, 252, .75);
-    border-radius: 8px;
-    background: rgba(2, 8, 23, .9);
-    box-shadow: inset 0 1px 4px #000, 0 0 7px rgba(56, 189, 248, .25);
-
-    .player-exp-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2563eb, #38bdf8 70%, #dff8ff);
-      box-shadow: 0 0 9px #38bdf8;
-      transition: width .35s ease;
-    }
-
-    span {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      font-size: 8px;
-      font-weight: 800;
-      line-height: 11px;
-      text-shadow: 0 1px 2px #000, 0 0 3px #000;
-    }
-  }
-
-  .player-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #f1f2f6;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    max-width: 140px;
-  }
-
-  .player-power {
-    margin-top: 2px;
-    font-family: 'Spectral', serif;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 4px;
-    padding: 1px 8px;
-    border: 1px solid rgba(255, 215, 0, 0.25);
-
-    .label {
-      color: #ffd700;
-      font-size: 11px;
-      font-weight: 700;
-      margin-right: 6px;
-    }
-
-    .value {
-      color: #ff8c00;
-      font-size: 14px;
-      font-weight: 800;
-      text-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    &:hover:not(:disabled) {
+      background: var(--dcs-surface-hover, #283542);
+      border-color: var(--dcs-text-secondary, #a7b6c3);
     }
   }
 
   .btn-nap {
-    background: linear-gradient(180deg, #ff4500 0%, #8b0000 100%);
-    border: 1px solid #ff4500;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 1px 12px;
-    border-radius: 4px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: linear-gradient(180deg, #ff6347 0%, #b22222 100%);
-      box-shadow: 0 0 10px rgba(255, 69, 0, 0.6);
-      transform: scale(1.05);
-    }
+    background: var(--dcs-accent-subtle, rgba(188, 242, 123, 0.14));
+    border-color: var(--dcs-accent-border, rgba(188, 242, 123, 0.38));
+    color: var(--dcs-accent, #bcf27b);
   }
 
-  .btn-achievement {
-    background: rgba(30, 20, 10, 0.7);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    color: #ddd;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 1px 8px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: rgba(50, 35, 20, 0.9);
-      border-color: #ffd700;
-      color: #fff;
-    }
-
-    .ach-text {
-      font-size: 9px;
-    }
-  }
-
-  .btn-logout {
-    background: rgba(45, 15, 15, 0.75);
-    border: 1px solid rgba(220, 53, 69, 0.45);
-    color: #e8a0a0;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 1px 8px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: rgba(180, 40, 40, 0.85);
-      border-color: #ff4d4d;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(220, 53, 69, 0.6);
-      transform: scale(1.03);
-    }
-
-    .logout-text {
-      font-size: 9px;
-    }
+  .btn-achievement i {
+    color: var(--dcs-warning, #fbbf24);
   }
 }
 
-// -------------------------------------------------------------
-// B. Top-Right Currency & Resources
-// -------------------------------------------------------------
+// ============================================================================
+// B. CURRENCY PILLS & RIGHT COMMAND RAIL
+// ============================================================================
+.top-right-command {
+  max-width: 100%;
+}
+
 .currency-group {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 20px;
-  padding: 4px 12px;
-  backdrop-filter: blur(6px);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .currency-item {
-  background: rgba(30, 20, 15, 0.85);
-  border: 1px solid rgba(255, 215, 0, 0.35);
-  border-radius: 15px;
-  padding: 2px 8px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.8);
-
-  .icon-bg {
-    width: 22px;
-    height: 22px;
-    background: radial-gradient(circle, #5a3c1c 0%, #2e1e0a 100%);
-    border-radius: 50%;
-    margin-right: 6px;
-    border: 1px solid rgba(255, 215, 0, 0.5);
-  }
-
-  .currency-value {
-    font-size: 12px;
-    font-weight: 700;
-    color: #f5f6fa;
-    margin-right: 8px;
-    min-width: 50px;
-    text-align: center;
-  }
-
-  .btn-add {
-    background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%);
-    border: 1px solid #2ecc71;
-    color: #fff;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 11px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    transition: all 0.2s ease;
-
-    &:hover {
-      background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
-      transform: scale(1.15);
-      box-shadow: 0 0 6px rgba(46, 204, 113, 0.8);
-    }
-  }
+  background: rgba(25, 33, 42, 0.92);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  border-radius: var(--dcs-radius-pill, 9999px);
+  padding: 4px 6px 4px 10px;
+  gap: 8px;
+  box-shadow: var(--dcs-shadow-sm);
+  backdrop-filter: blur(8px);
 }
 
-// -------------------------------------------------------------
-// C. Events & Benefits (Under Currency Group)
-// -------------------------------------------------------------
-.event-bar-container {
-  padding-right: 25px;
-  margin-top: 10px;
-  z-index: 10;
+.icon-bg {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dcs-surface-raised, #222d38);
+  font-size: 0.85rem;
+}
+
+.currency-value {
+  font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--dcs-text-primary, #f0f4f7);
+  min-width: 48px;
+  text-align: right;
+}
+
+.btn-add {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--dcs-accent-border, rgba(188, 242, 123, 0.38));
+  background: var(--dcs-accent-subtle, rgba(188, 242, 123, 0.14));
+  color: var(--dcs-accent, #bcf27b);
+  font-weight: 800;
+  font-size: 0.85rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 140ms ease;
+
+  &:hover {
+    background: var(--dcs-accent, #bcf27b);
+    color: var(--dcs-accent-contrast, #0b1305);
+  }
 }
 
 .event-bar {
-  background: rgba(10, 8, 5, 0.5);
-  border: 1px solid rgba(255, 215, 0, 0.15);
-  border-radius: 12px;
-  padding: 8px 12px;
-  backdrop-filter: blur(5px);
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .event-btn {
-  margin: 0 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 4px;
+  min-width: 54px;
+  transition: transform 140ms ease;
 
   &:hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translateY(-2px);
 
     .event-icon-circle {
-      border-color: $gold-primary;
-      box-shadow: $glow-gold;
+      border-color: var(--dcs-accent, #bcf27b);
+      color: var(--dcs-accent, #bcf27b);
     }
-
-    .event-name {
-      color: $gold-primary;
-      text-shadow: 0 1px 4px rgba(255, 215, 0, 0.4);
-    }
-  }
-
-  .event-icon-circle {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 215, 0, 0.5);
-    background: radial-gradient(circle, #523f2f 0%, #1c150e 100%);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
-    font-size: 16px;
-    transition: all 0.2s ease;
-
-    &.more-btn {
-      border-color: #27ae60;
-      background: radial-gradient(circle, #1e8449 0%, #114d2a 100%);
-    }
-  }
-
-  .event-name {
-    margin-top: 4px;
-    font-size: 9px;
-    font-weight: 700;
-    color: #ddd;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    text-align: center;
   }
 }
 
-// -------------------------------------------------------------
-// D. Center Showcase Team
-// -------------------------------------------------------------
-.showcase-team {
-  flex-grow: 1;
-  width: 90%;
+.event-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--dcs-radius-md, 10px);
+  background: rgba(25, 33, 42, 0.9);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  color: var(--dcs-text-primary, #f0f4f7);
+  font-size: 1.05rem;
+  box-shadow: var(--dcs-shadow-sm);
+  transition: all 140ms ease;
+}
+
+.event-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--dcs-text-secondary, #a7b6c3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--dcs-accent, #bcf27b);
+  border: 2px solid var(--dcs-bg-base, #10151b);
+  box-shadow: 0 0 6px rgba(188, 242, 123, 0.8);
+}
+
+// ============================================================================
+// D. CENTER URBAN HQ ROOFTOP STAGE & DEPLOYED SQUAD
+// ============================================================================
+.hq-stage-wrapper {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding-bottom: 20px;
-  z-index: 5;
+  padding: 0 24px 8px;
+  gap: 12px;
+}
+
+.squad-command-bar {
+  width: 100%;
+  max-width: 980px;
+  padding: 6px 12px;
+  border-radius: var(--dcs-radius-pill, 9999px);
+  background: rgba(16, 21, 27, 0.82);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  backdrop-filter: blur(8px);
+  box-shadow: var(--dcs-shadow-sm);
+}
+
+.squad-formation-pill {
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--dcs-radius-pill, 9999px);
+  transition: background-color 140ms ease;
+
+  &:hover {
+    background: rgba(56, 189, 248, 0.12);
+  }
+
+  .formation-label {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--dcs-text-primary, #f0f4f7);
+    letter-spacing: 0.02em;
+  }
+
+  .formation-divider {
+    color: var(--dcs-text-muted, #6c7d8c);
+  }
+
+  .formation-count {
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--dcs-secondary, #38bdf8);
+  }
+}
+
+.btn-stage-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--dcs-radius-pill, 9999px);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  background: var(--dcs-surface-raised, #222d38);
+  color: var(--dcs-text-primary, #f0f4f7);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+
+  &:hover {
+    border-color: var(--dcs-secondary, #38bdf8);
+    color: var(--dcs-secondary, #38bdf8);
+    transform: translateY(-1px);
+  }
+
+  &.primary {
+    background: rgba(188, 242, 123, 0.14);
+    border-color: var(--dcs-accent-border, rgba(188, 242, 123, 0.38));
+    color: var(--dcs-accent, #bcf27b);
+
+    &:hover {
+      background: var(--dcs-accent, #bcf27b);
+      color: var(--dcs-accent-contrast, #0b1305);
+    }
+  }
+}
+
+.showcase-team {
+  width: 100%;
+  gap: clamp(10px, 2vw, 22px);
+  padding-bottom: 6px;
 }
 
 .hero-showcase {
-  margin: 0 20px;
-  width: 140px;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  flex: 1 1 150px;
+  max-width: 194px;
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  &.hero-slot-center {
+    transform: translateY(-6px);
+  }
 
   &:hover {
+    transform: translateY(-10px);
+
     .hero-character-body {
-      border-color: $gold-primary;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-      transform: scale(1.05);
+      border-color: var(--dcs-accent, #bcf27b);
+      box-shadow: var(--dcs-shadow-md), var(--dcs-shadow-accent);
     }
 
-    .hero-header-tag {
-      background: rgba(255, 215, 0, 0.9);
-      border-color: #ffd700;
-
-      .hero-name {
-        color: #000;
-        text-shadow: none;
-      }
-
-      .hero-level {
-        background: #000;
-        color: #ffd700;
-      }
-    }
-
-    .hero-shadow {
-      transform: scale(1.2);
-      opacity: 0.8;
+    .pedestal-ring {
+      border-color: var(--dcs-accent, #bcf27b);
+      box-shadow: 0 0 16px rgba(188, 242, 123, 0.45);
     }
   }
 }
 
 .hero-header-tag {
-  background: rgba(30, 20, 15, 0.85);
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  border-radius: 4px;
-  padding: 2px 8px;
-  width: 100%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  margin-bottom: 8px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  transition: all 0.2s ease;
+  gap: 6px;
+  padding: 3px 10px;
+  margin-bottom: 4px;
+  border-radius: var(--dcs-radius-pill, 9999px);
+  background: rgba(16, 21, 27, 0.92);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24));
+  box-shadow: var(--dcs-shadow-sm);
+  white-space: nowrap;
+  max-width: 100%;
 
   .hero-level {
-    font-size: 9px;
-    font-weight: 800;
-    background: #ffd700;
-    color: #333;
-    padding: 0px 4px;
-    border-radius: 2px;
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--dcs-accent, #bcf27b);
   }
 
   .hero-name {
-    font-size: 11px;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    flex-grow: 1;
-    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--dcs-text-primary, #f0f4f7);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
+}
+
+.hero-stars-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 6px;
+  font-size: 0.65rem;
+  color: var(--dcs-warning, #fbbf24);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 }
 
 .hero-character-body {
-  width: 110px;
-  height: 200px;
-  border-radius: 15px;
-  border: 2px solid rgba(255, 215, 0, 0.25);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(255, 215, 0, 0.15);
   position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(2px);
-
-  .hero-silhouette {
-    width: 100%;
-    height: 100%;
-    font-size: 50px;
-    color: rgba(255, 255, 255, 0.75);
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-  }
-
-  .hero-role-tag {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    color: #ffd700;
-    font-size: 9px;
-    font-weight: 700;
-    text-align: center;
-    padding: 4px 0;
-    border-top: 1px solid rgba(255, 215, 0, 0.15);
-  }
-}
-
-.hero-shadow {
-  width: 90px;
-  height: 12px;
-  background: rgba(0, 0, 0, 0.7);
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
-  margin-top: 8px;
-  filter: blur(2px);
-  transition: all 0.3s ease;
-}
-
-// Float keyframes to simulate gentle character hover idle state
-@keyframes floatUpAndDown {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.hero-float-0 {
-  animation: floatUpAndDown 4s ease-in-out infinite;
-}
-
-.hero-float-1 {
-  animation: floatUpAndDown 5s ease-in-out infinite 0.5s;
-}
-
-.hero-float-2 {
-  animation: floatUpAndDown 4.5s ease-in-out infinite 1s;
-}
-
-// -------------------------------------------------------------
-// Side Badges (Chat, 18+)
-// -------------------------------------------------------------
-.side-badges {
-  left: 20px;
-  bottom: 120px;
-  z-index: 10;
-
-  .age-badge {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #7f0909 0%, #b31010 100%);
-    border: 2px solid #ff4d4d;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 800;
-    color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  }
-
-  .btn-chat {
-    width: 44px;
-    height: 44px;
-    background: radial-gradient(circle, #523f2f 0%, #1e150b 100%);
-    border: 2px solid rgba(255, 215, 0, 0.5);
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    transition: all 0.2s ease;
-
-    &:hover {
-      border-color: $gold-primary;
-      box-shadow: $glow-gold;
-      transform: scale(1.1);
-    }
-  }
-}
-
-// -------------------------------------------------------------
-// E. Bottom Navigation Menu
-// -------------------------------------------------------------
-.bottom-navigation-container {
   width: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0) 100%);
-  border-top: 1px solid rgba(255, 215, 0, 0.15);
-  z-index: 10;
-  min-height: 88px;
+  height: clamp(180px, 29vh, 252px);
+  border-radius: var(--dcs-radius-lg, 14px);
+  background:
+    radial-gradient(circle at 50% 24%, rgba(56, 189, 248, 0.2), transparent 65%),
+    linear-gradient(180deg, rgba(25, 33, 42, 0.74) 0%, rgba(16, 21, 27, 0.96) 100%);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.28));
+  border-bottom: 3px solid var(--hero-accent, var(--dcs-accent, #bcf27b));
+  box-shadow: var(--dcs-shadow-md);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: all 180ms ease;
+}
+
+.slot-index-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  padding: 2px 6px;
+  border-radius: var(--dcs-radius-xs, 4px);
+  background: rgba(11, 15, 20, 0.78);
+  border: 1px solid rgba(167, 182, 195, 0.2);
+  font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--dcs-text-secondary, #a7b6c3);
+}
+
+.hero-character-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 220ms ease;
+
+  .hero-showcase:hover & {
+    transform: scale(1.04);
+  }
+}
+
+.hero-silhouette {
+  width: 100%;
+  height: 100%;
+  font-size: 3.2rem;
+  color: var(--hero-accent, var(--dcs-accent, #bcf27b));
+}
+
+.hero-role-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: var(--dcs-radius-sm, 6px);
+  background: rgba(11, 15, 20, 0.9);
+  border: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.18));
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--dcs-text-secondary, #a7b6c3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-pedestal {
+  position: relative;
+  width: 86%;
+  height: 16px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .pedestal-ring {
+    width: 100%;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.26) 0%, rgba(16, 21, 27, 0.2) 75%);
+    transition: all 180ms ease;
+  }
+
+  .hero-shadow {
+    position: absolute;
+    inset: 2px 10%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(188, 242, 123, 0.24) 0%, transparent 72%);
+  }
+}
+
+// ============================================================================
+// E. BOTTOM COMMAND DOCK & PRIMARY PLAY CTA
+// ============================================================================
+.bottom-navigation-container {
+  position: relative;
+  z-index: var(--dcs-z-hud, 20);
+  padding: 10px 22px 14px;
+  background: linear-gradient(180deg, transparent 0%, rgba(11, 15, 20, 0.94) 42%);
 }
 
 .bottom-navigation {
-  max-width: 1280px;
-  margin: 0 auto;
-  min-height: 88px;
-  overflow-x: auto;
+  gap: 12px;
 }
 
-.nav-group-left {
-  max-width: 58%;
+.nav-group-left,
+.nav-group-right {
+  gap: 8px;
 }
 
 .nav-item {
-  margin: 6px 8px;
-  min-width: 60px;
-  min-height: 72px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  min-width: 68px;
+  padding: 6px 10px;
+  border-radius: var(--dcs-radius-md, 10px);
+  background: rgba(25, 33, 42, 0.92);
+  border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.2));
+  box-shadow: var(--dcs-shadow-sm);
+  transition: all 140ms ease;
 
   &:hover {
-    transform: scale(1.08);
+    transform: translateY(-2px);
+    background: var(--dcs-surface-raised, #222d38);
+    border-color: var(--dcs-accent-border, rgba(188, 242, 123, 0.42));
 
     .nav-icon-box {
-      border-color: $gold-primary;
-      background: radial-gradient(circle, #4d3a24 0%, #20170a 100%);
-      color: $gold-primary;
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+      color: var(--dcs-accent, #bcf27b);
     }
-
-    .nav-name {
-      color: $gold-primary;
-    }
-  }
-
-  .nav-icon-box {
-    width: 58px;
-    height: 58px;
-    border-radius: 8px;
-    border: 1.5px solid rgba(255, 215, 0, 0.35);
-    background: radial-gradient(circle, #302419 0%, #120b05 100%);
-    color: #dfbf8f;
-    font-size: 27px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
-    transition: all 0.2s ease;
-  }
-
-  .nav-name {
-    margin-top: 4px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #ccc;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    text-align: center;
   }
 }
 
-// -------------------------------------------------------------
-// Bottom Right Focus Combat Group
-// -------------------------------------------------------------
+.nav-icon-box {
+  width: 32px;
+  height: 32px;
+  font-size: 1.18rem;
+  color: var(--dcs-text-primary, #f0f4f7);
+  transition: color 140ms ease;
+}
+
+.nav-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--dcs-text-secondary, #a7b6c3);
+  white-space: nowrap;
+}
+
+.combat-group {
+  gap: 10px;
+}
+
 .arena-btn {
-  background: linear-gradient(to bottom, #d35400, #a04000);
-  border: 1.5px solid #e67e22;
-  border-radius: 12px;
-  padding: 2px 10px;
-  font-size: 12px;
-  font-weight: 800;
-  color: #fff;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  margin-bottom: 8px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  transition: all 0.2s ease;
+  height: 54px;
+  padding: 0 16px;
+  border-radius: var(--dcs-radius-md, 10px);
+  background: rgba(25, 33, 42, 0.92);
+  border: 1px solid var(--dcs-secondary-border, rgba(56, 189, 248, 0.4));
+  color: var(--dcs-secondary, #38bdf8);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: var(--dcs-shadow-sm);
+  transition: all 140ms ease;
 
   &:hover {
-    background: linear-gradient(to bottom, #e67e22, #d35400);
-    box-shadow: 0 0 8px rgba(230, 126, 34, 0.7);
-    transform: scale(1.05);
+    background: rgba(56, 189, 248, 0.18);
+    transform: translateY(-2px);
   }
 }
 
 .focus-btn-container {
   position: relative;
-  width: 104px;
-  height: 104px;
   cursor: pointer;
 }
 
 .btn-chinh-tuyen {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #e67e22 0%, #c0392b 40%, #78281f 100%);
-  border: 3.5px solid #ffd700;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.4);
-  color: #fff;
-  transition: all 0.3s ease;
-  z-index: 2;
-  position: relative;
-
-  .chinh-tuyen-label {
-    font-family: 'Spectral', serif;
-    font-size: 13.5px;
-    font-weight: 800;
-    color: #fff;
-    text-transform: uppercase;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px #ffd700;
-    line-height: 1.2;
-    text-align: center;
-  }
+  min-width: 164px;
+  height: 58px;
+  padding: 8px 20px;
+  border-radius: var(--dcs-radius-lg, 14px);
+  background: linear-gradient(135deg, var(--dcs-accent, #bcf27b) 0%, #9be15d 100%);
+  border: 2px solid var(--dcs-accent-hover, #ccf796);
+  color: var(--dcs-accent-contrast, #0b1305);
+  box-shadow: var(--dcs-shadow-accent), var(--dcs-shadow-md);
+  transition: transform 140ms ease, filter 140ms ease;
 
   &:hover {
-    transform: scale(1.08);
-    border-color: #fff;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.6);
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+  }
+
+  .cta-icon-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(11, 19, 5, 0.16);
+  }
+
+  .chinh-tuyen-icon {
+    font-size: 1.2rem;
+  }
+
+  .chinh-tuyen-label {
+    font-size: 0.95rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 }
 
-// Ripple effect animation for the main quest button
-.focus-btn-pulse {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 2px solid #ffd700;
-  box-shadow: 0 0 15px #ffd700;
-  opacity: 0;
-  animation: focus-ripple 2s linear infinite;
-  z-index: 1;
-  pointer-events: none;
+// ============================================================================
+// RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+// ============================================================================
+@media (max-width: 992px) {
+  .showcase-team {
+    gap: 10px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+  }
 
-  &.pulse-delay {
-    animation-delay: 1s;
+  .hero-showcase {
+    flex: 0 0 138px;
   }
 }
 
-@keyframes focus-ripple {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.8;
+@media (max-width: 640px) {
+  .top-bar {
+    padding: 10px 12px 6px;
+    gap: 8px;
   }
 
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-}
-
-// Pointing hand helper animation
-.pointer-hand {
-  position: absolute;
-  bottom: -5px;
-  right: -5px;
-  transform: rotate(-35deg);
-  z-index: 5;
-  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.6));
-  animation: point-down 1.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes point-down {
-
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(-35deg);
+  .player-profile {
+    width: 100%;
+    padding: 8px 10px;
   }
 
-  50% {
-    transform: translate(-6px, -6px) rotate(-35deg);
+  .top-right-command {
+    width: 100%;
+    align-items: stretch !important;
   }
-}
 
-// -------------------------------------------------------------
-// F. Logout Confirmation Modal
-// -------------------------------------------------------------
-.logout-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(6px);
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.2s ease-out;
-}
+  .currency-group {
+    width: 100%;
+    justify-content: space-between;
+  }
 
-.logout-modal-card {
-  width: 90%;
-  max-width: 440px;
-  background: radial-gradient(circle at top, #2d1f14 0%, #120e0a 100%);
-  border: 1.5px solid rgba(255, 215, 0, 0.5);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 140, 0, 0.25);
-  overflow: hidden;
-  animation: scaleIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  .currency-item {
+    flex: 1 1 auto;
+    justify-content: space-between;
+  }
 
-  .logout-modal-header {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), rgba(0, 0, 0, 0.4));
-    border-bottom: 1px solid rgba(255, 215, 0, 0.25);
-    padding: 12px 20px;
+  .squad-command-bar {
+    padding: 6px 10px;
 
-    .modal-title {
-      font-family: 'Spectral', serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: #ffd700;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    }
-
-    .btn-close-modal {
-      background: transparent;
-      border: none;
-      color: #aaa;
-      font-size: 18px;
-      cursor: pointer;
-      transition: color 0.2s;
-
-      &:hover {
-        color: #fff;
-      }
+    .btn-stage-action span {
+      display: none;
     }
   }
 
-  .logout-modal-body {
-    padding: 24px 20px;
-
-    .logout-icon-circle {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 140, 0, 0.25) 0%, rgba(0, 0, 0, 0.6) 100%);
-      border: 2px solid rgba(255, 215, 0, 0.4);
-      box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
-    }
-
-    .logout-confirm-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-    }
-
-    .logout-confirm-desc {
-      font-size: 13px;
-      color: #ccc;
-      line-height: 1.5;
-    }
+  .bottom-navigation-container {
+    padding: 8px 12px 12px;
   }
 
-  .logout-modal-actions {
-    padding: 0 20px 20px;
+  .bottom-navigation {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 8px;
+  }
 
-    .btn-logout-cancel {
-      background: rgba(50, 50, 50, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ddd;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 6px;
-      transition: all 0.2s;
+  .nav-group-left {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+  }
 
-      &:hover {
-        background: rgba(80, 80, 80, 0.8);
-        color: #fff;
-      }
-    }
-
-    .btn-logout-confirm {
-      background: linear-gradient(180deg, #d32f2f 0%, #8b0000 100%);
-      border: 1px solid #ff4d4d;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
-      transition: all 0.2s;
-
-      &:hover {
-        background: linear-gradient(180deg, #f44336 0%, #a00000 100%);
-        box-shadow: 0 0 15px rgba(244, 67, 54, 0.7);
-        transform: scale(1.02);
-      }
-    }
+  .nav-group-right {
+    justify-content: space-between;
+    width: 100%;
   }
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes scaleIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-.btn-template-sync {
-  color: #f5dfa3;
-  background: linear-gradient(180deg, #3e3528, #211e1b);
-  border: 1px solid #9f8046;
-  border-radius: 4px;
-  white-space: nowrap;
-  &:hover { color: #fff0c6; border-color: #dbb76b; }
-  &:disabled { opacity: .6; cursor: wait; }
-}
-.player-actions { flex-wrap: wrap; gap: 4px; }
-.sync-spinning { display: inline-block; animation: template-sync-spin 1s linear infinite; }
-@keyframes template-sync-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .sync-spinning { animation: none; } }

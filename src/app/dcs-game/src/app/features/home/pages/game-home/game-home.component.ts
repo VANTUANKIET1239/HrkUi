@@ -5,11 +5,10 @@ import { GameToastService } from '../../../../core/services/game-toast.service';
 import { GameTemplateCacheService } from '../../../../core/services/game-template-cache.service';
 import { GameModalConfigService } from '../../../../core/services/game-modal-config.service';
 import { HrkConfirmationService } from '../../../../../../../../libs/shared/ui/modal/hrk-confirmation.service';
-import { DestroyRef } from '@angular/core';
+import { DestroyRef, Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { reportAppWarning } from '../../../../../../../../libs/core/http/hrk-api/app-error';
-import { Component, OnInit , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeroManagementComponent } from '../../components/hero-management/hero-management.component';
@@ -20,7 +19,9 @@ import { LibraryComponent } from '../../components/library/library.component';
 import { PlayerLevelBadgeComponent } from '../../components/player-level-badge/player-level-badge.component';
 import { AvatarSelectorComponent } from '../../components/avatar-selector/avatar-selector.component';
 import { GameSettingsComponent } from '../../components/game-settings/game-settings.component';
-import { PlayerProfileDto } from '../../../../core/models/player.model';
+import { BaseResponse, PlayerProfileDto } from '../../../../core/models/player.model';
+import { FormationService } from '../../../../core/services/formation.service';
+import { FormationDetailDto } from '../../../../core/models/formation.model';
 
 interface PlayerInfo {
   name: string;
@@ -36,12 +37,19 @@ interface PlayerInfo {
   avatarUrl: string;
 }
 
-interface TeamMember {
+export interface TeamMember {
+  id?: number;
+  slot?: number;
   name: string;
   level: number;
+  stars?: number;
+  power?: number;
+  rarityCode?: string;
   title?: string;
   color: string;
   role: string;
+  avatar?: string;
+  isEmpty?: boolean;
 }
 
 interface FeatureItem {
@@ -79,6 +87,8 @@ export class GameHomeComponent implements OnInit {
   private readonly modalConfigs = inject(GameModalConfigService);
   private readonly confirmations = inject(HrkConfirmationService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly formationService = inject(FormationService, { optional: true });
+
   canRefreshTemplates = false;
   isRefreshingTemplates = false;
 
@@ -90,7 +100,10 @@ export class GameHomeComponent implements OnInit {
   isAvatarSelectorOpen = false;
   isSettingsOpen = false;
   playerProfile?: PlayerProfileDto;
+  selectedFormationCode = '';
+  selectedFormationName = 'Đội Hình Chiến Thuật';
   private rawGold = 0;
+
   playerInfo: PlayerInfo = {
     name: 'Người chơi',
     level: 1,
@@ -105,36 +118,19 @@ export class GameHomeComponent implements OnInit {
     avatarUrl: ''
   };
 
-  mainTeam: TeamMember[] = [
-    { name: 'Nghiêm Nhan', level: 1, color: '#4a3f35', role: 'Đỡ đòn / Hỗ trợ' },
-    { name: 'Bàng Đức', level: 1, color: '#2c3e50', role: 'Đấu sĩ vật lý' },
-    { name: 'Cao Thuận', level: 1, color: '#d35400', role: 'Sát thủ' },
-    { name: 'Chúc Dung', level: 1, color: '#c0392b', role: 'Phép thuật / Hỏa' },
-    { name: 'Lưu Bị', level: 2, color: '#8e44ad', role: 'Hỗ trợ / Hồi máu' }
+  private readonly defaultSquad: TeamMember[] = [
+    { slot: 1, name: 'Hoàng Nguyên Gymer', level: 15, stars: 3, rarityCode: 'EPIC', color: '#38bdf8', role: 'Đỡ đòn / Tiên phong', avatar: '/assets/images/dcs-game/heroes/hoang-nguyen-gymer.png' },
+    { slot: 2, name: 'Nghĩa Phúc Prime', level: 20, stars: 4, rarityCode: 'LEGENDARY', color: '#bcf27b', role: 'Đấu sĩ chủ lực', avatar: '/assets/images/dcs-game/heroes/nghia-phuc-prime.png' },
+    { slot: 3, name: 'Quốc Nhân Chạy Ngay Đi', level: 18, stars: 3, rarityCode: 'EPIC', color: '#fbbf24', role: 'Tốc kích / Sát thủ', avatar: '/assets/images/dcs-game/heroes/quoc-nhan-chay-ngay-di.png' },
+    { slot: 4, name: 'Siba Thiên Thần', level: 22, stars: 5, rarityCode: 'MYTHIC', color: '#f43f5e', role: 'Pháp sư / Hỏa lực', avatar: '/assets/images/dcs-game/heroes/siba-thien-than-mythic.png' },
+    { slot: 5, name: 'Kiệt Bác Sĩ', level: 16, stars: 3, rarityCode: 'EPIC', color: '#c084fc', role: 'Hỗ trợ / Hồi phục', avatar: '/assets/images/dcs-game/heroes/kiet-bac-si-epic.png' }
   ];
 
-  topEvents: FeatureItem[] = []; /*
-    { name: 'Nạp Đầu', icon: 'bi-gift-fill', hasNotification: true },
-    { name: 'Chiêu Mộ', icon: 'bi-people-fill', hasNotification: true },
-    { name: 'Sự Kiện', icon: 'bi-calendar-event-fill', hasNotification: true },
-    { name: 'Phúc Lợi', icon: 'bi-award-fill', hasNotification: true },
-    { name: 'Chiêu Tài', icon: 'bi-coin', hasNotification: true },
-    { name: 'Báo Danh', icon: 'bi-check-circle-fill', hasNotification: true },
-    { name: 'Đăng Xuất', icon: 'bi-box-arrow-right', hasNotification: false }
-  ];
+  mainTeam: TeamMember[] = [...this.defaultSquad];
 
-  */ bottomFeaturesLeft: FeatureItem[] = []; /*
-    { name: 'Võ Tướng', icon: 'bi-shield-shaded', hasNotification: false },
-    { name: 'Đội Ngũ', icon: 'bi-grid-3x3-gap-fill', hasNotification: false },
-    { name: 'Hành Trang', icon: 'bi-briefcase-fill', hasNotification: false },
-    { name: 'Rèn', icon: 'bi-hammer', hasNotification: false },
-  ];
-
-  */ bottomFeaturesRight: FeatureItem[] = []; /*
-    { name: 'Hộ Tống', icon: 'bi-truck', hasNotification: false },
-    { name: 'Xuất Chinh', icon: 'bi-compass', hasNotification: true },
-    { name: 'Chiến Dịch', icon: 'bi-map-fill', hasNotification: false }
-  ]; */
+  topEvents: FeatureItem[] = [];
+  bottomFeaturesLeft: FeatureItem[] = [];
+  bottomFeaturesRight: FeatureItem[] = [];
 
   showMoreMenu = false;
   focusFeature?: FeatureItem;
@@ -242,6 +238,15 @@ export class GameHomeComponent implements OnInit {
       this.playerInfo.power = data.formationPower;
     }
 
+    if (data.selectedFormationName) {
+      this.selectedFormationName = data.selectedFormationName;
+    }
+
+    if (data.selectedFormationCode) {
+      this.selectedFormationCode = data.selectedFormationCode;
+      this.loadSelectedFormation(data.selectedFormationCode);
+    }
+
     if (data.wallet) {
       if (data.wallet.gold !== undefined && data.wallet.gold !== null) {
         this.rawGold = data.wallet.gold;
@@ -251,6 +256,55 @@ export class GameHomeComponent implements OnInit {
         this.playerInfo.diamond = this.formatCurrency(data.wallet.diamonds);
       }
     }
+  }
+
+  private loadSelectedFormation(code: string): void {
+    if (!code || !this.formationService?.getFormationDetail) return;
+    this.formationService.getFormationDetail(code).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res: BaseResponse<FormationDetailDto>) => {
+        if (!res?.success || !res.data?.slots) return;
+        if (res.data.name) {
+          this.selectedFormationName = res.data.name;
+        }
+        const deployedSlots = res.data.slots
+          .filter(slot => slot.hero !== null)
+          .sort((a, b) => a.slot - b.slot);
+
+        if (deployedSlots.length > 0) {
+          this.mainTeam = deployedSlots.slice(0, 5).map((slot, index) => {
+            const hero = slot.hero!;
+            return {
+              id: hero.id,
+              slot: slot.slot,
+              name: hero.name,
+              level: hero.level ?? 1,
+              stars: hero.stars ?? 1,
+              power: hero.power ?? 0,
+              rarityCode: hero.rarityCode || 'EPIC',
+              color: hero.rarityColorHex || this.defaultSquad[index % this.defaultSquad.length].color,
+              role: hero.className || hero.factionName || 'Tướng Biệt Đội',
+              avatar: hero.avatar || this.defaultSquad[index % this.defaultSquad.length].avatar
+            };
+          });
+        }
+      },
+      error: () => {
+        // Keep fallback squad on error
+      }
+    });
+  }
+
+  onHeroSlotClick(hero: TeamMember): void {
+    if (hero.isEmpty) {
+      this.isFormationManagementOpen = true;
+      return;
+    }
+    this.isHeroManagementOpen = true;
+  }
+
+  getStarArray(stars?: number): number[] {
+    const count = Math.max(1, Math.min(6, stars ?? 3));
+    return Array.from({ length: count }, (_, index) => index);
   }
 
   onAvatarChanged(profile: PlayerProfileDto): void {
@@ -265,6 +319,13 @@ export class GameHomeComponent implements OnInit {
         if (res?.success && res.data) {
           const power = res.data.formationPower ?? res.data.profile?.power ?? 0;
           this.playerInfo.power = power;
+          if (res.data.selectedFormationName) {
+            this.selectedFormationName = res.data.selectedFormationName;
+          }
+          if (res.data.selectedFormationCode) {
+            this.selectedFormationCode = res.data.selectedFormationCode;
+            this.loadSelectedFormation(res.data.selectedFormationCode);
+          }
           if (res.data.profile) {
             this.playerProfile = res.data.profile;
             this.playerInfo.avatarUrl = this.playerService.resolveAvatarUrl(res.data.profile);
@@ -376,7 +437,6 @@ export class GameHomeComponent implements OnInit {
   }
 
   onFeatureClick(feature: FeatureItem): void {
-    // Navigation is driven by ActionCode from HRK_GameFeatureConfigs, not display text.
     switch (feature.actionCode) {
       case 'CHECK_IN':
         if (!feature.locked) this.router.navigate(['/dcs-game/check-in']);
@@ -454,5 +514,9 @@ export class GameHomeComponent implements OnInit {
       return;
     }
     this.router.navigate(['/dcs-game/campaign/dungeons']);
+  }
+
+  goToCampaignHub(): void {
+    this.router.navigate(['/dcs-game/campaign']);
   }
 }

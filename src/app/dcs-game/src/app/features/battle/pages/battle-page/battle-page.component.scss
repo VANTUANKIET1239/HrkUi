@@ -1,18 +1,22 @@
 .battle-page-container {
   width: 100%;
   min-height: 100vh;
-  background-color: #030712;
+  background-color: var(--dcs-bg-base, #10151b);
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
 }
+
 .battle-state-message {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f5d56b;
-  background: #080704;
-  font-size: 1.1rem;
+  color: var(--dcs-accent, #bcf27b);
+  background: var(--dcs-bg-base, #10151b);
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
 .battle-state-error {
-  color: #ff7777;
+  color: var(--dcs-danger, #f87171);
 }

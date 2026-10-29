@@ -22,13 +22,14 @@ import { SummonHeroCardComponent } from './summon-hero-card.component';
         <button class="again" type="button" [disabled]="!canRepeat" (click)="repeat.emit()">{{ 'Chiêu mộ tiếp ×{{p0}}' | hrkTranslate:{p0: (result.count)} }}</button></div>
     </app-summon-dialog>`,
   styles: [`
-    .result-summary { text-align:center; color:#d4bc87; font-size:14px; margin:0 0 22px; span { display:block; color:#aaa4b3; font-size:12px; margin-top:8px; } }
-    .result-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; }
+    .result-summary { text-align:center; color:var(--dcs-accent, #bcf27b); font-size:14px; font-weight:700; margin:0 0 20px; span { display:block; color:var(--dcs-text-secondary, #a7b6c3); font-size:12px; font-weight:500; margin-top:6px; } }
+    .result-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
     .result-grid.single { grid-template-columns:minmax(0,220px); justify-content:center; }
-    .result-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
-    button { padding:12px 24px; border:1px solid #9e8455; border-radius:5px; background:#252332; color:#f4e5c4; cursor:pointer; font-size:13px; }
-    button.again { background:linear-gradient(135deg,#edcd86,#b98c40); color:#281d10; font-weight:700; }
-    button:disabled { opacity:.4; cursor:not-allowed; } button:focus-visible { outline:2px solid #f4d785; outline-offset:3px; }
+    .result-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; width:100%; }
+    button { padding:10px 22px; border:1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)); border-radius:var(--dcs-radius-sm, 6px); background:var(--dcs-surface-raised, #222d38); color:var(--dcs-text-primary, #f0f4f7); cursor:pointer; font-size:13px; font-weight:700; transition:all 140ms ease; }
+    button.again { background:var(--dcs-accent, #bcf27b); border-color:var(--dcs-accent-hover, #ccf796); color:var(--dcs-accent-contrast, #0b1305); font-weight:800; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    button:focus-visible { outline:2px solid var(--dcs-accent, #bcf27b); outline-offset:2px; }
     @media(max-width:600px) { .result-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } }
   `]
 })

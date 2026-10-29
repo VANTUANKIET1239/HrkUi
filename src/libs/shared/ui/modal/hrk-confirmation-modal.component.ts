@@ -23,12 +23,15 @@ import { HRK_MODAL_CONFIG_SOURCE, HrkModalConfig, MODAL_ICONS } from './modal-co
     }
   `,
   styles: [`
-    .confirmation-icon { text-align:center; color:#edcd86; font-size:42px; margin-bottom:16px; }
-    .confirmation-message { text-align:center; white-space:pre-line; line-height:1.7; margin:0 0 10px; }
-    .confirmation-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
-    button { padding:11px 22px; border:1px solid #9e8455; border-radius:6px; color:#f4e5c4; background:#252332; cursor:pointer; }
-    .confirm { background:linear-gradient(135deg,#edcd86,#b98c40); color:#281d10; font-weight:700; }
-    button:disabled { opacity:.5; cursor:wait; } button:focus-visible { outline:2px solid #f4d785; outline-offset:3px; }
+    .confirmation-icon { text-align:center; color:var(--dcs-accent, #bcf27b); font-size:40px; margin-bottom:14px; }
+    .confirmation-message { text-align:center; white-space:pre-line; line-height:1.6; margin:0 0 10px; color:var(--dcs-text-primary, #f0f4f7); font-size:0.95rem; }
+    .confirmation-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; width:100%; }
+    button { padding:10px 20px; border:1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)); border-radius:var(--dcs-radius-sm, 6px); color:var(--dcs-text-primary, #f0f4f7); background:var(--dcs-surface-raised, #222d38); font-weight:700; font-size:0.875rem; cursor:pointer; transition:all 140ms ease; }
+    button:hover:not(:disabled) { background:var(--dcs-surface-hover, #283542); border-color:var(--dcs-text-secondary, #a7b6c3); }
+    .confirm { background:var(--dcs-accent, #bcf27b); color:var(--dcs-accent-contrast, #0b1305); border-color:var(--dcs-accent-hover, #ccf796); font-weight:800; }
+    .confirm:hover:not(:disabled) { background:var(--dcs-accent-hover, #ccf796); border-color:var(--dcs-accent-hover, #ccf796); }
+    button:disabled { opacity:.5; cursor:wait; }
+    button:focus-visible { outline:2px solid var(--dcs-accent, #bcf27b); outline-offset:2px; }
   `]
 })
 export class HrkConfirmationModalComponent {

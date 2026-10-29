@@ -14,4 +14,10 @@ import { HrkModalComponent } from '../../../../../../../../libs/shared/ui/modal/
 export class GameSettingsComponent {
   readonly language = inject(LanguageService);
   @Output() close = new EventEmitter<void>();
+  @Output() logoutRequested = new EventEmitter<void>();
+
+  requestLogout(): void {
+    this.close.emit();
+    this.logoutRequested.emit();
+  }
 }

@@ -19,6 +19,7 @@ export const ApiEndpoints = {
 
   // Game Service - Player Profile & Wallet
   Player: {
+    Initialization: 'dcs-game/player/initialization',
     Me: 'dcs-game/player/me',
     Profile: 'dcs-game/player/profile',
     Wallet: 'dcs-game/player/wallet',

@@ -14,10 +14,11 @@ import { normalizeLanguage } from './language-preference';
     </select></label>`,
   styles: [`
     :host { display: block; }
-    label { display: grid; gap: 12px; margin: 0; color: #f3e5c9; font-size: 15px; font-weight: 600; }
-    select { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #a1844d88; border-radius: 8px;
-      background: #121723; color: #fff4db; font: inherit; cursor: pointer; color-scheme: dark; }
-    select:focus-visible { outline: 2px solid #f4d785; outline-offset: 3px; }
+    label { display: grid; gap: 10px; margin: 0; color: var(--dcs-text-primary, #f0f4f7); font-size: 14px; font-weight: 700; }
+    select { width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)); border-radius: var(--dcs-radius-sm, 6px);
+      background: var(--dcs-surface-raised, #222d38); color: var(--dcs-text-primary, #f0f4f7); font: inherit; cursor: pointer; color-scheme: dark; transition: border-color 140ms ease; }
+    select:hover:not(:disabled) { border-color: var(--dcs-accent-border, rgba(188, 242, 123, 0.38)); }
+    select:focus-visible { outline: 2px solid var(--dcs-accent, #bcf27b); outline-offset: 2px; }
     select:disabled { opacity: .6; cursor: wait; }
   `]
 })

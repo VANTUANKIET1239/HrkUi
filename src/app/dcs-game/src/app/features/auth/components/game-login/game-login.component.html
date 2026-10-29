@@ -34,10 +34,10 @@
     </label>
     <div class="pwd-input-wrap" [class.error-border]="hasErr('password')">
       <hrk-input id="login-password" formControlName="password" [type]="showPwd() ? 'text' : 'password'"
-        autocomplete="current-password" placeholder="••••••••"></hrk-input>
-      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" (click)="toggleShowPwd()">
+        [invalid]="hasErr('password')" autocomplete="current-password" placeholder="••••••••"></hrk-input>
+      <button type="button" class="btn-pwd-toggle" [aria-label]="'Toggle password visibility' | hrkTranslate" [attr.aria-pressed]="showPwd()" (click)="toggleShowPwd()">
         <hrk-icon [biIconName]="showPwd() ? 'bi-eye-fill' : 'bi-eye-slash-fill'" size="medium"
-          color="#ffd700"></hrk-icon>
+          color="currentColor"></hrk-icon>
       </button>
     </div>
     <small class="error-msg" *ngIf="hasErr('password')">
@@ -47,10 +47,9 @@
 
   <!-- Remember Me & Forgot Password -->
   <div class="form-actions-row">
-    <label class="checkbox-label">
-      <hrk-checkbox formControlName="remember" backgroundColor="#ffd700"></hrk-checkbox>
+    <hrk-checkbox formControlName="remember">
       <span class="remember-text">{{ 'Ghi nhớ đăng nhập' | hrkTranslate }}</span>
-    </label>
+    </hrk-checkbox>
 
     <a href="#" class="game-link" (click)="$event.preventDefault()">{{ 'Quên mật khẩu?' | hrkTranslate }}</a>
   </div>

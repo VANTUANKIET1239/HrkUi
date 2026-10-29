@@ -1,6 +1,6 @@
  .ci-field {
    display: block;
-   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+   font-family: var(--hrk-input-font-family, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
  }
 
  .ci-label {
@@ -19,18 +19,37 @@
  }
 
  .ci-input {
+   box-sizing: border-box;
    width: 100%;
-   padding: .625rem .75rem;
-   border: 1px solid #d0d5dd;
-   border-radius: .5rem;
+   min-height: var(--hrk-input-min-height, 0);
+   padding: var(--hrk-input-padding, .625rem .75rem);
+   border: 1px solid var(--hrk-input-border-color, #d0d5dd);
+   border-radius: var(--hrk-input-radius, .5rem);
+   color: var(--hrk-input-color, FieldText);
+   font-family: var(--hrk-input-font-family, revert);
+   font-size: var(--hrk-input-font-size, revert);
+   line-height: var(--hrk-input-line-height, normal);
    outline: none;
    transition: border-color .15s, box-shadow .15s;
-   background: #fff;
+   background: var(--hrk-input-background, #fff);
+ }
+
+ .ci-input::placeholder {
+   color: var(--hrk-input-placeholder-color, revert);
  }
 
  .ci-input:focus {
-   border-color: #2970ff;
-   box-shadow: 0 0 0 3px rgba(41, 112, 255, .15);
+   border-color: var(--hrk-input-focus-border-color, #2970ff);
+   box-shadow: var(--hrk-input-focus-shadow, 0 0 0 3px rgba(41, 112, 255, .15));
+ }
+
+ .ci-input:-webkit-autofill {
+   -webkit-text-fill-color: var(--hrk-input-color, FieldText);
+   box-shadow: var(--hrk-input-autofill-shadow, revert);
+ }
+
+ .ci-input:-webkit-autofill:focus {
+   box-shadow: var(--hrk-input-autofill-focus-shadow, 0 0 0 3px rgba(41, 112, 255, .15));
  }
 
  .ci-disabled .ci-input {
@@ -39,7 +58,7 @@
  }
 
  .ci-invalid .ci-input {
-   border-color: #d92d20;
+   border-color: var(--hrk-input-invalid-border-color, #d92d20);
  }
 
  .ci-error {

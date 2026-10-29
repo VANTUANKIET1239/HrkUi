@@ -1,14 +1,14 @@
 // Formation Management Stylesheet (Tactical Strategy RPG UI - 5 Slots)
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Spectral:wght@600;700;800&display=swap');
+// Font centralized in _game-tokens.scss & shell/src/styles.scss
 
-$gold-primary: #f59e0b;
+$gold-primary: #bcf27b;
 $gold-light: #fef08a;
-$gold-border: #b45309;
+$gold-border: rgba(167, 182, 195, 0.24);
 $bronze-primary: #854d0e;
 $bronze-dark: #451a03;
 $crimson-dark: #7f1d1d;
-$glass-dark: rgba(18, 12, 10, 0.95);
+$glass-dark: rgba(25, 33, 42, 0.95);
 $glow-gold: 0 0 12px rgba(245, 158, 11, 0.65);
 $glow-active: 0 0 16px rgba(34, 197, 94, 0.5);
 
@@ -786,5 +786,63 @@ $glow-active: 0 0 16px rgba(34, 197, 94, 0.5);
 
   .slot-placeholder-box {
     opacity: 0.88;
+  }
+}
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR (SCOPED TOKEN OVERRIDES)
+// ============================================================================
+.formation-overlay {
+  --formation-text-primary: var(--dcs-text-primary, #f0f4f7);
+  --formation-text-secondary: var(--dcs-text-secondary, #a7b6c3);
+  --formation-text-muted: var(--dcs-text-muted, #6e8091);
+
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-base, #10151b);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .font-title,
+  .page-title,
+  .panel-header {
+    font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+    text-shadow: none !important;
+  }
+
+  .formation-top-bar {
+    background: var(--dcs-surface, #19212a);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    box-shadow: var(--dcs-shadow-sm);
+  }
+
+  .left-presets-panel,
+  .right-details-panel,
+  .bottom-hero-pool,
+  .tactical-board-card {
+    background: var(--dcs-surface, #19212a) !important;
+    border-color: var(--dcs-border-default, rgba(167, 182, 195, 0.14)) !important;
+    box-shadow: var(--dcs-shadow-md) !important;
+  }
+
+  .formation-slot-card,
+  .hero-pool-card,
+  .preset-item {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-md, 10px) !important;
+    box-shadow: none !important;
+
+    &.active,
+    &.selected {
+      border-color: var(--dcs-accent, #bcf27b) !important;
+      box-shadow: var(--dcs-shadow-accent) !important;
+    }
+  }
+
+  .glow-gold,
+  .text-gold {
+    color: var(--dcs-accent, #bcf27b) !important;
+    text-shadow: none !important;
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
   }
 }

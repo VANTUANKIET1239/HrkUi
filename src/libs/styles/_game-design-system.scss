@@ -1,0 +1,214 @@
+// ============================================================================
+// DCS GAME DESIGN SYSTEM ("ĐÔ THỊ HIỆN ĐẠI — BIỆT ĐỘI ANH HÙNG")
+// Shared utility classes & UI component primitives scoped to .dcs-game-theme
+// ============================================================================
+
+.dcs-game-theme {
+  font-family: var(--dcs-font-sans);
+  color: var(--dcs-text-primary);
+  background-color: var(--dcs-bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  // Custom sleek dark scrollbar
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(11, 15, 20, 0.5);
+    border-radius: var(--dcs-radius-pill);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--dcs-surface-elevated);
+    border-radius: var(--dcs-radius-pill);
+    border: 1px solid var(--dcs-border-subtle);
+
+    &:hover {
+      background: var(--dcs-text-muted);
+    }
+  }
+
+  // Focus ring accessibility
+  :focus-visible {
+    outline: 2px solid var(--dcs-accent);
+    outline-offset: 2px;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 1. TYPOGRAPHY & MONO STATS
+// ----------------------------------------------------------------------------
+.dcs-mono,
+.dcs-stat-number {
+  font-family: var(--dcs-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.dcs-title {
+  font-family: var(--dcs-font-display);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--dcs-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// 2. SURFACES, PANELS & CARDS
+// ----------------------------------------------------------------------------
+.dcs-panel {
+  background: var(--dcs-surface);
+  border: var(--dcs-border-width) solid var(--dcs-border-default);
+  border-radius: var(--dcs-radius-lg);
+  box-shadow: var(--dcs-shadow-md);
+  color: var(--dcs-text-primary);
+}
+
+.dcs-panel-raised {
+  background: var(--dcs-surface-raised);
+  border: var(--dcs-border-width) solid var(--dcs-border-strong);
+  border-radius: var(--dcs-radius-md);
+  box-shadow: var(--dcs-shadow-sm);
+}
+
+// ----------------------------------------------------------------------------
+// 3. BUTTON PRIMITIVES
+// ----------------------------------------------------------------------------
+.dcs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dcs-space-2);
+  min-height: var(--dcs-control-md);
+  padding: 0 var(--dcs-space-4);
+  border-radius: var(--dcs-radius-md);
+  border: var(--dcs-border-width) solid var(--dcs-border-strong);
+  background: var(--dcs-surface-raised);
+  color: var(--dcs-text-primary);
+  font-family: var(--dcs-font-sans);
+  font-size: var(--dcs-text-sm);
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color var(--dcs-duration-fast) var(--dcs-ease-out),
+    border-color var(--dcs-duration-fast) var(--dcs-ease-out),
+    transform var(--dcs-duration-fast) var(--dcs-ease-out),
+    box-shadow var(--dcs-duration-fast) var(--dcs-ease-out);
+  user-select: none;
+  text-decoration: none;
+
+  &:hover:not(:disabled) {
+    background: var(--dcs-surface-hover);
+    border-color: var(--dcs-text-secondary);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &--primary {
+    background: var(--dcs-accent);
+    border-color: var(--dcs-accent-hover);
+    color: var(--dcs-accent-contrast);
+    box-shadow: var(--dcs-shadow-accent);
+
+    &:hover:not(:disabled) {
+      background: var(--dcs-accent-hover);
+      border-color: var(--dcs-accent-hover);
+    }
+  }
+
+  &--secondary {
+    background: var(--dcs-secondary-subtle);
+    border-color: var(--dcs-secondary-border);
+    color: var(--dcs-secondary);
+
+    &:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.22);
+      border-color: var(--dcs-secondary);
+    }
+  }
+
+  &--danger {
+    background: var(--dcs-danger-bg);
+    border-color: var(--dcs-danger-border);
+    color: var(--dcs-danger);
+
+    &:hover:not(:disabled) {
+      background: var(--dcs-danger);
+      border-color: var(--dcs-danger);
+      color: #ffffff;
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 4. RARITY HELPERS
+// ----------------------------------------------------------------------------
+.dcs-rarity-common {
+  --rarity-color: var(--dcs-rarity-common);
+  --rarity-bg: var(--dcs-rarity-common-bg);
+  --rarity-border: var(--dcs-rarity-common-border);
+}
+
+.dcs-rarity-uncommon {
+  --rarity-color: var(--dcs-rarity-uncommon);
+  --rarity-bg: var(--dcs-rarity-uncommon-bg);
+  --rarity-border: var(--dcs-rarity-uncommon-border);
+}
+
+.dcs-rarity-rare {
+  --rarity-color: var(--dcs-rarity-rare);
+  --rarity-bg: var(--dcs-rarity-rare-bg);
+  --rarity-border: var(--dcs-rarity-rare-border);
+}
+
+.dcs-rarity-epic {
+  --rarity-color: var(--dcs-rarity-epic);
+  --rarity-bg: var(--dcs-rarity-epic-bg);
+  --rarity-border: var(--dcs-rarity-epic-border);
+}
+
+.dcs-rarity-legendary {
+  --rarity-color: var(--dcs-rarity-legendary);
+  --rarity-bg: var(--dcs-rarity-legendary-bg);
+  --rarity-border: var(--dcs-rarity-legendary-border);
+}
+
+.dcs-rarity-mythic {
+  --rarity-color: var(--dcs-rarity-mythic);
+  --rarity-bg: var(--dcs-rarity-mythic-bg);
+  --rarity-border: var(--dcs-rarity-mythic-border);
+}
+
+// ----------------------------------------------------------------------------
+// 5. EMPTY, LOADING & ERROR STATES
+// ----------------------------------------------------------------------------
+.dcs-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dcs-space-2);
+  padding: var(--dcs-space-6);
+  text-align: center;
+  color: var(--dcs-text-secondary);
+  background: rgba(16, 21, 27, 0.55);
+  border: 1px dashed var(--dcs-border-strong);
+  border-radius: var(--dcs-radius-md);
+}
+

@@ -10,9 +10,12 @@ import { HrkModalFloatingDirective } from '../../../../libs/shared/ui/modal/hrk-
 
 @Component({
   selector: 'app-root',
-  host: { '[style.--hrk-lobby-background]': 'lobbyBackground' },
+  host: {
+    class: 'dcs-game-theme',
+    '[style.--hrk-lobby-background]': 'lobbyBackground'
+  },
   imports: [RouterOutlet, GameToastComponent, HrkConfirmationHostComponent, EquipmentTooltipComponent, HrkModalFloatingDirective],
-  providers: [{ provide:HRK_MODAL_CONFIG_SOURCE, useExisting:GameModalConfigService }],
+  providers: [{ provide: HRK_MODAL_CONFIG_SOURCE, useExisting: GameModalConfigService }],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

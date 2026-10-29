@@ -1,3 +1,8 @@
+@use '../../../libs/styles/game-tokens';
+@use '../../../libs/styles/game-design-system';
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
 /* Global application styles */
 body.global-loading-active {
   overflow: hidden !important;

@@ -1,24 +1,24 @@
 // Hero Management Stylesheet (Strategy RPG UI)
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Spectral:wght@600;800&display=swap');
+// Font centralized in _game-tokens.scss & shell/src/styles.scss
 
 // Colors
-$gold-primary: #ffd700;
+$gold-primary: #bcf27b;
 $gold-dark: #aa7c11;
-$gold-border: #8e6e3c;
+$gold-border: rgba(167, 182, 195, 0.24);
 $gold-light: #fffacd;
 $crimson-red: #a81a1a;
 $crimson-dark: #630505;
-$black-bg: #0e0d0c;
-$black-panel: #161412;
-$glass-dark: rgba(15, 12, 10, 0.9);
+$black-bg: #10151b;
+$black-panel: #19212a;
+$glass-dark: rgba(25, 33, 42, 0.94);
 $glow-gold: 0 0 12px rgba(255, 215, 0, 0.6);
 $glow-red: 0 0 12px rgba(255, 56, 56, 0.6);
 
 // High-Contrast Typography & Stats Colors
-$text-primary: #f8f3df;
-$text-secondary: #b8b1a0;
-$text-gold-highlight: #ffd84d;
+$text-primary: #f0f4f7;
+$text-secondary: #a7b6c3;
+$text-gold-highlight: #bcf27b;
 $stat-hp: #4ade80;
 $stat-atk: #fb7185;
 $stat-def: #38bdf8;
@@ -2545,3 +2545,105 @@ $color-common: #9ca3af;
 .hero-stone-composite { position:relative; display:block; }.hero-stone-composite img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }.hero-stone-composite .portrait { clip-path:polygon(50% 9%,87% 29%,87% 72%,50% 93%,13% 72%,13% 29%); transform:scale(.66); }.hero-stone-composite .frame{z-index:1;}
 .missing { color:#ff6b6b!important; }.bonus-note { color:#cabdff; font-size:13px; }
 @media(max-width:480px){.star-upgrade-dialog{padding:18px 14px}.star-stats{grid-template-columns:repeat(2,1fr)}}
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR (SCOPED TOKEN OVERRIDES)
+// ============================================================================
+.hero-mgmt-overlay {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-base, #10151b);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .font-title,
+  .page-title,
+  .hero-main-name,
+  .panel-header {
+    font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+    text-shadow: none !important;
+  }
+
+  .hero-mgmt-top-bar {
+    background: var(--dcs-surface, #19212a);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    box-shadow: var(--dcs-shadow-sm);
+
+    .page-title {
+      color: var(--dcs-text-primary, #f0f4f7);
+
+      .subtitle {
+        color: var(--dcs-text-secondary, #a7b6c3);
+        font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+      }
+    }
+  }
+
+  .left-panel,
+  .right-panel,
+  .stats-skills-container,
+  .hero-roster-footer {
+    background: var(--dcs-surface, #19212a) !important;
+    border-color: var(--dcs-border-default, rgba(167, 182, 195, 0.14)) !important;
+    box-shadow: var(--dcs-shadow-md) !important;
+  }
+
+  .panel-header,
+  .section-header-bar {
+    background: rgba(16, 21, 27, 0.65) !important;
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14)) !important;
+    color: var(--dcs-text-primary, #f0f4f7) !important;
+  }
+
+  .equip-slot,
+  .stat-item,
+  .skill-card,
+  .hero-roster-card {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-md, 10px) !important;
+    box-shadow: none !important;
+    transition: all 140ms ease !important;
+  }
+
+  .hero-roster-card.selected,
+  .equip-slot.selected {
+    border-color: var(--dcs-accent, #bcf27b) !important;
+    box-shadow: var(--dcs-shadow-accent) !important;
+  }
+
+  .feature-tab-btn {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border-color: var(--dcs-border-default, rgba(167, 182, 195, 0.14)) !important;
+    color: var(--dcs-text-secondary, #a7b6c3) !important;
+    font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif) !important;
+
+    &.active {
+      background: var(--dcs-accent-subtle, rgba(188, 242, 123, 0.14)) !important;
+      border-color: var(--dcs-accent, #bcf27b) !important;
+      color: var(--dcs-accent, #bcf27b) !important;
+    }
+  }
+
+  .btn-quick-equip,
+  .btn-primary-action {
+    background: var(--dcs-accent, #bcf27b) !important;
+    border-color: var(--dcs-accent-hover, #ccf796) !important;
+    color: var(--dcs-accent-contrast, #0b1305) !important;
+    font-weight: 800 !important;
+    box-shadow: var(--dcs-shadow-accent) !important;
+  }
+
+  .equipment-action-dialog,
+  .star-upgrade-dialog {
+    background: var(--dcs-surface, #19212a) !important;
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-lg, 14px) !important;
+    box-shadow: var(--dcs-shadow-lg) !important;
+    color: var(--dcs-text-primary, #f0f4f7) !important;
+  }
+
+  .star-transition {
+    color: var(--dcs-accent, #bcf27b);
+    font-family: var(--dcs-font-mono, 'JetBrains Mono', monospace);
+  }
+}

@@ -19,6 +19,51 @@ describe('Summon presentation', () => {
     reel.componentRef.setInput('pool', [hero]);
   }
 
+  for (const [width, height] of [[1366, 768], [768, 856], [390, 844], [844, 390]]) {
+    it(`keeps the entire reel and skip action visible without scrolling at ${width}x${height}`, () => {
+      createReel(); reel!.detectChanges();
+      const frame = document.createElement('iframe');
+      frame.style.cssText = `position:fixed;left:0;top:0;width:${width}px;height:${height}px;border:0;visibility:hidden`;
+      document.body.append(frame);
+      try {
+        const frameDocument = frame.contentDocument!;
+        // Render the actual Angular markup/styles in a real viewport, including its native dialog.
+        for (const sheet of Array.from(document.styleSheets)) {
+          const copy = frameDocument.createElement('style');
+          copy.textContent = Array.from(sheet.cssRules)
+            .filter(rule => rule.type !== CSSRule.IMPORT_RULE).map(rule => rule.cssText).join('\n');
+          frameDocument.head.append(copy);
+        }
+        frameDocument.body.style.margin = '0';
+        const dialog = reel!.nativeElement.querySelector('dialog').cloneNode(true) as HTMLDialogElement;
+        dialog.removeAttribute('open');
+        // Long localized labels and hero names must also fit the rendered layout.
+        dialog.querySelector('#reel-title')!.textContent = 'Who will join your squad?';
+        dialog.querySelector('button')!.textContent = 'Skip animation';
+        dialog.querySelectorAll('figcaption').forEach(caption => caption.textContent = 'Trường Kiệt Tốt Nghiệp Cấp 3');
+        frameDocument.body.append(dialog);
+        dialog.showModal();
+        const bounds = dialog.getBoundingClientRect();
+        expect(Math.abs(bounds.width - width)).toBeLessThan(1);
+        expect(Math.abs(bounds.height - height)).toBeLessThan(1);
+        expect(Math.abs(bounds.left)).toBeLessThan(1);
+        expect(Math.abs(bounds.top)).toBeLessThan(1);
+        const body = dialog.querySelector('.hrk-modal-body') as HTMLElement;
+        expect(body.scrollWidth - body.clientWidth).toBeLessThanOrEqual(1);
+        expect(body.scrollHeight - body.clientHeight).toBeLessThanOrEqual(1);
+        for (const selector of ['#reel-title', '.reel-viewport', '.status-message', 'button']) {
+          const element = dialog.querySelector(selector)!.getBoundingClientRect();
+          expect(element.left).withContext(selector).toBeGreaterThanOrEqual(0);
+          expect(element.right).withContext(selector).toBeLessThanOrEqual(width);
+          expect(element.top).withContext(selector).toBeGreaterThanOrEqual(0);
+          expect(element.bottom).withContext(selector).toBeLessThanOrEqual(height);
+        }
+      } finally {
+        frame.remove();
+      }
+    });
+  }
+
   for (const width of [680, 320]) {
     it(`aligns the server-selected hero with the marker in a ${width}px viewport`, () => {
       style = document.createElement('style');

@@ -1,11 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { AssetUrlService } from '../../../../../../libs/core/assets/asset-url.service';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 import { HrkApiService } from '../../../../../../libs/core/http/hrk-api/hrk-api.service';
 import { ApiMethod } from '../../../../../../libs/shared/common/constants/ApiMethod.constants';
 import { ApiEndpoints } from '../../../../../../libs/shared/common/constants/api-endpoints';
 import { BaseResponse, PlayerAvatarTemplateDto, PlayerGameInfoDto, PlayerProfileDto, PlayerWalletDto } from '../models/player.model';
 import { LoadingMode, withLoading } from '../../../../../../libs/core/loading/loading.tokens';
+
+export interface PlayerInitializationStatus {
+  status: 'Pending' | 'Ready' | 'Unavailable';
+  playerId: number | null;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +20,11 @@ export class PlayerService {
   private readonly playerApi = ApiEndpoints.Player;
 
   constructor(private hrkApiService: HrkApiService) {}
+
+  getInitialization(): Observable<BaseResponse<PlayerInitializationStatus>> {
+    return this.hrkApiService.CallApi<BaseResponse<PlayerInitializationStatus>>(ApiMethod.GET, this.playerApi.Initialization,
+      { withCredentials: true, loading: 'none', timeoutMs: 5000 }).pipe(timeout(5000));
+  }
 
   /**
    * Get current player's profile (name, level, etc.)

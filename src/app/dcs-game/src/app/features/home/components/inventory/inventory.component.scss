@@ -1,17 +1,17 @@
 // Inventory SCSS Stylesheet (Three Kingdoms Fantasy RPG Theme)
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Spectral:wght@600;800&display=swap');
+// Font centralized in _game-tokens.scss & shell/src/styles.scss
 
 // Colors
-$gold-primary: #ffd700;
+$gold-primary: #bcf27b;
 $gold-dark: #aa7c11;
-$gold-border: #8e6e3c;
+$gold-border: rgba(167, 182, 195, 0.24);
 $gold-light: #fffacd;
 $crimson-red: #a81a1a;
 $crimson-dark: #630505;
-$black-bg: #0e0d0c;
-$black-panel: #161412;
-$glass-dark: rgba(15, 12, 10, 0.93);
+$black-bg: #10151b;
+$black-panel: #19212a;
+$glass-dark: rgba(25, 33, 42, 0.95);
 $glow-gold: 0 0 15px rgba(255, 215, 0, 0.6);
 $glow-red: 0 0 15px rgba(255, 56, 56, 0.6);
 
@@ -967,4 +967,63 @@ $color-common: #9ca3af; // Common = Gray
   border-color: $gold-primary !important;
   box-shadow: 0 0 15px $gold-primary !important;
   transform: scale(1.05);
+}
+
+
+// ============================================================================
+// MODERN URBAN — HERO SQUAD DESIGN SYSTEM REFACTOR (SCOPED TOKEN OVERRIDES)
+// ============================================================================
+.inventory-overlay {
+  font-family: var(--dcs-font-sans, 'Be Vietnam Pro', sans-serif);
+  background: var(--dcs-bg-base, #10151b);
+  color: var(--dcs-text-primary, #f0f4f7);
+
+  .font-title,
+  .page-title,
+  .panel-header {
+    font-family: var(--dcs-font-display, 'Be Vietnam Pro', sans-serif) !important;
+    text-shadow: none !important;
+  }
+
+  .inventory-top-bar {
+    background: var(--dcs-surface, #19212a);
+    border-bottom: 1px solid var(--dcs-border-default, rgba(167, 182, 195, 0.14));
+    box-shadow: var(--dcs-shadow-sm);
+  }
+
+  .left-filter-sidebar,
+  .center-grid-container,
+  .right-detail-panel,
+  .inventory-footer-bar {
+    background: var(--dcs-surface, #19212a) !important;
+    border-color: var(--dcs-border-default, rgba(167, 182, 195, 0.14)) !important;
+    box-shadow: var(--dcs-shadow-md) !important;
+  }
+
+  .inventory-slot-card,
+  .filter-cat-btn {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border: 1px solid var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    border-radius: var(--dcs-radius-md, 10px) !important;
+    transition: all 140ms ease !important;
+
+    &.active,
+    &.selected {
+      border-color: var(--dcs-accent, #bcf27b) !important;
+      box-shadow: var(--dcs-shadow-accent) !important;
+    }
+  }
+
+  .btn-quick-action-primary {
+    background: var(--dcs-accent, #bcf27b) !important;
+    border-color: var(--dcs-accent-hover, #ccf796) !important;
+    color: var(--dcs-accent-contrast, #0b1305) !important;
+    font-weight: 800 !important;
+  }
+
+  .btn-quick-action {
+    background: var(--dcs-surface-raised, #222d38) !important;
+    border-color: var(--dcs-border-strong, rgba(167, 182, 195, 0.24)) !important;
+    color: var(--dcs-text-primary, #f0f4f7) !important;
+  }
 }
